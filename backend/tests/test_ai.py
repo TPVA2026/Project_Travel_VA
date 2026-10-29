@@ -10,11 +10,14 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.api import itineraries
+from app.services.ai import gemini_client
 from app.services.ai import itinerary_generator as generator
 from app.services.ai.context_builder import build_context, supported_place_ids
 from app.services.data_service import load_dataset
 from app.services.ai.gemini_client import GeminiError
 from app.services.ai.itinerary_generator import check_grounding, generate_candidate, validate_schema
+
+from m3_fakes import FakeClient, ok, transport, wrap  # fake Google Gen AI SDK client
 
 ROOT = Path(__file__).resolve().parents[2]
 FIX = Path(__file__).parent / "fixtures"
@@ -24,18 +27,6 @@ dataset = load(FIX / "sample_dataset.json")
 request = load(FIX / "travel_request.json")
 plan = load(FIX / "sample_response.json")["plan"]
 NOSLEEP = lambda _s: None
-
-
-def wrap(obj):
-    return {"candidates": [{"content": {"parts": [{"text": json.dumps(obj)}]}}]}
-
-
-def transport(handler):
-    return httpx.MockTransport(handler)
-
-
-def ok(obj):
-    return transport(lambda req: httpx.Response(200, json=wrap(obj)))
 
 
 def test_sample_plan_matches_schema_and_is_grounded():
@@ -77,23 +68,24 @@ def test_grounding_enforces_cost_status_against_dataset():
     assert any("must be UNVERIFIED" in e for e in errs)
 
 
-def test_key_sent_in_header_only_with_structured_output():
-    seen = {}
+def test_key_stays_server_side_and_structured_output_is_requested(monkeypatch):
+    made = {}
+    fake = FakeClient(lambda call: httpx.Response(200, json=wrap(plan)))
 
-    def handler(req: httpx.Request):
-        seen["url"] = str(req.url)
-        seen["headers"] = req.headers
-        seen["body"] = json.loads(req.content)
-        return httpx.Response(200, json=wrap(plan))
+    def fake_make_client(api_key, timeout_s):
+        made.update(api_key=api_key, timeout_s=timeout_s)
+        return fake
 
-    out = generate_candidate(request, dataset, api_key="TEST_KEY_123", transport=transport(handler))
+    monkeypatch.setattr(gemini_client, "_make_client", fake_make_client)
+    out = generate_candidate(request, dataset, api_key="TEST_KEY_123", timeout_s=7)
     assert out == plan
-    assert "TEST_KEY_123" not in seen["url"]
-    assert seen["headers"]["x-goog-api-key"] == "TEST_KEY_123"
-    cfg = seen["body"]["generationConfig"]
-    assert cfg["responseMimeType"] == "application/json"
-    assert cfg["responseJsonSchema"]["required"]
-    assert "$schema" not in cfg["responseJsonSchema"]
+    assert made == {"api_key": "TEST_KEY_123", "timeout_s": 7}  # key only goes to the SDK client constructor
+    call = fake.models.calls[0]
+    assert "TEST_KEY_123" not in f"{call['contents']} {call['config']}"
+    cfg = call["config"]
+    assert cfg.response_mime_type == "application/json"
+    assert cfg.response_json_schema["required"]
+    assert "$schema" not in cfg.response_json_schema
 
 
 def code_of(**kw):
@@ -103,22 +95,22 @@ def code_of(**kw):
 
 
 def test_error_handling():
-    assert code_of(api_key="", transport=ok({})).code == "CONFIG"
-    assert code_of(api_key="k", max_retries=0, transport=transport(lambda r: httpx.Response(429))).code == "API_ERROR"
+    assert code_of(api_key="", client=ok({})).code == "CONFIG"
+    assert code_of(api_key="k", max_retries=0, client=transport(lambda r: httpx.Response(429))).code == "API_ERROR"
     bad_json = transport(lambda r: httpx.Response(200, json={"candidates": [{"content": {"parts": [{"text": "not json"}]}}]}))
-    assert code_of(api_key="k", transport=bad_json).code == "MALFORMED"
-    assert code_of(api_key="k", transport=transport(lambda r: httpx.Response(200, json={}))).code == "EMPTY"
-    assert code_of(api_key="k", transport=ok({"planId": "x"})).code == "INVALID_PLAN"
+    assert code_of(api_key="k", client=bad_json).code == "MALFORMED"
+    assert code_of(api_key="k", client=transport(lambda r: httpx.Response(200, json={}))).code == "EMPTY"
+    assert code_of(api_key="k", client=ok({"planId": "x"})).code == "INVALID_PLAN"
 
     def timeout(req):
         raise httpx.ReadTimeout("t")
 
-    assert code_of(api_key="k", max_retries=0, transport=transport(timeout)).code == "TIMEOUT"
+    assert code_of(api_key="k", max_retries=0, client=transport(timeout)).code == "TIMEOUT"
 
     def netdown(req):
         raise httpx.ConnectError("x")
 
-    assert code_of(api_key="k", max_retries=0, transport=transport(netdown)).code == "NETWORK"
+    assert code_of(api_key="k", max_retries=0, client=transport(netdown)).code == "NETWORK"
 
 
 def test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up():
@@ -130,7 +122,7 @@ def test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up():
             return httpx.Response(503, json={"error": {"message": "overloaded"}})
         return httpx.Response(200, json=wrap(plan))
 
-    assert generate_candidate(request, dataset, api_key="k", transport=transport(flaky), sleep=NOSLEEP) == plan
+    assert generate_candidate(request, dataset, api_key="k", client=transport(flaky), sleep=NOSLEEP) == plan
     assert n["v"] == 3
 
     m = {"v": 0}
@@ -139,7 +131,7 @@ def test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up():
         m["v"] += 1
         return httpx.Response(400, json={"error": {"message": "bad schema"}})
 
-    e = code_of(api_key="k", transport=transport(bad_request))
+    e = code_of(api_key="k", client=transport(bad_request))
     assert (e.code, e.status, e.details, m["v"]) == ("API_ERROR", 400, "bad schema", 1)
 
     k = {"v": 0}
@@ -148,13 +140,13 @@ def test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up():
         k["v"] += 1
         return httpx.Response(503, json={})
 
-    e = code_of(api_key="k", max_retries=3, transport=transport(always_503))
+    e = code_of(api_key="k", max_retries=3, client=transport(always_503))
     assert e.status == 503 and k["v"] == 4
 
 
 def test_error_does_not_leak_key_or_upstream_body():
     t = transport(lambda r: httpx.Response(401, json={"error": {"message": "x"}}, headers={"x-echo": "SECRET_KEY_ABC"}))
-    e = code_of(api_key="SECRET_KEY_ABC", transport=t)
+    e = code_of(api_key="SECRET_KEY_ABC", client=t)
     assert "SECRET_KEY_ABC" not in f"{e.message} {e.details}"
 
 
@@ -327,11 +319,11 @@ def test_prompt_contains_only_supported_ids():
     seen = {}
 
     def handler(req):
-        seen["prompt"] = json.loads(req.content)["contents"][0]["parts"][0]["text"]
+        seen["prompt"] = req["contents"]
         return httpx.Response(200, json=wrap(plan))
 
     generate_candidate(request, {**dataset, "attractions": [*dataset["attractions"], attraction("HN-ATT-001")]},
-                       api_key="k", transport=transport(handler))
+                       api_key="k", client=transport(handler))
     assert "DN-ATT-001" in seen["prompt"] and "HN-ATT-001" not in seen["prompt"]
 
 
@@ -340,7 +332,7 @@ def test_plan_using_id_outside_context_is_rejected():
     bad["days"][0]["activities"][0]["placeId"] = "HN-ATT-001"
     ds = {**dataset, "attractions": [*dataset["attractions"], attraction("HN-ATT-001")]}
     with pytest.raises(GeminiError) as e:
-        generate_candidate(request, ds, api_key="k", transport=ok(bad), sleep=NOSLEEP)
+        generate_candidate(request, ds, api_key="k", client=ok(bad), sleep=NOSLEEP)
     assert e.value.code == "INVALID_PLAN" and any("unknown placeId HN-ATT-001" in x for x in e.value.details)
 
 
@@ -350,7 +342,7 @@ def test_no_supported_places_never_calls_gemini():
     for ds in ({"destinations": [], "attractions": [], "dining": [], "travel_matrix": []}, dataset):
         req = {**request, "preferredDestination": "XX"} if ds is dataset else request
         with pytest.raises(GeminiError) as e:
-            generate_candidate(req, ds, api_key="k", transport=t)
+            generate_candidate(req, ds, api_key="k", client=t)
         assert (e.value.code, e.value.status) == ("NO_DATA", 422)
     assert calls == []
 

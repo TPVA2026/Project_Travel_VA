@@ -8,6 +8,9 @@ RULES:
   * price is null -> estimatedCostVnd null and costStatus "NO_DATA" (never 0 for unknown);
   * price present but the place's source contains "UNVERIFIED" -> costStatus "UNVERIFIED";
   * price present and source is verified -> costStatus "KNOWN".
+- estimatedCostVnd is the DATASET price copied EXACTLY (no rounding, no estimating, not multiplied by group size or days).
+- activity type is "sightseeing" for attractions and "dining" for dining places; destinationId is a DATASET destination id.
+- Add NO fields that are not in the schema (no scores, ranks, totals, "verified"/"feasible" flags): every plan stays UNVERIFIED until the server checks it.
 - If a travel time or distance is unknown, output null.
 - Activities in one day must not overlap and must fit the place's openHours when known.
 - List every unknown essential item in missingData.

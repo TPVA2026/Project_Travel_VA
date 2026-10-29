@@ -5,7 +5,8 @@ Owner: M3 | Date: 2026-10-29
 ## What was delivered
 | Deliverable | Where |
 |---|---|
-| Prototype Gemini request (structured JSON output, retry, timeout) | `backend/app/services/ai/gemini_client.py` |
+| Gemini client on the official Python SDK `google-genai` (structured JSON output, retry, timeout) | `backend/app/services/ai/gemini_client.py` |
+| Pydantic `CandidatePlan` models (validation gate for every LLM answer) | `backend/app/schemas/candidate_plan.py` |
 | Prompt + dataset context | `prompt_templates.py`, `context_builder.py` (same folder) |
 | Generate + schema/grounding validation | `backend/app/services/ai/itinerary_generator.py` |
 | Endpoint `POST /itineraries/generate` | `backend/app/api/itineraries.py` |
@@ -25,7 +26,7 @@ python -m uvicorn app.main:app --reload --port 3001   # POST /itineraries/genera
 ```
 
 ## Security (no client-side secret)
-- Key is read from `GEMINI_API_KEY` on the server only and sent in the `x-goog-api-key` header, not the URL.
+- Key is read from `GEMINI_API_KEY` on the server only and passed to the `google-genai` client (header auth, never in the URL).
 - The browser only calls `/itineraries/generate`; CORS is limited to `ALLOWED_ORIGIN`.
 - `.env` is git-ignored; CI scans for `AIza...` strings and a test checks no secret in the repo and no key reference under `frontend/`.
 - Errors never include the key or the raw upstream body.
@@ -33,7 +34,8 @@ python -m uvicorn app.main:app --reload --port 3001   # POST /itineraries/genera
 ## Contract
 - In: validated `TravelRequest` (M1). Out: `{ "status": "UNVERIFIED", "plan": CandidatePlan }`.
 - The plan is never "feasible" until M4 `/itineraries/evaluate` verifies it. Costs are references only; unknown = `null` + `NO_DATA`, never 0.
-- Guards: JSON-schema check, then grounding (placeId in dataset, no overlap, cost status agrees with dataset source).
+- Guards: Pydantic `CandidatePlan` validation (extra fields such as scores/flags are rejected; unknown cost = null + `NO_DATA`, never 0), then grounding (placeId/destinationId in dataset, type matches place, no overlap, cost VALUE equals the dataset price and status agrees with its source, travel legs equal the dataset).
+- AI scores/costs are never verified: the endpoint always returns `status: UNVERIFIED`; only M4 decides feasibility. Opening hours, durations and budget checks are M4's, not repeated here.
 - Error codes: `CONFIG` (500), `TIMEOUT` (504), `INVALID_PLAN` (422), `NO_DATA` (422), `NETWORK` / `API_ERROR` / `EMPTY` / `MALFORMED` (502).
 
 ## Context retrieval (`context_builder.py`)
@@ -45,9 +47,10 @@ Only supported data reaches the LLM:
 - Travel legs are kept only between retrieved places; none are invented. The plan checker also rejects legs whose ids, durations or distances differ from the dataset.
 
 ## Open items
+- `estimatedCostVnd` is the dataset price as listed (no multiplication by group size/days); M4 owns totals. M2/M3/M4 should confirm per-person vs per-group meaning of each price field.
 - `backend/tests/fixtures/sample_dataset.json` is an M2 placeholder; `generate_candidate` already reads `data_service.load_dataset()` by default, so it works once M2 fills the data files.
 - `/itineraries/generate` does not call M1 `validate_request` yet (TODO M6/M1).
-- `live_demo_output.json` was produced by the earlier Node prototype with the same request/schema; re-run `python -m scripts.gemini_demo` with a key to refresh it from the Python client.
+- The "cost must equal the dataset price" check is covered by mocked tests only (`test_candidate_plan.py`: `test_grounding_rejects_fabricated_cost_values` with 999999 / 0 / 100001, and `test_generate_rejects_fabricated_cost_end_to_end`). The live `gemini_demo` run used `sample_dataset.json`, where every price is null except Mỹ Khê (0), so Gemini was never tested against real prices. Re-run `python -m scripts.gemini_demo` once M2 fills prices into `app/data/*.json`.
 - Default model `gemini-3.6-flash`; confirm with ListModels before the demo.
 
 ---
@@ -57,10 +60,10 @@ Only supported data reaches the LLM:
 - Adds Gemini client (timeout, retries, error codes), prompt/context builders, schema + grounding validation, `POST /itineraries/generate`.
 - Fills `backend/app/schemas/candidate_plan.schema.json` and `backend/tests/fixtures/sample_response.json`.
 - No client-side secret: key only via server env, header auth, `.env` ignored, tests + CI scan.
-- Evidence: `python -m pytest -v` -> <N> passed, 3 skipped (other members' TODO tests); see `docs/m3-test-output.txt`. (Fill <N> from the latest run.)
+- Evidence: `python -m pytest -v` -> 67 passed, 3 skipped (other members' TODO tests); see `docs/m3-test-output.txt`. `python -m scripts.gemini_demo` ran against real Gemini through the `google-genai` SDK and produced a plan that passes Pydantic + grounding (`live_demo_output.json`).
 - Reviewers: M4 (schema/evaluate contract), M6 (endpoint integration), M1 (TravelRequest shape), M2 (dataset ids).
 
 ## Jira comment (before moving to Done)
 Delivered Day 1: Gemini request prototype, server-side key handling, CandidatePlan schema, valid sample plan, integrated in `backend/app/services/ai` + `/itineraries/generate`.
-Evidence: PR <link>, test output `docs/m3-test-output.txt` (<N> passed), `backend/tests/fixtures/sample_response.json`, `backend/tests/fixtures/live_demo_output.json`.
+Evidence: PR <link>, test output `docs/m3-test-output.txt` (67 passed, 3 skipped), `backend/tests/fixtures/sample_response.json`, `backend/tests/fixtures/live_demo_output.json`.
 Move to Done only after M4 and M6 approve the PR.
