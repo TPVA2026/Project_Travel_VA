@@ -1,0 +1,91 @@
+[
+  {
+    "id": "missing-budget",
+    "why": "budget is required",
+    "body": {
+      "travelPeriod": { "month": "2026-12" },
+      "durationDays": 2,
+      "departureLocation": "Hanoi",
+      "travelers": { "count": 2 }
+    }
+  },
+  {
+    "id": "dates-and-month",
+    "why": "travelPeriod accepts dates or a month, not both",
+    "body": {
+      "travelPeriod": { "startDate": "2026-11-12", "month": "2026-11" },
+      "durationDays": 2,
+      "departureLocation": "Hue",
+      "travelers": { "count": 1 },
+      "budget": { "amount": 1000000, "currency": "VND", "scope": "perPerson" }
+    }
+  },
+  {
+    "id": "zero-travelers",
+    "why": "travelers.count must be at least 1",
+    "body": {
+      "travelPeriod": { "month": "2026-07" },
+      "durationDays": 2,
+      "departureLocation": "Da Nang",
+      "travelers": { "count": 0 },
+      "budget": { "amount": 2000000, "currency": "VND", "scope": "group" }
+    }
+  },
+  {
+    "id": "duration-disagrees-with-dates",
+    "why": "durationDays must match the inclusive date span",
+    "body": {
+      "travelPeriod": { "startDate": "2026-11-12", "endDate": "2026-11-14" },
+      "durationDays": 2,
+      "departureLocation": "Hoi An",
+      "travelers": { "count": 2 },
+      "budget": { "amount": 5000000, "currency": "VND", "scope": "group" }
+    }
+  },
+  {
+    "id": "end-before-start",
+    "why": "endDate is before startDate",
+    "body": {
+      "travelPeriod": { "startDate": "2026-11-14", "endDate": "2026-11-12" },
+      "durationDays": 1,
+      "departureLocation": "Hoi An",
+      "travelers": { "count": 1 },
+      "budget": { "amount": 1500000, "currency": "VND", "scope": "perPerson" }
+    }
+  },
+  {
+    "id": "limits-without-a-number",
+    "why": "limits need maxDistanceKm or maxTravelTimeMinutes",
+    "body": {
+      "travelPeriod": { "month": "2026-08" },
+      "durationDays": 3,
+      "departureLocation": "Da Lat",
+      "travelers": { "count": 2 },
+      "budget": { "amount": 4000000, "currency": "VND", "scope": "group" },
+      "limits": { "appliesTo": "betweenActivities" }
+    }
+  },
+  {
+    "id": "unknown-interest",
+    "why": "interest type is outside the agreed set",
+    "body": {
+      "travelPeriod": { "month": "2026-09" },
+      "durationDays": 2,
+      "departureLocation": "Hanoi",
+      "travelers": { "count": 1 },
+      "budget": { "amount": 2500000, "currency": "VND", "scope": "perPerson" },
+      "preferences": { "interests": [{ "type": "nightlife" }] }
+    }
+  },
+  {
+    "id": "negative-budget",
+    "why": "budget.amount cannot be negative",
+    "body": {
+      "travelPeriod": { "startDate": "2026-10-01" },
+      "durationDays": 1,
+      "departureLocation": "Can Tho",
+      "travelers": { "count": 1 },
+      "budget": { "amount": -1, "currency": "VND", "scope": "perPerson" }
+    }
+  }
+]

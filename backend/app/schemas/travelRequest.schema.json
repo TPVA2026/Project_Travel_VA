@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://travel-va.local/schemas/travelRequest.schema.json",
+  "title": "TravelRequest",
+  "description": "Normalized travel request shared by the client and server. Mandatory constraints are budget, durationDays, travelers.count, and any limits that are present. Preferences never override those constraints. Provide either travel dates or a travel month, not both. Amounts are integer VND. Unknown facts are omitted; they are never sent as zero.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["travelPeriod", "durationDays", "departureLocation", "travelers", "budget"],
+  "properties": {
+    "travelPeriod": {
+      "description": "Either specific dates or a calendar month. durationDays is still required in both cases.",
+      "oneOf": [
+        { "$ref": "#/$defs/datePeriod" },
+        { "$ref": "#/$defs/monthPeriod" }
+      ]
+    },
+    "durationDays": {
+      "description": "Requested trip length in days. When endDate is set, this must equal the inclusive day count from startDate through endDate.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "departureLocation": {
+      "description": "Starting point of the trip, as the user stated it.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "travelers": { "$ref": "#/$defs/travelers" },
+    "budget": { "$ref": "#/$defs/budget" },
+    "limits": {
+      "description": "Optional hard limits. If this object is present, every value in it is mandatory and must not be dropped to make a plan look feasible.",
+      "$ref": "#/$defs/travelLimits"
+    },
+    "preferences": {
+      "description": "Optional ranking signals. Omitting this object means the user stated no preferences.",
+      "$ref": "#/$defs/preferences"
+    }
+  },
+  "$defs": {
+    "datePeriod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startDate"],
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "First travel day, YYYY-MM-DD."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Last travel day, inclusive. Optional. Must be on or after startDate."
+        }
+      }
+    },
+    "monthPeriod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["month"],
+      "properties": {
+        "month": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "description": "Travel month as YYYY-MM. Not a weather forecast."
+        }
+      }
+    },
+    "travelers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total number of people in the group."
+        },
+        "characteristics": {
+          "description": "Optional group needs, for example children or older adults. A preference/context note, not a budget constraint.",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 80 }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency", "scope"],
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Available money in currency units. Zero is a valid request and means feasibility must fail the budget constraint. Missing prices elsewhere must not be stored here as zero."
+        },
+        "currency": {
+          "const": "VND"
+        },
+        "scope": {
+          "description": "perPerson applies the amount to each traveler. group applies the amount to the whole party.",
+          "enum": ["perPerson", "group"]
+        }
+      }
+    },
+    "travelLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["appliesTo"],
+      "anyOf": [
+        { "required": ["maxDistanceKm"] },
+        { "required": ["maxTravelTimeMinutes"] }
+      ],
+      "properties": {
+        "maxDistanceKm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Maximum distance in kilometres."
+        },
+        "maxTravelTimeMinutes": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Maximum travel time in minutes."
+        },
+        "appliesTo": {
+          "description": "fromDeparture: limit measured from the departure location. betweenActivities: limit on each leg. daily: limit on the sum of legs in one day.",
+          "enum": ["fromDeparture", "betweenActivities", "daily"]
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "destination": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Preferred destination or area. If omitted, the system may recommend a supported area."
+        },
+        "transportation": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 80 }
+        },
+        "interests": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/interest" }
+        },
+        "dining": { "$ref": "#/$defs/diningPreferences" }
+      }
+    },
+    "interest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["sightseeing", "culture", "nature", "relaxation"]
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4,
+          "description": "1 is the most important. Omit when the user did not rank this interest."
+        }
+      }
+    },
+    "diningPreferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preferred": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 80 }
+        },
+        "avoid": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 80 }
+        }
+      }
+    }
+  }
+}
