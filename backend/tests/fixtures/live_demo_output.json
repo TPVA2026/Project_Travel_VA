@@ -1,6 +1,6 @@
 {
-  "planId": "plan-dn-2day",
-  "title": "Da Nang and Hoi An 2-Day Itinerary",
+  "planId": "plan-dn-2day-202612",
+  "title": "Hành trình Đà Nẵng - Hội An 2 ngày",
   "destinationId": "DN",
   "days": [
     {
@@ -8,34 +8,34 @@
       "date": "2026-12-01",
       "activities": [
         {
-          "activityId": "act-1",
+          "activityId": "act-001",
           "placeId": "DN-ATT-001",
           "type": "sightseeing",
-          "startTime": "09:00",
-          "endTime": "11:00",
+          "startTime": "08:00",
+          "endTime": "10:00",
           "estimatedCostVnd": null,
           "costStatus": "NO_DATA",
-          "reason": "Visit Ngu Hanh Son for nature and culture exploration."
+          "reason": "Khám phá văn hóa và thiên nhiên tại Ngũ Hành Sơn."
         },
         {
-          "activityId": "act-2",
+          "activityId": "act-002",
           "placeId": "DN-DIN-001",
           "type": "dining",
-          "startTime": "11:30",
-          "endTime": "12:30",
+          "startTime": "10:30",
+          "endTime": "11:30",
           "estimatedCostVnd": null,
           "costStatus": "NO_DATA",
-          "reason": "Enjoy authentic mi Quang."
+          "reason": "Thưởng thức món Mì Quảng theo sở thích."
         },
         {
-          "activityId": "act-3",
+          "activityId": "act-003",
           "placeId": "DN-ATT-002",
           "type": "sightseeing",
-          "startTime": "14:00",
-          "endTime": "17:00",
+          "startTime": "12:00",
+          "endTime": "15:00",
           "estimatedCostVnd": null,
           "costStatus": "NO_DATA",
-          "reason": "Explore cultural sights in Hoi An Ancient Town."
+          "reason": "Trải nghiệm không gian văn hóa Phố cổ Hội An."
         }
       ],
       "travelLegs": [
@@ -58,24 +58,24 @@
       "date": "2026-12-02",
       "activities": [
         {
-          "activityId": "act-4",
+          "activityId": "act-004",
           "placeId": "DN-ATT-003",
           "type": "sightseeing",
-          "startTime": "09:00",
-          "endTime": "11:00",
+          "startTime": "08:00",
+          "endTime": "10:00",
           "estimatedCostVnd": 0,
           "costStatus": "UNVERIFIED",
-          "reason": "Relax at My Khe Beach."
+          "reason": "Thư giãn tại bãi biển Mỹ Khê."
         },
         {
-          "activityId": "act-5",
+          "activityId": "act-005",
           "placeId": "DN-DIN-002",
           "type": "dining",
-          "startTime": "11:30",
-          "endTime": "12:45",
+          "startTime": "10:30",
+          "endTime": "11:45",
           "estimatedCostVnd": null,
           "costStatus": "NO_DATA",
-          "reason": "Savor local seafood."
+          "reason": "Thưởng thức hải sản địa phương."
         }
       ],
       "travelLegs": [
@@ -89,12 +89,12 @@
     }
   ],
   "missingData": [
-    "Prices for Ngu Hanh Son, Hoi An Ancient Town, Quan mi Quang, and Quan hai san",
-    "Operating hours for all listed locations",
-    "Travel duration and distance between itinerary places"
+    "Giờ mở cửa của các điểm tham quan và ăn uống",
+    "Chi phí chi tiết của DN-ATT-001, DN-ATT-002, DN-DIN-001, DN-DIN-002",
+    "Thời gian và khoảng cách di chuyển trong travel matrix"
   ],
   "assumptions": [
-    "Trip starts on 2026-12-01",
-    "Activities operate during standard daylight hours"
+    "Các điểm tham quan mở cửa vào thời gian dự kiến trong lịch trình",
+    "Thời gian di chuyển thực tế sẽ được cập nhật khi có thông tin chi tiết"
   ]
 }

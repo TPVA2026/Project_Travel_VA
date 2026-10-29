@@ -1,8 +1,8 @@
-"""Server-side Gemini HTTP client (M3).
+"""Server-side Gemini client on the official Google Gen AI Python SDK (`google-genai`) (M3).
 
-Security: the API key is read from the server environment only and sent in the
-`x-goog-api-key` header (never in the URL, so it stays out of logs). Error messages
-never include the key or raw upstream bodies.
+Security: the API key is read from the server environment only and handed to the SDK client
+(which sends it in the `x-goog-api-key` header, never in the URL). Error messages never include
+the key or raw upstream bodies.
 """
 import copy
 import os
@@ -11,17 +11,18 @@ import time
 from typing import Callable
 
 import httpx
+from google import genai
+from google.genai import errors, types
 
 from app.services.ai.prompt_templates import SYSTEM_PROMPT
 
 DEFAULT_MODEL = "gemini-3.6-flash"
-BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
 RETRY_STATUS = {429, 500, 503, 504}  # transient: overload / rate limit
 _DOC_KEYS = ("$schema", "title", "description")  # top-level doc keys not needed by Gemini
 
 
 class GeminiError(Exception):
-    """code: CONFIG | TIMEOUT | NETWORK | API_ERROR | EMPTY | MALFORMED | INVALID_PLAN"""
+    """code: CONFIG | TIMEOUT | NETWORK | API_ERROR | EMPTY | MALFORMED | INVALID_PLAN | NO_DATA"""
 
     def __init__(self, code: str, message: str, status: int | None = None, details=None):
         super().__init__(message)
@@ -38,6 +39,17 @@ def _gemini_schema(schema: dict) -> dict:
     return s
 
 
+def _make_client(api_key: str, timeout_s: float):
+    """The only place that builds the SDK client (tests replace it with a fake)."""
+    return genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=int(timeout_s * 1000)))
+
+
+def _safe_detail(exc: Exception, api_key: str) -> str | None:
+    """Short upstream message for debugging; truncated and scrubbed of the key."""
+    msg = str(getattr(exc, "message", "") or "")
+    return msg.replace(api_key, "***")[:300] or None
+
+
 def request_text(
     prompt: str,
     schema: dict,
@@ -46,10 +58,13 @@ def request_text(
     model: str | None = None,
     timeout_s: float | None = None,
     max_retries: int | None = None,
-    transport: httpx.BaseTransport | None = None,
+    client=None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> str:
-    """Call Gemini with JSON-schema structured output and return the raw text."""
+    """Call Gemini with JSON-schema structured output and return the raw text.
+
+    `client` is an SDK-like object (`client.models.generate_content(...)`); tests inject a fake.
+    """
     api_key = os.getenv("GEMINI_API_KEY") if api_key is None else api_key
     model = model or os.getenv("GEMINI_MODEL") or DEFAULT_MODEL
     if timeout_s is None:
@@ -59,49 +74,38 @@ def request_text(
     if not api_key:
         raise GeminiError("CONFIG", "GEMINI_API_KEY is not set on the server")
 
-    url = f"{BASE_URL}/{model}:generateContent"
-    body = {
-        "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]},
-        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": 0.3,
-            "responseMimeType": "application/json",
-            "responseJsonSchema": _gemini_schema(schema),
-        },
-    }
-    headers = {"Content-Type": "application/json", "x-goog-api-key": api_key}
+    if client is None:
+        client = _make_client(api_key, timeout_s)
+    config = types.GenerateContentConfig(
+        system_instruction=SYSTEM_PROMPT,
+        temperature=0.3,
+        response_mime_type="application/json",
+        response_json_schema=_gemini_schema(schema),
+    )
 
-    res = None
-    with httpx.Client(timeout=timeout_s, transport=transport) as client:
-        attempt = 0
-        while True:
-            try:
-                res = client.post(url, json=body, headers=headers)
-                if res.is_success:
-                    break
-                detail = None
-                try:
-                    detail = (res.json().get("error", {}).get("message") or "")[:300] or None
-                except Exception:  # body not JSON
-                    pass
-                failure = GeminiError("API_ERROR", f"Gemini returned HTTP {res.status_code}", res.status_code, detail)
-            except httpx.TimeoutException:
-                failure = GeminiError("TIMEOUT", "Gemini request failed")
-            except httpx.HTTPError:
-                failure = GeminiError("NETWORK", "Gemini request failed")
+    attempt = 0
+    while True:
+        try:
+            response = client.models.generate_content(model=model, contents=prompt, config=config)
+            break
+        except errors.APIError as e:
+            failure = GeminiError("API_ERROR", f"Gemini returned HTTP {e.code}", e.code, _safe_detail(e, api_key))
+        except httpx.TimeoutException:
+            failure = GeminiError("TIMEOUT", "Gemini request failed")
+        except httpx.HTTPError:
+            failure = GeminiError("NETWORK", "Gemini request failed")
 
-            if failure.status and failure.status not in RETRY_STATUS:
-                raise failure  # 400/401/403/404: retrying won't help
-            if attempt >= max_retries:
-                raise failure
-            sleep(min(1.0 * 2**attempt, 8.0) + random.random() * 0.3)
-            attempt += 1
+        if failure.status and failure.status not in RETRY_STATUS:
+            raise failure  # 400/401/403/404: retrying won't help
+        if attempt >= max_retries:
+            raise failure
+        sleep(min(1.0 * 2**attempt, 8.0) + random.random() * 0.3)
+        attempt += 1
 
     try:
-        parts = res.json()["candidates"][0]["content"]["parts"]
-        text = "".join(p.get("text", "") for p in parts)
-    except (KeyError, IndexError, TypeError, ValueError):
-        text = ""
+        text = response.text
+    except (AttributeError, ValueError, TypeError):
+        text = None
     if not text:
         raise GeminiError("EMPTY", "No content (possibly blocked or truncated)")
     return text
