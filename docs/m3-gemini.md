@@ -12,6 +12,7 @@ Owner: M3 | Date: 2026-10-29
 | CandidatePlan JSON Schema (shared with M4/M5/M6) | `backend/app/schemas/candidate_plan.schema.json` |
 | Valid sample response | `backend/tests/fixtures/sample_response.json` |
 | Real-Gemini output (schema + grounding checked by a test) | `backend/tests/fixtures/live_demo_output.json` |
+| LLM API comparison and choice (M3.1) | `docs/m3-llm-comparison.md` |
 | Tests (Gemini mocked) | `backend/tests/test_ai.py` - output in `docs/m3-test-output.txt` |
 
 ## Run
@@ -56,10 +57,10 @@ Only supported data reaches the LLM:
 - Adds Gemini client (timeout, retries, error codes), prompt/context builders, schema + grounding validation, `POST /itineraries/generate`.
 - Fills `backend/app/schemas/candidate_plan.schema.json` and `backend/tests/fixtures/sample_response.json`.
 - No client-side secret: key only via server env, header auth, `.env` ignored, tests + CI scan.
-- Evidence: `python -m pytest -v` -> 36 passed, 3 skipped (other members' TODO tests); see `docs/m3-test-output.txt`.
+- Evidence: `python -m pytest -v` -> <N> passed, 3 skipped (other members' TODO tests); see `docs/m3-test-output.txt`. (Fill <N> from the latest run.)
 - Reviewers: M4 (schema/evaluate contract), M6 (endpoint integration), M1 (TravelRequest shape), M2 (dataset ids).
 
 ## Jira comment (before moving to Done)
 Delivered Day 1: Gemini request prototype, server-side key handling, CandidatePlan schema, valid sample plan, integrated in `backend/app/services/ai` + `/itineraries/generate`.
-Evidence: PR <link>, test output `docs/m3-test-output.txt` (36 passed), `backend/tests/fixtures/sample_response.json`, `backend/tests/fixtures/live_demo_output.json`.
+Evidence: PR <link>, test output `docs/m3-test-output.txt` (<N> passed), `backend/tests/fixtures/sample_response.json`, `backend/tests/fixtures/live_demo_output.json`.
 Move to Done only after M4 and M6 approve the PR.
