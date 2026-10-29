@@ -1,4 +1,13 @@
 from fastapi import APIRouter
 
-# TODO(M6): POST /generate, /evaluate, /rank, /revise, /select
+from src.controllers import itinerary_controller
+
 router = APIRouter()
+
+
+@router.post("/generate")  # M3 candidate generation
+def generate(body: dict):
+    return itinerary_controller.generate(body)
+
+
+# TODO(M6): POST /evaluate, /rank, /revise, /select
