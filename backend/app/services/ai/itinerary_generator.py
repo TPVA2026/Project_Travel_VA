@@ -9,7 +9,7 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
-from app.services.ai.context_builder import build_context
+from app.services.ai.context_builder import build_context, supported_place_ids
 from app.services.ai.gemini_client import GeminiError, request_text
 from app.services.ai.prompt_templates import build_prompt
 from app.services.data_service import load_dataset
@@ -29,6 +29,7 @@ def check_grounding(plan: dict, dataset: dict) -> list[str]:
     """Every placeId must exist in the dataset, times must not overlap, and cost
     status must agree with the curated dataset (not with the model's opinion)."""
     places = {p["id"]: p for p in [*dataset.get("attractions", []), *dataset.get("dining", [])]}
+    matrix = {(l["from"], l["to"]): l for l in dataset.get("travelMatrix", dataset.get("travel_matrix", []))}
     errs: list[str] = []
     for d in plan["days"]:
         acts = sorted(d["activities"], key=lambda a: a["startTime"])
@@ -49,6 +50,24 @@ def check_grounding(plan: dict, dataset: dict) -> list[str]:
                     errs.append(f"{a['activityId']}: dataset has no price for {a['placeId']}; must be null/NO_DATA")
                 if price is not None and a["costStatus"] == "KNOWN" and re.search("UNVERIFIED", pl.get("source") or "", re.I):
                     errs.append(f"{a['activityId']}: source of {a['placeId']} is unverified; status must be UNVERIFIED")
+        errs.extend(_check_travel_legs(d, places, matrix))
+    return errs
+
+
+def _check_travel_legs(day: dict, places: dict, matrix: dict) -> list[str]:
+    """Legs may only join supported places; durations/distances must equal the dataset values
+    (null when the dataset has none) - the LLM must not invent travel times."""
+    errs = []
+    for leg in day["travelLegs"]:
+        f, t = leg["fromPlaceId"], leg["toPlaceId"]
+        for pid in (f, t):
+            if pid not in places:
+                errs.append(f"day {day['dayNumber']}: travel leg uses unknown placeId {pid}")
+        ref = matrix.get((f, t)) or {}
+        for key in ("durationMin", "distanceKm"):
+            expected = ref.get(key)
+            if leg[key] != expected:
+                errs.append(f"day {day['dayNumber']}: travel leg {f}->{t} {key} must be {expected} per dataset, got {leg[key]}")
     return errs
 
 
@@ -60,6 +79,8 @@ def generate_candidate(request: dict, dataset: dict | None = None, **client_kwar
     """
     dataset = load_dataset() if dataset is None else dataset
     context = build_context(request, dataset)
+    if not supported_place_ids(context):  # never ask the LLM to plan without real places: it would invent them
+        raise GeminiError("NO_DATA", "No supported places in the curated dataset for this request", 422)
     text = request_text(build_prompt(request, context), CANDIDATE_PLAN_SCHEMA, **client_kwargs)
 
     try:
