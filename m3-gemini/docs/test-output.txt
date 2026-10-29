@@ -1,0 +1,20 @@
+
+> travel-va-m3-gemini@0.1.0 test
+> node --test test/*.test.js
+
+✔ sample plan matches schema and is grounded in dataset (8.375042ms)
+✔ schema rejects bad plans (0.392292ms)
+✔ grounding rejects invented place, overlap, and null cost marked KNOWN (0.119875ms)
+✔ client sends key in header only, with JSON-schema structured output (0.52475ms)
+✔ error handling: missing key, HTTP error, malformed JSON, invalid plan, timeout (0.736ms)
+✔ no secret committed: no API-key-like strings or hardcoded key in repo (4.117208ms)
+✔ retries transient 503 then succeeds; no retry on 400; gives up after maxRetries (0.758916ms)
+✔ grounding enforces cost status against dataset (no invented prices, no KNOWN on unverified source) (0.108917ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57.280708

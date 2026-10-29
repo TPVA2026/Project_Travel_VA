@@ -1,0 +1,13 @@
+{
+  "name": "travel-va-m3-gemini",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env src/server.js",
+    "test": "node --test test/*.test.js",
+    "demo": "node --env-file=.env src/demo.js"
+  },
+  "engines": { "node": ">=20.6" },
+  "dependencies": { "express": "^4.21.0" }
+}

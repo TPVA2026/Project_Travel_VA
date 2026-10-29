@@ -1,0 +1,101 @@
+{
+  "planId": "plan-dn-2d",
+  "title": "2-Day Da Nang - Hoi An Itinerary",
+  "destinationId": "DN",
+  "days": [
+    {
+      "dayNumber": 1,
+      "date": "2026-12-01",
+      "activities": [
+        {
+          "activityId": "act-01",
+          "placeId": "DN-ATT-001",
+          "type": "sightseeing",
+          "startTime": "09:00",
+          "endTime": "11:00",
+          "estimatedCostVnd": null,
+          "costStatus": "NO_DATA",
+          "reason": "Explore scenic nature and cave structures at Ngũ Hành Sơn."
+        },
+        {
+          "activityId": "act-02",
+          "placeId": "DN-DIN-001",
+          "type": "dining",
+          "startTime": "11:30",
+          "endTime": "12:30",
+          "estimatedCostVnd": null,
+          "costStatus": "NO_DATA",
+          "reason": "Enjoy local specialty Mì Quảng for lunch."
+        },
+        {
+          "activityId": "act-03",
+          "placeId": "DN-ATT-002",
+          "type": "sightseeing",
+          "startTime": "13:30",
+          "endTime": "16:30",
+          "estimatedCostVnd": null,
+          "costStatus": "NO_DATA",
+          "reason": "Discover historic cultural heritage in Hội An Ancient Town."
+        }
+      ],
+      "travelLegs": [
+        {
+          "fromPlaceId": "DN-ATT-001",
+          "toPlaceId": "DN-DIN-001",
+          "durationMin": null,
+          "distanceKm": null
+        },
+        {
+          "fromPlaceId": "DN-DIN-001",
+          "toPlaceId": "DN-ATT-002",
+          "durationMin": null,
+          "distanceKm": null
+        }
+      ]
+    },
+    {
+      "dayNumber": 2,
+      "date": "2026-12-02",
+      "activities": [
+        {
+          "activityId": "act-04",
+          "placeId": "DN-ATT-003",
+          "type": "sightseeing",
+          "startTime": "09:00",
+          "endTime": "11:00",
+          "estimatedCostVnd": 0,
+          "costStatus": "UNVERIFIED",
+          "reason": "Relax by the beach at Mỹ Khê."
+        },
+        {
+          "activityId": "act-05",
+          "placeId": "DN-DIN-002",
+          "type": "dining",
+          "startTime": "11:30",
+          "endTime": "12:45",
+          "estimatedCostVnd": null,
+          "costStatus": "NO_DATA",
+          "reason": "Enjoy fresh seafood for lunch."
+        }
+      ],
+      "travelLegs": [
+        {
+          "fromPlaceId": "DN-ATT-003",
+          "toPlaceId": "DN-DIN-002",
+          "durationMin": null,
+          "distanceKm": null
+        }
+      ]
+    }
+  ],
+  "missingData": [
+    "Ticket prices for DN-ATT-001 and DN-ATT-002",
+    "Meal prices for DN-DIN-001 and DN-DIN-002",
+    "Open hours for all places",
+    "Travel durations and distances in travel matrix"
+  ],
+  "assumptions": [
+    "Dates selected are 2026-12-01 and 2026-12-02",
+    "30 minutes buffer allocated between activities for travel"
+  ]
+}

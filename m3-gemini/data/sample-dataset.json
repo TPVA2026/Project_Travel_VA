@@ -1,0 +1,18 @@
+{
+  "_note": "FIXTURE for M3 prototype only. M2 owns the real dataset. Costs/hours marked null = No data available.",
+  "destinations": [{ "id": "DN", "name": "Đà Nẵng - Hội An", "seasonNote": "General guidance only, not a forecast: dry season is generally more suitable for beaches." }],
+  "attractions": [
+    { "id": "DN-ATT-001", "name": "Ngũ Hành Sơn", "category": "nature", "durationMin": 120, "priceVnd": null, "openHours": null, "source": "FIXTURE-UNVERIFIED" },
+    { "id": "DN-ATT-002", "name": "Phố cổ Hội An", "category": "culture", "durationMin": 180, "priceVnd": null, "openHours": null, "source": "FIXTURE-UNVERIFIED" },
+    { "id": "DN-ATT-003", "name": "Bãi biển Mỹ Khê", "category": "relaxation", "durationMin": 120, "priceVnd": 0, "openHours": null, "source": "FIXTURE-UNVERIFIED" }
+  ],
+  "dining": [
+    { "id": "DN-DIN-001", "name": "Quán mì Quảng (fixture)", "cuisine": "mì Quảng", "durationMin": 60, "avgPricePerPersonVnd": null, "openHours": null, "source": "FIXTURE-UNVERIFIED" },
+    { "id": "DN-DIN-002", "name": "Quán hải sản (fixture)", "cuisine": "seafood", "durationMin": 75, "avgPricePerPersonVnd": null, "openHours": null, "source": "FIXTURE-UNVERIFIED" }
+  ],
+  "travelMatrix": [
+    { "from": "DN-ATT-001", "to": "DN-DIN-001", "durationMin": null, "distanceKm": null },
+    { "from": "DN-DIN-001", "to": "DN-ATT-002", "durationMin": null, "distanceKm": null },
+    { "from": "DN-ATT-003", "to": "DN-DIN-002", "durationMin": null, "distanceKm": null }
+  ]
+}

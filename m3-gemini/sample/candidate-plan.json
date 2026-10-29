@@ -1,0 +1,38 @@
+{
+  "planId": "PLAN-DN-A",
+  "title": "Đà Nẵng - Hội An 2 ngày: văn hóa và nghỉ dưỡng",
+  "destinationId": "DN",
+  "days": [
+    {
+      "dayNumber": 1,
+      "date": "2026-12-05",
+      "activities": [
+        { "activityId": "D1-A1", "placeId": "DN-ATT-001", "type": "sightseeing", "startTime": "08:30", "endTime": "10:30", "estimatedCostVnd": null, "costStatus": "NO_DATA", "reason": "Phù hợp sở thích thiên nhiên nhẹ nhàng; giá vé chưa có dữ liệu." },
+        { "activityId": "D1-A2", "placeId": "DN-DIN-001", "type": "dining", "startTime": "11:00", "endTime": "12:00", "estimatedCostVnd": null, "costStatus": "NO_DATA", "reason": "Khớp sở thích ẩm thực mì Quảng." },
+        { "activityId": "D1-A3", "placeId": "DN-ATT-002", "type": "sightseeing", "startTime": "14:00", "endTime": "17:00", "estimatedCostVnd": null, "costStatus": "NO_DATA", "reason": "Khớp sở thích văn hóa." }
+      ],
+      "travelLegs": [
+        { "fromPlaceId": "DN-ATT-001", "toPlaceId": "DN-DIN-001", "durationMin": null, "distanceKm": null },
+        { "fromPlaceId": "DN-DIN-001", "toPlaceId": "DN-ATT-002", "durationMin": null, "distanceKm": null }
+      ]
+    },
+    {
+      "dayNumber": 2,
+      "date": "2026-12-06",
+      "activities": [
+        { "activityId": "D2-A1", "placeId": "DN-ATT-003", "type": "sightseeing", "startTime": "07:30", "endTime": "09:30", "estimatedCostVnd": 0, "costStatus": "UNVERIFIED", "reason": "Khớp sở thích nghỉ dưỡng; mức 0 đ chưa được xác minh." },
+        { "activityId": "D2-A2", "placeId": "DN-DIN-002", "type": "dining", "startTime": "10:00", "endTime": "11:15", "estimatedCostVnd": null, "costStatus": "NO_DATA", "reason": "Bữa trưa hải sản gần biển." }
+      ],
+      "travelLegs": [
+        { "fromPlaceId": "DN-ATT-003", "toPlaceId": "DN-DIN-002", "durationMin": null, "distanceKm": null }
+      ]
+    }
+  ],
+  "missingData": [
+    "Giá vé DN-ATT-001, DN-ATT-002",
+    "Giá bữa ăn DN-DIN-001, DN-DIN-002",
+    "Thời gian/khoảng cách di chuyển giữa các điểm",
+    "Chi phí di chuyển từ TP. Hồ Chí Minh và chỗ ở"
+  ],
+  "assumptions": ["Sample fixture: dữ liệu chưa được xác minh, chưa thể khẳng định phù hợp ngân sách."]
+}
