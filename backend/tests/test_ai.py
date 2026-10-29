@@ -277,6 +277,20 @@ def test_context_never_fabricates_costs_or_times():
     assert by["DN-DIN-002"]["avgPricePerPersonVnd"] == 70000
 
 
+def test_context_ignores_price_field_of_the_other_place_type():
+    data = {
+        "destinations": [{"id": "DN"}],
+        "attractions": [attraction("DN-ATT-001", avgPricePerPersonVnd=-5)],
+        "dining": [dining("DN-DIN-001", priceVnd=99999)],
+        "travel_matrix": [],
+    }
+    before = copy.deepcopy(data)
+    ctx = build_context({"preferredDestination": "DN"}, data)
+    assert data == before  # input untouched
+    assert "avgPricePerPersonVnd" not in ctx["attractions"][0]
+    assert "priceVnd" not in ctx["dining"][0] and ctx["dining"][0]["avgPricePerPersonVnd"] is None
+
+
 def test_context_travel_matrix_only_between_retrieved_places_and_never_invented():
     ctx = build_context({"preferredDestination": "DN"}, MULTI)
     assert ctx["travelMatrix"] == [

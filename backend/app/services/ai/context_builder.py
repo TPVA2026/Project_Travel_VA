@@ -10,6 +10,8 @@ Rules (so the LLM can only reference real, supported data):
 - If the request names a `preferredDestination`, only that destination and its places are kept.
   A place belongs to a destination via its `destinationId` field, or else the prefix of its id
   ("DN-ATT-001" -> "DN"). An unknown/unsupported destination yields an EMPTY context.
+- Each place type keeps only its own price field (attractions: priceVnd, dining: avgPricePerPersonVnd);
+  the other type's price key is dropped so an unvalidated value can never be read as a price.
 - Costs, durations and distances are copied as-is. Missing, non-numeric, negative or non-finite
   values become None (= "No data available"); they are never defaulted to 0 or estimated.
 - Travel legs are kept only between retrieved places; no leg is ever invented.
@@ -18,7 +20,7 @@ import logging
 import math
 from typing import Annotated, Any
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator, model_validator
 
 log = logging.getLogger(__name__)
 
@@ -55,8 +57,18 @@ class _Place(_Record):
         return _num_or_none(v)
 
 
+def _without(data: Any, key: str) -> Any:
+    """Copy of a raw record minus `key` (input is never mutated); non-dicts fail validation later."""
+    return {k: v for k, v in data.items() if k != key} if isinstance(data, dict) else data
+
+
 class _Attraction(_Place):
     priceVnd: int | float | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _no_dining_price(cls, data):
+        return _without(data, "avgPricePerPersonVnd")
 
     @field_validator("priceVnd", mode="before")
     @classmethod
@@ -66,6 +78,11 @@ class _Attraction(_Place):
 
 class _Dining(_Place):
     avgPricePerPersonVnd: int | float | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _no_attraction_price(cls, data):
+        return _without(data, "priceVnd")
 
     @field_validator("avgPricePerPersonVnd", mode="before")
     @classmethod

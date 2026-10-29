@@ -40,6 +40,7 @@ Only supported data reaches the LLM:
 - Records need a well-formed, unique string `id`; others are dropped (logged). Ids are never generated or repaired.
 - `preferredDestination` keeps only that destination's places (via `destinationId`, else the id prefix, e.g. `DN-ATT-001` -> `DN`). An unsupported destination gives an empty context, and `/itineraries/generate` returns `NO_DATA` (422) without calling Gemini.
 - Prices, durations and distances are copied as-is; missing/invalid values become `null`, never 0 or an estimate.
+- Each place type keeps only its own price field (`priceVnd` for attractions, `avgPricePerPersonVnd` for dining); the other type's price key is dropped.
 - Travel legs are kept only between retrieved places; none are invented. The plan checker also rejects legs whose ids, durations or distances differ from the dataset.
 
 ## Open items
@@ -55,10 +56,10 @@ Only supported data reaches the LLM:
 - Adds Gemini client (timeout, retries, error codes), prompt/context builders, schema + grounding validation, `POST /itineraries/generate`.
 - Fills `backend/app/schemas/candidate_plan.schema.json` and `backend/tests/fixtures/sample_response.json`.
 - No client-side secret: key only via server env, header auth, `.env` ignored, tests + CI scan.
-- Evidence: `python -m pytest` -> 17 passed, 3 skipped (other members' TODO tests); see `docs/m3-test-output.txt`.
+- Evidence: `python -m pytest -v` -> 36 passed, 3 skipped (other members' TODO tests); see `docs/m3-test-output.txt`.
 - Reviewers: M4 (schema/evaluate contract), M6 (endpoint integration), M1 (TravelRequest shape), M2 (dataset ids).
 
 ## Jira comment (before moving to Done)
 Delivered Day 1: Gemini request prototype, server-side key handling, CandidatePlan schema, valid sample plan, integrated in `backend/app/services/ai` + `/itineraries/generate`.
-Evidence: PR <link>, test output `docs/m3-test-output.txt` (17 passed), `backend/tests/fixtures/sample_response.json`, `backend/tests/fixtures/live_demo_output.json`.
+Evidence: PR <link>, test output `docs/m3-test-output.txt` (36 passed), `backend/tests/fixtures/sample_response.json`, `backend/tests/fixtures/live_demo_output.json`.
 Move to Done only after M4 and M6 approve the PR.

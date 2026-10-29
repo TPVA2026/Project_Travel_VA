@@ -5,27 +5,46 @@ rootdir: /Users/thienguyen0302/Desktop/Project_Travel_VA/backend
 configfile: pytest.ini
 testpaths: tests
 plugins: anyio-4.15.1
-collecting ... collected 20 items
+collecting ... collected 39 items
 
-tests/test_ai.py::test_sample_plan_matches_schema_and_is_grounded PASSED [  5%]
-tests/test_ai.py::test_live_demo_output_is_valid PASSED                  [ 10%]
-tests/test_ai.py::test_schema_rejects_bad_plans PASSED                   [ 15%]
-tests/test_ai.py::test_grounding_rejects_invented_place_overlap_and_null_cost_known PASSED [ 20%]
-tests/test_ai.py::test_grounding_enforces_cost_status_against_dataset PASSED [ 25%]
-tests/test_ai.py::test_key_sent_in_header_only_with_structured_output PASSED [ 30%]
-tests/test_ai.py::test_error_handling PASSED                             [ 35%]
-tests/test_ai.py::test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up PASSED [ 40%]
-tests/test_ai.py::test_error_does_not_leak_key_or_upstream_body PASSED   [ 45%]
-tests/test_ai.py::test_endpoint_returns_unverified_plan PASSED           [ 50%]
-tests/test_ai.py::test_endpoint_without_server_key_is_500_config PASSED  [ 55%]
-tests/test_ai.py::test_endpoint_maps_errors[TIMEOUT-None-504] PASSED     [ 60%]
-tests/test_ai.py::test_endpoint_maps_errors[INVALID_PLAN-422-422] PASSED [ 65%]
-tests/test_ai.py::test_endpoint_maps_errors[API_ERROR-503-502] PASSED    [ 70%]
-tests/test_ai.py::test_no_secret_committed_and_none_in_client PASSED     [ 75%]
-tests/test_api.py::test_health PASSED                                    [ 80%]
-tests/test_data.py::test_dataset_has_expected_keys PASSED                [ 85%]
-tests/test_feasibility.py::test_feasibility_todo SKIPPED (TODO(M4): ...) [ 90%]
-tests/test_input.py::test_input_todo SKIPPED (TODO(M1): write input ...) [ 95%]
+tests/test_ai.py::test_sample_plan_matches_schema_and_is_grounded PASSED [  2%]
+tests/test_ai.py::test_live_demo_output_is_valid PASSED                  [  5%]
+tests/test_ai.py::test_schema_rejects_bad_plans PASSED                   [  7%]
+tests/test_ai.py::test_grounding_rejects_invented_place_overlap_and_null_cost_known PASSED [ 10%]
+tests/test_ai.py::test_grounding_enforces_cost_status_against_dataset PASSED [ 12%]
+tests/test_ai.py::test_key_sent_in_header_only_with_structured_output PASSED [ 15%]
+tests/test_ai.py::test_error_handling PASSED                             [ 17%]
+tests/test_ai.py::test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up PASSED [ 20%]
+tests/test_ai.py::test_error_does_not_leak_key_or_upstream_body PASSED   [ 23%]
+tests/test_ai.py::test_endpoint_returns_unverified_plan PASSED           [ 25%]
+tests/test_ai.py::test_endpoint_without_server_key_is_500_config PASSED  [ 28%]
+tests/test_ai.py::test_endpoint_maps_errors[TIMEOUT-None-504] PASSED     [ 30%]
+tests/test_ai.py::test_endpoint_maps_errors[INVALID_PLAN-422-422] PASSED [ 33%]
+tests/test_ai.py::test_endpoint_maps_errors[API_ERROR-503-502] PASSED    [ 35%]
+tests/test_ai.py::test_no_secret_committed_and_none_in_client PASSED     [ 38%]
+tests/test_ai.py::test_context_keeps_only_requested_destination PASSED   [ 41%]
+tests/test_ai.py::test_context_without_destination_keeps_all_supported PASSED [ 43%]
+tests/test_ai.py::test_context_unsupported_destination_is_empty[XX] PASSED [ 46%]
+tests/test_ai.py::test_context_unsupported_destination_is_empty[] PASSED [ 48%]
+tests/test_ai.py::test_context_unsupported_destination_is_empty[5] PASSED [ 51%]
+tests/test_ai.py::test_context_unsupported_destination_is_empty[wanted3] PASSED [ 53%]
+tests/test_ai.py::test_context_drops_bad_and_duplicate_ids PASSED        [ 56%]
+tests/test_ai.py::test_context_never_fabricates_costs_or_times PASSED    [ 58%]
+tests/test_ai.py::test_context_ignores_price_field_of_the_other_place_type PASSED [ 61%]
+tests/test_ai.py::test_context_travel_matrix_only_between_retrieved_places_and_never_invented PASSED [ 64%]
+tests/test_ai.py::test_context_output_is_subset_of_input_and_input_untouched PASSED [ 66%]
+tests/test_ai.py::test_context_keeps_contract_shape_and_unknown_curated_fields PASSED [ 69%]
+tests/test_ai.py::test_context_from_real_curated_json_does_not_crash PASSED [ 71%]
+tests/test_ai.py::test_prompt_contains_only_supported_ids PASSED         [ 74%]
+tests/test_ai.py::test_plan_using_id_outside_context_is_rejected PASSED  [ 76%]
+tests/test_ai.py::test_no_supported_places_never_calls_gemini PASSED     [ 79%]
+tests/test_ai.py::test_endpoint_no_data_is_422 PASSED                    [ 82%]
+tests/test_ai.py::test_grounding_rejects_invented_travel_leg_values_and_ids PASSED [ 84%]
+tests/test_ai.py::test_grounding_accepts_leg_values_copied_from_dataset PASSED [ 87%]
+tests/test_api.py::test_health PASSED                                    [ 89%]
+tests/test_data.py::test_dataset_has_expected_keys PASSED                [ 92%]
+tests/test_feasibility.py::test_feasibility_todo SKIPPED (TODO(M4): ...) [ 94%]
+tests/test_input.py::test_input_todo SKIPPED (TODO(M1): write input ...) [ 97%]
 tests/test_ranking.py::test_ranking_todo SKIPPED (TODO(M4): write ra...) [100%]
 
 =============================== warnings summary ===============================
@@ -34,4 +53,4 @@ tests/test_ranking.py::test_ranking_todo SKIPPED (TODO(M4): write ra...) [100%]
     from starlette.testclient import TestClient as TestClient  # noqa
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=================== 17 passed, 3 skipped, 1 warning in 0.34s ===================
+=================== 36 passed, 3 skipped, 1 warning in 0.54s ===================
