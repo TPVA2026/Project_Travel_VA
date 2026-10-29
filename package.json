@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "install:all": "npm --prefix server install && npm --prefix client install",
-    "dev:server": "npm --prefix server run dev",
+    "install:client": "npm --prefix client install",
+    "dev:server": "cd server && python -m uvicorn src.app:app --reload --port 3001",
     "dev:client": "npm --prefix client run dev",
-    "test": "npm --prefix server test"
+    "test": "cd server && python -m pytest"
   }
 }
