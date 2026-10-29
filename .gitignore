@@ -6,3 +6,9 @@ dist/
 .DS_Store
 coverage/
 *.log
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+personal_document/
+AGENTS.md

@@ -1,0 +1,10 @@
+{
+  "travelMonth": "2026-12",
+  "durationDays": 2,
+  "departure": "TP. Hồ Chí Minh",
+  "groupSize": 2,
+  "budget": { "amountVnd": 8000000, "scope": "group" },
+  "preferredDestination": "DN",
+  "interests": ["culture", "relaxation"],
+  "dining": { "likes": ["mì Quảng"], "avoid": [] }
+}
