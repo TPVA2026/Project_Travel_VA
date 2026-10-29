@@ -1,5 +1,6 @@
 from pydantic import ValidationError
 
+from app.schemas.revision import RevisionRequest
 from app.schemas.travel_request import TravelRequest
 
 _SKIP = {"DatePeriod", "MonthPeriod"}
@@ -106,3 +107,12 @@ def request_problems(payload: dict, exc: ValidationError) -> dict:
 def validate_travel_request(payload: dict) -> TravelRequest:
     """Normalize, then parse. Raises pydantic.ValidationError with field locations."""
     return TravelRequest.model_validate(normalize_travel_request(payload))
+
+
+def validate_revision_request(payload: dict) -> RevisionRequest:
+    """Parse one plan change. Raises pydantic.ValidationError."""
+    data = dict(payload)
+    for key in ("planId", "departureLocation"):
+        if isinstance(data.get(key), str):
+            data[key] = data[key].strip()
+    return RevisionRequest.model_validate(data)
