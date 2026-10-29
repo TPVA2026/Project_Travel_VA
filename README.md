@@ -6,7 +6,8 @@ for selected areas of Vietnam with an LLM, then verifies cost/time/distance cons
 ## Structure
 | Folder | Purpose | Owner(s) |
 |---|---|---|
-| `client/` | React + Vite frontend | M5 (form: M1, API client: M6) |
+| `client/` | React + Vite frontend (JavaScript) | M5 (form: M1, API client: M6) |
+| `server/` | Python (FastAPI) backend | M1–M6 |
 | `server/src/modules/input` | Request validation/normalization | M1 |
 | `server/src/modules/data` | Curated dataset + repository | M2 |
 | `server/src/modules/ai` | Gemini client, context, prompts, candidate generation | M3 |
@@ -16,14 +17,21 @@ for selected areas of Vietnam with an LLM, then verifies cost/time/distance cons
 | `docs/` | Design and test documentation | all |
 
 ## Setup
+Requires Python 3.11+ (backend) and Node 20+ (frontend only).
 ```bash
-npm run install:all
-cp server/.env.example server/.env   # fill GEMINI_API_KEY (server only, never commit)
-npm test
-npm run dev:server                   # http://localhost:3001/health
+# backend
+cd server
+python -m venv .venv
+source .venv/bin/activate            # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env                 # fill GEMINI_API_KEY (server only, never commit)
+python -m pytest
+python -m uvicorn src.app:app --reload --port 3001   # http://localhost:3001/health (docs: /docs)
+
+# frontend (new terminal, from repo root)
+npm run install:client
 npm run dev:client                   # http://localhost:5173
 ```
-
 ## Rules
 - Branch per task: `feat/<member>-<topic>`; merge through a reviewed pull request; one GitHub issue per task.
 - Never commit `.env` or any API key. The Gemini key lives only in `server/.env`; the client never sees it.
