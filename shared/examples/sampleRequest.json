@@ -1,1 +1,34 @@
-{}
+{
+  "travelPeriod": {
+    "startDate": "2026-11-12",
+    "endDate": "2026-11-14"
+  },
+  "durationDays": 3,
+  "departureLocation": "Ho Chi Minh City",
+  "travelers": {
+    "count": 2,
+    "characteristics": ["older adults"]
+  },
+  "budget": {
+    "amount": 8000000,
+    "currency": "VND",
+    "scope": "group"
+  },
+  "limits": {
+    "maxDistanceKm": 25,
+    "maxTravelTimeMinutes": 120,
+    "appliesTo": "daily"
+  },
+  "preferences": {
+    "destination": "Da Nang",
+    "transportation": ["taxi", "walking"],
+    "interests": [
+      { "type": "sightseeing", "priority": 1 },
+      { "type": "relaxation", "priority": 2 }
+    ],
+    "dining": {
+      "preferred": ["seafood", "local"],
+      "avoid": ["spicy"]
+    }
+  }
+}

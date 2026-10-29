@@ -1,0 +1,18 @@
+{
+  "travelPeriod": {
+    "month": "2026-12"
+  },
+  "durationDays": 4,
+  "departureLocation": "Hanoi",
+  "travelers": {
+    "count": 1
+  },
+  "budget": {
+    "amount": 3000000,
+    "currency": "VND",
+    "scope": "perPerson"
+  },
+  "preferences": {
+    "interests": [{ "type": "culture" }]
+  }
+}
