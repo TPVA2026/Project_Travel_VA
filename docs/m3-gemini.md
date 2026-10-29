@@ -33,7 +33,14 @@ python -m uvicorn app.main:app --reload --port 3001   # POST /itineraries/genera
 - In: validated `TravelRequest` (M1). Out: `{ "status": "UNVERIFIED", "plan": CandidatePlan }`.
 - The plan is never "feasible" until M4 `/itineraries/evaluate` verifies it. Costs are references only; unknown = `null` + `NO_DATA`, never 0.
 - Guards: JSON-schema check, then grounding (placeId in dataset, no overlap, cost status agrees with dataset source).
-- Error codes: `CONFIG` (500), `TIMEOUT` (504), `INVALID_PLAN` (422), `NETWORK` / `API_ERROR` / `EMPTY` / `MALFORMED` (502).
+- Error codes: `CONFIG` (500), `TIMEOUT` (504), `INVALID_PLAN` (422), `NO_DATA` (422), `NETWORK` / `API_ERROR` / `EMPTY` / `MALFORMED` (502).
+
+## Context retrieval (`context_builder.py`)
+Only supported data reaches the LLM:
+- Records need a well-formed, unique string `id`; others are dropped (logged). Ids are never generated or repaired.
+- `preferredDestination` keeps only that destination's places (via `destinationId`, else the id prefix, e.g. `DN-ATT-001` -> `DN`). An unsupported destination gives an empty context, and `/itineraries/generate` returns `NO_DATA` (422) without calling Gemini.
+- Prices, durations and distances are copied as-is; missing/invalid values become `null`, never 0 or an estimate.
+- Travel legs are kept only between retrieved places; none are invented. The plan checker also rejects legs whose ids, durations or distances differ from the dataset.
 
 ## Open items
 - `backend/tests/fixtures/sample_dataset.json` is an M2 placeholder; `generate_candidate` already reads `data_service.load_dataset()` by default, so it works once M2 fills the data files.
