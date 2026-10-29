@@ -1,4 +1,5 @@
-// TODO(M5): routing between HomePage, ResultsPage and SelectedPlanPage.
+import HomePage from "./pages/HomePage";
+
 export default function App() {
-  return <h1>Travel Planning Assistant</h1>;
+  return <HomePage />;
 }

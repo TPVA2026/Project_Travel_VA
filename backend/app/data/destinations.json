@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "city_name": "Thành phố Huế",
+    "description": "Trực thuộc tỉnh Thừa Thiên Huế, từng là kinh đô dưới thời Tây Sơn (1788-1801) và triều Nguyễn (1802 - 1945). Đây là thành phố nằm ở trên trục Bắc – Nam của các tuyến đường bộ, được sắt, đường biển và đường hàng không. Huế được coi là một trong những thành phố có bề dày lịch sử, văn hóa lâu đời nhất ở nước ta.",
+    "best_time_to_visit": "Khoảng thời gian đầu năm từ tháng 1 đến tháng 4 được xem là mùa đẹp nhất để du lịch Cố đô. Ngoài ra, nếu muốn trải nghiệm nhịp sống dịu dàng đặc trưng, giai đoạn tháng 8 đến tháng 9."
+  },
+  {
+    "city_name": "Nha Trang",
+    "description": "Là trung tâm du lịch biển trọng điểm của tỉnh Khánh Hòa và là một trong những vịnh biển đẹp nhất thế giới. Thành phố thu hút du khách nhờ sự hòa quyện giữa cảnh quan thiên nhiên xinh đẹp, các di tích lịch sử - văn hóa đặc sắc và dịch vụ giải trí đa dạng.",
+    "best_time_to_visit": "Để có chuyến đi trọn vẹn nhất, du khách nên đến Nha Trang vào khoảng tháng 1 đến tháng 8. Trong đó, khoảng thời gian từ tháng 4 đến tháng 7 được xem là 'mùa vàng' du lịch khi thời tiết nắng ấm tạnh ráo, nước biển trong vắt, tạo điều kiện thuận lợi nhất cho việc tham quan và trải nghiệm du lịch sinh thái biển đảo."
+  },
+  {
+    "city_name": "TP. Hồ Chí Minh",
+    "description": "Là một trong những đô thị lớn và sầm uất bậc nhất miền Nam. Không chỉ ghi dấu ấn bởi bề dày lịch sử phong phú và vị thế trung tâm kinh tế sôi động, nơi đây còn là điểm đến du lịch đầy cuốn hút - nơi giao thoa tuyệt vời giữa nét đẹp hoài cổ và hơi thở hiện đại, hứa hẹn mang đến những trải nghiệm đa sắc màu cho du khách.",
+    "best_time_to_visit": "Ghé thăm vào mùa khô (Tháng 12 - 4) để có thể có những trải nghiệm thoải mái hơn so với mùa mưa ẩm ướt."
+  }
+]

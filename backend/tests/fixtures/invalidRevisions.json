@@ -1,0 +1,54 @@
+[
+  {
+    "id": "missing-plan",
+    "body": {
+      "changeType": "budget",
+      "budget": { "amount": 1000, "currency": "VND", "scope": "group" }
+    }
+  },
+  {
+    "id": "unknown-type",
+    "body": {
+      "planId": "plan-1",
+      "changeType": "weather",
+      "budget": { "amount": 1000, "currency": "VND", "scope": "group" }
+    }
+  },
+  {
+    "id": "budget-type-without-budget",
+    "body": { "planId": "plan-1", "changeType": "budget" }
+  },
+  {
+    "id": "two-changes",
+    "body": {
+      "planId": "plan-1",
+      "changeType": "budget",
+      "budget": { "amount": 1000, "currency": "VND", "scope": "group" },
+      "durationDays": 3
+    }
+  },
+  {
+    "id": "negative-budget",
+    "body": {
+      "planId": "plan-1",
+      "changeType": "budget",
+      "budget": { "amount": -1, "currency": "VND", "scope": "group" }
+    }
+  },
+  {
+    "id": "limits-without-number",
+    "body": {
+      "planId": "plan-1",
+      "changeType": "limits",
+      "limits": { "appliesTo": "daily" }
+    }
+  },
+  {
+    "id": "end-before-start",
+    "body": {
+      "planId": "plan-1",
+      "changeType": "travelPeriod",
+      "travelPeriod": { "startDate": "2026-11-14", "endDate": "2026-11-12" }
+    }
+  }
+]
