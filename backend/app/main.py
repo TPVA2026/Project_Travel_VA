@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from app.api.destinations import router as destinations_router
 from app.api.requests import router as requests_router
-
+from app.api.itineraries import router as itineraries_router
 
 app = FastAPI()
-
+app.include_router(itineraries_router, prefix="/itineraries")
 app.include_router(destinations_router)
 app.include_router(requests_router)
 
