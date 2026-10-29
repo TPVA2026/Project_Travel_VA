@@ -1,1 +1,676 @@
-[]
+{
+  "description": "Travel matrix tổng hợp từ dữ liệu đầu vào. Thời gian và khoảng cách là số liệu từ trung tâm thành phố đến từng địa điểm; không phải thời gian di chuyển giữa mọi cặp địa điểm.",
+  "destinations": {
+    "Huế": {
+      "description": "Trực thuộc tỉnh Thừa Thiên Huế, từng là kinh đô dưới thời Tây Sơn (1788-1801) và triều Nguyễn (1802 - 1945). Đây là thành phố nằm ở trên trục Bắc – Nam của các tuyến đường bộ, được sắt, đường biển và đường hàng không. Huế được coi là một trong những thành phố có bề dày lịch sử, văn hóa lâu đời nhất ở nước ta.",
+      "best_time_to_visit": "Khoảng thời gian đầu năm từ tháng 1 đến tháng 4 được xem là mùa đẹp nhất để du lịch Cố đô. Ngoài ra, nếu muốn trải nghiệm nhịp sống dịu dàng đặc trưng, giai đoạn tháng 8 đến tháng 9.",
+      "origin": "Trung tâm thành phố",
+      "travel_matrix": [
+        {
+          "id": "H_01",
+          "type": "attraction",
+          "destination": "lăng Khải Định",
+          "address": "https://www.google.com/maps/search/?api=1&query=Lăng+Khải+Định+Huế",
+          "distance_from_origin": "8km",
+          "travel_time_from_origin": "18 phút",
+          "opening_hours": "7:00 - 17:30",
+          "cost": "Ng lớn: 150k, Trẻ em: 30k"
+        },
+        {
+          "id": "H_02",
+          "type": "attraction",
+          "destination": "Cung An Định",
+          "address": "https://www.google.com/maps/search/?api=1&query=Cung+An+Định+Huế",
+          "distance_from_origin": "3,3km",
+          "travel_time_from_origin": "10 phút",
+          "opening_hours": "7:00 - 17:00",
+          "cost": "Người lớn: 50k"
+        },
+        {
+          "id": "H_03",
+          "type": "attraction",
+          "destination": "Đại Nội",
+          "address": "https://www.google.com/maps/search/?api=1&query=Hoàng+Thành+Huế",
+          "distance_from_origin": "2,6km",
+          "travel_time_from_origin": "7 phút",
+          "opening_hours": "7:00 - 17:30",
+          "cost": "Người lớn: 200k, Trẻ em: 40k"
+        },
+        {
+          "id": "H_04",
+          "type": "attraction",
+          "destination": "bến xưa",
+          "address": "https://www.google.com/maps/search/?api=1&query=75+Nguyễn+Sinh+Cung+Huế",
+          "distance_from_origin": "2,3km",
+          "travel_time_from_origin": "6 phút",
+          "opening_hours": "tự do",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "H_05",
+          "type": "attraction",
+          "destination": "chợ Đông Ba",
+          "address": "https://www.google.com/maps/search/?api=1&query=Chợ+Đông+Ba+Huế",
+          "distance_from_origin": "1,7km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "7:00 - 19:00",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "H_06",
+          "type": "attraction",
+          "destination": "làng nón bài thơ Tây Hồ",
+          "address": "https://www.google.com/maps/search/?api=1&query=Làng+nón+lá+Tây+Hồ+Huế",
+          "distance_from_origin": "13km",
+          "travel_time_from_origin": "25 phút",
+          "opening_hours": "không cố định",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "H_07",
+          "type": "attraction",
+          "destination": "Quốc Học Huế",
+          "address": "https://www.google.com/maps/search/?api=1&query=Quoc+Hoc+Hue",
+          "distance_from_origin": "1-2km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "7:45 - 17:15",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "H_08",
+          "type": "attraction",
+          "destination": "Làng Hương Thủy Xuân",
+          "address": "https://www.google.com/maps/search/?api=1&query=Làng+Hương+Thủy+Xuân+Huế",
+          "distance_from_origin": "7-8km",
+          "travel_time_from_origin": "18 phút",
+          "opening_hours": "9:00 - 22:00",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "H_09",
+          "type": "attraction",
+          "destination": "Chùa Thiên Mụ",
+          "address": "https://www.google.com/maps/search/?api=1&query=Chùa+Thiên+Mụ+Huế",
+          "distance_from_origin": "5-6km",
+          "travel_time_from_origin": "13 phút",
+          "opening_hours": "7:00 - 17:30",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "H_10",
+          "type": "attraction",
+          "destination": "Cầu Trường Tiền",
+          "address": "https://www.google.com/maps/search/?api=1&query=Cầu+Trường+Tiền+Huế",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "3 phút",
+          "opening_hours": "tự do",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "H_01",
+          "type": "restaurant",
+          "destination": "quán bánh O Lê",
+          "address": "https://www.google.com/maps/search/?api=1&query=Quán+bánh+O+Lé",
+          "distance_from_origin": "3.5km",
+          "travel_time_from_origin": "10 phút",
+          "opening_hours": "11:00-20:00",
+          "cost": "15k - 50k"
+        },
+        {
+          "id": "H_02",
+          "type": "restaurant",
+          "destination": "Bánh ướt - bún thịt nướng Huyền Anh",
+          "address": "https://www.google.com/maps/search/?api=1&query=50+Kim+Long+Hue",
+          "distance_from_origin": "4km",
+          "travel_time_from_origin": "12 phút",
+          "opening_hours": "8:00-19:00",
+          "cost": "30k - 70k"
+        },
+        {
+          "id": "H_03",
+          "type": "restaurant",
+          "destination": "Bún giấm nuốc Gia Hội",
+          "address": "https://www.google.com/maps/search/?api=1&query=Bún+Giấm+Nuốc+Gia+Hội+Hue",
+          "distance_from_origin": "2km",
+          "travel_time_from_origin": "6 phút",
+          "opening_hours": "13:00-17:00",
+          "cost": "35k"
+        },
+        {
+          "id": "H_04",
+          "type": "restaurant",
+          "destination": "quán hến Hoa Đông",
+          "address": "https://www.google.com/maps/search/?api=1&query=Cơm+hến+Hoa+Đông+Hue",
+          "distance_from_origin": "3km",
+          "travel_time_from_origin": "8 phút",
+          "opening_hours": "7:00-22:00",
+          "cost": "15k - 20k"
+        },
+        {
+          "id": "H_05",
+          "type": "restaurant",
+          "destination": "bún bò mệ Kéo",
+          "address": "https://www.google.com/maps/search/?api=1&query=Bún+bò+mệ+Kéo+Hue",
+          "distance_from_origin": "1.5km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "6:00-8:00",
+          "cost": "50k"
+        },
+        {
+          "id": "H_06",
+          "type": "restaurant",
+          "destination": "cơm niêu chạn",
+          "address": "https://www.google.com/maps/search/?api=1&query=Cơm+niêu+Chạn+Hue",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "4 phút",
+          "opening_hours": "10:30-21:00",
+          "cost": "250k - 300k"
+        },
+        {
+          "id": "H_07",
+          "type": "restaurant",
+          "destination": "bánh mì O Tho",
+          "address": "https://www.google.com/maps/search/?api=1&query=Bánh+Mì+Trường+Tiền+O+Tho+Hue",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "4 phút",
+          "opening_hours": "6:30-3:00",
+          "cost": "15k"
+        },
+        {
+          "id": "H_08",
+          "type": "restaurant",
+          "destination": "quán vịt Thuận",
+          "address": "https://www.google.com/maps/search/?api=1&query=Cháo+Vịt+Thuận+Hue",
+          "distance_from_origin": "2-3km",
+          "travel_time_from_origin": "7-10 phút",
+          "opening_hours": "11:00-20:00",
+          "cost": "35k - 100k"
+        },
+        {
+          "id": "H_09",
+          "type": "restaurant",
+          "destination": "chè Cầm",
+          "address": "https://www.google.com/maps/search/?api=1&query=Chè+Cầm+Hue",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "3 phút",
+          "opening_hours": "16:00-22:00",
+          "cost": "15k"
+        },
+        {
+          "id": "H_10",
+          "type": "restaurant",
+          "destination": "bánh canh Nam Phổ - Thúy",
+          "address": "https://www.google.com/maps/search/?api=1&query=Thúy+Bánh+Canh+Nam+Phổ+Hue",
+          "distance_from_origin": "2.5km",
+          "travel_time_from_origin": "7 phút",
+          "opening_hours": "11:15-20:00",
+          "cost": "5k - 15k"
+        }
+      ]
+    },
+    "Nha Trang": {
+      "description": "Là trung tâm du lịch biển trọng điểm của tỉnh Khánh Hòa và là một trong những vịnh biển đẹp nhất thế giới. Thành phố thu hút du khách nhờ sự hòa quyện giữa cảnh quan thiên nhiên xinh đẹp, các di tích lịch sử - văn hóa đặc sắc và dịch vụ giải trí đa dạng.",
+      "best_time_to_visit": "Để có chuyến đi trọn vẹn nhất, du khách nên đến Nha Trang vào khoảng tháng 1 đến tháng 8. Trong đó, khoảng thời gian từ tháng 4 đến tháng 7 được xem là 'mùa vàng' du lịch khi thời tiết nắng ấm tạnh ráo, nước biển trong vắt, tạo điều kiện thuận lợi nhất cho việc tham quan và trải nghiệm du lịch sinh thái biển đảo.",
+      "origin": "Trung tâm thành phố",
+      "travel_matrix": [
+        {
+          "id": "NT_01",
+          "type": "attraction",
+          "destination": "tháp bà ponagar",
+          "address": "https://www.google.com/maps/search/?api=1&query=Tháp+Bà+Ponagar+Nha+Trang",
+          "distance_from_origin": "2km",
+          "travel_time_from_origin": "khoảng 5 phút đến 7 phút",
+          "opening_hours": "6g-18g",
+          "cost": "30.000 VNĐ/người lớn"
+        },
+        {
+          "id": "NT_02",
+          "type": "attraction",
+          "destination": "VinWonders Nha Trang",
+          "address": "https://www.google.com/maps/search/?api=1&query=VinWonders+Nha+Trang",
+          "distance_from_origin": "5km (đường bộ ra cảng + cano/cáp treo ra đảo)",
+          "travel_time_from_origin": "15-20 phút",
+          "opening_hours": "7g-22g",
+          "cost": "Người lớn: 880k, Trẻ em từ 1m - 1m4: 660k"
+        },
+        {
+          "id": "NT_03",
+          "type": "attraction",
+          "destination": "Viện Hải Dương học",
+          "address": "https://www.google.com/maps/search/?api=1&query=Viện+Hải+Dương+học+Nha+Trang",
+          "distance_from_origin": "4km",
+          "travel_time_from_origin": "10-12 phút",
+          "opening_hours": "6g-18g",
+          "cost": "Người lớn: 40k, Sinh viên: 20k, Học sinh: 10k"
+        },
+        {
+          "id": "NT_04",
+          "type": "attraction",
+          "destination": "Đảo khỉ",
+          "address": "https://www.google.com/maps/search/?api=1&query=Đảo+khỉ+hòn+Lao+Nha+Trang",
+          "distance_from_origin": "18km",
+          "travel_time_from_origin": "10-12 phút",
+          "opening_hours": "7g30 - 16g",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "NT_05",
+          "type": "attraction",
+          "destination": "Nhà Hát Đó",
+          "address": "https://www.google.com/maps/search/?api=1&query=Nhà+hát+Đó+Nha+Trang",
+          "distance_from_origin": "10km",
+          "travel_time_from_origin": "15-20 phút",
+          "opening_hours": "biểu diễn hằng ngày, 19g30",
+          "cost": "300k - 800k"
+        },
+        {
+          "id": "NT_06",
+          "type": "attraction",
+          "destination": "Chùa Long Sơn",
+          "address": "https://www.google.com/maps/search/?api=1&query=Chùa+Long+Sơn+Nha+Trang",
+          "distance_from_origin": "2-3km",
+          "travel_time_from_origin": "8-10 phút",
+          "opening_hours": "cả ngày",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "NT_07",
+          "type": "attraction",
+          "destination": "Đảo Điệp Sơn",
+          "address": "https://www.google.com/maps/search/?api=1&query=Đảo+Điệp+Sơn+Nha+Trang",
+          "distance_from_origin": "60km",
+          "travel_time_from_origin": "1 giờ 30 phút - 1 giờ 45 phút",
+          "opening_hours": "tự do",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "NT_08",
+          "type": "attraction",
+          "destination": "Thác Yang Bay",
+          "address": "https://www.google.com/maps/search/?api=1&query=Thác+Yang+Bay+Nha+Trang",
+          "distance_from_origin": "38km",
+          "travel_time_from_origin": "1 tiếng",
+          "opening_hours": "7:30 - 17:00",
+          "cost": "Người lớn: 200k, Trẻ em: 140k"
+        },
+        {
+          "id": "NT_09",
+          "type": "attraction",
+          "destination": "Bãi tắm đôi",
+          "address": "https://www.google.com/maps/search/?api=1&query=Bãi+Biển+Đôi+Nha+Trang",
+          "distance_from_origin": "25km",
+          "travel_time_from_origin": "1 tiếng 15 phút",
+          "opening_hours": "8:00 - 18:00",
+          "cost": "chưa xác định"
+        },
+        {
+          "id": "NT_10",
+          "type": "attraction",
+          "destination": "Hòn Tằm",
+          "address": "https://www.google.com/maps/search/?api=1&query=Hòn+Tằm+Nha+Trang",
+          "distance_from_origin": "7km",
+          "travel_time_from_origin": "30-40 phút",
+          "opening_hours": "tự do",
+          "cost": "chưa xác định"
+        },
+        {
+          "id": "NT_01",
+          "type": "restaurant",
+          "destination": "Hải sản Thanh Sương",
+          "address": "https://www.google.com/maps/search/?api=1&query=Hải+Sản+Thanh+Sương+Nha+Trang",
+          "distance_from_origin": "5km",
+          "travel_time_from_origin": "20 phút",
+          "opening_hours": "10h00-22h30",
+          "cost": "150k - 300k"
+        },
+        {
+          "id": "NT_02",
+          "type": "restaurant",
+          "destination": "Bánh căn hải sản",
+          "address": "https://www.google.com/maps/search/?api=1&query=09+Thái+Nguyên+Nha+Trang",
+          "distance_from_origin": "1.5km",
+          "travel_time_from_origin": "7 phút",
+          "opening_hours": "15h00-21h00",
+          "cost": "30k - 60k"
+        },
+        {
+          "id": "NT_03",
+          "type": "restaurant",
+          "destination": "Bún cá Mịn",
+          "address": "https://www.google.com/maps/search/?api=1&query=170+Bạch+Đằng+Nha+Trang",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "3 phút",
+          "opening_hours": "06h00-21h00",
+          "cost": "35k - 55k"
+        },
+        {
+          "id": "NT_04",
+          "type": "restaurant",
+          "destination": "Hải sản Bờ Kè Tháp Bà",
+          "address": "https://www.google.com/maps/search/?api=1&query=Hải+Sản+Bờ+Kè+Tháp+Bà+Nha+Trang",
+          "distance_from_origin": "4km",
+          "travel_time_from_origin": "17 phút",
+          "opening_hours": "09h00-23h00",
+          "cost": "200k - 400k"
+        },
+        {
+          "id": "NT_05",
+          "type": "restaurant",
+          "destination": "Tiệm nướng Cây Bàng",
+          "address": "https://www.google.com/maps/search/?api=1&query=25+Đường+Cây+Bàng+Nha+Trang",
+          "distance_from_origin": "4.5km",
+          "travel_time_from_origin": "20 phút",
+          "opening_hours": "16h00 - Khuya",
+          "cost": "100k - 250k"
+        },
+        {
+          "id": "NT_06",
+          "type": "restaurant",
+          "destination": "Nem nướng Đặng Văn Quyên",
+          "address": "https://www.google.com/maps/search/?api=1&query=Nem+Nướng+Đặng+Văn+Quyên+Nha+Trang",
+          "distance_from_origin": "2 km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "08h00-22h00",
+          "cost": "50k - 100k"
+        },
+        {
+          "id": "NT_07",
+          "type": "restaurant",
+          "destination": "Bánh xèo Vân Đồn",
+          "address": "https://www.google.com/maps/search/?api=1&query=12+Vân+Đồn+Nha+Trang",
+          "distance_from_origin": "2.5km",
+          "travel_time_from_origin": "7 phút",
+          "opening_hours": "14h00 – Tối",
+          "cost": "40k - 100k"
+        },
+        {
+          "id": "NT_08",
+          "type": "restaurant",
+          "destination": "Bò nướng Lạc Cảnh",
+          "address": "https://www.google.com/maps/search/?api=1&query=77+Đường+Lạc+Long+Quân+Nha+Trang",
+          "distance_from_origin": "2 km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "09h30-21h00",
+          "cost": "50k - 120k"
+        },
+        {
+          "id": "NT_09",
+          "type": "restaurant",
+          "destination": "Bún đậu mắm tôm Meo Meo",
+          "address": "https://www.google.com/maps/search/?api=1&query=99+Trần+Nhật+Duật+Nha+Trang",
+          "distance_from_origin": "2 km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "15h30-21h00",
+          "cost": "40k - 90k"
+        },
+        {
+          "id": "NT_10",
+          "type": "restaurant",
+          "destination": "Tàu hủ đá Hàn Thuyên",
+          "address": "https://www.google.com/maps/search/?api=1&query=14+Đường+Hàn+Thuyên+Nha+Trang",
+          "distance_from_origin": "2 km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "15h00-21h00",
+          "cost": "30k - 80k"
+        },
+        {
+          "id": "NT_11",
+          "type": "restaurant",
+          "destination": "Bánh canh Bà Thừa",
+          "address": "https://www.google.com/maps/search/?api=1&query=Bánh+Canh+Bà+Thừa+Nha+Trang",
+          "distance_from_origin": "1.6km",
+          "travel_time_from_origin": "4 phút",
+          "opening_hours": "06h00-20h00",
+          "cost": "30k - 55k"
+        },
+        {
+          "id": "NT_12",
+          "type": "restaurant",
+          "destination": "Cơm gà đài",
+          "address": "https://www.google.com/maps/search/?api=1&query=Cơm+Gà+Đài+Nha+Trang",
+          "distance_from_origin": "1.2km",
+          "travel_time_from_origin": "3 phút",
+          "opening_hours": "10h00-21h30",
+          "cost": "45k - 90k"
+        },
+        {
+          "id": "NT_13",
+          "type": "restaurant",
+          "destination": "Bánh mì chả cá Nguyên Hương",
+          "address": "https://www.google.com/maps/search/?api=1&query=02A+Tô+Hiến+Thành+Nha+Trang",
+          "distance_from_origin": "1.5km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "06h00-10h00 & 15h30-21h00",
+          "cost": "35k - 70k"
+        },
+        {
+          "id": "NT_14",
+          "type": "restaurant",
+          "destination": "Bánh bèo Bé Tư",
+          "address": "https://www.google.com/maps/search/?api=1&query=Bánh+Bèo+Bé+Tư+Nha+Trang",
+          "distance_from_origin": "3km",
+          "travel_time_from_origin": "10 phút",
+          "opening_hours": "06h00-21h00",
+          "cost": "25k - 50k"
+        },
+        {
+          "id": "NT_15",
+          "type": "restaurant",
+          "destination": "Lẩu bò Bà Triệu",
+          "address": "https://www.google.com/maps/search/?api=1&query=Lẩu+bò+Bà+Triệu+Nha+Trang",
+          "distance_from_origin": "1.5km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "10h00-14h00 & 15h00-23h00",
+          "cost": "150k - 250k"
+        }
+      ]
+    },
+    "TP. Hồ Chí Minh": {
+      "description": "Là một trong những đô thị lớn và sầm uất bậc nhất miền Nam. Không chỉ ghi dấu ấn bởi bề dày lịch sử phong phú và vị thế trung tâm kinh tế sôi động, nơi đây còn là điểm đến du lịch đầy cuốn hút - nơi giao thoa tuyệt vời giữa nét đẹp hoài cổ và hơi thở hiện đại, hứa hẹn mang đến những trải nghiệm đa sắc màu cho du khách.",
+      "best_time_to_visit": "Ghé thăm vào mùa khô (Tháng 12 - 4) để có thể có những trải nghiệm thoải mái hơn so với mùa mưa ẩm ướt.",
+      "origin": "Trung tâm thành phố",
+      "travel_matrix": [
+        {
+          "id": "HCM_01",
+          "type": "attraction",
+          "destination": "Dinh Độc Lập",
+          "address": "https://www.google.com/maps/search/?api=1&query=Dinh+Độc+Lập+TPHCM",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "7g-18g",
+          "cost": "ng lớn: 80k, sinh viên/người lớn tuổi: 40k, trẻ em: 20k"
+        },
+        {
+          "id": "HCM_02",
+          "type": "attraction",
+          "destination": "chợ bến thành",
+          "address": "https://www.google.com/maps/search/?api=1&query=Chợ+Bến+Thành+TPHCM",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "5-7 phút",
+          "opening_hours": "4g-22g",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_03",
+          "type": "attraction",
+          "destination": "công viên sáng tạo",
+          "address": "https://www.google.com/maps/search/?api=1&query=Công+viên+sáng+tạo+TPHCM",
+          "distance_from_origin": "5km",
+          "travel_time_from_origin": "10-15 phút",
+          "opening_hours": "tự do",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_04",
+          "type": "attraction",
+          "destination": "takashimaya",
+          "address": "https://www.google.com/maps/search/?api=1&query=Takashimaya+TPHCM",
+          "distance_from_origin": "1km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "9g30 - 21g30",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_05",
+          "type": "attraction",
+          "destination": "thảo cầm viên",
+          "address": "https://www.google.com/maps/search/?api=1&query=Thảo+Cầm+Viên+TPHCM",
+          "distance_from_origin": "500m",
+          "travel_time_from_origin": "3 phút",
+          "opening_hours": "7:00 - 18:30",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_06",
+          "type": "attraction",
+          "destination": "phố đi bộ Nguyễn Huệ",
+          "address": "https://www.google.com/maps/search/?api=1&query=Phố+đi+bộ+Nguyễn+Huệ+TPHCM",
+          "distance_from_origin": "thuộc khu vực trung tâm",
+          "travel_time_from_origin": "trung tâm",
+          "opening_hours": "tự do",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_07",
+          "type": "attraction",
+          "destination": "Việt Nam Quốc Tự",
+          "address": "https://www.google.com/maps/search/?api=1&query=Việt+Nam+Quốc+Tự+TPHCM",
+          "distance_from_origin": "3-4km",
+          "travel_time_from_origin": "10-15 phút",
+          "opening_hours": "7:30 - 19:30",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_08",
+          "type": "attraction",
+          "destination": "Chùa Ngọc Hoàng",
+          "address": "https://www.google.com/maps/search/?api=1&query=Chùa+Ngọc+Hoàng+TPHCM",
+          "distance_from_origin": "2-3km",
+          "travel_time_from_origin": "8-10 phút",
+          "opening_hours": "7:00 - 18:00",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_09",
+          "type": "attraction",
+          "destination": "Cầu Ba Son",
+          "address": "https://www.google.com/maps/search/?api=1&query=Cầu+Ba+Son+TPHCM",
+          "distance_from_origin": "1-2km",
+          "travel_time_from_origin": "5 phút",
+          "opening_hours": "7:30 - 21:00",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_10",
+          "type": "attraction",
+          "destination": "Công Viên Lý Thái Tổ",
+          "address": "https://www.google.com/maps/search/?api=1&query=Công+Viên+Lý+Thái+Tổ+TPHCM",
+          "distance_from_origin": "2-3km",
+          "travel_time_from_origin": "8-10 phút",
+          "opening_hours": "tự do",
+          "cost": "miễn phí"
+        },
+        {
+          "id": "HCM_01",
+          "type": "restaurant",
+          "destination": "há cảo dương ký",
+          "address": "https://www.google.com/maps/search/?api=1&query=há+cảo+dương+ký+Hồ+Chí+Minh",
+          "distance_from_origin": "~3.5 km",
+          "travel_time_from_origin": "~12-15 phút",
+          "opening_hours": "07:30-20:00",
+          "cost": "25k - 50k"
+        },
+        {
+          "id": "HCM_02",
+          "type": "restaurant",
+          "destination": "khổ qua cà ớt",
+          "address": "https://www.google.com/maps/search/?api=1&query=khổ+qua+cà+ớt+Hồ+Chí+Minh",
+          "distance_from_origin": "~4.8 km",
+          "travel_time_from_origin": "~15-18 phút",
+          "opening_hours": "13:00-18:00",
+          "cost": "30k - 50k"
+        },
+        {
+          "id": "HCM_03",
+          "type": "restaurant",
+          "destination": "cơm tấm Sà Bì Chưởng",
+          "address": "https://www.google.com/maps/search/?api=1&query=cơm+tấm+Sà+Bì+Chưởng+Hồ+Chí+Minh",
+          "distance_from_origin": "~3.2 km",
+          "travel_time_from_origin": "~10 - 15 phút",
+          "opening_hours": "07:00-21:00",
+          "cost": "45k - 100k"
+        },
+        {
+          "id": "HCM_04",
+          "type": "restaurant",
+          "destination": "bánh mì bà Huynh",
+          "address": "https://www.google.com/maps/search/?api=1&query=bánh+mì+bà+Huynh+Hồ+Chí+Minh",
+          "distance_from_origin": "~1.5 km",
+          "travel_time_from_origin": "~5-7 phút",
+          "opening_hours": "06:00-22:00",
+          "cost": "40k - 65k"
+        },
+        {
+          "id": "HCM_05",
+          "type": "restaurant",
+          "destination": "chè mâm Khánh Vy",
+          "address": "https://www.google.com/maps/search/?api=1&query=chè+mâm+Khánh+Vy+Hồ+Chí+Minh",
+          "distance_from_origin": "~3.8 km",
+          "travel_time_from_origin": "~12-15 phút",
+          "opening_hours": "15:00-22:30",
+          "cost": "10k - 150k"
+        },
+        {
+          "id": "HCM_06",
+          "type": "restaurant",
+          "destination": "hủ tiếu thành đạt",
+          "address": "https://www.google.com/maps/search/?api=1&query=hủ+tiếu+thành+đạt+Hồ+Chí+Minh",
+          "distance_from_origin": "~1.2 km",
+          "travel_time_from_origin": "~5 phút",
+          "opening_hours": "24/7 (Cả ngày)",
+          "cost": "45k - 75k"
+        },
+        {
+          "id": "HCM_07",
+          "type": "restaurant",
+          "destination": "nem nướng Gánh",
+          "address": "https://www.google.com/maps/search/?api=1&query=nem+nướng+Gánh+Hồ+Chí+Minh",
+          "distance_from_origin": "~0.8 km",
+          "travel_time_from_origin": "~3-5 phút",
+          "opening_hours": "08:00-22:00",
+          "cost": "60k - 150k"
+        },
+        {
+          "id": "HCM_08",
+          "type": "restaurant",
+          "destination": "bánh đúc nóng đặng văn ngữ",
+          "address": "https://www.google.com/maps/search/?api=1&query=bánh+đúc+nóng+đặng+văn+ngữ+Hồ+Chí+Minh",
+          "distance_from_origin": "~5.5 km",
+          "travel_time_from_origin": "~15 - 20 phút",
+          "opening_hours": "12:00-18:00",
+          "cost": "20k - 40k"
+        },
+        {
+          "id": "HCM_09",
+          "type": "restaurant",
+          "destination": "bún bò huế chú há",
+          "address": "https://www.google.com/maps/search/?api=1&query=bún+bò+huế+chú+há+Hồ+Chí+Minh",
+          "distance_from_origin": "~2.5 km",
+          "travel_time_from_origin": "~8-10 phút",
+          "opening_hours": "06:00-22:00",
+          "cost": "55k - 85k"
+        },
+        {
+          "id": "HCM_10",
+          "type": "restaurant",
+          "destination": "Xôi chè bùi thị xuân",
+          "address": "https://www.google.com/maps/search/?api=1&query=Xôi+chè+bùi+thị+xuân+Hồ+Chí+Minh",
+          "distance_from_origin": "~1.3 km",
+          "travel_time_from_origin": "~5 phút",
+          "opening_hours": "06:30-21:00",
+          "cost": "25k - 55k"
+        }
+      ]
+    }
+  }
+}

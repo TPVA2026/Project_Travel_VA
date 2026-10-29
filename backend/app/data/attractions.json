@@ -1,1 +1,302 @@
-[]
+[
+  {
+    "id": "H_01",
+    "city": "Huế",
+    "name": "lăng Khải Định",
+    "address": "https://www.google.com/maps/search/?api=1&query=Lăng+Khải+Định+Huế",
+    "opening_hours": "7:00 - 17:30",
+    "distance_from_center": "8km",
+    "travel_time": "18 phút",
+    "cost": "Ng lớn: 150k, Trẻ em: 30k"
+  },
+  {
+    "id": "H_02",
+    "city": "Huế",
+    "name": "Cung An Định",
+    "address": "https://www.google.com/maps/search/?api=1&query=Cung+An+Định+Huế",
+    "opening_hours": "7:00 - 17:00",
+    "distance_from_center": "3,3km",
+    "travel_time": "10 phút",
+    "cost": "Người lớn: 50k"
+  },
+  {
+    "id": "H_03",
+    "city": "Huế",
+    "name": "Đại Nội",
+    "address": "https://www.google.com/maps/search/?api=1&query=Hoàng+Thành+Huế",
+    "opening_hours": "7:00 - 17:30",
+    "distance_from_center": "2,6km",
+    "travel_time": "7 phút",
+    "cost": "Người lớn: 200k, Trẻ em: 40k"
+  },
+  {
+    "id": "H_04",
+    "city": "Huế",
+    "name": "bến xưa",
+    "address": "https://www.google.com/maps/search/?api=1&query=75+Nguyễn+Sinh+Cung+Huế",
+    "opening_hours": "tự do",
+    "distance_from_center": "2,3km",
+    "travel_time": "6 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "H_05",
+    "city": "Huế",
+    "name": "chợ Đông Ba",
+    "address": "https://www.google.com/maps/search/?api=1&query=Chợ+Đông+Ba+Huế",
+    "opening_hours": "7:00 - 19:00",
+    "distance_from_center": "1,7km",
+    "travel_time": "5 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "H_06",
+    "city": "Huế",
+    "name": "làng nón bài thơ Tây Hồ",
+    "address": "https://www.google.com/maps/search/?api=1&query=Làng+nón+lá+Tây+Hồ+Huế",
+    "opening_hours": "không cố định",
+    "distance_from_center": "13km",
+    "travel_time": "25 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "H_07",
+    "city": "Huế",
+    "name": "Quốc Học Huế",
+    "address": "https://www.google.com/maps/search/?api=1&query=Quoc+Hoc+Hue",
+    "opening_hours": "7:45 - 17:15",
+    "distance_from_center": "1-2km",
+    "travel_time": "5 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "H_08",
+    "city": "Huế",
+    "name": "Làng Hương Thủy Xuân",
+    "address": "https://www.google.com/maps/search/?api=1&query=Làng+Hương+Thủy+Xuân+Huế",
+    "opening_hours": "9:00 - 22:00",
+    "distance_from_center": "7-8km",
+    "travel_time": "18 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "H_09",
+    "city": "Huế",
+    "name": "Chùa Thiên Mụ",
+    "address": "https://www.google.com/maps/search/?api=1&query=Chùa+Thiên+Mụ+Huế",
+    "opening_hours": "7:00 - 17:30",
+    "distance_from_center": "5-6km",
+    "travel_time": "13 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "H_10",
+    "city": "Huế",
+    "name": "Cầu Trường Tiền",
+    "address": "https://www.google.com/maps/search/?api=1&query=Cầu+Trường+Tiền+Huế",
+    "opening_hours": "tự do",
+    "distance_from_center": "1km",
+    "travel_time": "3 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "NT_01",
+    "city": "Nha Trang",
+    "name": "tháp bà ponagar",
+    "address": "https://www.google.com/maps/search/?api=1&query=Tháp+Bà+Ponagar+Nha+Trang",
+    "opening_hours": "6g-18g",
+    "distance_from_center": "2km",
+    "travel_time": "khoảng 5 phút đến 7 phút",
+    "cost": "30.000 VNĐ/người lớn"
+  },
+  {
+    "id": "NT_02",
+    "city": "Nha Trang",
+    "name": "VinWonders Nha Trang",
+    "address": "https://www.google.com/maps/search/?api=1&query=VinWonders+Nha+Trang",
+    "opening_hours": "7g-22g",
+    "distance_from_center": "5km (đường bộ ra cảng + cano/cáp treo ra đảo)",
+    "travel_time": "15-20 phút",
+    "cost": "Người lớn: 880k, Trẻ em từ 1m - 1m4: 660k"
+  },
+  {
+    "id": "NT_03",
+    "city": "Nha Trang",
+    "name": "Viện Hải Dương học",
+    "address": "https://www.google.com/maps/search/?api=1&query=Viện+Hải+Dương+học+Nha+Trang",
+    "opening_hours": "6g-18g",
+    "distance_from_center": "4km",
+    "travel_time": "10-12 phút",
+    "cost": "Người lớn: 40k, Sinh viên: 20k, Học sinh: 10k"
+  },
+  {
+    "id": "NT_04",
+    "city": "Nha Trang",
+    "name": "Đảo khỉ",
+    "address": "https://www.google.com/maps/search/?api=1&query=Đảo+khỉ+hòn+Lao+Nha+Trang",
+    "opening_hours": "7g30 - 16g",
+    "distance_from_center": "18km",
+    "travel_time": "10-12 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "NT_05",
+    "city": "Nha Trang",
+    "name": "Nhà Hát Đó",
+    "address": "https://www.google.com/maps/search/?api=1&query=Nhà+hát+Đó+Nha+Trang",
+    "opening_hours": "biểu diễn hằng ngày, 19g30",
+    "distance_from_center": "10km",
+    "travel_time": "15-20 phút",
+    "cost": "300k - 800k"
+  },
+  {
+    "id": "NT_06",
+    "city": "Nha Trang",
+    "name": "Chùa Long Sơn",
+    "address": "https://www.google.com/maps/search/?api=1&query=Chùa+Long+Sơn+Nha+Trang",
+    "opening_hours": "cả ngày",
+    "distance_from_center": "2-3km",
+    "travel_time": "8-10 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "NT_07",
+    "city": "Nha Trang",
+    "name": "Đảo Điệp Sơn",
+    "address": "https://www.google.com/maps/search/?api=1&query=Đảo+Điệp+Sơn+Nha+Trang",
+    "opening_hours": "tự do",
+    "distance_from_center": "60km",
+    "travel_time": "1 giờ 30 phút - 1 giờ 45 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "NT_08",
+    "city": "Nha Trang",
+    "name": "Thác Yang Bay",
+    "address": "https://www.google.com/maps/search/?api=1&query=Thác+Yang+Bay+Nha+Trang",
+    "opening_hours": "7:30 - 17:00",
+    "distance_from_center": "38km",
+    "travel_time": "1 tiếng",
+    "cost": "Người lớn: 200k, Trẻ em: 140k"
+  },
+  {
+    "id": "NT_09",
+    "city": "Nha Trang",
+    "name": "Bãi tắm đôi",
+    "address": "https://www.google.com/maps/search/?api=1&query=Bãi+Biển+Đôi+Nha+Trang",
+    "opening_hours": "8:00 - 18:00",
+    "distance_from_center": "25km",
+    "travel_time": "1 tiếng 15 phút",
+    "cost": "chưa xác định"
+  },
+  {
+    "id": "NT_10",
+    "city": "Nha Trang",
+    "name": "Hòn Tằm",
+    "address": "https://www.google.com/maps/search/?api=1&query=Hòn+Tằm+Nha+Trang",
+    "opening_hours": "tự do",
+    "distance_from_center": "7km",
+    "travel_time": "30-40 phút",
+    "cost": "chưa xác định"
+  },
+  {
+    "id": "HCM_01",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "Dinh Độc Lập",
+    "address": "https://www.google.com/maps/search/?api=1&query=Dinh+Độc+Lập+TPHCM",
+    "opening_hours": "7g-18g",
+    "distance_from_center": "1km",
+    "travel_time": "5 phút",
+    "cost": "ng lớn: 80k, sinh viên/người lớn tuổi: 40k, trẻ em: 20k"
+  },
+  {
+    "id": "HCM_02",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "chợ bến thành",
+    "address": "https://www.google.com/maps/search/?api=1&query=Chợ+Bến+Thành+TPHCM",
+    "opening_hours": "4g-22g",
+    "distance_from_center": "1km",
+    "travel_time": "5-7 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_03",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "công viên sáng tạo",
+    "address": "https://www.google.com/maps/search/?api=1&query=Công+viên+sáng+tạo+TPHCM",
+    "opening_hours": "tự do",
+    "distance_from_center": "5km",
+    "travel_time": "10-15 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_04",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "takashimaya",
+    "address": "https://www.google.com/maps/search/?api=1&query=Takashimaya+TPHCM",
+    "opening_hours": "9g30 - 21g30",
+    "distance_from_center": "1km",
+    "travel_time": "5 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_05",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "thảo cầm viên",
+    "address": "https://www.google.com/maps/search/?api=1&query=Thảo+Cầm+Viên+TPHCM",
+    "opening_hours": "7:00 - 18:30",
+    "distance_from_center": "500m",
+    "travel_time": "3 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_06",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "phố đi bộ Nguyễn Huệ",
+    "address": "https://www.google.com/maps/search/?api=1&query=Phố+đi+bộ+Nguyễn+Huệ+TPHCM",
+    "opening_hours": "tự do",
+    "distance_from_center": "thuộc khu vực trung tâm",
+    "travel_time": "trung tâm",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_07",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "Việt Nam Quốc Tự",
+    "address": "https://www.google.com/maps/search/?api=1&query=Việt+Nam+Quốc+Tự+TPHCM",
+    "opening_hours": "7:30 - 19:30",
+    "distance_from_center": "3-4km",
+    "travel_time": "10-15 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_08",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "Chùa Ngọc Hoàng",
+    "address": "https://www.google.com/maps/search/?api=1&query=Chùa+Ngọc+Hoàng+TPHCM",
+    "opening_hours": "7:00 - 18:00",
+    "distance_from_center": "2-3km",
+    "travel_time": "8-10 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_09",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "Cầu Ba Son",
+    "address": "https://www.google.com/maps/search/?api=1&query=Cầu+Ba+Son+TPHCM",
+    "opening_hours": "7:30 - 21:00",
+    "distance_from_center": "1-2km",
+    "travel_time": "5 phút",
+    "cost": "miễn phí"
+  },
+  {
+    "id": "HCM_10",
+    "city": "Thành phố Hồ Chí Minh",
+    "name": "Công Viên Lý Thái Tổ",
+    "address": "https://www.google.com/maps/search/?api=1&query=Công+Viên+Lý+Thái+Tổ+TPHCM",
+    "opening_hours": "tự do",
+    "distance_from_center": "2-3km",
+    "travel_time": "8-10 phút",
+    "cost": "miễn phí"
+  }
+]
