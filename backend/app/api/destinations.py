@@ -1,4 +1,11 @@
 from fastapi import APIRouter
 
-# TODO(ZT): GET / (calls data_service)
-router = APIRouter()
+router = APIRouter(
+    prefix="/api/v1/destinations",
+    tags=["Destinations"]
+)
+@router.get("/")
+def get_destinations():
+    return {
+        "destinations": ["Da Lat", "Da Nang", "Ha Noi"]
+    }
