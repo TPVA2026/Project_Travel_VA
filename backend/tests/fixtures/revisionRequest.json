@@ -1,0 +1,9 @@
+{
+  "planId": "plan-1",
+  "changeType": "budget",
+  "budget": {
+    "amount": 5000000,
+    "currency": "VND",
+    "scope": "group"
+  }
+}
