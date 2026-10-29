@@ -26,7 +26,11 @@ def test_validate_request_accepts_sample():
 def test_validate_request_rejects_missing_departure():
     res = client.post("/requests/validate", json={"durationDays": 1})
     assert res.status_code == 422
-    assert res.json()["errors"]
+    body = res.json()
+    assert body["errors"]
+    assert "departureLocation" in body["missing"]
+    assert "budget" in body["missing"]
+    assert body["messages"]
 
 
 # TODO(ZT): add end-to-end tests for /destinations, /itineraries

@@ -1,6 +1,19 @@
+from pydantic import ValidationError
+
 from app.schemas.travel_request import TravelRequest
 
-# TODO(Khánh): report missing fields (TPVA-10)
+_SKIP = {"DatePeriod", "MonthPeriod"}
+_PROMPTS = {
+    "travelPeriod": "Choose travel dates or a month.",
+    "durationDays": "Enter the number of days.",
+    "departureLocation": "Enter the departure location.",
+    "travelers": "Enter the number of travelers.",
+    "travelers.count": "Enter the number of travelers.",
+    "budget": "Enter the budget amount and whether it is per person or for the group.",
+    "budget.amount": "Enter the budget amount.",
+    "budget.scope": "Choose whether the budget is per person or for the group.",
+    "budget.currency": "Use VND.",
+}
 
 
 def _clean_list(items):
@@ -51,6 +64,43 @@ def normalize_travel_request(payload: dict) -> dict:
             preferences["dining"] = dining
         data["preferences"] = preferences
     return data
+
+
+def _field_path(loc) -> str:
+    parts = [
+        part
+        for part in loc
+        if isinstance(part, str) and part not in _SKIP and not part.startswith("function-after")
+    ]
+    return ".".join(parts)
+
+
+def request_problems(payload: dict, exc: ValidationError) -> dict:
+    """List missing fields and constraint conflicts. Does not fill any field."""
+    period = payload.get("travelPeriod") if isinstance(payload.get("travelPeriod"), dict) else {}
+    has_dates = bool(period.get("startDate") or period.get("endDate"))
+    has_month = bool(period.get("month"))
+    missing = []
+    conflicts = []
+    if has_dates and has_month:
+        conflicts.append("Choose travel dates or a month, not both.")
+    for err in exc.errors():
+        loc = err["loc"]
+        if has_dates and "MonthPeriod" in loc:
+            continue
+        if has_month and not has_dates and any("DatePeriod" in part for part in loc if isinstance(part, str)):
+            continue
+        if err["type"] == "missing":
+            field = _field_path(loc)
+            if field and field not in missing:
+                missing.append(field)
+        elif err["type"] == "value_error":
+            message = err["msg"].removeprefix("Value error, ")
+            if message and message not in conflicts:
+                conflicts.append(message)
+    messages = [_PROMPTS.get(field, f"Enter {field}.") for field in missing]
+    messages.extend(conflicts)
+    return {"missing": missing, "conflicts": conflicts, "messages": messages}
 
 
 def validate_travel_request(payload: dict) -> TravelRequest:

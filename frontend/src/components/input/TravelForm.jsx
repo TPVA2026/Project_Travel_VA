@@ -137,6 +137,7 @@ export default function TravelForm() {
       const serverErrors = error.status === 422
         ? mapServerErrors(error.body?.errors)
         : { form: "Không gửi được yêu cầu." };
+      if (error.body?.messages?.length) serverErrors.form = error.body.messages.join(" ");
       setErrors(serverErrors);
       setBad(serverErrors);
     }
