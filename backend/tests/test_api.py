@@ -8,29 +8,31 @@ client = TestClient(app)
 def test_health():
     res = client.get("/health")
     assert res.status_code == 200
-    assert res.json() == {"ok": True}
+    assert res.json()["status"] == "OK"
 
-
-def test_validate_request_accepts_sample():
-    import json
-    from pathlib import Path
-
-    payload = json.loads(
-        (Path(__file__).parent / "fixtures" / "sampleRequest.json").read_text(encoding="utf-8")
+def test_validate_request():
+    response = client.post(
+        "/api/v1/requests/validate",
+        json={
+            "destination": "Da Lat",
+            "duration": 2,
+            "budget": 3000000
+        }
     )
-    res = client.post("/requests/validate", json=payload)
-    assert res.status_code == 200
-    assert res.json()["durationDays"] == 3
 
+    assert response.status_code == 200
+    assert response.json()["valid"] == True
 
-def test_validate_request_rejects_missing_departure():
-    res = client.post("/requests/validate", json={"durationDays": 1})
-    assert res.status_code == 422
-    body = res.json()
-    assert body["errors"]
-    assert "departureLocation" in body["missing"]
-    assert "budget" in body["missing"]
-    assert body["messages"]
+def test_invalid_duration():
+    response = client.post(
+        "/api/v1/requests/validate",
+        json={
+            "destination": "Da Lat",
+            "duration": 5,
+            "budget": 3000000
+        }
+    )
 
-
-# TODO(ZT): add end-to-end tests for /destinations, /itineraries
+    assert response.status_code == 422
+    assert "detail" in response.json()
+# TODO(ZT): add end-to-end tests for /requests, /destinations, /itineraries

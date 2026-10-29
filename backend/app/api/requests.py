@@ -1,18 +1,25 @@
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
-from pydantic import ValidationError
+from pydantic import BaseModel, Field
 
-from app.services.input_service import request_problems, validate_travel_request
+# TODO(ZT): POST /validate (calls input_service)
+router = APIRouter(
+    prefix="/api/v1/requests",
+    tags=["Requests"],
+)
 
-router = APIRouter()
+
+class TravelRequest(BaseModel):
+    destination: str
+    duration: int = Field(gt=0, le=3)
+    budget: int = Field(gt=0)
 
 
 @router.post("/validate")
-def validate_request(payload: dict):
-    try:
-        request = validate_travel_request(payload)
-    except ValidationError as exc:
-        body = request_problems(payload, exc)
-        body["errors"] = [{"loc": err["loc"], "msg": err["msg"]} for err in exc.errors()]
-        return JSONResponse(body, status_code=422)
-    return request.model_dump(mode="json", by_alias=True)
+def validate_request(request: TravelRequest):
+    return {
+        "destination": request.destination,
+        "duration": request.duration,
+        "budget": request.budget,
+        "valid": True,
+        "message": "Travel request accepted",
+    }
