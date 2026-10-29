@@ -11,4 +11,4 @@ __pycache__/
 .venv/
 .pytest_cache/
 personal_document/
-AGENTS.md/
+AGENTS.md
