@@ -165,6 +165,15 @@ export default function HomePage() {
       <div className="home-bottom-bus">
         <BusIllustration />
       </div>
+
+      <details className="box prompt-box">
+        <summary>Or describe your trip in words</summary>
+        <textarea
+          rows="3"
+          placeholder="e.g. 3 days in the mountains in December, 2 people, 5 million VND"
+        />
+        <p className="muted small">Placeholder: PromptInput.jsx, connected in TPVA-29.</p>
+      </details>
     </section>
   )
 }
