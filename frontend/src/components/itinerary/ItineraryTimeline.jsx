@@ -28,7 +28,7 @@ export default function ItineraryTimeline({ days }) {
 
               <div className="timeline-day-header">
                 <span className="tl-day">Day {dayNumber}</span>
-                {d.date && <span className="tl-date muted small">({d.date})</span>}
+  
                 <div className="tl-summary">
                   {attractionsCount > 0 && (
                     <span className="tl-badge tl-badge-attraction" title={`${attractionsCount} attraction(s)`}>
