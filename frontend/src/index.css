@@ -45,6 +45,10 @@ body {
   padding: 32px 24px;
 }
 
+.main:has(.home-hero) {
+  max-width: 1300px;
+}
+
 /* ==========================================================================
    Navigation Bar (Header Shell)
    ========================================================================== */
@@ -302,8 +306,20 @@ body {
   flex-direction: column;
 }
 
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 469px);
+  column-gap: 32px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+
 .hero-header {
+  grid-column: 1 / -1;
+  grid-row: 1;
   margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-title {
@@ -320,15 +336,9 @@ body {
   margin: 0;
 }
 
-.home-layout {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 32px;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
 .destination-form {
+  grid-column: 1;
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -414,16 +424,29 @@ body {
 
 /* Illustrations */
 .home-illustration-pane {
+  grid-column: 2;
+  grid-row: 1 / span 2;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.illustration-airplane svg {
+.illustration-airplane {
+  position: relative;
   width: 100%;
-  max-width: 320px;
+  max-width: 469px;
+  aspect-ratio: 1 / 1;
+  background-position: 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.illustration-cloud {
+  position: absolute;
+  top: 0;
+  left: -115px;
+  width: min(253px, 54%);
   height: auto;
-  filter: drop-shadow(0 4px 12px rgba(37, 99, 235, 0.08));
 }
 
 .home-bottom-bus {
@@ -437,8 +460,8 @@ body {
 }
 
 .bus-svg {
-  width: 130px;
-  height: 65px;
+  width: min(271px, 25vw);
+  height: auto;
   display: block;
 }
 
@@ -1011,9 +1034,29 @@ body {
   .home-layout {
     grid-template-columns: 1fr;
   }
-  .home-illustration-pane {
-    display: none;
+
+  .hero-header {
+    grid-column: 1;
+    grid-row: auto;
   }
+
+  .destination-form {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .home-illustration-pane {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+    margin: 0 auto;
+    width: min(100%, 469px);
+  }
+
+  .illustration-cloud {
+    left: 0;
+  }
+
   .selected {
     grid-template-columns: 1fr;
   }
