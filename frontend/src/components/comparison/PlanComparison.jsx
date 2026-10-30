@@ -10,6 +10,22 @@ export default function PlanComparison({ plans, onSelectPlan }) {
     <div className="cards plan-comparison-grid">
       {plans.map((p, i) => {
         const { total, missing } = knownTotal(p)
+        const totalAttractions = p.days?.reduce(
+          (acc, d) =>
+            acc +
+            (d.activities?.filter(
+              (a) => a.type === 'sightseeing' || a.type === 'attraction'
+            ).length || 0),
+          0
+        ) || 0
+        const totalDining = p.days?.reduce(
+          (acc, d) =>
+            acc +
+            (d.activities?.filter((a) => a.type === 'dining' || a.type === 'meal').length ||
+              0),
+          0
+        ) || 0
+
         return (
           <article key={p.id} className="card plan-card">
             <div className="img-wrap">
@@ -22,10 +38,19 @@ export default function PlanComparison({ plans, onSelectPlan }) {
               />
             </div>
             <div className="card-body">
-              <h3 className="card-title">Destination {i + 1}</h3>
-              <div className="card-destination">{p.destination}</div>
+              <div className="card-top-row">
+                <span className="card-index-label">Destination {i + 1}</span>
+                <span className={`badge badge-${p.status}`}>{p.status}</span>
+              </div>
+              <h3 className="card-destination">{p.destination}</h3>
 
-              <div className={`badge badge-${p.status}`}>{p.status}</div>
+              <div className="card-features-summary muted small">
+                <span>📅 {p.days?.length || 0} days</span>
+                <span>•</span>
+                <span>🏛️ {totalAttractions} attraction{totalAttractions !== 1 ? 's' : ''}</span>
+                <span>•</span>
+                <span>🍽️ {totalDining} dining</span>
+              </div>
 
               <div className="card-details">
                 {p.status === 'INFEASIBLE' ? (
@@ -34,7 +59,8 @@ export default function PlanComparison({ plans, onSelectPlan }) {
                       <strong>Fit:</strong> {p.fit?.join(', ') || 'None'}
                     </p>
                     <p className="fail-text">
-                      <strong>Not fit / Fail:</strong> {p.failReason || p.notFit?.join(', ') || 'Constraints violated'}
+                      <strong>Not fit / Fail:</strong>{' '}
+                      {p.failReason || p.notFit?.join(', ') || 'Constraints violated'}
                     </p>
                   </>
                 ) : (
