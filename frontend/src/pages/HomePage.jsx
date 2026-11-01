@@ -50,12 +50,12 @@ export default function HomePage() {
 
   return (
     <section className="home-hero">
-      <div className="hero-header">
-        <h1 className="hero-title">Choose your next destination</h1>
-        <p className="hero-subtitle">Few steps to choose more place</p>
-      </div>
-
       <div className="home-layout">
+        <div className="hero-header">
+          <h1 className="hero-title">Choose your next destination</h1>
+          <p className="hero-subtitle">Few steps to choose more place</p>
+        </div>
+
         <form className="destination-form" onSubmit={onSubmit} noValidate>
           <div className="form-columns">
             {/* Left Column: Start, Days, Budget */}

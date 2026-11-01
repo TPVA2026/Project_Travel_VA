@@ -1,16 +1,13 @@
-import json
 from pathlib import Path
+import json
+
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
-# Shape consumed by ai/algorithms: { destinations, attractions, dining, travel_matrix }.
-# Unknown prices/hours/travel times must stay None (JSON null), never 0.
-# TODO(Thư Anh): add retrieval filters, provenance and update-date metadata.
-
 
 def _load(name: str):
-    with open(DATA_DIR / name, encoding="utf-8") as f:
-        return json.load(f)
+    with open(DATA_DIR / name, encoding="utf-8") as file:
+        return json.load(file)
 
 
 def load_dataset() -> dict:
@@ -20,3 +17,19 @@ def load_dataset() -> dict:
         "dining": _load("restaurants.json"),
         "travel_matrix": _load("travel_matrix.json"),
     }
+
+
+def get_destinations() -> list[dict]:
+    current_file = Path(__file__).resolve()
+
+    app_dir = current_file.parent.parent
+
+    file_path = app_dir / "data" / "destinations.json"
+
+    with open(file_path, encoding="utf-8") as file:
+        des = json.load(file)
+
+    if not all (isinstance(item,dict) for item in des):
+        raise ValueError("Each destination must be an object")
+
+    return des
