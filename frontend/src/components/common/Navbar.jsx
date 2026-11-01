@@ -8,7 +8,7 @@ export default function Navbar() {
     <header className="navbar">
       <div className="brand">Your travel personal virtual assistant</div>
       <nav className="nav-links" aria-label="Main">
-        <NavLink to="/" end className={cls}>Input</NavLink>
+        <NavLink to="/" end className={cls}>Your Choose</NavLink>
         <NavLink to="/results" className={cls}>Results</NavLink>
         <NavLink to="/selected" className={cls}>Selected</NavLink>
         <button className="btn btn-dark" onClick={() => navigate('/')}>New plan</button>
