@@ -1,8 +1,8 @@
 export const INTERESTS = [
-  ["sightseeing", "Tham quan"],
-  ["culture", "Văn hóa"],
-  ["nature", "Thiên nhiên"],
-  ["relaxation", "Nghỉ dưỡng"],
+  ["sightseeing", "Sightseeing"],
+  ["culture", "Culture"],
+  ["nature", "Nature"],
+  ["relaxation", "Relaxation"],
 ];
 
 const LOC_FIELD = {
@@ -51,31 +51,31 @@ export function valueErrors(data) {
   const start = data.get("startDate");
   const end = data.get("endDate");
   if (data.get("periodMode") !== "month" && start && end && end < start) {
-    errors.endDate = "Ngày về phải từ ngày đi trở đi.";
+    errors.endDate = "End date must be on or after the start date.";
   }
   if (data.get("periodMode") === "month" && filledWrong(data.get("durationDays"), (n) => n < 1 || !Number.isInteger(n))) {
-    errors.durationDays = "Số ngày phải từ 1.";
+    errors.durationDays = "Number of days must be at least 1.";
   }
   const departure = String(data.get("departureLocation") ?? "");
-  if (departure !== "" && !departure.trim()) errors.departureLocation = "Nhập điểm đi.";
+  if (departure !== "" && !departure.trim()) errors.departureLocation = "Enter a departure place.";
   if (filledWrong(data.get("travelerCount"), (n) => n < 1 || !Number.isInteger(n))) {
-    errors.travelerCount = "Số người phải từ 1.";
+    errors.travelerCount = "Traveler count must be at least 1.";
   }
   if (filledWrong(data.get("budgetAmount"), (n) => n < 0 || !Number.isInteger(n))) {
-    errors.budgetAmount = "Ngân sách là số VND nguyên, từ 0.";
+    errors.budgetAmount = "Budget must be a whole number of VND, from 0.";
   }
   for (const [type] of INTERESTS) {
     const priority = data.get(`${type}Priority`);
     const checked = data.getAll("interest").includes(type);
     if (checked && filledWrong(priority, (n) => n < 1 || n > 4 || !Number.isInteger(n))) {
-      errors.interests = "Mức sở thích từ 1 đến 4.";
+      errors.interests = "Interest level must be from 1 to 4.";
     }
   }
   if (filledWrong(data.get("maxTravelTimeMinutes"), (n) => n < 1 || !Number.isInteger(n))) {
-    errors.maxTravelTimeMinutes = "Thời gian di chuyển tối thiểu là 1 phút.";
+    errors.maxTravelTimeMinutes = "Travel time must be at least 1 minute.";
   }
   if (filledWrong(data.get("maxDistanceKm"), (n) => n < 0)) {
-    errors.maxDistanceKm = "Khoảng cách không được âm.";
+    errors.maxDistanceKm = "Distance cannot be negative.";
   }
   return errors;
 }
@@ -84,28 +84,28 @@ export function clientErrors(data) {
   const errors = valueErrors(data);
   const mode = data.get("periodMode");
   if (mode === "month") {
-    if (!data.get("month")) errors.month = "Chọn tháng.";
-    if (!data.get("durationDays")) errors.durationDays = "Số ngày phải từ 1.";
+    if (!data.get("month")) errors.month = "Choose a month.";
+    if (!data.get("durationDays")) errors.durationDays = "Number of days must be at least 1.";
   } else {
-    if (!data.get("startDate")) errors.startDate = "Chọn ngày đi.";
-    if (!data.get("endDate") && !errors.endDate) errors.endDate = "Chọn ngày về.";
+    if (!data.get("startDate")) errors.startDate = "Choose a start date.";
+    if (!data.get("endDate") && !errors.endDate) errors.endDate = "Choose an end date.";
   }
   if (!String(data.get("departureLocation") ?? "").trim()) {
-    errors.departureLocation = "Nhập điểm đi.";
+    errors.departureLocation = "Enter a departure place.";
   }
   if (data.get("travelerCount") === "" || data.get("travelerCount") == null) {
-    errors.travelerCount = "Số người phải từ 1.";
+    errors.travelerCount = "Traveler count must be at least 1.";
   }
   if (data.get("budgetAmount") === "" || data.get("budgetAmount") == null) {
-    errors.budgetAmount = "Ngân sách là số VND nguyên, từ 0.";
+    errors.budgetAmount = "Budget must be a whole number of VND, from 0.";
   }
-  if (!data.get("budgetScope")) errors.budgetScope = "Chọn kiểu ngân sách.";
+  if (!data.get("budgetScope")) errors.budgetScope = "Choose who the budget applies to.";
 
   const minutes = data.get("maxTravelTimeMinutes");
   const hasLimit = data.get("maxDistanceKm") || minutes || data.get("appliesTo");
-  if (hasLimit && !data.get("appliesTo")) errors.appliesTo = "Chọn giới hạn áp dụng cho đâu.";
+  if (hasLimit && !data.get("appliesTo")) errors.appliesTo = "Choose what the limit applies to.";
   if (hasLimit && !data.get("maxDistanceKm") && !minutes && !errors.maxDistanceKm) {
-    errors.maxDistanceKm = "Nhập khoảng cách hoặc thời gian.";
+    errors.maxDistanceKm = "Enter a distance or a travel time.";
   }
   return errors;
 }
@@ -178,7 +178,7 @@ export function serverFieldErrors(body) {
   const errors = mapServerErrors(detail.errors);
   for (const field of detail.missing ?? []) {
     const name = MISSING_FIELD[field] ?? field;
-    if (!errors[name]) errors[name] = "Nhập lại thông tin này.";
+    if (!errors[name]) errors[name] = "Fill in this field.";
   }
   const messages = detail.messages ?? detail.conflicts;
   if (messages?.length) errors.form = messages.join(" ");
