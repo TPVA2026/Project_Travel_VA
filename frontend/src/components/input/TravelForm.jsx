@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { validateTravelRequest } from "../../services/api";
-import { INTERESTS, buildPayload, clientErrors, mapServerErrors, valueErrors } from "./travelRequest";
+import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors } from "./travelRequest";
 
 const TRANSPORT = [
   ["taxi", "Taxi"],
@@ -135,9 +135,8 @@ export default function TravelForm() {
       setDone(true);
     } catch (error) {
       const serverErrors = error.status === 422
-        ? mapServerErrors(error.body?.errors)
+        ? serverFieldErrors(error.body)
         : { form: "Không gửi được yêu cầu." };
-      if (error.body?.messages?.length) serverErrors.form = error.body.messages.join(" ");
       setErrors(serverErrors);
       setBad(serverErrors);
     }

@@ -9,8 +9,13 @@ export {
   fmtMoney,
 } from "./mockData.js";
 
+function apiUrl(path) {
+  if (!API_BASE || API_BASE === "/api") return path;
+  return `${API_BASE.replace(/\/$/, "")}${path}`;
+}
+
 export async function validateTravelRequest(payload) {
-  const res = await fetch(`${API_BASE}/requests/validate`, {
+  const res = await fetch(apiUrl("/api/v1/requests/validate"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
