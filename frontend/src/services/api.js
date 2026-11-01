@@ -4,14 +4,75 @@ export const API_BASE = import.meta.env.VITE_API_BASE ?? "/api";
 export {
   fetchDestinationRecommendations,
   fetchPlanById,
+  revisePlanMock,
   MOCK_PLANS,
   knownTotal,
   fmtMoney,
 } from "./mockData.js";
 
+export {
+  getSelectedPlanId,
+  getSelectedPlan,
+  setSelectedPlan,
+  clearSelectedPlan,
+  isPlanSelected,
+} from "./planSelection.js";
+
+import { revisePlanMock } from "./mockData.js";
+import { setSelectedPlan } from "./planSelection.js";
+
 function apiUrl(path) {
   if (!API_BASE || API_BASE === "/api") return path;
   return `${API_BASE.replace(/\/$/, "")}${path}`;
+}
+
+/**
+ * Select a plan as the chosen trip itinerary (TPVA-31 M5).
+ * Saves to local persistence and attempts backend notification if available.
+ */
+export async function selectPlan(planOrId) {
+  setSelectedPlan(planOrId);
+  const id = typeof planOrId === 'string' ? planOrId : planOrId.id || planOrId.planId;
+
+  try {
+    const res = await fetch(apiUrl("/itineraries/select"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ planId: id }),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch {
+    // Backend select route is optional in current phase
+  }
+
+  return { status: "SUCCESS", planId: id };
+}
+
+/**
+ * Submit an itinerary revision request (TPVA-31 M5).
+ * Falls back to mock simulation when backend endpoint is in progress.
+ */
+export async function revisePlan(planId, revisionPayload, opts = {}) {
+  // If backend endpoint is implemented and not forced to mock:
+  if (!opts.forceMock && !opts.shouldFail) {
+    try {
+      const res = await fetch(apiUrl("/itineraries/revise"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(revisionPayload),
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback to client mock
+    }
+  }
+
+  // Client mock simulation
+  return await revisePlanMock(planId, revisionPayload, opts);
 }
 
 export async function validateTravelRequest(payload) {

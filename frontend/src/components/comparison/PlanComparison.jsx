@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { fmtMoney, knownTotal } from '../../services/mockData.js'
 
-export default function PlanComparison({ plans, onSelectPlan }) {
+export default function PlanComparison({ plans, selectedPlanId, onSelectPlan }) {
   if (!plans || plans.length === 0) {
     return <p className="muted">No candidate plans found.</p>
   }
@@ -9,6 +9,7 @@ export default function PlanComparison({ plans, onSelectPlan }) {
   return (
     <div className="cards plan-comparison-grid">
       {plans.map((p, i) => {
+        const isSelected = selectedPlanId && (selectedPlanId === p.id || selectedPlanId === p.planId)
         const { total, missing } = knownTotal(p)
         const totalAttractions = p.days?.reduce(
           (acc, d) =>
@@ -27,7 +28,10 @@ export default function PlanComparison({ plans, onSelectPlan }) {
         ) || 0
 
         return (
-          <article key={p.id} className="card plan-card">
+          <article
+            key={p.id}
+            className={`card plan-card ${isSelected ? 'plan-card--selected' : ''}`}
+          >
             <div className="img-wrap">
               <img
                 src={p.image}
@@ -36,6 +40,11 @@ export default function PlanComparison({ plans, onSelectPlan }) {
                   e.currentTarget.style.display = 'none'
                 }}
               />
+              {isSelected && (
+                <div className="card-selected-ribbon">
+                  ✓ Chosen Plan
+                </div>
+              )}
             </div>
             <div className="card-body">
               <div className="card-top-row">
@@ -86,13 +95,37 @@ export default function PlanComparison({ plans, onSelectPlan }) {
                 <div className="card-cost muted small">
                   Estimated: {fmtMoney(total)}
                 </div>
-                <Link
-                  className={`btn ${p.status === 'FEASIBLE' ? 'btn-primary' : 'btn-outline'}`}
-                  to={`/selected?id=${p.id}`}
-                  onClick={() => onSelectPlan && onSelectPlan(p)}
-                >
-                  View plan
-                </Link>
+
+                <div className="card-action-buttons">
+                  <button
+                    type="button"
+                    className={`btn btn-sm ${
+                      isSelected
+                        ? 'btn-selected-active'
+                        : p.status === 'INFEASIBLE'
+                        ? 'btn-disabled'
+                        : 'btn-outline'
+                    }`}
+                    disabled={p.status === 'INFEASIBLE'}
+                    title={
+                      p.status === 'INFEASIBLE'
+                        ? 'Cannot select infeasible plan. Revise constraints first.'
+                        : isSelected
+                        ? 'This plan is currently selected'
+                        : 'Select this plan for your trip'
+                    }
+                    onClick={() => onSelectPlan && onSelectPlan(p)}
+                  >
+                    {isSelected ? '✓ Selected' : 'Select plan'}
+                  </button>
+
+                  <Link
+                    className="btn btn-sm btn-primary"
+                    to={`/selected?id=${p.id}`}
+                  >
+                    {isSelected ? 'View chosen plan →' : 'View & edit →'}
+                  </Link>
+                </div>
               </div>
             </div>
           </article>

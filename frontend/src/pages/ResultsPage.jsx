@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import { fetchDestinationRecommendations } from '../services/api.js'
+import { Link } from 'react-router-dom'
+import {
+  fetchDestinationRecommendations,
+  getSelectedPlanId,
+  selectPlan,
+  clearSelectedPlan,
+} from '../services/api.js'
 import PlanComparison from '../components/comparison/PlanComparison.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
@@ -8,6 +14,7 @@ export default function ResultsPage() {
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [selectedPlanId, setSelectedPlanId] = useState(() => getSelectedPlanId())
   const [shouldSimulateError, setShouldSimulateError] = useState(false)
   const [shouldSimulateEmpty, setShouldSimulateEmpty] = useState(false)
 
@@ -32,6 +39,30 @@ export default function ResultsPage() {
   useEffect(() => {
     loadRecommendations()
   }, [loadRecommendations])
+
+  // Sync selection state if modified elsewhere
+  useEffect(() => {
+    const handler = (e) => {
+      setSelectedPlanId(e.detail?.id || null)
+    }
+    window.addEventListener('tpva-plan-selected', handler)
+    return () => window.removeEventListener('tpva-plan-selected', handler)
+  }, [])
+
+  const handleSelectPlan = async (plan) => {
+    if (selectedPlanId === plan.id || selectedPlanId === plan.planId) {
+      // Toggle off / clear
+      clearSelectedPlan()
+      setSelectedPlanId(null)
+    } else {
+      await selectPlan(plan)
+      setSelectedPlanId(plan.id || plan.planId)
+    }
+  }
+
+  const selectedPlanObj = plans.find(
+    (p) => p.id === selectedPlanId || p.planId === selectedPlanId
+  )
 
   return (
     <section className="results-page">
@@ -84,6 +115,33 @@ export default function ResultsPage() {
         </div>
       </div>
 
+      {/* Selected Plan Notification Banner */}
+      {selectedPlanObj && (
+        <div className="chosen-plan-banner" role="status">
+          <div className="chosen-banner-info">
+            <span className="chosen-star-icon">⭐</span>
+            <div>
+              <strong>Current Chosen Plan:</strong> {selectedPlanObj.destination} — {selectedPlanObj.title}
+              <div className="muted small">
+                {selectedPlanObj.days?.length} days • Status: <span className={`badge badge-${selectedPlanObj.status}`}>{selectedPlanObj.status}</span>
+              </div>
+            </div>
+          </div>
+          <div className="chosen-banner-actions">
+            <Link to={`/selected?id=${selectedPlanObj.id}`} className="btn btn-sm btn-primary">
+              View chosen plan details →
+            </Link>
+            <button
+              type="button"
+              className="btn btn-sm btn-outline"
+              onClick={() => handleSelectPlan(selectedPlanObj)}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
       {loading && (
         <Loading message="Analyzing travel requirements and loading destination recommendations..." />
       )}
@@ -117,7 +175,11 @@ export default function ResultsPage() {
       )}
 
       {!loading && !error && plans.length > 0 && (
-        <PlanComparison plans={plans} />
+        <PlanComparison
+          plans={plans}
+          selectedPlanId={selectedPlanId}
+          onSelectPlan={handleSelectPlan}
+        />
       )}
     </section>
   )
