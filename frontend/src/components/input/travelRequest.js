@@ -159,6 +159,32 @@ export function buildPayload(data) {
   return payload;
 }
 
+const MISSING_FIELD = {
+  travelPeriod: "startDate",
+  durationDays: "durationDays",
+  departureLocation: "departureLocation",
+  travelers: "travelerCount",
+  "travelers.count": "travelerCount",
+  budget: "budgetAmount",
+  "budget.amount": "budgetAmount",
+  "budget.scope": "budgetScope",
+  "budget.currency": "budgetAmount",
+};
+
+export function serverFieldErrors(body) {
+  const detail = body?.detail && typeof body.detail === "object" && !Array.isArray(body.detail)
+    ? body.detail
+    : body ?? {};
+  const errors = mapServerErrors(detail.errors);
+  for (const field of detail.missing ?? []) {
+    const name = MISSING_FIELD[field] ?? field;
+    if (!errors[name]) errors[name] = "Nhập lại thông tin này.";
+  }
+  const messages = detail.messages ?? detail.conflicts;
+  if (messages?.length) errors.form = messages.join(" ");
+  return errors;
+}
+
 export function mapServerErrors(errors) {
   const mapped = {};
   for (const err of errors ?? []) {

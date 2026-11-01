@@ -400,6 +400,179 @@ body {
   margin-top: 8px;
 }
 
+.planner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.planner .card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1.5px solid var(--border-blue);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.planner h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--primary-navy);
+}
+
+.planner .grid-2,
+.planner .choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+
+.planner .field,
+.planner .choice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.planner label,
+.planner .field > span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.planner input,
+.planner select {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  border: 1.5px solid var(--border-blue);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-main);
+}
+
+.planner input:focus,
+.planner select:focus {
+  outline: none;
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.planner .invalid {
+  border-color: var(--status-infeasible);
+}
+
+.planner .error {
+  color: var(--status-infeasible);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.planner .success {
+  color: #047857;
+  font-weight: 700;
+}
+
+.planner .tag-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  border: 1.5px solid var(--border-blue);
+  border-radius: 8px;
+}
+
+.planner .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #eef2ff;
+  font-weight: 600;
+}
+
+.planner .tag button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.planner .tag-box input {
+  border: none;
+  box-shadow: none;
+  min-width: 12rem;
+  flex: 1;
+}
+
+.planner .pills,
+.planner .priorities,
+.planner .action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.planner .pill,
+.planner .priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.planner .pill input,
+.planner .priority input,
+.planner .choice input[type="checkbox"] {
+  width: auto;
+}
+
+.planner .progress {
+  height: 8px;
+  border-radius: 99px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.planner .progress span {
+  display: block;
+  height: 100%;
+  background: var(--primary-navy);
+}
+
+.planner .primary,
+.planner .secondary {
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.planner .primary {
+  background: var(--primary-navy);
+  color: #fff;
+  border: none;
+}
+
+.planner .secondary {
+  background: #fff;
+  color: var(--primary-navy);
+  border: 1.5px solid var(--border-blue);
+}
+
+.planner details summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--primary-navy);
+}
+
 .btn-make-plan {
   background-color: var(--primary-navy);
   color: #ffffff;
@@ -1066,7 +1239,9 @@ body {
 }
 
 @media (max-width: 600px) {
-  .form-columns {
+  .form-columns,
+  .planner .grid-2,
+  .planner .choices {
     grid-template-columns: 1fr;
   }
   .footer-columns {
