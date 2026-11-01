@@ -214,10 +214,167 @@ export async function fetchPlanById(id, { delay = 250, shouldFail = false } = {}
     throw new Error('Failed to load itinerary details. Please try again.')
   }
 
-  const plan = MOCK_PLANS.find((p) => p.id === id)
+  const plan = MOCK_PLANS.find((p) => p.id === id || p.planId === id)
   if (!plan) {
     throw new Error(`Plan with ID "${id}" was not found.`)
   }
+
+  // Deep clone so revisions and local edits don't mutate template directly
+  return {
+    status: 'SUCCESS',
+    data: JSON.parse(JSON.stringify(plan)),
+    timestamp: new Date().toISOString(),
+  }
+}
+
+/**
+ * Asynchronously revise an existing plan (TPVA-31 M5).
+ * Simulates backend revision pipeline:
+ * Accept revision request -> Recalculate constraints -> Revalidate feasibility -> Return updated plan.
+ */
+export async function revisePlanMock(planId, revisionRequest, { delay = 350, shouldFail = false } = {}) {
+  await new Promise((resolve) => setTimeout(resolve, delay))
+
+  if (shouldFail) {
+    throw new Error('Revision failed: Conflict detected between revised parameters and itinerary constraints.')
+  }
+
+  const basePlan = MOCK_PLANS.find((p) => p.id === planId || p.planId === planId)
+  if (!basePlan) {
+    throw new Error(`Cannot revise: plan "${planId}" not found.`)
+  }
+
+  // Clone current plan
+  const plan = JSON.parse(JSON.stringify(basePlan))
+  const changeType = revisionRequest.changeType
+  let summary = ''
+
+  if (changeType === 'budget') {
+    const newBudget = revisionRequest.budget?.amount ?? 0
+    const { total } = knownTotal(plan)
+
+    summary = `Updated budget to ${newBudget.toLocaleString('en-US')} VND (${revisionRequest.budget?.scope || 'group'})`
+
+    if (newBudget < total) {
+      plan.status = 'INFEASIBLE'
+      plan.failReason = `Known costs (${total.toLocaleString('en-US')} VND) exceed revised budget (${newBudget.toLocaleString('en-US')} VND).`
+      plan.notFit = [`Over budget (${total.toLocaleString('en-US')} VND > ${newBudget.toLocaleString('en-US')} VND limit)`]
+      plan.fit = (plan.fit || []).filter((f) => !f.toLowerCase().includes('budget'))
+    } else {
+      // If previously infeasible due to budget, it is now feasible!
+      if (plan.status === 'INFEASIBLE' && plan.failReason?.toLowerCase().includes('budget')) {
+        plan.status = 'FEASIBLE'
+        plan.failReason = null
+        plan.notFit = (plan.notFit || []).filter((nf) => !nf.toLowerCase().includes('budget'))
+      }
+      plan.fit = [
+        ...(plan.fit || []).filter((f) => !f.toLowerCase().includes('budget')),
+        `Within revised budget (${total.toLocaleString('en-US')} VND <= ${newBudget.toLocaleString('en-US')} VND)`,
+      ]
+    }
+  } else if (changeType === 'durationDays') {
+    const targetDays = Number(revisionRequest.durationDays) || 1
+    const currentDays = plan.days?.length || 1
+    summary = `Adjusted trip duration from ${currentDays} to ${targetDays} day(s)`
+
+    if (targetDays > currentDays) {
+      // Append extra days
+      for (let i = currentDays + 1; i <= targetDays; i++) {
+        plan.days.push({
+          day: i,
+          dayNumber: i,
+          date: `2026-11-${10 + i}`,
+          travelLegs: [null],
+          activities: [
+            act('09:00', '12:00', `Scenic Exploration Day ${i}`, 'sightseeing', 40000, null, 'Custom scenic stop added per duration extension.'),
+            act('12:30', '13:45', `Local Lunch Day ${i}`, 'dining', 80000, 20, 'Local restaurant stop.'),
+          ],
+        })
+      }
+    } else if (targetDays < currentDays) {
+      // Truncate days
+      plan.days = plan.days.slice(0, targetDays)
+    }
+
+    // Adjust costs proportionally
+    if (plan.costs) {
+      const scale = targetDays / currentDays
+      if (plan.costs.accommodation != null) {
+        plan.costs.accommodation = Math.round(plan.costs.accommodation * scale)
+      }
+      if (plan.costs.dining != null) {
+        plan.costs.dining = Math.round(plan.costs.dining * scale)
+      }
+      if (plan.costs.activities != null) {
+        plan.costs.activities = Math.round(plan.costs.activities * scale)
+      }
+    }
+
+    plan.title = `${plan.destination} ${targetDays}-Day Itinerary (Revised)`
+  } else if (changeType === 'travelPeriod') {
+    const period = revisionRequest.travelPeriod
+    if (period?.startDate) {
+      summary = `Changed travel dates to start on ${period.startDate}`
+      const start = new Date(period.startDate)
+      plan.days.forEach((d, idx) => {
+        const nextDate = new Date(start)
+        nextDate.setDate(start.getDate() + idx)
+        d.date = nextDate.toISOString().split('T')[0]
+      })
+    } else if (period?.month) {
+      summary = `Changed travel timing to month ${period.month}`
+      plan.days.forEach((d, idx) => {
+        d.date = `${period.month}-${String(idx + 1).padStart(2, '0')}`
+      })
+    }
+  } else if (changeType === 'departureLocation') {
+    const dep = revisionRequest.departureLocation
+    summary = `Changed departure city to ${dep}`
+    plan.departureLocation = dep
+    plan.fit = [
+      ...(plan.fit || []).filter((f) => !f.toLowerCase().includes('departing')),
+      `Departing from ${dep}`,
+    ]
+  } else if (changeType === 'travelers') {
+    const count = revisionRequest.travelers?.count || 1
+    summary = `Updated traveler count to ${count} person(s)`
+    plan.fit = [
+      ...(plan.fit || []).filter((f) => !f.toLowerCase().includes('group size') && !f.toLowerCase().includes('traveler')),
+      `Fits revised group size (${count} traveler${count > 1 ? 's' : ''})`,
+    ]
+    if (plan.costs?.dining) {
+      plan.costs.dining = 250000 * count
+    }
+  } else if (changeType === 'preferences') {
+    const pref = revisionRequest.preferences || {}
+    const interests = pref.interests?.map((i) => i.type).join(', ')
+    summary = `Updated preferences: ${interests || 'Custom activities'}`
+    if (interests) {
+      plan.fit = [
+        ...(plan.fit || []),
+        `Added preference: ${interests}`,
+      ]
+    }
+  } else if (changeType === 'limits') {
+    const limits = revisionRequest.limits || {}
+    summary = `Updated travel limit: max ${limits.maxTravelTimeMinutes || limits.maxDistanceKm || 60} ${limits.maxTravelTimeMinutes ? 'mins' : 'km'} (${limits.appliesTo})`
+    plan.fit = [
+      ...(plan.fit || []),
+      `Respects limits: ${limits.appliesTo}`,
+    ]
+  }
+
+  // Record revision log
+  plan.revisions = [
+    ...(plan.revisions || []),
+    {
+      id: `rev-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      changeType,
+      summary,
+      payload: revisionRequest,
+    },
+  ]
 
   return {
     status: 'SUCCESS',
