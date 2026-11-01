@@ -4,10 +4,10 @@ import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors }
 
 const TRANSPORT = [
   ["taxi", "Taxi"],
-  ["walking", "Đi bộ"],
-  ["motorbike", "Xe máy"],
-  ["car", "Ô tô"],
-  ["publicTransport", "Phương tiện công cộng"],
+  ["walking", "Walking"],
+  ["motorbike", "Motorbike"],
+  ["car", "Car"],
+  ["publicTransport", "Public transport"],
 ];
 
 function progressOf(data) {
@@ -49,7 +49,7 @@ function Tags({ name, label, placeholder }) {
         {tags.map((tag) => (
           <span className="tag" key={tag}>
             {tag}
-            <button type="button" aria-label={`Xóa ${tag}`} onClick={() => setTags(tags.filter((item) => item !== tag))}>×</button>
+            <button type="button" aria-label={`Remove ${tag}`} onClick={() => setTags(tags.filter((item) => item !== tag))}>×</button>
             <input type="hidden" name={name} value={tag} />
           </span>
         ))}
@@ -136,7 +136,7 @@ export default function TravelForm() {
     } catch (error) {
       const serverErrors = error.status === 422
         ? serverFieldErrors(error.body)
-        : { form: "Không gửi được yêu cầu." };
+        : { form: "Could not send the request." };
       setErrors(serverErrors);
       setBad(serverErrors);
     }
@@ -149,29 +149,29 @@ export default function TravelForm() {
   return (
     <form key={formKey} className="planner" onSubmit={onSubmit} onInput={onInput} noValidate>
       <section className="card">
-        <h2><CalendarIcon /> Thời gian chuyến đi</h2>
+        <h2><CalendarIcon /> Trip dates</h2>
+        <Field label="Trip timing" name="periodMode" error={errors.periodMode} bad={bad}>
+          <select id="periodMode" name="periodMode" value={mode} onChange={(event) => setMode(event.target.value)}>
+            <option value="dates">By dates</option>
+            <option value="month">By month</option>
+          </select>
+        </Field>
         <div className="grid-2">
-          <Field label="Danh mục chuyến đi" name="periodMode" error={errors.periodMode} bad={bad}>
-            <select id="periodMode" name="periodMode" value={mode} onChange={(event) => setMode(event.target.value)}>
-              <option value="dates">Theo ngày</option>
-              <option value="month">Theo tháng</option>
-            </select>
-          </Field>
           {mode === "dates" ? (
             <>
-              <Field label="Ngày đi" name="startDate" error={errors.startDate} bad={bad}>
+              <Field label="Start date" name="startDate" error={errors.startDate} bad={bad}>
                 <input id="startDate" name="startDate" type="date" required {...described("startDate")} />
               </Field>
-              <Field label="Ngày về" name="endDate" error={errors.endDate} bad={bad}>
+              <Field label="End date" name="endDate" error={errors.endDate} bad={bad}>
                 <input id="endDate" name="endDate" type="date" required {...described("endDate")} />
               </Field>
             </>
           ) : (
             <>
-              <Field label="Tháng" name="month" error={errors.month} bad={bad}>
+              <Field label="Month" name="month" error={errors.month} bad={bad}>
                 <input id="month" name="month" type="month" required {...described("month")} />
               </Field>
-              <Field label="Số ngày" name="durationDays" error={errors.durationDays} bad={bad}>
+              <Field label="Number of days" name="durationDays" error={errors.durationDays} bad={bad}>
                 <input id="durationDays" name="durationDays" type="number" min="1" step="1" required {...described("durationDays")} />
               </Field>
             </>
@@ -180,31 +180,31 @@ export default function TravelForm() {
       </section>
 
       <section className="card">
-        <h2>Thông tin chuyến đi</h2>
+        <h2>Trip details</h2>
         <div className="grid-2">
-          <Field label="Điểm đi" name="departureLocation" error={errors.departureLocation} bad={bad}>
+          <Field label="Departure" name="departureLocation" error={errors.departureLocation} bad={bad}>
             <input id="departureLocation" name="departureLocation" required {...described("departureLocation")} />
           </Field>
-          <Field label="Điểm đến" name="destination" error={errors.destination} bad={bad}>
+          <Field label="Destination" name="destination" error={errors.destination} bad={bad}>
             <input id="destination" name="destination" maxLength={200} {...described("destination")} />
           </Field>
-          <Field label="Số người" name="travelerCount" error={errors.travelerCount} bad={bad}>
+          <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad}>
             <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" required {...described("travelerCount")} />
           </Field>
-          <Field label="Ngân sách (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad}>
+          <Field label="Budget (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad}>
             <input id="budgetAmount" name="budgetAmount" type="number" min="0" step="1" required {...described("budgetAmount")} />
           </Field>
         </div>
         <div className="field">
-          <span id="budget-label">Kiểu ngân sách</span>
+          <span id="budget-label">Budget applies to</span>
           <div className="pills" role="radiogroup" aria-labelledby="budget-label">
             <label className="pill">
               <input type="radio" name="budgetScope" value="group" />
-              Cả nhóm
+              Whole group
             </label>
             <label className="pill">
               <input type="radio" name="budgetScope" value="perPerson" />
-              Mỗi người
+              Per person
             </label>
           </div>
           {errors.budgetScope && (
@@ -214,7 +214,7 @@ export default function TravelForm() {
       </section>
 
       <section className="card">
-        <h2>Sở thích du lịch</h2>
+        <h2>Travel interests</h2>
         <div className="choices">
           {INTERESTS.map(([type, label]) => (
             <div className="choice" key={type}>
@@ -222,7 +222,7 @@ export default function TravelForm() {
                 <input type="checkbox" name="interest" value={type} />
                 <span>{label}</span>
               </label>
-              <div className="priorities" role="radiogroup" aria-label={`Mức ưu tiên ${label}`}>
+              <div className="priorities" role="radiogroup" aria-label={`${label} priority`}>
                 {[1, 2, 3, 4].map((level) => (
                   <label className="priority" key={level}>
                     <input type="radio" name={`${type}Priority`} value={level} />
@@ -237,38 +237,38 @@ export default function TravelForm() {
       </section>
 
       <section className="card">
-        <h2>Ẩm thực</h2>
+        <h2>Food</h2>
         <div className="grid-2">
-          <Tags name="diningPreferred" label="Món ăn yêu thích" placeholder="Nhập món, nhấn Enter. Ví dụ: hải sản" />
-          <Tags name="diningAvoid" label="Món ăn muốn tránh" placeholder="Ví dụ: món cay" />
+          <Tags name="diningPreferred" label="Foods you like" placeholder="Type a dish, then press Enter. Example: seafood" />
+          <Tags name="diningAvoid" label="Foods to avoid" placeholder="Example: spicy food" />
         </div>
       </section>
 
       <details className="card">
-        <summary>Tùy chọn nâng cao</summary>
+        <summary>Advanced options</summary>
         <div className="grid-2">
-          <Field label="Đặc điểm nhóm" name="characteristics" error={errors.characteristics} bad={bad}>
-            <input id="characteristics" name="characteristics" placeholder="Ví dụ: trẻ em, người lớn tuổi" />
+          <Field label="Group notes" name="characteristics" error={errors.characteristics} bad={bad}>
+            <input id="characteristics" name="characteristics" placeholder="Example: children, older adults" />
           </Field>
-          <Field label="Khoảng cách tối đa (km)" name="maxDistanceKm" error={errors.maxDistanceKm} bad={bad}>
+          <Field label="Max distance (km)" name="maxDistanceKm" error={errors.maxDistanceKm} bad={bad}>
             <input id="maxDistanceKm" name="maxDistanceKm" type="number" min="0" step="any" {...described("maxDistanceKm")} />
           </Field>
-          <Field label="Thời gian di chuyển tối đa (phút)" name="maxTravelTimeMinutes" error={errors.maxTravelTimeMinutes} bad={bad}>
+          <Field label="Max travel time (minutes)" name="maxTravelTimeMinutes" error={errors.maxTravelTimeMinutes} bad={bad}>
             <input id="maxTravelTimeMinutes" name="maxTravelTimeMinutes" type="number" min="1" step="1" {...described("maxTravelTimeMinutes")} />
           </Field>
-          <Field label="Giới hạn áp dụng cho" name="appliesTo" error={errors.appliesTo} bad={bad}>
+          <Field label="Limit applies to" name="appliesTo" error={errors.appliesTo} bad={bad}>
             <select id="appliesTo" name="appliesTo" defaultValue="" {...described("appliesTo")}>
-              <option value="">Không đặt giới hạn</option>
-              <option value="fromDeparture">Từ điểm xuất phát</option>
-              <option value="betweenActivities">Giữa các điểm</option>
-              <option value="daily">Trong một ngày</option>
+              <option value="">No limit</option>
+              <option value="fromDeparture">From departure</option>
+              <option value="betweenActivities">Between stops</option>
+              <option value="daily">Within one day</option>
             </select>
           </Field>
         </div>
       </details>
 
       <section className="card">
-        <h2>Phương tiện di chuyển</h2>
+        <h2>Transportation</h2>
         <div className="pills">
           {TRANSPORT.map(([value, label]) => (
             <label className="pill" key={value}>
@@ -283,12 +283,12 @@ export default function TravelForm() {
         <div className="progress">
           <span style={{ width: `${progress}%` }} />
         </div>
-        <p>{progress}% hoàn thành</p>
+        <p>{progress}% complete</p>
         {errors.form && <p className="error">{errors.form}</p>}
-        {done && <p className="success">Đã nhận yêu cầu.</p>}
+        {done && <p className="success">Request received.</p>}
         <div className="action-row">
-          <button className="primary" type="submit">Tạo lịch trình</button>
-          <button className="secondary" type="button" onClick={clearForm}>Xóa biểu mẫu</button>
+          <button className="primary" type="submit">Create itinerary</button>
+          <button className="secondary" type="button" onClick={clearForm}>Clear form</button>
         </div>
       </div>
     </form>
