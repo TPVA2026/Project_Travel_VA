@@ -1,74 +1,87 @@
-# TODO(M4): itemized known costs, missing costs
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+"""Validate total-trip costs against a total-trip budget (TPVA-23)."""
 
-import pytest
-from cost_validator import validate_cost_budget as check
+from math import isfinite
 
 
-def costs(**kwargs):
-    return {"costs": {"transport": 100, "accommodation": 200,
-                      "dining": 50, "activities": 50, **kwargs}}
+REQUIRED_COSTS = ("transport", "accommodation", "dining", "activities")
 
 
-def test_under_budget():
-    result = check({"budget": 500}, costs())
-    assert result["status"] == "FEASIBLE"
-    assert result["total_cost"] == 400
-    assert result["remaining_budget"] == 100
+def _amount(value):
+    """Return a nonnegative finite amount, or None for unknown/invalid data."""
+    if isinstance(value, bool) or value is None:
+        return None
+    try:
+        amount = float(value)
+    except (TypeError, ValueError, OverflowError):
+        return None
+    return amount if isfinite(amount) and amount >= 0 else None
 
 
-def test_exact_budget():
-    assert check({"budget": 400}, costs())["status"] == "FEASIBLE"
+def validate_cost_budget(request: dict, plan: dict) -> dict:
+    """Check required cost groups without treating missing costs as zero.
 
+    Inputs are total-trip VND. A known subtotal over budget is already
+    infeasible, even if another cost is unknown. This checks budget only.
+    """
+    request = request if isinstance(request, dict) else {}
+    plan = plan if isinstance(plan, dict) else {}
+    budget = _amount(request.get("budget"))
+    costs = plan.get("costs")
+    costs = costs if isinstance(costs, dict) else {}
 
-def test_over_budget():
-    assert check({"budget": 399}, costs())["status"] == "INFEASIBLE"
+    known_total = 0.0
+    breakdown = {}
+    missing_costs = []
 
+    for category in REQUIRED_COSTS:
+        value = costs.get(category)
+        if isinstance(value, list):
+            category_total = 0.0
+            complete = True
+            for index, item in enumerate(value):
+                if not isinstance(item, dict):
+                    missing_costs.append(f"{category}[{index}]")
+                    complete = False
+                    continue
+                amount = _amount(item.get("amount"))
+                if amount is None:
+                    name = item.get("name")
+                    missing_costs.append(name if isinstance(name, str) and name else f"{category}[{index}]")
+                    complete = False
+                else:
+                    category_total += amount
+            breakdown[category] = category_total if complete else None
+            known_total += category_total
+        else:
+            amount = _amount(value)
+            breakdown[category] = amount
+            if amount is None:
+                missing_costs.append(category)
+            else:
+                known_total += amount
 
-def test_missing_essential_cost():
-    result = check({"budget": 500}, costs(dining=None))
-    assert result["status"] == "UNVERIFIED"
-    assert result["total_cost"] is None
-    assert "dining" in result["missing_costs"]
+    if budget is not None and known_total > budget:
+        status = "INFEASIBLE"
+        reasons = ["Known costs exceed budget."]
+    elif budget is None or missing_costs:
+        status = "UNVERIFIED"
+        reasons = []
+        if budget is None:
+            reasons.append("Budget is missing or invalid.")
+        if missing_costs:
+            reasons.append("Required costs are missing or invalid: " + ", ".join(missing_costs))
+    else:
+        status = "FEASIBLE"
+        reasons = []
 
-
-def test_known_costs_exceed_budget_even_when_other_cost_missing():
-    assert check({"budget": 100}, costs(dining=None))["status"] == "INFEASIBLE"
-
-
-def test_missing_budget():
-    assert check({}, costs())["status"] == "UNVERIFIED"
-
-
-@pytest.mark.parametrize("budget", [-1, "abc", True, float("inf")])
-def test_invalid_budget(budget):
-    assert check({"budget": budget}, costs())["status"] == "UNVERIFIED"
-
-
-def test_zero_is_valid_cost():
-    assert check({"budget": 0}, {"costs": {k: 0 for k in
-           ("transport", "accommodation", "dining", "activities")}})["status"] == "FEASIBLE"
-
-
-def test_missing_category_is_not_zero():
-    assert check({"budget": 1000}, {"costs": {"transport": 100}})["status"] == "UNVERIFIED"
-
-
-def test_itemized_costs_and_missing_item():
-    result = check({"budget": 1000}, costs(transport=[
-        {"name": "bus", "amount": 100}, {"name": "taxi", "amount": None}]))
-    assert result["status"] == "UNVERIFIED"
-    assert result["known_total"] == 400
-    assert "taxi" in result["missing_costs"]
-
-
-def test_itemized_costs_complete():
-    result = check({"budget": 500}, costs(transport=[
-        {"name": "bus", "amount": 60}, {"name": "taxi", "amount": 40}]))
-    assert result["status"] == "FEASIBLE"
-
-
-def test_invalid_negative_cost_never_accepted():
-    assert check({"budget": 1000}, costs(transport=-10))["status"] == "UNVERIFIED"
+    total_cost = known_total if not missing_costs else None
+    return {
+        "status": status,
+        "budget": budget,
+        "known_total": known_total,
+        "total_cost": total_cost,
+        "remaining_budget": budget - total_cost if budget is not None and total_cost is not None else None,
+        "breakdown": breakdown,
+        "missing_costs": missing_costs,
+        "reasons": reasons,
+    }
