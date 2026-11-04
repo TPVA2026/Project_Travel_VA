@@ -99,6 +99,7 @@ export default function TravelForm() {
     setDone(false);
     const form = event.currentTarget;
     const target = event.target;
+    if (target.name === "periodMode") setMode(target.value);
     if (target.name?.endsWith("Priority")) {
       const type = target.name.slice(0, -"Priority".length);
       const box = form.querySelector(`input[name="interest"][value="${type}"]`);
