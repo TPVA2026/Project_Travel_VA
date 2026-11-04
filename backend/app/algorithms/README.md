@@ -1,6 +1,6 @@
-# TPVA-23 — Python Cost & Budget Validator
+# Python Cost & Budget Validator
 
-Standalone module for M4. It checks **only the budget constraint**; whole-plan status needs aggregation with schedule/travel validators in TPVA-24.
+This module checks **only the budget constraint**. Whole-plan feasibility also requires schedule and travel validation.
 
 ## Quick start
 
@@ -37,13 +37,6 @@ print(result)
 
 Note: if group size is involved, callers must compute whole-group trip costs *before* calling the validator; this module does not silently multiply per-person costs. Invalid negative/nonfinite values are not accepted as known costs. `FEASIBLE` here means budget-only feasible, not an approved itinerary.
 
-## Coordination
-
-- M1 supplies validated total-trip budget.
-- M2/M3 supply cost categories from verified sources; unknown => null.
-- M4 uses this output as a budget-check result and combines it with TPVA-24, then performs TPVA-25 ranking on verified feasible itineraries.
-- M6 integrates at `POST /itineraries/evaluate` once JSON schema is agreed.
-
 ## Sử dụng schema chung của dự án
 
 Gọi từ backend (để Python tìm được package `app`):
@@ -53,7 +46,7 @@ from app.algorithms.cost_validator import evaluate_candidate_costs
 
 result = evaluate_candidate_costs(
     request,  # Dictionary TravelRequest: budget.amount/currency/scope, travelers.count.
-    candidate_plan,  # Dictionary CandidatePlan đã sinh bởi M3.
+    candidate_plan,  # Dictionary theo schema CandidatePlan.
     dataset,  # Dataset có attractions và dining, lấy từ load_dataset().
     supplemental_costs={
         "transport": 500_000,
@@ -75,8 +68,8 @@ result = evaluate_candidate_costs(
 - Thiếu transport/accommodation, hoạt động chưa xác minh, hoặc không có hoạt động
   của một nhóm chi phí đều không được tự coi là miễn phí. Các nhóm supplemental
   `dining`/`activities` bị bỏ qua để không ghi đè giá từ dataset.
-- Kết quả `FEASIBLE` chỉ nói về ngân sách. M6 có thể gọi hàm này trong pipeline;
-  API đánh giá toàn lịch trình còn cần validator của TPVA-24 và bộ tổng hợp.
+- Kết quả `FEASIBLE` của hàm này chỉ nói về ngân sách; đánh giá toàn lịch trình
+  cần kết hợp kiểm tra lịch và di chuyển.
 
 ## Các hàm và cú pháp Python
 
