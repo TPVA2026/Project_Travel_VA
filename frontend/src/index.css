@@ -637,6 +637,7 @@ body {
   left: -115px;
   width: min(253px, 54%);
   height: auto;
+  pointer-events: none;
 }
 
 .home-bottom-bus {
