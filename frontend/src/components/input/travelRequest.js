@@ -42,6 +42,8 @@ function daySpan(start, end) {
   return Math.round((Date.parse(end) - Date.parse(start)) / 86400000) + 1;
 }
 
+export const REQUIRED = "This field is required.";
+
 function filledWrong(value, bad) {
   return value !== "" && value != null && bad(Number(value));
 }
@@ -57,7 +59,7 @@ export function valueErrors(data) {
     errors.durationDays = "Number of days must be at least 1.";
   }
   const departure = String(data.get("departureLocation") ?? "");
-  if (departure !== "" && !departure.trim()) errors.departureLocation = "Enter a departure place.";
+  if (departure !== "" && !departure.trim()) errors.departureLocation = REQUIRED;
   if (filledWrong(data.get("travelerCount"), (n) => n < 1 || !Number.isInteger(n))) {
     errors.travelerCount = "Traveler count must be at least 1.";
   }
@@ -84,22 +86,22 @@ export function clientErrors(data) {
   const errors = valueErrors(data);
   const mode = data.get("periodMode");
   if (mode === "month") {
-    if (!data.get("month")) errors.month = "Choose a month.";
-    if (!data.get("durationDays")) errors.durationDays = "Number of days must be at least 1.";
+    if (!data.get("month")) errors.month = REQUIRED;
+    if (!data.get("durationDays")) errors.durationDays = REQUIRED;
   } else {
-    if (!data.get("startDate")) errors.startDate = "Choose a start date.";
-    if (!data.get("endDate") && !errors.endDate) errors.endDate = "Choose an end date.";
+    if (!data.get("startDate")) errors.startDate = REQUIRED;
+    if (!data.get("endDate") && !errors.endDate) errors.endDate = REQUIRED;
   }
   if (!String(data.get("departureLocation") ?? "").trim()) {
-    errors.departureLocation = "Enter a departure place.";
+    errors.departureLocation = REQUIRED;
   }
   if (data.get("travelerCount") === "" || data.get("travelerCount") == null) {
-    errors.travelerCount = "Traveler count must be at least 1.";
+    errors.travelerCount = REQUIRED;
   }
   if (data.get("budgetAmount") === "" || data.get("budgetAmount") == null) {
-    errors.budgetAmount = "Budget must be a whole number of VND, from 0.";
+    errors.budgetAmount = REQUIRED;
   }
-  if (!data.get("budgetScope")) errors.budgetScope = "Choose who the budget applies to.";
+  if (!data.get("budgetScope")) errors.budgetScope = REQUIRED;
 
   const minutes = data.get("maxTravelTimeMinutes");
   const hasLimit = data.get("maxDistanceKm") || minutes || data.get("appliesTo");
@@ -178,7 +180,7 @@ export function serverFieldErrors(body) {
   const errors = mapServerErrors(detail.errors);
   for (const field of detail.missing ?? []) {
     const name = MISSING_FIELD[field] ?? field;
-    if (!errors[name]) errors[name] = "Fill in this field.";
+    if (!errors[name]) errors[name] = REQUIRED;
   }
   const messages = detail.messages ?? detail.conflicts;
   if (messages?.length) errors.form = messages.join(" ");

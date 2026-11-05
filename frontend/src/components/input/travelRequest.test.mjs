@@ -38,15 +38,15 @@ assert.equal(clientErrors(form(valid)).durationDays, undefined);
 const month = buildPayload(form({ ...valid, periodMode: "month", month: "2026-12", durationDays: "4" }));
 assert.deepEqual(month.travelPeriod, { month: "2026-12" });
 assert.equal(month.durationDays, 4);
-assert.equal(clientErrors(form({ ...valid, periodMode: "month", month: "2026-12" })).durationDays, "Number of days must be at least 1.");
+assert.equal(clientErrors(form({ ...valid, periodMode: "month", month: "2026-12" })).durationDays, "This field is required.");
 
 assert.equal(
   valueErrors(form({ ...valid, maxTravelTimeMinutes: "0", appliesTo: "daily" })).maxTravelTimeMinutes,
   "Travel time must be at least 1 minute.",
 );
 assert.equal(valueErrors(form({ ...valid, departureLocation: "" })).departureLocation, undefined);
-assert.equal(clientErrors(form({ periodMode: "dates" })).departureLocation, "Enter a departure place.");
+assert.equal(clientErrors(form({ periodMode: "dates" })).departureLocation, "This field is required.");
 
 const bad = clientErrors(form({ ...valid, endDate: "2026-11-01", departureLocation: "  " }));
 assert.equal(bad.endDate, "End date must be on or after the start date.");
-assert.equal(bad.departureLocation, "Enter a departure place.");
+assert.equal(bad.departureLocation, "This field is required.");
