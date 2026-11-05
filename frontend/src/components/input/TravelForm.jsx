@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { validateTravelRequest } from "../../services/api";
 import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors } from "./travelRequest";
 
@@ -83,11 +84,11 @@ function CalendarIcon() {
 }
 
 export default function TravelForm() {
+  const navigate = useNavigate();
   const [formKey, setFormKey] = useState(0);
   const [errors, setErrors] = useState({});
   const [bad, setBad] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [done, setDone] = useState(false);
   const [mode, setMode] = useState("dates");
   const [progress, setProgress] = useState(0);
 
@@ -100,7 +101,6 @@ export default function TravelForm() {
   }
 
   function onInput(event) {
-    setDone(false);
     const form = event.currentTarget;
     const target = event.target;
     if (target.name === "periodMode") setMode(target.value);
@@ -118,13 +118,11 @@ export default function TravelForm() {
     setErrors({});
     setBad({});
     setSubmitted(false);
-    setDone(false);
     setProgress(0);
   }
 
   async function onSubmit(event) {
     event.preventDefault();
-    setDone(false);
     const data = new FormData(event.currentTarget);
     const found = clientErrors(data);
     setSubmitted(true);
@@ -136,7 +134,7 @@ export default function TravelForm() {
       await validateTravelRequest(buildPayload(data));
       setErrors({});
       setBad({});
-      setDone(true);
+      navigate("/results");
     } catch (error) {
       const serverErrors = error.status === 422
         ? serverFieldErrors(error.body)
@@ -289,7 +287,6 @@ export default function TravelForm() {
         </div>
         <p>{progress}% complete</p>
         {errors.form && <p className="error">{errors.form}</p>}
-        {done && <p className="success">Request received.</p>}
         <div className="action-row">
           <button className="primary" type="submit">Create itinerary</button>
           <button className="secondary" type="button" onClick={clearForm}>Clear form</button>

@@ -6,6 +6,7 @@ import {
   selectPlan,
   clearSelectedPlan,
 } from '../services/api.js'
+import { getTopFeasiblePlans } from '../services/recommendations.js'
 import PlanComparison from '../components/comparison/PlanComparison.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
@@ -60,8 +61,11 @@ export default function ResultsPage() {
     }
   }
 
+  const feasiblePlans = getTopFeasiblePlans(plans)
   const selectedPlanObj = plans.find(
-    (p) => p.id === selectedPlanId || p.planId === selectedPlanId
+    (p) =>
+      p.status === 'FEASIBLE' &&
+      (p.id === selectedPlanId || p.planId === selectedPlanId)
   )
 
   return (
@@ -174,12 +178,28 @@ export default function ResultsPage() {
         </div>
       )}
 
-      {!loading && !error && plans.length > 0 && (
-        <PlanComparison
-          plans={plans}
-          selectedPlanId={selectedPlanId}
-          onSelectPlan={handleSelectPlan}
-        />
+      {!loading && !error && plans.length > 0 && feasiblePlans.length === 0 && (
+        <div className="empty-results-box box">
+          <h3>No verified feasible itineraries found</h3>
+          <p className="muted">
+            Plans that are unverified or violate constraints are not shown as feasible.
+          </p>
+        </div>
+      )}
+
+      {!loading && !error && feasiblePlans.length > 0 && (
+        <div className="feasible-results">
+          <div className="feasible-results-heading">
+            <h2>Top {feasiblePlans.length} feasible itinerar{feasiblePlans.length === 1 ? 'y' : 'ies'}</h2>
+            <p className="muted small">“Suggest” marks the best match based on its fit criteria.</p>
+          </div>
+          <PlanComparison
+            plans={feasiblePlans}
+            selectedPlanId={selectedPlanId}
+            suggestedPlanId={feasiblePlans[0].id || feasiblePlans[0].planId}
+            onSelectPlan={handleSelectPlan}
+          />
+        </div>
       )}
     </section>
   )
