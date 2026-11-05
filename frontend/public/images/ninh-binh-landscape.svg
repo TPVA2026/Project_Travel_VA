@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="title">
+  <title id="title">Limestone karsts and a sampan on the river in Ninh Binh</title>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#a8d7dc"/>
+      <stop offset="1" stop-color="#e8e7c9"/>
+    </linearGradient>
+    <linearGradient id="water" x2="0" y2="1">
+      <stop stop-color="#66a99e"/>
+      <stop offset="1" stop-color="#347975"/>
+    </linearGradient>
+    <linearGradient id="mountain" x2="0" y2="1">
+      <stop stop-color="#627e5c"/>
+      <stop offset="1" stop-color="#344f46"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#sky)"/>
+  <circle cx="960" cy="123" r="54" fill="#fff0c1" opacity=".86"/>
+  <path d="M0 361L66 315L134 338L210 276L270 319L346 236L425 323L499 275L565 330L652 220L723 316L800 255L864 331L954 229L1019 319L1096 267L1200 334V445H0Z" fill="#809677" opacity=".56"/>
+  <path d="M0 416L67 337L118 350L181 233L233 329L294 285L351 356L424 201L483 330L552 302L622 360L690 234L753 342L820 284L889 351L956 198L1017 326L1071 297L1134 357L1200 322V468H0Z" fill="url(#mountain)"/>
+  <path d="M181 233L197 278L174 268L151 300ZM424 201L443 256L419 245L394 283ZM956 198L975 249L951 240L927 278ZM690 234L709 280L686 270L665 303Z" fill="#d9dfc2" opacity=".8"/>
+  <path d="M0 414Q180 399 350 416T700 414T1040 421T1200 412V600H0Z" fill="url(#water)"/>
+  <path d="M0 434Q210 420 385 438T760 436T1200 435" fill="none" stroke="#bed9c4" stroke-width="5" opacity=".65"/>
+  <path d="M60 469Q155 453 251 469M786 472Q895 450 1006 470M367 508Q480 490 600 507" fill="none" stroke="#add1bd" stroke-width="4" opacity=".65"/>
+  <path d="M492 451Q583 432 679 451L652 473H516Z" fill="#654b39"/>
+  <path d="M529 447Q585 438 641 447L628 454H540Z" fill="#d6a86a"/>
+  <path d="M587 442V400" stroke="#4d4438" stroke-width="5"/>
+  <path d="M564 411Q587 387 610 411Z" fill="#855743"/>
+  <path d="M590 399Q620 407 628 425Q611 416 590 419Z" fill="#f3e5c5"/>
+  <path d="M569 465L550 493M602 464L625 494" stroke="#57483a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M0 557Q160 531 330 557T660 550T1000 558T1200 548V600H0Z" fill="#345c4c" opacity=".72"/>
+  <g fill="#42654d">
+    <path d="M38 435Q55 391 72 435Z"/><path d="M73 437Q92 384 111 437Z"/>
+    <path d="M1070 432Q1088 380 1107 432Z"/><path d="M1105 435Q1127 377 1148 435Z"/>
+  </g>
+  <g fill="#a5bf82" opacity=".9">
+    <circle cx="52" cy="411" r="20"/><circle cx="91" cy="404" r="24"/>
+    <circle cx="1087" cy="403" r="24"/><circle cx="1127" cy="400" r="27"/>
+  </g>
+</svg>
