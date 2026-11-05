@@ -725,6 +725,22 @@ body {
   margin-top: 4px;
 }
 
+.feasible-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feasible-results-heading h2 {
+  margin: 0;
+  color: var(--primary-navy);
+  font-size: 1.25rem;
+}
+
+.feasible-results-heading p {
+  margin: 4px 0 0;
+}
+
 /* Demo Testing Controls Bar */
 .demo-controls-bar {
   display: inline-flex;
@@ -812,7 +828,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   margin-bottom: 4px;
+}
+
+.card-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .card-index-label {
@@ -883,6 +906,13 @@ body {
 
 .badge-UNVERIFIED {
   color: var(--status-unverified);
+}
+
+.badge-suggested {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
 }
 
 /* Activity Type Badges (Sightseeing / Attractions vs Dining) */

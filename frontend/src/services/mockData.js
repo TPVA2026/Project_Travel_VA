@@ -162,6 +162,74 @@ export const MOCK_PLANS = [
       },
     ],
   },
+  {
+    id: 'p4',
+    planId: 'plan-hue-04',
+    destination: 'Hue',
+    title: 'Hue 2-Day Imperial City Escape',
+    status: 'FEASIBLE',
+    fit: ['Matches preference: History & Culture', 'Within budget (2,950,000 VND < 5,000,000 VND)'],
+    notFit: [],
+    missing: [],
+    failReason: null,
+    costs: { transport: 900000, accommodation: 1200000, dining: 500000, activities: 350000 },
+    days: [
+      {
+        day: 1,
+        dayNumber: 1,
+        date: '2026-12-15',
+        travelLegs: [null, { fromPlaceId: 'Imperial City', toPlaceId: 'Dong Ba Market', durationMin: 15, distanceKm: 3 }],
+        activities: [
+          act('08:00', '11:00', 'Hue Imperial City', 'sightseeing', 200000, null, 'Explore the historic palaces and gardens of the former imperial capital.'),
+          act('11:30', '12:30', 'Lunch near Dong Ba Market', 'dining', 70000, 15, 'A local Hue-style lunch near the market.')
+        ]
+      },
+      {
+        day: 2,
+        dayNumber: 2,
+        date: '2026-12-16',
+        travelLegs: [null, { fromPlaceId: 'Thien Mu Pagoda', toPlaceId: 'Local restaurant', durationMin: 20, distanceKm: 5 }],
+        activities: [
+          act('09:00', '11:00', 'Thien Mu Pagoda', 'sightseeing', 0, null, 'Visit Hue’s well-known riverside pagoda.'),
+          act('11:30', '12:30', 'Hue local lunch', 'dining', 80000, 20, 'Sample local dishes in the city.')
+        ]
+      },
+    ],
+  },
+  {
+    id: 'p5',
+    planId: 'plan-ninh-binh-05',
+    destination: 'Ninh Binh',
+    title: 'Ninh Binh 2-Day Nature & Heritage Trip',
+    status: 'FEASIBLE',
+    fit: ['Matches preference: Nature & Scenery'],
+    notFit: [],
+    missing: [],
+    failReason: null,
+    costs: { transport: 800000, accommodation: 1000000, dining: 450000, activities: 300000 },
+    days: [
+      {
+        day: 1,
+        dayNumber: 1,
+        date: '2026-12-20',
+        travelLegs: [null, { fromPlaceId: 'Trang An', toPlaceId: 'Local restaurant', durationMin: 15, distanceKm: 4 }],
+        activities: [
+          act('08:00', '11:30', 'Trang An Scenic Landscape Complex', 'sightseeing', 250000, null, 'Explore the limestone landscape and waterways by boat.'),
+          act('12:00', '13:00', 'Lunch in Ninh Binh', 'dining', 75000, 15, 'Local lunch near the Trang An area.')
+        ]
+      },
+      {
+        day: 2,
+        dayNumber: 2,
+        date: '2026-12-21',
+        travelLegs: [null, { fromPlaceId: 'Hoa Lu Ancient Capital', toPlaceId: 'Local restaurant', durationMin: 15, distanceKm: 3 }],
+        activities: [
+          act('08:30', '10:30', 'Hoa Lu Ancient Capital', 'sightseeing', 50000, null, 'Visit temples and historic sites in Vietnam’s former capital.'),
+          act('11:00', '12:00', 'Ninh Binh countryside lunch', 'dining', 85000, 15, 'Enjoy regional food after the morning visit.')
+        ]
+      },
+    ],
+  },
 ]
 
 // Currency and formatting helper (null = unverified, NEVER converted to 0)

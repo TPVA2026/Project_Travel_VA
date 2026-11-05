@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { fmtMoney, knownTotal } from '../../services/mockData.js'
 
-export default function PlanComparison({ plans, selectedPlanId, onSelectPlan }) {
+export default function PlanComparison({ plans, selectedPlanId, suggestedPlanId, onSelectPlan }) {
   if (!plans || plans.length === 0) {
     return <p className="muted">No candidate plans found.</p>
   }
@@ -10,6 +10,7 @@ export default function PlanComparison({ plans, selectedPlanId, onSelectPlan }) 
     <div className="cards plan-comparison-grid">
       {plans.map((p, i) => {
         const isSelected = selectedPlanId && (selectedPlanId === p.id || selectedPlanId === p.planId)
+        const isSuggested = suggestedPlanId === p.id || suggestedPlanId === p.planId
         const { total, missing } = knownTotal(p)
         const totalAttractions = p.days?.reduce(
           (acc, d) =>
@@ -33,13 +34,15 @@ export default function PlanComparison({ plans, selectedPlanId, onSelectPlan }) 
             className={`card plan-card ${isSelected ? 'plan-card--selected' : ''}`}
           >
             <div className="img-wrap">
-              <img
-                src={p.image}
-                alt={p.destination}
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none'
-                }}
-              />
+              {p.image && (
+                <img
+                  src={p.image}
+                  alt={p.destination}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                  }}
+                />
+              )}
               {isSelected && (
                 <div className="card-selected-ribbon">
                   ✓ Chosen Plan
@@ -49,7 +52,10 @@ export default function PlanComparison({ plans, selectedPlanId, onSelectPlan }) 
             <div className="card-body">
               <div className="card-top-row">
                 <span className="card-index-label">Destination {i + 1}</span>
-                <span className={`badge badge-${p.status}`}>{p.status}</span>
+                <div className="card-badges">
+                  {isSuggested && <span className="badge badge-suggested">Suggest</span>}
+                  <span className={`badge badge-${p.status}`}>{p.status}</span>
+                </div>
               </div>
               <h3 className="card-destination">{p.destination}</h3>
 
