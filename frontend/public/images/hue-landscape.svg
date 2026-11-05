@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="title">
+  <title id="title">Hue imperial citadel beside the Perfume River at sunset</title>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#f6b982"/>
+      <stop offset="1" stop-color="#f8dfb7"/>
+    </linearGradient>
+    <linearGradient id="river" x2="0" y2="1">
+      <stop stop-color="#66aaa7"/>
+      <stop offset="1" stop-color="#387c83"/>
+    </linearGradient>
+    <linearGradient id="wall" x2="0" y2="1">
+      <stop stop-color="#f1c778"/>
+      <stop offset="1" stop-color="#c8814e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#sky)"/>
+  <circle cx="920" cy="145" r="68" fill="#fff0bd" opacity=".88"/>
+  <path d="M0 300 Q160 240 315 300T630 292T950 282T1200 296V405H0Z" fill="#78917c" opacity=".55"/>
+  <path d="M0 344 Q210 282 400 338T785 330T1200 340V425H0Z" fill="#647f6d" opacity=".7"/>
+  <path d="M0 391 Q270 370 510 395T930 385T1200 398V600H0Z" fill="url(#river)"/>
+  <path d="M0 408 Q250 388 500 414T930 402T1200 412" fill="none" stroke="#b9d6c1" stroke-width="5" opacity=".65"/>
+  <path d="M100 385V280H1100V390Z" fill="url(#wall)"/>
+  <path d="M76 286H1124L1082 252H118Z" fill="#bd7147"/>
+  <path d="M105 250L600 198L1095 250L1076 267H124Z" fill="#6a3f39"/>
+  <path d="M150 245L600 210L1050 245" fill="none" stroke="#f5d28b" stroke-width="9"/>
+  <rect x="500" y="286" width="200" height="104" fill="#804b3d"/>
+  <path d="M536 390V332Q600 278 664 332V390Z" fill="#423c3b"/>
+  <path d="M550 389V338Q600 294 650 338V389Z" fill="#192d36"/>
+  <rect x="186" y="305" width="46" height="84" fill="#87513e"/>
+  <rect x="266" y="305" width="46" height="84" fill="#87513e"/>
+  <rect x="888" y="305" width="46" height="84" fill="#87513e"/>
+  <rect x="968" y="305" width="46" height="84" fill="#87513e"/>
+  <path d="M0 449Q180 422 355 451T710 446T1060 452T1200 445V600H0Z" fill="#315f61" opacity=".55"/>
+  <path d="M160 489h158l-24 19H183z" fill="#573e36"/>
+  <path d="M208 476h63v13h-63z" fill="#8d5943"/>
+  <path d="M240 458v18" stroke="#423c3b" stroke-width="5"/>
+  <path d="M230 459l10-17 10 17z" fill="#ad6948"/>
+  <path d="M350 460q160-22 320 0M710 484q180-17 350 0" fill="none" stroke="#b8d5c7" stroke-width="4" opacity=".55"/>
+  <g fill="#415b49">
+    <circle cx="70" cy="346" r="45"/><circle cx="1115" cy="350" r="56"/>
+  </g>
+  <g fill="#d7a260">
+    <circle cx="48" cy="337" r="4"/><circle cx="84" cy="354" r="4"/><circle cx="1096" cy="339" r="4"/><circle cx="1134" cy="360" r="4"/>
+  </g>
+</svg>
