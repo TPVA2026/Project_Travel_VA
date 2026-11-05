@@ -450,7 +450,7 @@ body {
 }
 
 .planner label,
-.planner .field > span {
+.planner .field > span:not(.error) {
   font-size: 0.95rem;
   font-weight: 600;
   color: #1e293b;
@@ -483,6 +483,11 @@ body {
 
 .planner .invalid {
   border-color: var(--status-infeasible);
+}
+
+.planner .req {
+  color: var(--status-infeasible);
+  margin-left: 3px;
 }
 
 .planner .error {

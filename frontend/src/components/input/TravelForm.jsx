@@ -18,11 +18,14 @@ function progressOf(data) {
   return Math.round((filled / keys.length) * 100);
 }
 
-function Field({ label, name, error, bad, children }) {
+function Field({ label, name, error, bad, required, children }) {
   const wrong = Boolean(bad?.[name]);
   return (
     <div className="field">
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name}>
+        {label}
+        {required && <span className="req" aria-hidden="true">*</span>}
+      </label>
       {children}
       {error && (
         <span className={wrong ? "error" : undefined} id={`${name}-error`}>{error}</span>
@@ -83,13 +86,14 @@ export default function TravelForm() {
   const [formKey, setFormKey] = useState(0);
   const [errors, setErrors] = useState({});
   const [bad, setBad] = useState({});
+  const [submitted, setSubmitted] = useState(false);
   const [done, setDone] = useState(false);
   const [mode, setMode] = useState("dates");
   const [progress, setProgress] = useState(0);
 
   function refresh(form) {
     const data = new FormData(form);
-    const wrong = valueErrors(data);
+    const wrong = submitted ? clientErrors(data) : valueErrors(data);
     setBad(wrong);
     setErrors(wrong);
     setProgress(progressOf(data));
@@ -113,6 +117,7 @@ export default function TravelForm() {
     setMode("dates");
     setErrors({});
     setBad({});
+    setSubmitted(false);
     setDone(false);
     setProgress(0);
   }
@@ -122,13 +127,11 @@ export default function TravelForm() {
     setDone(false);
     const data = new FormData(event.currentTarget);
     const found = clientErrors(data);
-    const wrong = valueErrors(data);
-    setBad(wrong);
+    setSubmitted(true);
+    setBad(found);
+    setErrors(found);
     setProgress(progressOf(data));
-    if (Object.keys(found).length) {
-      setErrors(found);
-      return;
-    }
+    if (Object.keys(found).length) return;
     try {
       await validateTravelRequest(buildPayload(data));
       setErrors({});
@@ -160,19 +163,19 @@ export default function TravelForm() {
         <div className="grid-2">
           {mode === "dates" ? (
             <>
-              <Field label="Start date" name="startDate" error={errors.startDate} bad={bad}>
+              <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required>
                 <input id="startDate" name="startDate" type="date" required {...described("startDate")} />
               </Field>
-              <Field label="End date" name="endDate" error={errors.endDate} bad={bad}>
+              <Field label="End date" name="endDate" error={errors.endDate} bad={bad} required>
                 <input id="endDate" name="endDate" type="date" required {...described("endDate")} />
               </Field>
             </>
           ) : (
             <>
-              <Field label="Month" name="month" error={errors.month} bad={bad}>
+              <Field label="Month" name="month" error={errors.month} bad={bad} required>
                 <input id="month" name="month" type="month" required {...described("month")} />
               </Field>
-              <Field label="Number of days" name="durationDays" error={errors.durationDays} bad={bad}>
+              <Field label="Number of days" name="durationDays" error={errors.durationDays} bad={bad} required>
                 <input id="durationDays" name="durationDays" type="number" min="1" step="1" required {...described("durationDays")} />
               </Field>
             </>
@@ -183,21 +186,21 @@ export default function TravelForm() {
       <section className="card">
         <h2>Trip details</h2>
         <div className="grid-2">
-          <Field label="Departure" name="departureLocation" error={errors.departureLocation} bad={bad}>
+          <Field label="Departure" name="departureLocation" error={errors.departureLocation} bad={bad} required>
             <input id="departureLocation" name="departureLocation" required {...described("departureLocation")} />
           </Field>
           <Field label="Destination" name="destination" error={errors.destination} bad={bad}>
             <input id="destination" name="destination" maxLength={200} {...described("destination")} />
           </Field>
-          <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad}>
+          <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad} required>
             <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" required {...described("travelerCount")} />
           </Field>
-          <Field label="Budget (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad}>
+          <Field label="Budget (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad} required>
             <input id="budgetAmount" name="budgetAmount" type="number" min="0" step="1" required {...described("budgetAmount")} />
           </Field>
         </div>
         <div className="field">
-          <span id="budget-label">Budget applies to</span>
+          <span id="budget-label">Budget applies to <span className="req" aria-hidden="true">*</span></span>
           <div className="pills" role="radiogroup" aria-labelledby="budget-label">
             <label className="pill">
               <input type="radio" name="budgetScope" value="group" />
