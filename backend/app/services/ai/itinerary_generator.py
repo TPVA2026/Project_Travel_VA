@@ -10,7 +10,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from app.schemas.candidate_plan import CandidatePlan
-from app.services.ai.context_builder import build_context, supported_place_ids
+from app.services.ai.context_builder import build_context, supported_place_ids, valid_destination_ids
 from app.services.ai.gemini_client import GeminiError, request_text
 from app.services.ai.prompt_templates import build_prompt
 from app.services.data_service import load_dataset
@@ -41,13 +41,25 @@ def check_grounding(plan: dict, dataset: dict) -> list[str]:
     value + status must agree with the curated dataset (not with the model's opinion).
 
     Opening hours / durations / budget are feasibility rules and stay with M4."""
+    dest_ids = valid_destination_ids(dataset)
+    if not dest_ids:
+        return ["No valid destination IDs available for grounding"]
+    if plan["destinationId"] not in dest_ids:
+        return [f"unknown destinationId {plan['destinationId']}"]
     places = {p["id"]: p for p in [*dataset.get("attractions", []), *dataset.get("dining", [])]}
     kind = {**{p["id"]: "dining" for p in dataset.get("dining", [])}, **{p["id"]: "sightseeing" for p in dataset.get("attractions", [])}}
     matrix = {(l["from"], l["to"]): l for l in dataset.get("travelMatrix", dataset.get("travel_matrix", []))}
     errs: list[str] = []
-    dest_ids = {d["id"] for d in dataset.get("destinations", []) if isinstance(d, dict) and "id" in d}
-    if dest_ids and plan["destinationId"] not in dest_ids:
-        errs.append(f"unknown destinationId {plan['destinationId']}")
+    # Explicit dataset relationships are authoritative; absent mappings are not guessed.
+    for day in plan["days"]:
+        used_ids = {a["placeId"] for a in day["activities"]}
+        used_ids.update(pid for leg in day["travelLegs"]
+                        for pid in (leg["fromPlaceId"], leg["toPlaceId"]))
+        for pid in sorted(used_ids):
+            place = places.get(pid)
+            if place and "destinationId" in place:
+                if place["destinationId"] != plan["destinationId"]:
+                    errs.append(f"placeId {pid} does not belong to destinationId {plan['destinationId']}")
     for d in plan["days"]:
         acts = sorted(d["activities"], key=lambda a: a["startTime"])
         for i, a in enumerate(acts):
@@ -100,6 +112,8 @@ def generate_candidate(request: dict, dataset: dict | None = None, **client_kwar
     """
     dataset = load_dataset() if dataset is None else dataset
     context = build_context(request, dataset)
+    if not valid_destination_ids(context):
+        raise GeminiError("NO_DATA", "No verified destination IDs available for this request", 422)
     if not supported_place_ids(context):  # never ask the LLM to plan without real places: it would invent them
         raise GeminiError("NO_DATA", "No supported places in the curated dataset for this request", 422)
     text = request_text(build_prompt(request, context), CANDIDATE_PLAN_SCHEMA, **client_kwargs)
