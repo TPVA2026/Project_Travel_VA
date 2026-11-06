@@ -7,7 +7,7 @@
     "opening_hours": "7:00 - 17:30",
     "distance_from_center": "8km",
     "travel_time": "18 phút",
-    "cost": "Ng lớn: 150k, Trẻ em: 30k"
+    "cost": "Người lớn: 150.000 VND, Trẻ em: 30.000 VND"
   },
   {
     "id": "ATTR_H_02",
@@ -17,7 +17,7 @@
     "opening_hours": "7:00 - 17:00",
     "distance_from_center": "3,3km",
     "travel_time": "10 phút",
-    "cost": "Người lớn: 50k"
+    "cost": "Người lớn: 50.000 VND"
   },
   {
     "id": "ATTR_H_03",
@@ -27,7 +27,7 @@
     "opening_hours": "7:00 - 17:30",
     "distance_from_center": "2,6km",
     "travel_time": "7 phút",
-    "cost": "Người lớn: 200k, Trẻ em: 40k"
+    "cost": "Người lớn: 200.000 VND, Trẻ em: 40.000 VND"
   },
   {
     "id": "ATTR_H_04",
@@ -107,7 +107,7 @@
     "opening_hours": "6g-18g",
     "distance_from_center": "2km",
     "travel_time": "khoảng 5 phút đến 7 phút",
-    "cost": "30.000 VNĐ/người lớn"
+    "cost": "30.000 VND/người lớn"
   },
   {
     "id": "ATTR_NT_02",
@@ -117,7 +117,7 @@
     "opening_hours": "7g-22g",
     "distance_from_center": "5km (đường bộ ra cảng + cano/cáp treo ra đảo)",
     "travel_time": "15-20 phút",
-    "cost": "Người lớn: 880k, Trẻ em từ 1m - 1m4: 660k"
+    "cost": "Người lớn: 880.000 VND, Trẻ em từ 1m - 1m4: 660.000 VND"
   },
   {
     "id": "ATTR_NT_03",
@@ -127,7 +127,7 @@
     "opening_hours": "6g-18g",
     "distance_from_center": "4km",
     "travel_time": "10-12 phút",
-    "cost": "Người lớn: 40k, Sinh viên: 20k, Học sinh: 10k"
+    "cost": "Người lớn: 40.000 VND, Sinh viên: 20.000 VND, Học sinh: 10.000 VND"
   },
   {
     "id": "ATTR_NT_04",
@@ -147,7 +147,7 @@
     "opening_hours": "biểu diễn hằng ngày, 19g30",
     "distance_from_center": "10km",
     "travel_time": "15-20 phút",
-    "cost": "300k - 800k"
+    "cost": "300.000 - 800.000 VND"
   },
   {
     "id": "ATTR_NT_06",
@@ -177,7 +177,7 @@
     "opening_hours": "7:30 - 17:00",
     "distance_from_center": "38km",
     "travel_time": "1 tiếng",
-    "cost": "Người lớn: 200k, Trẻ em: 140k"
+    "cost": "Người lớn: 200.000 VND, Trẻ em: 140.000 VND"
   },
   {
     "id": "ATTR_NT_09",
@@ -187,7 +187,7 @@
     "opening_hours": "8:00 - 18:00",
     "distance_from_center": "25km",
     "travel_time": "1 tiếng 15 phút",
-    "cost": "chưa xác định"
+    "cost": ""
   },
   {
     "id": "ATTR_NT_10",
@@ -197,7 +197,7 @@
     "opening_hours": "tự do",
     "distance_from_center": "7km",
     "travel_time": "30-40 phút",
-    "cost": "chưa xác định"
+    "cost": ""
   },
   {
     "id": "ATTR_HCM_01",
@@ -207,7 +207,7 @@
     "opening_hours": "7g-18g",
     "distance_from_center": "1km",
     "travel_time": "5 phút",
-    "cost": "ng lớn: 80k, sinh viên/người lớn tuổi: 40k, trẻ em: 20k"
+    "cost": "Người lớn: 80.000 VND, sinh viên/người lớn tuổi: 40.000 VND, trẻ em: 20.000 VND"
   },
   {
     "id": "ATTR_HCM_02",
@@ -247,7 +247,7 @@
     "opening_hours": "7:00 - 18:30",
     "distance_from_center": "500m",
     "travel_time": "3 phút",
-    "cost": "miễn phí"
+    "cost": "40.000 - 60.000 VND"
   },
   {
     "id": "ATTR_HCM_06",
