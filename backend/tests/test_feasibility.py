@@ -160,6 +160,7 @@ def test_real_repository_dataset_is_not_invented_into_pairwise_routes(m4_case):
 
     request, plan, _, supplemental = m4_case
     dataset = load_dataset()
+    plan["destinationId"] = "H"
     first, second = plan["days"][0]["activities"]
     first.update(placeId=dataset["attractions"][0]["id"], estimatedCostVnd=None, costStatus="NO_DATA")
     second.update(placeId=dataset["dining"][0]["id"], estimatedCostVnd=None,

@@ -13,3 +13,6 @@ __pycache__/
 .pytest_cache/
 personal_document/
 AGENTS.md
+specs/
+.specify/
+.grok/

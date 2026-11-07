@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
-import { validateTravelRequest } from "../../services/api";
+import { saveTripForResults, validateTravelRequest } from "../../services/api";
 import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput } from "./travelRequest";
 
 const TRANSPORT = [
@@ -135,7 +135,9 @@ export default function TravelForm() {
       return;
     }
     try {
-      await validateTravelRequest(buildPayload(data));
+      const payload = buildPayload(data);
+      await validateTravelRequest(payload);
+      saveTripForResults(payload);
       setErrors({});
       setBad({});
       navigate("/results");
@@ -237,7 +239,7 @@ export default function TravelForm() {
       </details>
       <div className="actions">
         <BusIllustration progress={progress} />
-        <p className="completion-label" aria-live="polite">{progress}% complete</p>
+        <p className="completion-label" aria-live="polite">{progress}% finding</p>
         {errors.form && <p className="error" role="alert">{errors.form}</p>}
         <div className="action-row"><button className="primary" type="submit">Create itinerary</button><button className="secondary" type="button" onClick={clearForm}>Clear form</button></div>
       </div>
