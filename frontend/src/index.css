@@ -1824,3 +1824,59 @@ body {
     box-shadow: none !important;
   }
 }
+
+/* Compact input form: existing page layout is unchanged. */
+.compact-form { gap: 12px; }
+.compact-form .card { padding: 18px; gap: 14px; border: 1px solid #c9d9ec; }
+.compact-form .compact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.compact-form label { font-size: 13px; }
+.compact-form input, .compact-form select { font-family: inherit; font-size: 13px; padding: 9px 10px; border: 1px solid #b7c9e1; }
+.compact-form input::placeholder { color: #718096; font-size: 12px; }
+.compact-form h2 { font-size: 15px; }
+.compact-timing { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #e8eef6; padding-top: 12px; }
+.compact-form .compact-timing select { width: auto; padding: 6px 10px; background: #f8faff; }
+.compact-form .compact-budget { display: flex; flex-wrap: wrap; gap: 7px 12px; margin-top: 7px; }
+.compact-budget label { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 400; }
+.compact-form input[type=radio], .compact-form input[type=checkbox] { width: 14px; height: 14px; accent-color: #0b0b6b; padding: 0; }
+.compact-options { border: 1px solid #c9d9ec; border-radius: 10px; background: #fff; }
+.compact-options summary { padding: 12px 18px; font-size: 13px; }
+.compact-options-body { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+.compact-form .compact-chips { gap: 8px; }
+.compact-chips .pill { padding: 7px 10px; border: 1px solid #dbe4f0; border-radius: 18px; cursor: pointer; font-weight: 400; font-size: 12px; }
+.compact-chips .pill:has(input:checked) { background: #eef2ff; border-color: #828bc1; }
+.compact-form .tag-box { border: 1px solid #b7c9e1; padding: 3px; }
+.compact-form .tag-box input { width: 100%; min-width: 0; font-size: 12px; }
+.compact-form .primary, .compact-form .secondary { font-family: inherit; font-size: 13px; padding: 10px 18px; }
+.compact-form .secondary { border-color: #c9d9ec; }
+.compact-form .invalid { border-color: #dc2626; }
+@media(max-width: 600px) { .compact-form .compact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .compact-form .compact-grid > :last-child { grid-column: 1 / -1; } }
+@media(max-width: 360px) { .compact-form .compact-grid { grid-template-columns: 1fr; } }
+
+/* The existing bus follows form completion, within the form width. */
+.compact-form .bus-progress { --bus-width: clamp(64px, 12vw, 96px); padding-top: 2px; margin-top: 4px; }
+.compact-form .bus-motion-lane { position: relative; height: 68px; width: calc(100% - var(--bus-width)); }
+.compact-form .bus-progress-image { position: absolute; bottom: 0; width: var(--bus-width); height: auto; transition: left 450ms ease-in-out; }
+.compact-form .bus-progress-track { height: 6px; border-radius: 99px; background: #e2e8f0; overflow: hidden; }
+.compact-form .bus-progress-track > span { height: 100%; display: block; background: var(--primary-navy); transition: width 450ms ease-in-out; }
+.compact-form .completion-label { margin: 6px 0 12px; font-size: 12px; color: #64748b; text-align: right; }
+@media(prefers-reduced-motion: reduce) { .compact-form .bus-progress-image, .compact-form .bus-progress-track > span { transition: none; } }
+
+/* Larger fields and a single input method visible at a time. */
+.input-panel[hidden] { display: none; }
+.input-methods { display: inline-flex; align-self: flex-start; padding: 4px; gap: 4px; border-radius: 10px; background: #f1f5fb; border: 1px solid #dce5f0; }
+.input-methods button { font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 9px 16px; border: 1px solid transparent; border-radius: 7px; color: #536176; background: transparent; min-height: 40px; }
+.input-methods button[aria-pressed="true"] { color: #0b0b6b; background: #fff; border-color: #dce5f0; box-shadow: 0 1px 3px #0b0b6b0d; }
+.compact-form .compact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.compact-form .people-budget-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.compact-form input:not([type=radio]):not([type=checkbox]), .compact-form select { min-height: 44px; font-size: 14px; padding: 10px 12px; }
+.compact-form input[type=date], .compact-form input[type=month] { width: 100%; min-width: 0; }
+.compact-form .compact-budget label { min-height: 32px; cursor: pointer; font-size: 12px; }
+.compact-form .compact-options summary { min-height: 44px; }
+.input-methods button:focus-visible, .compact-form button:focus-visible, .compact-form summary:focus-visible, .compact-form input[type=radio]:focus-visible, .compact-form input[type=checkbox]:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+@media(max-width: 600px) { .compact-form .compact-grid > :last-child { grid-column: auto; } }
+@media(max-width: 480px) {
+  .compact-form .compact-grid, .compact-form .people-budget-grid, .compact-form .grid-2 { grid-template-columns: minmax(0, 1fr); }
+  .input-methods { display: flex; width: 100%; }
+  .input-methods button { flex: 1; padding: 9px 10px; }
+  .compact-form .action-row > button { min-height: 44px; }
+}

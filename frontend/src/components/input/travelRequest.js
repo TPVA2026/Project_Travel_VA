@@ -63,7 +63,8 @@ export function valueErrors(data) {
   if (filledWrong(data.get("travelerCount"), (n) => n < 1 || !Number.isInteger(n))) {
     errors.travelerCount = "Traveler count must be at least 1.";
   }
-  if (filledWrong(data.get("budgetAmount"), (n) => n < 0 || !Number.isInteger(n))) {
+  const budget = normalizeBudgetInput(data.get("budgetAmount"));
+  if (budget !== "" && (!/^\d+$/.test(budget) || !Number.isSafeInteger(Number(budget)))) {
     errors.budgetAmount = "Budget must be a whole number of VND, from 0.";
   }
   for (const [type] of INTERESTS) {
@@ -98,7 +99,7 @@ export function clientErrors(data) {
   if (data.get("travelerCount") === "" || data.get("travelerCount") == null) {
     errors.travelerCount = REQUIRED;
   }
-  if (data.get("budgetAmount") === "" || data.get("budgetAmount") == null) {
+  if (normalizeBudgetInput(data.get("budgetAmount")) === "") {
     errors.budgetAmount = REQUIRED;
   }
   if (!data.get("budgetScope")) errors.budgetScope = REQUIRED;
@@ -126,7 +127,7 @@ export function buildPayload(data) {
     departureLocation: String(data.get("departureLocation")).trim(),
     travelers: { count: Number(data.get("travelerCount")) },
     budget: {
-      amount: Number(data.get("budgetAmount")),
+      amount: Number(normalizeBudgetInput(data.get("budgetAmount"))),
       currency: "VND",
       scope: data.get("budgetScope"),
     },
@@ -201,4 +202,24 @@ export function mapServerErrors(errors) {
     mapped[field] = err.msg;
   }
   return mapped;
+}
+
+// UI completion only; this does not indicate API validation or trip feasibility.
+export function progressOf(data) {
+  const keys = data.get("periodMode") === "month"
+    ? ["month", "durationDays", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"]
+    : ["startDate", "endDate", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"];
+  const filled = keys.filter(key => String(data.get(key) ?? "").trim()).length;
+  return Math.round(filled / keys.length * 100);
+}
+
+// Only recognized thousands separators are removed. Invalid input stays invalid.
+export function normalizeBudgetInput(value) {
+  const text = String(value ?? "").trim();
+  return /^\d{1,3}(,\d{3})+$/.test(text) ? text.replaceAll(",", "") : text;
+}
+
+export function formatBudgetInput(value) {
+  const raw = normalizeBudgetInput(value);
+  return /^\d+$/.test(raw) ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : String(value ?? "");
 }
