@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
-import { validateTravelRequest } from "../../services/api";
+import { saveTripForResults, validateTravelRequest } from "../../services/api";
 import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput } from "./travelRequest";
 
 const TRANSPORT = [
@@ -135,7 +135,9 @@ export default function TravelForm() {
       return;
     }
     try {
-      await validateTravelRequest(buildPayload(data));
+      const payload = buildPayload(data);
+      await validateTravelRequest(payload);
+      saveTripForResults(payload);
       setErrors({});
       setBad({});
       navigate("/results");

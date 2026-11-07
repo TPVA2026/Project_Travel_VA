@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import {
   fetchDestinationRecommendations,
+  generateItinerary,
   getSelectedPlanId,
   selectPlan,
   clearSelectedPlan,
@@ -11,6 +12,50 @@ import PlanComparison from '../components/comparison/PlanComparison.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 
+const REQUEST_KEY = 'tpva-travel-request'
+const PLAN_KEY = 'tpva-ai-plan'
+
+function readPendingRequest() {
+  try {
+    const raw = sessionStorage.getItem(REQUEST_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+function money(value) {
+  if (value == null) return 'Unverified'
+  return `${Number(value).toLocaleString('en-US')} VND`
+}
+
+function CandidatePlanView({ status, plan }) {
+  return (
+    <article className="candidate-plan box">
+      <p className="candidate-status">Status: {status}</p>
+      <h2>{plan.title}</h2>
+      <p className="muted">Destination: {plan.destinationId}</p>
+      {plan.days.map((day) => (
+        <section key={day.dayNumber} className="candidate-day">
+          <h3>Day {day.dayNumber} · {day.date}</h3>
+          <ul>
+            {day.activities.map((activity) => (
+              <li key={activity.activityId}>
+                <strong>{activity.startTime}–{activity.endTime}</strong> {activity.placeId}
+                <span className="muted"> · {activity.type} · {money(activity.estimatedCostVnd)}</span>
+                {activity.reason && <div>{activity.reason}</div>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      {plan.assumptions?.length > 0 && (
+        <p className="muted">Assumptions: {plan.assumptions.join(' ')}</p>
+      )}
+    </article>
+  )
+}
+
 export default function ResultsPage() {
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
@@ -18,6 +63,29 @@ export default function ResultsPage() {
   const [selectedPlanId, setSelectedPlanId] = useState(() => getSelectedPlanId())
   const [shouldSimulateError, setShouldSimulateError] = useState(false)
   const [shouldSimulateEmpty, setShouldSimulateEmpty] = useState(false)
+  const [pendingRequest] = useState(readPendingRequest)
+  const [aiPlan, setAiPlan] = useState(null)
+  const [aiStatus, setAiStatus] = useState(null)
+  const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
+  const [aiError, setAiError] = useState(null)
+
+  const loadAiPlan = useCallback(async () => {
+    if (!pendingRequest) return
+    const requestKey = JSON.stringify(pendingRequest)
+    setAiLoading(true)
+    setAiError(null)
+    try {
+      const body = await generateItinerary(pendingRequest)
+      sessionStorage.setItem(PLAN_KEY, JSON.stringify({ requestKey, status: body.status, plan: body.plan }))
+      setAiStatus(body.status)
+      setAiPlan(body.plan)
+    } catch (err) {
+      setAiError(err?.message || 'The assistant could not build an itinerary.')
+      setAiPlan(null)
+    } finally {
+      setAiLoading(false)
+    }
+  }, [pendingRequest])
 
   const loadRecommendations = useCallback(async (opts = {}) => {
     setLoading(true)
@@ -38,8 +106,26 @@ export default function ResultsPage() {
   }, [shouldSimulateError, shouldSimulateEmpty])
 
   useEffect(() => {
+    if (pendingRequest) return
     loadRecommendations()
-  }, [loadRecommendations])
+  }, [loadRecommendations, pendingRequest])
+
+  useEffect(() => {
+    if (!pendingRequest) return
+    const requestKey = JSON.stringify(pendingRequest)
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(PLAN_KEY) || 'null')
+      if (saved?.requestKey === requestKey && saved.plan) {
+        setAiStatus(saved.status)
+        setAiPlan(saved.plan)
+        setAiLoading(false)
+        return
+      }
+    } catch {
+      // A bad cache just means we ask again.
+    }
+    loadAiPlan()
+  }, [pendingRequest, loadAiPlan])
 
   // Sync selection state if modified elsewhere
   useEffect(() => {
@@ -78,7 +164,7 @@ export default function ResultsPage() {
           </p>
         </div>
 
-        {/* Development / Reviewer controls to verify loading and error states */}
+        {pendingRequest ? null : (
         <div className="demo-controls-bar" title="M5 Acceptance criteria testing controls">
           <span className="demo-controls-label">Test States:</span>
           <button
@@ -117,6 +203,7 @@ export default function ResultsPage() {
             {shouldSimulateEmpty ? '✓ Empty simulated' : 'Simulate empty'}
           </button>
         </div>
+        )}
       </div>
 
       {/* Selected Plan Notification Banner */}
@@ -146,11 +233,27 @@ export default function ResultsPage() {
         </div>
       )}
 
-      {loading && (
+      {pendingRequest && aiLoading && (
+        <Loading message="Waiting for the assistant to build your itinerary..." />
+      )}
+
+      {pendingRequest && !aiLoading && aiError && (
+        <ErrorMessage
+          title="The assistant did not return an itinerary"
+          message={aiError}
+          onRetry={loadAiPlan}
+        />
+      )}
+
+      {pendingRequest && !aiLoading && !aiError && aiPlan && (
+        <CandidatePlanView status={aiStatus || 'UNVERIFIED'} plan={aiPlan} />
+      )}
+
+      {!pendingRequest && loading && (
         <Loading message="Analyzing travel requirements and loading destination recommendations..." />
       )}
 
-      {!loading && error && (
+      {!pendingRequest && !loading && error && (
         <ErrorMessage
           title="Unable to load recommendations"
           message={error}
@@ -161,7 +264,7 @@ export default function ResultsPage() {
         />
       )}
 
-      {!loading && !error && plans.length === 0 && (
+      {!pendingRequest && !loading && !error && plans.length === 0 && (
         <div className="empty-results-box box">
           <h3>No matching destination plans found</h3>
           <p className="muted">Try adjusting your travel dates, budget, or preferences.</p>
@@ -178,7 +281,7 @@ export default function ResultsPage() {
         </div>
       )}
 
-      {!loading && !error && plans.length > 0 && feasiblePlans.length === 0 && (
+      {!pendingRequest && !loading && !error && plans.length > 0 && feasiblePlans.length === 0 && (
         <div className="empty-results-box box">
           <h3>No verified feasible itineraries found</h3>
           <p className="muted">
@@ -187,7 +290,7 @@ export default function ResultsPage() {
         </div>
       )}
 
-      {!loading && !error && feasiblePlans.length > 0 && (
+      {!pendingRequest && !loading && !error && feasiblePlans.length > 0 && (
         <div className="feasible-results">
           <div className="feasible-results-heading">
             <h2>Top {feasiblePlans.length} feasible itinerar{feasiblePlans.length === 1 ? 'y' : 'ies'}</h2>
