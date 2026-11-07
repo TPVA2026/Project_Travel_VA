@@ -237,7 +237,7 @@ export default function TravelForm() {
       </details>
       <div className="actions">
         <BusIllustration progress={progress} />
-        <p className="completion-label" aria-live="polite">{progress}% complete</p>
+        <p className="completion-label" aria-live="polite">{progress}% finding</p>
         {errors.form && <p className="error" role="alert">{errors.form}</p>}
         <div className="action-row"><button className="primary" type="submit">Create itinerary</button><button className="secondary" type="button" onClick={clearForm}>Clear form</button></div>
       </div>
