@@ -157,52 +157,53 @@ export default function ResultsPage() {
   return (
     <section className="results-page">
       <div className="results-header-row">
-        <div>
-          <h1 className="results-title">Related results</h1>
+        <div className="results-intro-copy">
+          <p className="page-eyebrow">YOUR TRAVEL PLAN · STEP 2 OF 3</p>
+          <h1 className="results-title">Find your next getaway</h1>
           <p className="results-subtitle muted">
-            Destination recommendations and daily schedules based on your travel request.
+            Compare itineraries, see what fits your travel style, and choose the plan you love.
           </p>
         </div>
 
         {pendingRequest ? null : (
-        <div className="demo-controls-bar" title="M5 Acceptance criteria testing controls">
-          <span className="demo-controls-label">Test States:</span>
-          <button
-            type="button"
-            className="btn btn-sm btn-outline demo-btn"
-            onClick={() => {
-              setShouldSimulateError(false)
-              setShouldSimulateEmpty(false)
-              loadRecommendations({ shouldFail: false, empty: false, delay: 500 })
-            }}
-          >
-            ↻ Reload
-          </button>
-          <button
-            type="button"
-            className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
-            onClick={() => {
-              const next = !shouldSimulateError
-              setShouldSimulateError(next)
-              setShouldSimulateEmpty(false)
-              loadRecommendations({ shouldFail: next, delay: 200 })
-            }}
-          >
-            {shouldSimulateError ? '✓ Error simulated' : 'Simulate error'}
-          </button>
-          <button
-            type="button"
-            className={`btn btn-sm demo-btn ${shouldSimulateEmpty ? 'btn-danger-active' : 'btn-outline'}`}
-            onClick={() => {
-              const next = !shouldSimulateEmpty
-              setShouldSimulateEmpty(next)
-              setShouldSimulateError(false)
-              loadRecommendations({ empty: next, delay: 200 })
-            }}
-          >
-            {shouldSimulateEmpty ? '✓ Empty simulated' : 'Simulate empty'}
-          </button>
-        </div>
+          <div className="demo-controls-bar" title="M5 Acceptance criteria testing controls">
+            <span className="demo-controls-label">Test states</span>
+            <button
+              type="button"
+              className="btn btn-sm btn-outline demo-btn"
+              onClick={() => {
+                setShouldSimulateError(false)
+                setShouldSimulateEmpty(false)
+                loadRecommendations({ shouldFail: false, empty: false, delay: 500 })
+              }}
+            >
+              ↻ Reload
+            </button>
+            <button
+              type="button"
+              className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
+              onClick={() => {
+                const next = !shouldSimulateError
+                setShouldSimulateError(next)
+                setShouldSimulateEmpty(false)
+                loadRecommendations({ shouldFail: next, delay: 200 })
+              }}
+            >
+              {shouldSimulateError ? '✓ Error simulated' : 'Simulate error'}
+            </button>
+            <button
+              type="button"
+              className={`btn btn-sm demo-btn ${shouldSimulateEmpty ? 'btn-danger-active' : 'btn-outline'}`}
+              onClick={() => {
+                const next = !shouldSimulateEmpty
+                setShouldSimulateEmpty(next)
+                setShouldSimulateError(false)
+                loadRecommendations({ empty: next, delay: 200 })
+              }}
+            >
+              {shouldSimulateEmpty ? '✓ Empty simulated' : 'Simulate empty'}
+            </button>
+          </div>
         )}
       </div>
 
@@ -212,7 +213,10 @@ export default function ResultsPage() {
           <div className="chosen-banner-info">
             <span className="chosen-star-icon">⭐</span>
             <div>
-              <strong>Current Chosen Plan:</strong> {selectedPlanObj.destination} — {selectedPlanObj.title}
+              <strong>Your selected plan</strong>
+              <span className="chosen-banner-destination">
+                {selectedPlanObj.destination} <span aria-hidden="true">·</span> {selectedPlanObj.title}
+              </span>
               <div className="muted small">
                 {selectedPlanObj.days?.length} days • Status: <span className={`badge badge-${selectedPlanObj.status}`}>{selectedPlanObj.status}</span>
               </div>
@@ -227,7 +231,7 @@ export default function ResultsPage() {
               className="btn btn-sm btn-outline"
               onClick={() => handleSelectPlan(selectedPlanObj)}
             >
-              Clear
+              Clear selection
             </button>
           </div>
         </div>
@@ -293,8 +297,11 @@ export default function ResultsPage() {
       {!pendingRequest && !loading && !error && feasiblePlans.length > 0 && (
         <div className="feasible-results">
           <div className="feasible-results-heading">
-            <h2>Top {feasiblePlans.length} feasible itinerar{feasiblePlans.length === 1 ? 'y' : 'ies'}</h2>
-            <p className="muted small">“Suggest” marks the best match based on its fit criteria.</p>
+            <div>
+              <p className="page-eyebrow">MADE FOR YOUR TRIP</p>
+              <h2>{feasiblePlans.length} {feasiblePlans.length === 1 ? 'itinerary' : 'itineraries'} to explore</h2>
+            </div>
+            <p className="muted small">Look for “Suggested” to see the closest match to your preferences.</p>
           </div>
           <PlanComparison
             plans={feasiblePlans}

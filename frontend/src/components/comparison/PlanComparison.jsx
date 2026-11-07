@@ -53,7 +53,7 @@ export default function PlanComparison({ plans, selectedPlanId, suggestedPlanId,
               <div className="card-top-row">
                 <span className="card-index-label">Destination {i + 1}</span>
                 <div className="card-badges">
-                  {isSuggested && <span className="badge badge-suggested">Suggest</span>}
+                  {isSuggested && <span className="badge badge-suggested">Suggested</span>}
                   <span className={`badge badge-${p.status}`}>{p.status}</span>
                 </div>
               </div>

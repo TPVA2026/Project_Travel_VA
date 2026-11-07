@@ -107,16 +107,17 @@ export default function SelectedPlanPage() {
     return (
       <div className="empty-chosen-view box">
         <div className="empty-chosen-icon">🗺️</div>
-        <h2>No travel plan selected yet</h2>
+        <p className="page-eyebrow">YOUR TRAVEL PLAN · STEP 3 OF 3</p>
+        <h2>Your next trip starts here</h2>
         <p className="muted">
-          Browse through our personalized destination recommendations based on your travel request, compare itineraries, and choose your favorite plan to review and customize.
+          Choose an itinerary to see its day-by-day schedule, review the estimated costs, and make it your own.
         </p>
         <div className="empty-actions">
           <Link to="/results" className="btn btn-primary">
-            Browse Recommended Plans →
+            Explore recommended plans
           </Link>
           <Link to="/selected?id=p1" className="btn btn-outline">
-            Preview Sample Plan (Ha Giang)
+            Preview a sample itinerary
           </Link>
         </div>
       </div>
@@ -125,6 +126,19 @@ export default function SelectedPlanPage() {
 
   return (
     <div className="selected-page-container">
+      {activePlanId && (
+        <header className="selected-page-intro">
+          <div>
+            <p className="page-eyebrow">YOUR TRAVEL PLAN · STEP 3 OF 3</p>
+            <h1>Review your itinerary</h1>
+            <p className="muted">Explore the daily schedule, check estimated costs, or tailor the plan to you.</p>
+          </div>
+          <Link to="/results" className="btn btn-outline selected-back-button">
+            ← Compare plans
+          </Link>
+        </header>
+      )}
+
       {/* Reviewer / Test controls bar */}
       <div className="demo-controls-bar selected-demo-bar no-print">
         <span className="demo-controls-label">Test States:</span>
@@ -227,12 +241,29 @@ export default function SelectedPlanPage() {
                 )}
               </div>
 
-              <h1 className="selected-title">{plan.destination}</h1>
+              <h2 className="selected-title">{plan.destination}</h2>
               <p className="selected-plan-subtitle muted">{plan.title}</p>
               <div className={`badge badge-${plan.status}`}>{plan.status}</div>
 
+              <div className="selected-quick-facts" aria-label="Trip overview">
+                <div>
+                  <span>Duration</span>
+                  <strong>{plan.days?.length || 0} days</strong>
+                </div>
+                <div>
+                  <span>Activities</span>
+                  <strong>
+                    {plan.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0}
+                  </strong>
+                </div>
+                <div>
+                  <span>Estimated cost</span>
+                  <strong>{fmtMoney(knownTotal(plan).total)}</strong>
+                </div>
+              </div>
+
               <div className="reasons-block">
-                <h4 className="reasons-title">Fit Criteria & Reasons:</h4>
+                <h2 className="reasons-title">Why this plan fits</h2>
                 <ul className="reasons-list">
                   {plan.fit?.map((r) => (
                     <li key={r}>{r}</li>
