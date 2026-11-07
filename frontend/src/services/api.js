@@ -75,6 +75,27 @@ export async function revisePlan(planId, revisionPayload, opts = {}) {
   return await revisePlanMock(planId, revisionPayload, opts);
 }
 
+export function saveTripForResults(payload) {
+  sessionStorage.setItem("tpva-travel-request", JSON.stringify(payload));
+  sessionStorage.removeItem("tpva-ai-plan");
+}
+
+export async function generateItinerary(payload) {
+  const res = await fetch(apiUrl("/itineraries/generate"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const error = new Error(body.message || "The assistant could not build an itinerary.");
+    error.status = res.status;
+    error.body = body;
+    throw error;
+  }
+  return body;
+}
+
 export async function validateTravelRequest(payload) {
   const res = await fetch(apiUrl("/api/v1/requests/validate"), {
     method: "POST",
