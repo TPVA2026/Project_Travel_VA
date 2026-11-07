@@ -1,5 +1,12 @@
 import { Link } from 'react-router-dom'
 import { fmtMoney, knownTotal } from '../../services/mockData.js'
+import Icon from '../common/Icon.jsx'
+
+const STATUS_LABEL = {
+  FEASIBLE: 'Fits your trip',
+  INFEASIBLE: 'Not feasible',
+  UNVERIFIED: 'Needs checking',
+}
 
 export default function PlanComparison({ plans, selectedPlanId, suggestedPlanId, onSelectPlan }) {
   if (!plans || plans.length === 0) {
@@ -27,6 +34,7 @@ export default function PlanComparison({ plans, selectedPlanId, suggestedPlanId,
               0),
           0
         ) || 0
+        const statusLabel = STATUS_LABEL[p.status] || p.status
 
         return (
           <article
@@ -37,71 +45,88 @@ export default function PlanComparison({ plans, selectedPlanId, suggestedPlanId,
               {p.image && (
                 <img
                   src={p.image}
-                  alt={p.destination}
+                  alt={`${p.destination} landscape`}
+                  loading="lazy"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none'
                   }}
                 />
               )}
+              <div className="card-badges">
+                {isSuggested && (
+                  <span className="badge badge-suggested">
+                    <Icon name="sparkle" size={13} />
+                    Suggested
+                  </span>
+                )}
+                <span className={`badge badge-${p.status}`}>{statusLabel}</span>
+              </div>
               {isSelected && (
                 <div className="card-selected-ribbon">
-                  ✓ Chosen Plan
+                  <Icon name="check" size={14} />
+                  Chosen
                 </div>
               )}
             </div>
-            <div className="card-body">
-              <div className="card-top-row">
-                <span className="card-index-label">Destination {i + 1}</span>
-                <div className="card-badges">
-                  {isSuggested && <span className="badge badge-suggested">Suggested</span>}
-                  <span className={`badge badge-${p.status}`}>{p.status}</span>
-                </div>
-              </div>
-              <h3 className="card-destination">{p.destination}</h3>
 
-              <div className="card-features-summary muted small">
-                <span>📅 {p.days?.length || 0} days</span>
-                <span>•</span>
-                <span>🏛️ {totalAttractions} attraction{totalAttractions !== 1 ? 's' : ''}</span>
-                <span>•</span>
-                <span>🍽️ {totalDining} dining</span>
+            <div className="card-body">
+              <span className="card-index-label">Option {i + 1}</span>
+              <h3 className="card-destination">{p.destination}</h3>
+              {p.title && <p className="card-title">{p.title}</p>}
+
+              <div className="card-meta" aria-label="Trip summary">
+                <span>
+                  <Icon name="calendar" size={16} />
+                  {p.days?.length || 0} days
+                </span>
+                <span>
+                  <Icon name="landmark" size={16} />
+                  {totalAttractions} {totalAttractions === 1 ? 'attraction' : 'attractions'}
+                </span>
+                <span>
+                  <Icon name="utensils" size={16} />
+                  {totalDining} dining
+                </span>
               </div>
 
               <div className="card-details">
                 {p.status === 'INFEASIBLE' ? (
-                  <>
-                    <p className="fit-text">
-                      <strong>Fit:</strong> {p.fit?.join(', ') || 'None'}
-                    </p>
-                    <p className="fail-text">
-                      <strong>Not fit / Fail:</strong>{' '}
-                      {p.failReason || p.notFit?.join(', ') || 'Constraints violated'}
-                    </p>
-                  </>
+                  <p className="plan-note plan-note--danger">
+                    <Icon name="alert" size={16} />
+                    <span>{p.failReason || p.notFit?.join(', ') || 'Constraints violated'}</span>
+                  </p>
                 ) : (
                   <>
-                    <p className="fit-text">
-                      <strong>Fit:</strong> {p.fit?.join(', ') || 'Matches preferences'}
-                    </p>
+                    <ul className="fit-list">
+                      {(p.fit?.length ? p.fit : ['Matches your preferences']).slice(0, 3).map((reason) => (
+                        <li key={reason}>
+                          <Icon name="check" size={15} />
+                          {reason}
+                        </li>
+                      ))}
+                    </ul>
                     {p.notFit?.length > 0 && (
-                      <p className="not-fit-text">
-                        <strong>Not fit:</strong> {p.notFit.join(', ')}
+                      <p className="plan-note">
+                        <Icon name="info" size={15} />
+                        <span>Heads up: {p.notFit.join(', ')}</span>
                       </p>
                     )}
                     {missing.length > 0 && (
-                      <p className="unverified">
-                        <strong>Unverified:</strong> {missing.join(', ')}
+                      <p className="plan-note plan-note--warn">
+                        <Icon name="alert" size={15} />
+                        <span>Unverified: {missing.join(', ')}</span>
                       </p>
                     )}
                   </>
                 )}
               </div>
 
-              <div className="card-footer-action">
-                <div className="card-cost muted small">
-                  Estimated: {fmtMoney(total)}
-                </div>
+              <div className="card-cost-row">
+                <span className="cost-label">Estimated total</span>
+                <strong className="card-cost">{fmtMoney(total)}</strong>
+              </div>
 
+              <div className="card-footer-action">
                 <div className="card-action-buttons">
                   <button
                     type="button"
@@ -115,21 +140,26 @@ export default function PlanComparison({ plans, selectedPlanId, suggestedPlanId,
                     disabled={p.status === 'INFEASIBLE'}
                     title={
                       p.status === 'INFEASIBLE'
-                        ? 'Cannot select infeasible plan. Revise constraints first.'
+                        ? 'Cannot select an infeasible plan. Revise the constraints first.'
                         : isSelected
                         ? 'This plan is currently selected'
                         : 'Select this plan for your trip'
                     }
                     onClick={() => onSelectPlan && onSelectPlan(p)}
                   >
-                    {isSelected ? '✓ Selected' : 'Select plan'}
+                    {isSelected ? (
+                      <>
+                        <Icon name="check" size={15} />
+                        Selected
+                      </>
+                    ) : (
+                      'Select'
+                    )}
                   </button>
 
-                  <Link
-                    className="btn btn-sm btn-primary"
-                    to={`/selected?id=${p.id}`}
-                  >
-                    {isSelected ? 'View chosen plan →' : 'View & edit →'}
+                  <Link className="btn btn-sm btn-primary" to={`/selected?id=${p.id}`}>
+                    {isSelected ? 'Open plan' : 'View plan'}
+                    <Icon name="arrowRight" size={15} />
                   </Link>
                 </div>
               </div>
