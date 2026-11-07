@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildPayload, clientErrors, valueErrors } from "./travelRequest.js";
+import { buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -50,3 +50,39 @@ assert.equal(clientErrors(form({ periodMode: "dates" })).departureLocation, "Thi
 const bad = clientErrors(form({ ...valid, endDate: "2026-11-01", departureLocation: "  " }));
 assert.equal(bad.endDate, "End date must be on or after the start date.");
 assert.equal(bad.departureLocation, "This field is required.");
+
+// Simplified UI: selecting interests never invents a priority.
+const simple = form(valid);
+simple.delete("sightseeingPriority");
+assert.deepEqual(buildPayload(simple).preferences.interests, [{ type: "sightseeing" }]);
+assert.deepEqual(clientErrors(simple), {});
+
+// Blank optional details stay unspecified; core requirements remain enforced.
+simple.delete("interest");
+assert.equal(buildPayload(simple).preferences, undefined);
+assert.equal(buildPayload(simple).limits, undefined);
+simple.delete("budgetScope");
+assert.equal(clientErrors(simple).budgetScope, "This field is required.");
+
+assert.equal(progressOf(form({})), 0);
+assert.equal(progressOf(form({ departureLocation: "Da Nang", travelerCount: "2", budgetAmount: "0" })), 50);
+assert.equal(progressOf(form(valid)), 100);
+assert.equal(progressOf(form({ periodMode: "month", startDate: "2026-11-12", endDate: "2026-11-14" })), 0);
+assert.equal(progressOf(form({ ...valid, periodMode: "month", month: "2026-12", durationDays: "4" })), 100);
+assert.equal(progressOf(form({ destination: "Hoi An", interest: ["nature"] })), 0);
+
+assert.equal(formatBudgetInput("5000000"), "5,000,000");
+assert.equal(normalizeBudgetInput("5,000,000"), "5000000");
+assert.equal(buildPayload(form({ ...valid, budgetAmount: "5,000,000" })).budget.amount, 5000000);
+assert.deepEqual(clientErrors(form({ ...valid, budgetAmount: "5,000,000" })), {});
+assert.equal(formatBudgetInput("0"), "0");
+for (const invalid of ["5,00,000", "-1", "1.5", "abc"]) {
+  assert.equal(formatBudgetInput(invalid), invalid);
+  assert.ok(valueErrors(form({ ...valid, budgetAmount: invalid })).budgetAmount);
+}
+assert.equal(clientErrors(form({ ...valid, budgetAmount: "" })).budgetAmount, "This field is required.");
+
+assert.equal(clientErrors(form({ ...valid, budgetAmount: "   " })).budgetAmount, "This field is required.");
+for (const value of ["0x10", "1e3", "+1", "9007199254740993"]) {
+  assert.ok(clientErrors(form({ ...valid, budgetAmount: value })).budgetAmount);
+}

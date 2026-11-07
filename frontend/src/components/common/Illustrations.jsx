@@ -15,11 +15,14 @@ export function AirplaneIllustration() {
   )
 }
 
-export function BusIllustration() {
+export function BusIllustration({ progress = 0 }) {
+  const position = Math.max(0, Math.min(100, Number(progress) || 0));
   return (
-    <div className="illustration-bus-wrap" aria-hidden="true">
-      <img className="bus-svg" src={busImage} alt="" />
-      <div className="bus-road-line"></div>
+    <div className="bus-progress" role="progressbar" aria-label="Form completion" aria-valuemin={0} aria-valuemax={100} aria-valuenow={position}>
+      <div className="bus-motion-lane" aria-hidden="true">
+        <img className="bus-progress-image" src={busImage} alt="" style={{ left: `${position}%` }} />
+      </div>
+      <div className="bus-progress-track" aria-hidden="true"><span style={{ width: `${position}%` }} /></div>
     </div>
   )
 }
