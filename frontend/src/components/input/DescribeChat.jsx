@@ -8,6 +8,7 @@ const QUESTIONS = [
   "Who are you traveling with, and what should the trip feel like?",
   "When are you free, about how many days, and roughly what is your budget?",
   "Anything you want to prioritize or avoid?",
+  "Is there anything you would like to include in this trip?",
 ];
 
 export default function DescribeChat() {
