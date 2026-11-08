@@ -1,15 +1,27 @@
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
 import Navbar from './components/common/Navbar.jsx'
 import Footer from './components/common/Footer.jsx'
 import HomePage from './pages/HomePage.jsx'
 import ResultsPage from './pages/ResultsPage.jsx'
 import SelectedPlanPage from './pages/SelectedPlanPage.jsx'
 
+function ScrollToTop() {
+  const { pathname, search } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname, search])
+
+  return null
+}
+
 function Shell() {
   return (
     <div className="shell">
+      <ScrollToTop />
       <Navbar />
-      <main className="main">
+      <main className="main" id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

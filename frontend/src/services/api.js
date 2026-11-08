@@ -19,7 +19,7 @@ export {
 } from "./planSelection.js";
 
 import { revisePlanMock } from "./mockData.js";
-import { setSelectedPlan } from "./planSelection.js";
+import { setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
 
 function apiUrl(path) {
   if (!API_BASE || API_BASE === "/api") return path;
@@ -78,6 +78,7 @@ export async function revisePlan(planId, revisionPayload, opts = {}) {
 export function saveTripForResults(payload) {
   sessionStorage.setItem("tpva-travel-request", JSON.stringify(payload));
   sessionStorage.removeItem("tpva-ai-plan");
+  clearSelectedPlan();
 }
 
 export async function generateItinerary(payload) {

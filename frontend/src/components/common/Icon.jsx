@@ -74,6 +74,9 @@ const PATHS = {
   ),
   arrowLeft: <path d="M19 12H5M12 19l-7-7 7-7" />,
   arrowRight: <path d="M5 12h14M12 5l7 7-7 7" />,
+  arrowUp: <path d="M12 19V5M6 11l6-6 6 6" />,
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
+  close: <path d="M6 6l12 12M18 6 6 18" />,
   chevronDown: <path d="m6 9 6 6 6-6" />,
   info: (
     <>
