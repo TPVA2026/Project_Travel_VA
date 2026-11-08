@@ -11,6 +11,7 @@ import { getTopFeasiblePlans } from '../services/recommendations.js'
 import PlanComparison from '../components/comparison/PlanComparison.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
+import Icon from '../components/common/Icon.jsx'
 
 const REQUEST_KEY = 'tpva-travel-request'
 const PLAN_KEY = 'tpva-ai-plan'
@@ -29,28 +30,108 @@ function money(value) {
   return `${Number(value).toLocaleString('en-US')} VND`
 }
 
+function periodLabel(period) {
+  if (!period) return null
+  if (period.month) return period.month
+  if (period.startDate && period.endDate) return `${period.startDate} → ${period.endDate}`
+  return period.startDate || null
+}
+
+function RequestSummary({ request }) {
+  if (!request) return null
+
+  if (Array.isArray(request.notes)) {
+    return (
+      <div className="trip-chips" aria-label="Your trip brief">
+        <span className="trip-chip">
+          <Icon name="sparkle" size={16} />
+          Described in your own words
+        </span>
+        <span className="trip-chip trip-chip--muted">
+          {request.notes.length} {request.notes.length === 1 ? 'answer' : 'answers'} received
+        </span>
+      </div>
+    )
+  }
+
+  const chips = []
+  if (request.departureLocation) {
+    chips.push({ icon: 'mapPin', label: `From ${request.departureLocation}` })
+  }
+  const period = periodLabel(request.travelPeriod)
+  if (period) chips.push({ icon: 'calendar', label: period })
+  if (request.durationDays) {
+    chips.push({ icon: 'clock', label: `${request.durationDays} days` })
+  }
+  if (request.travelers?.count) {
+    chips.push({
+      icon: 'users',
+      label: `${request.travelers.count} ${request.travelers.count === 1 ? 'traveler' : 'travelers'}`,
+    })
+  }
+  if (request.budget?.amount != null) {
+    const scope = request.budget.scope === 'perPerson' ? 'per person' : 'whole group'
+    chips.push({ icon: 'wallet', label: `${money(request.budget.amount)} · ${scope}` })
+  }
+
+  if (chips.length === 0) return null
+
+  return (
+    <div className="trip-chips" aria-label="Your trip details">
+      {chips.map((chip) => (
+        <span key={chip.label} className="trip-chip">
+          <Icon name={chip.icon} size={16} />
+          {chip.label}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 function CandidatePlanView({ status, plan }) {
   return (
-    <article className="candidate-plan box">
-      <p className="candidate-status">Status: {status}</p>
-      <h2>{plan.title}</h2>
-      <p className="muted">Destination: {plan.destinationId}</p>
-      {plan.days.map((day) => (
-        <section key={day.dayNumber} className="candidate-day">
-          <h3>Day {day.dayNumber} · {day.date}</h3>
-          <ul>
-            {day.activities.map((activity) => (
-              <li key={activity.activityId}>
-                <strong>{activity.startTime}–{activity.endTime}</strong> {activity.placeId}
-                <span className="muted"> · {activity.type} · {money(activity.estimatedCostVnd)}</span>
-                {activity.reason && <div>{activity.reason}</div>}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+    <article className="ai-plan">
+      <header className="ai-plan-head">
+        <div>
+          <p className="page-eyebrow">Assistant draft</p>
+          <h2>{plan.title}</h2>
+          <p className="muted">Destination: {plan.destinationId}</p>
+        </div>
+        <span className="badge badge-UNVERIFIED">{status || 'UNVERIFIED'}</span>
+      </header>
+
+      <div className="ai-plan-days">
+        {plan.days.map((day) => (
+          <section key={day.dayNumber} className="ai-day">
+            <h3>
+              <span className="ai-day-number">Day {day.dayNumber}</span>
+              <span className="ai-day-date">{day.date}</span>
+            </h3>
+            <ul className="ai-activity-list">
+              {day.activities.map((activity) => (
+                <li key={activity.activityId} className="ai-activity">
+                  <span className="ai-activity-time">
+                    {activity.startTime}–{activity.endTime}
+                  </span>
+                  <div className="ai-activity-body">
+                    <strong>{activity.placeId}</strong>
+                    <span className="muted small">
+                      {activity.type} · {money(activity.estimatedCostVnd)}
+                    </span>
+                    {activity.reason && <p>{activity.reason}</p>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+
       {plan.assumptions?.length > 0 && (
-        <p className="muted">Assumptions: {plan.assumptions.join(' ')}</p>
+        <p className="ai-plan-note">
+          <Icon name="info" size={16} />
+          Assumptions: {plan.assumptions.join(' ')}
+        </p>
       )}
     </article>
   )
@@ -156,71 +237,87 @@ export default function ResultsPage() {
 
   return (
     <section className="results-page">
-      <div className="results-header-row">
-        <div>
-          <h1 className="results-title">Related results</h1>
+      <header className="results-head">
+        <div className="results-intro-copy">
+          <p className="page-eyebrow">Step 2 of 3 · Results</p>
+          <h1 className="results-title">Choose the itinerary that fits your trip</h1>
           <p className="results-subtitle muted">
-            Destination recommendations and daily schedules based on your travel request.
+            Compare verified plans side by side. Open one to see the day-by-day schedule, or save it as your trip.
           </p>
         </div>
 
-        {pendingRequest ? null : (
-        <div className="demo-controls-bar" title="M5 Acceptance criteria testing controls">
-          <span className="demo-controls-label">Test States:</span>
-          <button
-            type="button"
-            className="btn btn-sm btn-outline demo-btn"
-            onClick={() => {
-              setShouldSimulateError(false)
-              setShouldSimulateEmpty(false)
-              loadRecommendations({ shouldFail: false, empty: false, delay: 500 })
-            }}
-          >
-            ↻ Reload
-          </button>
-          <button
-            type="button"
-            className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
-            onClick={() => {
-              const next = !shouldSimulateError
-              setShouldSimulateError(next)
-              setShouldSimulateEmpty(false)
-              loadRecommendations({ shouldFail: next, delay: 200 })
-            }}
-          >
-            {shouldSimulateError ? '✓ Error simulated' : 'Simulate error'}
-          </button>
-          <button
-            type="button"
-            className={`btn btn-sm demo-btn ${shouldSimulateEmpty ? 'btn-danger-active' : 'btn-outline'}`}
-            onClick={() => {
-              const next = !shouldSimulateEmpty
-              setShouldSimulateEmpty(next)
-              setShouldSimulateError(false)
-              loadRecommendations({ empty: next, delay: 200 })
-            }}
-          >
-            {shouldSimulateEmpty ? '✓ Empty simulated' : 'Simulate empty'}
-          </button>
-        </div>
+        {!pendingRequest && (
+          <details className="dev-panel">
+            <summary>
+              <Icon name="refresh" size={15} />
+              Demo controls
+            </summary>
+            <div className="dev-panel-body" title="M5 Acceptance criteria testing controls">
+              <span className="demo-controls-label">Test states</span>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline demo-btn"
+                onClick={() => {
+                  setShouldSimulateError(false)
+                  setShouldSimulateEmpty(false)
+                  loadRecommendations({ shouldFail: false, empty: false, delay: 500 })
+                }}
+              >
+                Reload
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
+                onClick={() => {
+                  const next = !shouldSimulateError
+                  setShouldSimulateError(next)
+                  setShouldSimulateEmpty(false)
+                  loadRecommendations({ shouldFail: next, delay: 200 })
+                }}
+              >
+                {shouldSimulateError ? 'Error simulated' : 'Simulate error'}
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm demo-btn ${shouldSimulateEmpty ? 'btn-danger-active' : 'btn-outline'}`}
+                onClick={() => {
+                  const next = !shouldSimulateEmpty
+                  setShouldSimulateEmpty(next)
+                  setShouldSimulateError(false)
+                  loadRecommendations({ empty: next, delay: 200 })
+                }}
+              >
+                {shouldSimulateEmpty ? 'Empty simulated' : 'Simulate empty'}
+              </button>
+            </div>
+          </details>
         )}
-      </div>
+      </header>
+
+      <RequestSummary request={pendingRequest} />
 
       {/* Selected Plan Notification Banner */}
       {selectedPlanObj && (
         <div className="chosen-plan-banner" role="status">
           <div className="chosen-banner-info">
-            <span className="chosen-star-icon">⭐</span>
+            <span className="chosen-star-icon" aria-hidden="true">
+              <Icon name="star" size={20} />
+            </span>
             <div>
-              <strong>Current Chosen Plan:</strong> {selectedPlanObj.destination} — {selectedPlanObj.title}
+              <strong>Saved to your trip</strong>
+              <span className="chosen-banner-destination">
+                {selectedPlanObj.destination} <span aria-hidden="true">·</span> {selectedPlanObj.title}
+              </span>
               <div className="muted small">
-                {selectedPlanObj.days?.length} days • Status: <span className={`badge badge-${selectedPlanObj.status}`}>{selectedPlanObj.status}</span>
+                {selectedPlanObj.days?.length} days · Status:{' '}
+                <span className={`badge badge-${selectedPlanObj.status}`}>{selectedPlanObj.status}</span>
               </div>
             </div>
           </div>
           <div className="chosen-banner-actions">
             <Link to={`/selected?id=${selectedPlanObj.id}`} className="btn btn-sm btn-primary">
-              View chosen plan details →
+              Open chosen plan
+              <Icon name="arrowRight" size={15} />
             </Link>
             <button
               type="button"
@@ -265,8 +362,11 @@ export default function ResultsPage() {
       )}
 
       {!pendingRequest && !loading && !error && plans.length === 0 && (
-        <div className="empty-results-box box">
-          <h3>No matching destination plans found</h3>
+        <div className="empty-results-box">
+          <span className="empty-icon" aria-hidden="true">
+            <Icon name="compass" size={26} />
+          </span>
+          <h2>No matching destination plans found</h2>
           <p className="muted">Try adjusting your travel dates, budget, or preferences.</p>
           <button
             type="button"
@@ -282,19 +382,35 @@ export default function ResultsPage() {
       )}
 
       {!pendingRequest && !loading && !error && plans.length > 0 && feasiblePlans.length === 0 && (
-        <div className="empty-results-box box">
-          <h3>No verified feasible itineraries found</h3>
+        <div className="empty-results-box">
+          <span className="empty-icon" aria-hidden="true">
+            <Icon name="alert" size={26} />
+          </span>
+          <h2>No verified feasible itineraries found</h2>
           <p className="muted">
             Plans that are unverified or violate constraints are not shown as feasible.
           </p>
+          <Link to="/" className="btn btn-primary">
+            Adjust your trip
+          </Link>
         </div>
       )}
 
       {!pendingRequest && !loading && !error && feasiblePlans.length > 0 && (
-        <div className="feasible-results">
-          <div className="feasible-results-heading">
-            <h2>Top {feasiblePlans.length} feasible itinerar{feasiblePlans.length === 1 ? 'y' : 'ies'}</h2>
-            <p className="muted small">“Suggest” marks the best match based on its fit criteria.</p>
+        <section className="results-list" aria-labelledby="results-heading">
+          <div className="section-head">
+            <div>
+              <h2 id="results-heading">
+                {feasiblePlans.length} {feasiblePlans.length === 1 ? 'itinerary' : 'itineraries'} to explore
+              </h2>
+              <p className="muted">
+                Look for the <span className="suggested-inline">Suggested</span> tag to see the closest match to your preferences.
+              </p>
+            </div>
+            <span className="count-pill">
+              <Icon name="route" size={15} />
+              {feasiblePlans.length} plans
+            </span>
           </div>
           <PlanComparison
             plans={feasiblePlans}
@@ -302,7 +418,7 @@ export default function ResultsPage() {
             suggestedPlanId={feasiblePlans[0].id || feasiblePlans[0].planId}
             onSelectPlan={handleSelectPlan}
           />
-        </div>
+        </section>
       )}
     </section>
   )
