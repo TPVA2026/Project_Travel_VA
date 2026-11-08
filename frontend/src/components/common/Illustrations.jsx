@@ -15,6 +15,17 @@ export function AirplaneIllustration() {
   )
 }
 
+export function TravelSkyIllustration() {
+  return (
+    <div className="travel-sky" role="img" aria-label="Airplane flying through clouds">
+      <span className="travel-sky-path" aria-hidden="true" />
+      <img className="travel-sky-cloud travel-sky-cloud-a" src={cloudImage} alt="" />
+      <img className="travel-sky-cloud travel-sky-cloud-b" src={cloudImage} alt="" />
+      <img className="travel-sky-plane" src={airplaneImage} alt="" />
+    </div>
+  )
+}
+
 export function BusIllustration({ progress = 0 }) {
   const position = Math.max(0, Math.min(100, Number(progress) || 0));
   return (

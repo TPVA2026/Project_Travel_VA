@@ -81,7 +81,7 @@ export default function Navbar() {
 
       <header className="site-header no-print" ref={headerRef}>
         <div className={`site-header-inner${isWide ? ' is-wide' : ''}`}>
-          <NavLink to="/" className="site-brand">
+          <NavLink to="/welcome" className="site-brand">
             <span className="brand-mark" aria-hidden="true">
               <Icon name="compass" size={20} />
             </span>

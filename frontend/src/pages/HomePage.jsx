@@ -1,12 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import Icon from '../components/common/Icon.jsx'
+import { TravelSkyIllustration } from '../components/common/Illustrations.jsx'
 import DescribeChat from '../components/input/DescribeChat.jsx'
 import TravelForm from '../components/input/TravelForm.jsx'
-import { MOCK_PLANS, fmtMoney, knownTotal } from '../services/mockData.js'
-
-const sample = MOCK_PLANS[0]
-const sampleCost = knownTotal(sample).total
 
 function SwitchMode({ label, onClick }) {
   return (
@@ -97,45 +93,30 @@ export default function HomePage() {
           </div>
         </div>
 
-        <aside className="plan-aside" aria-label="What you get">
-          <Link
-            to={`/selected?id=${sample.id}`}
-            className="preview-card preview-card-sm is-link"
-          >
-            <div className="preview-media">
-              <img src={sample.image} alt={`${sample.destination} landscape`} />
-              <span className="preview-fit">
-                <Icon name="check" size={13} />
-                Fits your trip
-              </span>
+        <aside className="plan-aside" aria-label="Planning help">
+          <section className="plan-prep" aria-labelledby="plan-prep-title">
+            <div className="plan-prep-sky">
+              <TravelSkyIllustration />
             </div>
-            <div className="preview-body">
-              <p className="preview-kicker">Sample itinerary</p>
-              <h2>{sample.title}</h2>
-              <dl className="preview-stats">
-                <div>
-                  <dt>Known cost</dt>
-                  <dd>{fmtMoney(sampleCost)}</dd>
-                </div>
-                <div>
-                  <dt>Days</dt>
-                  <dd>{sample.days.length}</dd>
-                </div>
-              </dl>
-              <ul className="preview-days">
-                {sample.days.slice(0, 2).map((day) => (
-                  <li key={day.dayNumber}>
-                    <span>Day {day.dayNumber}</span>
-                    <strong>{day.activities?.[0]?.name ?? 'Open day'}</strong>
-                  </li>
-                ))}
+            <div className="plan-prep-body">
+              <p className="preview-kicker">Before you start</p>
+              <h2 id="plan-prep-title">Three things make the first draft easier.</h2>
+              <ul className="plan-prep-list">
+                <li>
+                  <Icon name="calendar" size={16} />
+                  <span><strong>Pick a rough date range</strong> Even a week or month is enough.</span>
+                </li>
+                <li>
+                  <Icon name="wallet" size={16} />
+                  <span><strong>Set a comfortable budget</strong> We flag missing prices instead of guessing.</span>
+                </li>
+                <li>
+                  <Icon name="clock" size={16} />
+                  <span><strong>Choose your pace</strong> Slow mornings or full days; change it later.</span>
+                </li>
               </ul>
-              <span className="preview-link">
-                Preview this sample
-                <Icon name="arrowRight" size={15} />
-              </span>
             </div>
-          </Link>
+          </section>
 
           <section className="plan-outcomes">
             <h2>What you get</h2>

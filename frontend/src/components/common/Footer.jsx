@@ -57,7 +57,7 @@ export default function Footer() {
 
         <div className="footer-grid">
           <div className="footer-brand-col">
-            <Link to="/" className="site-brand">
+            <Link to="/welcome" className="site-brand">
               <span className="brand-mark" aria-hidden="true">
                 <Icon name="compass" size={18} />
               </span>

@@ -16,7 +16,7 @@ export default function WelcomePage() {
 
   return (
     <div className="welcome-page">
-      <section className="welcome-hero">
+      <section className="welcome-hero" data-enter>
         <div className="welcome-copy">
           <p className="page-eyebrow">Travel planning assistant</p>
           <h1 className="welcome-title">Plan a trip that fits your dates and budget.</h1>
@@ -30,7 +30,7 @@ export default function WelcomePage() {
               <Icon name="arrowRight" size={17} />
             </Link>
             <Link to={`/selected?id=${sample.id}`} className="btn btn-outline">
-              See a sample itinerary
+              See how a plan looks
             </Link>
           </div>
           <ul className="welcome-facts">
@@ -76,7 +76,7 @@ export default function WelcomePage() {
               </span>
             </div>
             <div className="preview-body">
-              <p className="preview-kicker">Sample itinerary</p>
+              <p className="preview-kicker">Plan preview</p>
               <h2>{sample.title}</h2>
               <dl className="preview-stats">
                 <div>
@@ -101,7 +101,7 @@ export default function WelcomePage() {
                 ))}
               </ul>
               <span className="preview-link">
-                Open this sample
+                Open this plan
                 <Icon name="arrowRight" size={15} />
               </span>
             </div>
