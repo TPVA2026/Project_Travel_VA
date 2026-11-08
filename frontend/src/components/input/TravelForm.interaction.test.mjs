@@ -40,7 +40,17 @@ test("M1 quick request: validation, exact choices, retention, clear and payload"
     root = createRoot(dom.window.document.querySelector("#root"));
     await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(HomePage))));
     const form = dom.window.document.querySelector("form");
-    assert.equal(dom.window.document.querySelector("#trip-describe-panel"), null);
+    // Preserve main's page shell and its separate non-M1 entry flow.
+    assert.ok(dom.window.document.querySelector(".plan-intro"));
+    assert.ok(dom.window.document.querySelector(".plan-layout .plan-aside"));
+    assert.equal(dom.window.document.querySelector("#plan-prep-title").textContent, "Three things make the first draft easier.");
+    assert.equal(dom.window.document.querySelector(".plan-outcomes h2").textContent, "What you get");
+    assert.ok(dom.window.document.querySelector("#trip-describe-panel"));
+    assert.equal(dom.window.document.querySelector("#trip-form-panel").hidden, true);
+    await actOn(() => dom.window.document.querySelector(".entry-choice-card").click());
+    assert.equal(dom.window.document.querySelector("#trip-form-panel").hidden, false);
+    assert.equal(dom.window.document.activeElement.id, "departureLocation");
+    assert.equal(button("Switch to describing"), undefined);
     assert.equal(form.querySelector("summary").textContent, "Describe more");
     assert.equal(field("travelerCount").value, "");
     assert.equal(field("budgetAmount").value, "");
