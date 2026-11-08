@@ -1934,3 +1934,17 @@ body {
   .entry-choice-actions { grid-template-columns: 1fr; }
   .mode-switch button { width: 100%; }
 }
+
+/* M1 request flow: exact-value quick choices, with editable fields. */
+.quick-request-form [hidden] { display: none !important; }
+.request-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; list-style: none; margin: 0; padding: 0; }
+.request-steps li { padding: 12px; border-bottom: 3px solid #e2e8f0; color: #64748b; font-size: 13px; }
+.request-steps li[aria-current=step] { border-color: var(--primary-navy); color: var(--primary-navy); font-weight: 600; }
+.quick-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+.quick-choices button { min-width: 0; min-height: 42px; padding: 8px 6px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #334155; font: inherit; font-size: 13px; cursor: pointer; }
+.quick-choices button[aria-pressed=true] { border-color: var(--primary-navy); background: #eef2ff; color: var(--primary-navy); box-shadow: inset 0 0 0 1px var(--primary-navy); }
+.compact-form .interest-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.compact-form .interest-choices .pill { min-height: 48px; justify-content: flex-start; border-radius: 10px; }
+.compact-form textarea { box-sizing: border-box; width: 100%; min-height: 76px; resize: vertical; font: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; }
+.quick-request-form .action-row { flex-wrap: wrap; }
+@media (max-width: 480px) { .request-steps { gap: 6px; } .request-steps li { padding: 10px 6px; font-size: 12px; } }

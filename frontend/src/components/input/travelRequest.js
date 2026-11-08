@@ -22,6 +22,7 @@ const LOC_FIELD = {
   appliesTo: "appliesTo",
   applies_to: "appliesTo",
   destination: "destination",
+  characteristics: "characteristics",
   transportation: "transportation",
   priority: "interests",
   type: "interests",
@@ -33,7 +34,7 @@ function listed(data, name) {
 
 function lines(value) {
   return String(value ?? "")
-    .split(",")
+    .split(/[,\n]/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
@@ -77,8 +78,11 @@ export function valueErrors(data) {
   if (filledWrong(data.get("maxTravelTimeMinutes"), (n) => n < 1 || !Number.isInteger(n))) {
     errors.maxTravelTimeMinutes = "Travel time must be at least 1 minute.";
   }
-  if (filledWrong(data.get("maxDistanceKm"), (n) => n < 0)) {
-    errors.maxDistanceKm = "Distance cannot be negative.";
+  if (filledWrong(data.get("maxDistanceKm"), (n) => n <= 0 || !Number.isFinite(n))) {
+    errors.maxDistanceKm = "Distance must be greater than 0.";
+  }
+  if (lines(data.get("characteristics")).some(note => note.length > 80)) {
+    errors.characteristics = "Each group note must be 80 characters or fewer, separated by commas.";
   }
   return errors;
 }

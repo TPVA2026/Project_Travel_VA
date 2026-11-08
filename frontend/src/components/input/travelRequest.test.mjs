@@ -86,3 +86,21 @@ assert.equal(clientErrors(form({ ...valid, budgetAmount: "   " })).budgetAmount,
 for (const value of ["0x10", "1e3", "+1", "9007199254740993"]) {
   assert.ok(clientErrors(form({ ...valid, budgetAmount: value })).budgetAmount);
 }
+
+// Optional fields follow the same limits as the backend schema.
+{
+  const data = new FormData();
+  data.set("maxDistanceKm", "0");
+  assert.equal(Boolean(valueErrors(data).maxDistanceKm), true);
+  data.set("maxDistanceKm", "0.5");
+  assert.equal(valueErrors(data).maxDistanceKm, undefined);
+  data.set("characteristics", "x".repeat(81));
+  assert.equal(Boolean(valueErrors(data).characteristics), true);
+  data.set("characteristics", "older adults, children");
+  assert.equal(valueErrors(data).characteristics, undefined);
+}
+
+{
+  const data = form({ ...valid, characteristics: "older adults\nchildren, vegetarian" });
+  assert.deepEqual(buildPayload(data).travelers.characteristics, ["older adults", "children", "vegetarian"]);
+}
