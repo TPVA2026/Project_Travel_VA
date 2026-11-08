@@ -5,6 +5,7 @@ import Footer from './components/common/Footer.jsx'
 import HomePage from './pages/HomePage.jsx'
 import ResultsPage from './pages/ResultsPage.jsx'
 import SelectedPlanPage from './pages/SelectedPlanPage.jsx'
+import WelcomePage from './pages/WelcomePage.jsx'
 
 function ScrollToTop() {
   const { pathname, search } = useLocation()
@@ -34,6 +35,7 @@ export default function App() {
     <Routes>
       <Route element={<Shell />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/selected" element={<SelectedPlanPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

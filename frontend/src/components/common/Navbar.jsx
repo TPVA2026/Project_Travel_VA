@@ -17,6 +17,9 @@ export default function Navbar() {
   const toggleRef = useRef(null)
   const firstLinkRef = useRef(null)
   const isHome = location.pathname === '/'
+  const isWelcome = location.pathname === '/welcome'
+  const isWide = isWelcome
+  const showCta = !isHome && !isWelcome
 
   useEffect(() => {
     setOpen(false)
@@ -77,7 +80,7 @@ export default function Navbar() {
       </a>
 
       <header className="site-header no-print" ref={headerRef}>
-        <div className={`site-header-inner${isHome ? ' is-wide' : ''}`}>
+        <div className={`site-header-inner${isWide ? ' is-wide' : ''}`}>
           <NavLink to="/" className="site-brand">
             <span className="brand-mark" aria-hidden="true">
               <Icon name="compass" size={20} />
@@ -106,7 +109,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {!isHome && (
+          {showCta && (
             <button
               type="button"
               className="header-cta"
@@ -156,7 +159,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {!isHome && (
+          {showCta && (
             <button type="button" className="mobile-cta" onClick={startNewTrip}>
               <Icon name="refresh" size={17} />
               Start a new trip

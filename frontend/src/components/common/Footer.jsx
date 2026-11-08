@@ -25,6 +25,9 @@ const NOTES = [
 export default function Footer() {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
+  const isWelcome = pathname === '/welcome'
+  const isWide = isWelcome
+  const showCta = !isHome && !isWelcome
   const year = new Date().getFullYear()
 
   const backToTop = () => {
@@ -34,8 +37,8 @@ export default function Footer() {
 
   return (
     <footer className="site-footer no-print">
-      <div className={`site-footer-inner${isHome ? ' is-wide' : ''}`}>
-        {!isHome && (
+      <div className={`site-footer-inner${isWide ? ' is-wide' : ''}`}>
+        {showCta && (
           <section className="footer-cta" aria-labelledby="footer-cta-title">
             <div>
               <p className="footer-eyebrow">Ready when you are</p>
@@ -99,6 +102,10 @@ export default function Footer() {
               Built as a Computational Thinking course project. Itineraries are planning
               suggestions, not live bookings.
             </p>
+            <Link to="/welcome" className="footer-about-link">
+              Getting started
+              <Icon name="arrowRight" size={14} />
+            </Link>
             <button type="button" className="footer-top-btn" onClick={backToTop}>
               <Icon name="arrowUp" size={16} />
               Back to top
