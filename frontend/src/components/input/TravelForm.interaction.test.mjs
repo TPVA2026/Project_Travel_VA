@@ -50,7 +50,20 @@ test("M1 quick request: validation, exact choices, retention, clear and payload"
     await actOn(() => dom.window.document.querySelector(".entry-choice-card").click());
     assert.equal(dom.window.document.querySelector("#trip-form-panel").hidden, false);
     assert.equal(dom.window.document.activeElement.id, "departureLocation");
-    assert.equal(button("Switch to describing"), undefined);
+    assert.ok(button("Switch to describing"));
+    // Step buttons allow free navigation, but final submission still validates.
+    await click("2. Travelers & budget");
+    assert.equal(dom.window.document.activeElement.id, "travelerCount");
+    assert.equal(form.querySelector('[aria-current="step"]').textContent, "2. Travelers & budget");
+    const initialFetch = globalThis.fetch;
+    let invalidSubmitCalls = 0;
+    globalThis.fetch = () => { invalidSubmitCalls += 1; throw new Error("Invalid input must never call the API"); };
+    try { await click("Create itinerary"); } finally { globalThis.fetch = initialFetch; }
+    assert.equal(invalidSubmitCalls, 0, "Incomplete requests must not reach the API");
+    assert.equal(form.querySelector('[aria-label="Where and when"]').hidden, false);
+    assert.equal(dom.window.document.activeElement.id, "departureLocation");
+    await click("2. Travelers & budget");
+    await click("1. Where & when");
     assert.equal(form.querySelector("summary").textContent, "Describe more");
     assert.equal(field("travelerCount").value, "");
     assert.equal(field("budgetAmount").value, "");
@@ -83,6 +96,29 @@ test("M1 quick request: validation, exact choices, retention, clear and payload"
     await actOn(() => form.querySelector('[name="interest"][value="nature"]').click());
     await fill("maxDistanceKm", "50");
     await fill("appliesTo", "daily");
+    await click("1. Where & when");
+    assert.equal(field("departureLocation").value, "Hue");
+    assert.equal(field("startDate").value, "2030-06-01");
+    await click("2. Travelers & budget");
+    assert.equal(field("budgetAmount").value, "5,000,000");
+    assert.equal(form.querySelector('[name="budgetScope"][value="group"]').checked, true);
+    assert.equal(form.querySelector("details").open, true);
+    // Both mode panels stay mounted: keep form state and Describe answers/draft.
+    await click("Switch to describing");
+    assert.equal(dom.window.document.querySelector("#trip-form-panel").hidden, true);
+    assert.equal(dom.window.document.activeElement.id, "describe-draft");
+    await fill("describe-draft", "A quiet coastal place");
+    await click("Send");
+    await fill("describe-draft", "Two adults");
+    await click("Switch to the form");
+    assert.equal(dom.window.document.activeElement.id, "travelerCount");
+    assert.equal(field("budgetAmount").value, "5,000,000");
+    assert.equal(field("characteristics").value, "older adult");
+    assert.equal(form.querySelector('[name="diningPreferred"][type="hidden"]').value, "seafood");
+    await click("Switch to describing");
+    assert.equal(field("describe-draft").value, "Two adults");
+    assert.equal(dom.window.document.querySelector(".describe-answer").textContent, "A quiet coastal place");
+    await click("Switch to the form");
     await click("Back");
     await click("Continue");
     assert.equal(field("characteristics").value, "older adult");

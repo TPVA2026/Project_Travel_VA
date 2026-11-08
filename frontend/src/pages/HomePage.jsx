@@ -21,7 +21,9 @@ export default function HomePage() {
   useEffect(() => {
     const panel = mode === 'form' ? formPanelRef.current : mode === 'describe' ? describePanelRef.current : null
     if (!panel) return
-    const first = panel.querySelector('input:not([type="hidden"]), select, textarea, button')
+    const first = mode === 'form'
+      ? panel.querySelector('.request-step:not([hidden]) input:not([type="hidden"]), .request-step:not([hidden]) select, .request-step:not([hidden]) textarea')
+      : panel.querySelector('input:not([type="hidden"]), select, textarea, button')
     first?.focus({ preventScroll: true })
   }, [mode])
 
@@ -85,6 +87,7 @@ export default function HomePage() {
 
           <div id="trip-form-panel" className="input-panel plan-panel" hidden={mode !== 'form'} ref={formPanelRef}>
             <TravelForm />
+            <SwitchMode label="Switch to describing" onClick={() => setMode('describe')} />
           </div>
           <div id="trip-describe-panel" className="input-panel plan-panel" hidden={mode !== 'describe'} ref={describePanelRef}>
             <DescribeChat />

@@ -128,6 +128,11 @@ export default function TravelForm() {
     });
   }
 
+  function goToStep(next) {
+    setStep(next);
+    requestAnimationFrame(() => formRef.current?.querySelector(next === 0 ? "#departureLocation" : "#travelerCount")?.focus());
+  }
+
   function nextStep() {
     const form = formRef.current;
     const all = clientErrors(new FormData(form));
@@ -136,8 +141,7 @@ export default function TravelForm() {
     setErrors(found);
     setBad(found);
     if (Object.keys(found).length) { focusError(form, found); return; }
-    setStep(1);
-    requestAnimationFrame(() => form.querySelector("#travelerCount")?.focus());
+    goToStep(1);
   }
 
   function onInput(event) {
@@ -206,10 +210,10 @@ export default function TravelForm() {
   return (
     <form ref={formRef} key={formKey} className="planner compact-form quick-request-form" onSubmit={onSubmit} onInput={onInput} noValidate>
       <ol className="request-steps" aria-label="Request steps">
-        <li aria-current={step === 0 ? "step" : undefined}>1. Where &amp; when</li>
-        <li aria-current={step === 1 ? "step" : undefined}>2. Travelers &amp; budget</li>
+        <li><button type="button" aria-current={step === 0 ? "step" : undefined} aria-controls="request-trip-step" onClick={() => goToStep(0)}>1. Where &amp; when</button></li>
+        <li><button type="button" aria-current={step === 1 ? "step" : undefined} aria-controls="request-budget-step" onClick={() => goToStep(1)}>2. Travelers &amp; budget</button></li>
       </ol>
-      <section className="card request-step" hidden={step !== 0} aria-label="Where and when">
+      <section id="request-trip-step" className="card request-step" hidden={step !== 0} aria-label="Where and when">
         <h2>Trip details</h2>
         <div className="compact-grid">
           <Field label="Departure" name="departureLocation" error={errors.departureLocation} bad={bad} required>
@@ -244,7 +248,7 @@ export default function TravelForm() {
           </>}
         </div>
       </section>
-      <section className="card request-step" hidden={step !== 1} aria-label="Travelers and budget">
+      <section id="request-budget-step" className="card request-step" hidden={step !== 1} aria-label="Travelers and budget">
         <h2>Travelers &amp; budget</h2>
         <div className="compact-grid people-budget-grid">
           <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad} required>
@@ -301,7 +305,7 @@ export default function TravelForm() {
         <p className="completion-label" aria-live="polite">{progress}% finding</p>
         {errors.form && <p className="error" role="alert">{errors.form}</p>}
         <div className="action-row">
-          {step === 1 && <button className="secondary" type="button" onClick={() => { setStep(0); requestAnimationFrame(() => formRef.current?.querySelector("#departureLocation")?.focus()); }}>Back</button>}
+          {step === 1 && <button className="secondary" type="button" onClick={() => goToStep(0)}>Back</button>}
           {step === 0 ? <button className="primary" type="submit">Continue</button> : <button className="primary" type="submit">Create itinerary</button>}
           <button className="secondary" type="button" onClick={clearForm}>Clear form</button>
         </div>
