@@ -63,9 +63,9 @@ This endpoint must remain unchanged until Frontend and Backend agree on a coordi
 | POST | `/api/v1/requests/validate` | M6/M1 | TPVA-33 — contract update |
 | POST | `/itineraries/generate` | M3/M6 | Existing — candidate only |
 | POST | `/itineraries/evaluate` | M4/M6 | Implemented — TPVA-34.3 |
-| POST | `/itineraries/rank` | M4/M6 | Unavailable — HTTP 501 |
-| POST | `/itineraries/revise` | M3/M6 | Planned |
-| POST | `/itineraries/select` | M6 | Planned |
+| POST | `/itineraries/rank` | M4/M6 | Implemented — server evaluation required |
+| POST | `/itineraries/revise` | M3/M6 | Implemented — request revision + re-evaluation |
+| POST | `/itineraries/select` | M6 | Browser-local for no-account MVP |
 
 The endpoint contracts described below are integration targets. Documentation alone does not establish that the corresponding implementation is complete.
 
@@ -441,9 +441,10 @@ Candidate generation returns UNVERIFIED.
 
 Any final feasibility states must be defined and supplied by the deterministic validation module, not independently invented by the AI generation layer.
 
-## 7. Itinerary Evaluation and Planned Endpoints
+## 7. Itinerary Evaluation, Ranking and Revision
 
-Evaluation is implemented below; ranking, revision and selection remain planned.
+Evaluation, ranking and request revision are implemented below. Selection is
+stored in browser `localStorage` for the no-account MVP and has no server route.
 
 ### 7.1 POST `/itineraries/evaluate`
 
@@ -482,34 +483,40 @@ Internal exception text is never included.
 
 ### 7.2 POST `/itineraries/rank`
 
-The route currently always returns HTTP 501:
+Request body:
 
 ```json
 {
-  "error": "RANKING_UNAVAILABLE",
-  "message": "Ranking is not implemented; algorithm and contract are pending."
+  "request": {},
+  "plans": []
 }
 ```
 
-There is no accepted ranking request schema yet. No input is ranked, scored or
-passed to an algorithm. Sand must supply a callable, input/output contract and
-eligibility rules before the adapter can be implemented. Future ranking must
-receive schema-valid, grounded candidates with server-computed feasibility;
-client-provided feasibility flags must never be trusted.
+`request` must satisfy TravelRequest and `plans` must contain 1–20 distinct
+CandidatePlan objects. The server loads the dataset, validates and grounds every
+plan, calls `rank_candidates()` and recomputes feasibility. Client-provided
+status, score or other extra CandidatePlan fields fail schema validation.
 
-The ranking rules must be documented and must not override mandatory feasibility constraints.
+HTTP 200 returns `ranked`, `unscored`, and `excluded` separately. `ranked` is
+limited to the top three results; `totalRanked` reports the count before that
+limit. Feasible plans missing a score component stay in `unscored`; infeasible
+or unverified plans stay in `excluded`. No missing component is invented.
 
 ### 7.3 POST `/itineraries/revise`
 
-Accept a revision request and recalculate the relevant plan constraints.
+Request body has `request`, `plan`, and `revision`. `revision` follows
+`RevisionRequest`, changes exactly one TravelRequest field, and its `planId`
+must match the CandidatePlan. The server validates the revised TravelRequest and
+runs the complete grounding and feasibility pipeline again.
 
-Any revised candidate must be validated again.
+HTTP 200 returns `{request, plan, evaluation}`. The unchanged CandidatePlan is
+not regenerated and its previous feasibility state is never retained.
 
 ### 7.4 POST `/itineraries/select`
 
-Allow a user to select a preferred itinerary.
-
-Selection and persistence behavior must be agreed before this endpoint is implemented.
+No backend endpoint is implemented. The no-account MVP saves the selected plan
+in the current browser's `localStorage`. It is not synchronized across devices
+and clearing browser storage removes it.
 
 ## 8. Frontend–Backend Integration Rules
 
@@ -534,11 +541,10 @@ Frontend must handle nullable values explicitly.
 
 ### 8.3 Dataset Identifiers
 
-The current destination dataset does not define stable destination IDs.
-
-Frontend must not assume that a destination ID exists in the destinations response until the dataset owner and Backend agree on stable identifiers.
-
-This issue must be resolved before integrating candidate generation and selection flows that require destinationId.
+Destination records expose their curated `id`. At runtime the data adapter maps
+places to that ID only through an exact, unambiguous city/name match. It also
+flattens the nested route matrix without changing the source JSON. Ambiguous
+prices and unverified route measurements remain null.
 
 ### 8.4 Backend Documentation
 

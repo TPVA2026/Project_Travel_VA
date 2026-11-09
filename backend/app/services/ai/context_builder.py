@@ -20,6 +20,7 @@ Rules (so the LLM can only reference real, supported data):
 import logging
 import math
 import re
+import unicodedata
 from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator, model_validator
@@ -146,6 +147,21 @@ def _empty() -> dict:
     return {"destinations": [], "attractions": [], "dining": [], "travelMatrix": []}
 
 
+def _name_key(value: object) -> str | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    folded = unicodedata.normalize("NFKD", value.strip()).casefold()
+    plain = "".join(char for char in folded if not unicodedata.combining(char))
+    words = re.sub(r"[^a-z0-9]+", " ", plain).split()
+    if words[:2] == ["thanh", "pho"]:
+        words = words[2:]
+    elif words[:1] == ["tp"]:
+        words = words[1:]
+    if words[-1:] == ["city"]:
+        words = words[:-1]
+    return " ".join(words) or None
+
+
 def build_context(request: dict, dataset: dict) -> dict:
     preferences = request.get("preferences") if isinstance(request, dict) else None
     if isinstance(preferences, dict) and "destination" in preferences:
@@ -160,11 +176,12 @@ def build_context(request: dict, dataset: dict) -> dict:
         if not isinstance(wanted, str) or not wanted.strip():
             return _empty()
         wanted = wanted.strip()
-        matches = {d.id for d in destinations if wanted == d.id}
+        wanted_key = _name_key(wanted)
+        matches = {d.id for d in destinations if wanted_key == _name_key(d.id)}
         if not matches:
             matches = {
                 d.id for d in destinations
-                if any(wanted == (d.model_extra or {}).get(key)
+                if any(wanted_key == _name_key((d.model_extra or {}).get(key))
                        for key in ("name", "city", "city_name"))
             }
         if len(matches) != 1:
