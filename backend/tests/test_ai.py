@@ -24,6 +24,10 @@ FIX = Path(__file__).parent / "fixtures"
 load = lambda p: json.loads(p.read_text(encoding="utf-8"))
 
 dataset = load(FIX / "sample_dataset.json")
+# Explicit relationships for this single-destination TEST fixture only.
+# Production data is never assigned mappings by the integration layer.
+for fixture_place in [*dataset["attractions"], *dataset["dining"]]:
+    fixture_place["destinationId"] = "DN"
 request = load(FIX / "travel_request.json")
 plan = load(FIX / "sample_response.json")["plan"]
 NOSLEEP = lambda _s: None
@@ -152,11 +156,21 @@ def test_error_does_not_leak_key_or_upstream_body():
 
 # ---- HTTP endpoint (Gemini mocked) ----
 client = TestClient(app)
+# HTTP generation accepts the shared TravelRequest contract. The legacy M3
+# request fixture above remains in use for generator-level tests.
+endpoint_request = {
+    "travelPeriod": {"month": "2026-12"},
+    "durationDays": 2,
+    "departureLocation": "TP. Hồ Chí Minh",
+    "travelers": {"count": 2},
+    "budget": {"amount": 8000000, "currency": "VND", "scope": "group"},
+    "preferences": {"destination": "DN"},
+}
 
 
 def test_endpoint_returns_unverified_plan(monkeypatch):
     monkeypatch.setattr(itineraries, "generate_candidate", lambda body: plan)
-    res = client.post("/itineraries/generate", json=request)
+    res = client.post("/itineraries/generate", json=endpoint_request)
     assert res.status_code == 200
     assert res.json()["status"] == "UNVERIFIED"
     assert res.json()["plan"] == plan
@@ -165,7 +179,7 @@ def test_endpoint_returns_unverified_plan(monkeypatch):
 def test_endpoint_without_server_key_is_500_config(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.setattr(generator, "load_dataset", lambda: dataset)  # real curated JSON is still empty
-    res = client.post("/itineraries/generate", json=request)
+    res = client.post("/itineraries/generate", json=endpoint_request)
     assert res.status_code == 500
     assert res.json()["error"] == "CONFIG"
 
@@ -176,7 +190,7 @@ def test_endpoint_maps_errors(monkeypatch, code, status, http):
         raise GeminiError(code, "m", status)
 
     monkeypatch.setattr(itineraries, "generate_candidate", boom)
-    assert client.post("/itineraries/generate", json=request).status_code == http
+    assert client.post("/itineraries/generate", json=endpoint_request).status_code == http
 
 
 # ---- secret hygiene ----
@@ -193,17 +207,17 @@ def test_no_secret_committed_and_none_in_client():
 
 # ---- context_builder: only supported ids, no fabricated costs/times/ids ----
 def attraction(pid, **kw):
-    return {"id": pid, "name": "n", "category": "culture", "durationMin": 60, "priceVnd": None, "openHours": None, "source": "S", **kw}
+    return {"id": pid, "destinationId": "DN", "name": "n", "category": "culture", "durationMin": 60, "priceVnd": None, "openHours": None, "source": "S", **kw}
 
 
 def dining(pid, **kw):
-    return {"id": pid, "name": "n", "cuisine": "x", "durationMin": 60, "avgPricePerPersonVnd": None, "openHours": None, "source": "S", **kw}
+    return {"id": pid, "destinationId": "DN", "name": "n", "cuisine": "x", "durationMin": 60, "avgPricePerPersonVnd": None, "openHours": None, "source": "S", **kw}
 
 
 MULTI = {
     "destinations": [{"id": "DN", "name": "Da Nang"}, {"id": "HN", "name": "Ha Noi"}],
-    "attractions": [attraction("DN-ATT-001"), attraction("HN-ATT-001"), attraction("DN-ATT-002", destinationId="HN")],
-    "dining": [dining("DN-DIN-001"), dining("HN-DIN-001")],
+    "attractions": [attraction("DN-ATT-001"), attraction("HN-ATT-001", destinationId="HN"), attraction("DN-ATT-002", destinationId="HN")],
+    "dining": [dining("DN-DIN-001"), dining("HN-DIN-001", destinationId="HN")],
     "travel_matrix": [
         {"from": "DN-ATT-001", "to": "DN-DIN-001", "durationMin": 15, "distanceKm": 4.5},
         {"from": "DN-ATT-001", "to": "HN-DIN-001", "durationMin": 999, "distanceKm": 999},
@@ -216,8 +230,13 @@ def ids_of(ctx):
     return sorted(supported_place_ids(ctx))
 
 
-def test_context_keeps_only_requested_destination():
-    ctx = build_context({"preferredDestination": "DN"}, MULTI)
+@pytest.mark.parametrize("payload", [
+    {"preferredDestination": "DN"},
+    {"preferences": {"destination": "DN"}},
+    {"preferences": {"destination": "Da Nang"}},
+])
+def test_context_keeps_only_requested_destination(payload):
+    ctx = build_context(payload, MULTI)
     assert [d["id"] for d in ctx["destinations"]] == ["DN"]
     assert ids_of(ctx) == ["DN-ATT-001", "DN-DIN-001"]  # DN-ATT-002 carries destinationId HN; HN-* excluded
 
@@ -250,13 +269,13 @@ def test_context_never_fabricates_costs_or_times():
     data = {
         "destinations": [{"id": "DN"}],
         "attractions": [
-            {"id": "DN-ATT-001"},  # no price/duration/hours at all
+            {"id": "DN-ATT-001", "destinationId": "DN"},  # no price/duration/hours at all
             attraction("DN-ATT-002", priceVnd=0, durationMin=90),  # 0 is a real value, keep it
             attraction("DN-ATT-003", priceVnd=-5, durationMin="2h"),
             attraction("DN-ATT-004", priceVnd="50000", durationMin=True),
             attraction("DN-ATT-005", priceVnd=float("nan"), durationMin=float("inf")),
         ],
-        "dining": [{"id": "DN-DIN-001"}, dining("DN-DIN-002", avgPricePerPersonVnd=70000)],
+        "dining": [{"id": "DN-DIN-001", "destinationId": "DN"}, dining("DN-DIN-002", avgPricePerPersonVnd=70000)],
         "travel_matrix": [],
     }
     ctx = build_context({"preferredDestination": "DN"}, data)
@@ -322,7 +341,7 @@ def test_prompt_contains_only_supported_ids():
         seen["prompt"] = req["contents"]
         return httpx.Response(200, json=wrap(plan))
 
-    generate_candidate(request, {**dataset, "attractions": [*dataset["attractions"], attraction("HN-ATT-001")]},
+    generate_candidate(request, {**dataset, "attractions": [*dataset["attractions"], attraction("HN-ATT-001", destinationId="HN")]},
                        api_key="k", client=transport(handler))
     assert "DN-ATT-001" in seen["prompt"] and "HN-ATT-001" not in seen["prompt"]
 
@@ -330,7 +349,7 @@ def test_prompt_contains_only_supported_ids():
 def test_plan_using_id_outside_context_is_rejected():
     bad = copy.deepcopy(plan)
     bad["days"][0]["activities"][0]["placeId"] = "HN-ATT-001"
-    ds = {**dataset, "attractions": [*dataset["attractions"], attraction("HN-ATT-001")]}
+    ds = {**dataset, "attractions": [*dataset["attractions"], attraction("HN-ATT-001", destinationId="HN")]}
     with pytest.raises(GeminiError) as e:
         generate_candidate(request, ds, api_key="k", client=ok(bad), sleep=NOSLEEP)
     assert e.value.code == "INVALID_PLAN" and any("unknown placeId HN-ATT-001" in x for x in e.value.details)
@@ -350,7 +369,7 @@ def test_no_supported_places_never_calls_gemini():
 def test_endpoint_no_data_is_422(monkeypatch):
     monkeypatch.setattr(generator, "load_dataset", lambda: {"destinations": [], "attractions": [], "dining": [], "travel_matrix": []})
     monkeypatch.setenv("GEMINI_API_KEY", "k")
-    res = client.post("/itineraries/generate", json=request)
+    res = client.post("/itineraries/generate", json=endpoint_request)
     assert res.status_code == 422 and res.json()["error"] == "NO_DATA"
 
 
