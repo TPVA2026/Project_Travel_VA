@@ -14,6 +14,7 @@ import RevisionForm from '../components/revision/RevisionForm.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
+import Fireworks from '../components/common/Fireworks.jsx'
 
 const STATUS_LABEL = {
   FEASIBLE: 'Fits your trip',
@@ -33,6 +34,7 @@ export default function SelectedPlanPage() {
   const [loading, setLoading] = useState(Boolean(activePlanId))
   const [error, setError] = useState(null)
   const [isChosen, setIsChosen] = useState(false)
+  const [celebrate, setCelebrate] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState(false)
   const [shouldSimulateError, setShouldSimulateError] = useState(false)
 
@@ -73,9 +75,12 @@ export default function SelectedPlanPage() {
     if (isChosen) {
       clearSelectedPlan()
       setIsChosen(false)
+      setCelebrate(false)
     } else {
-      await selectPlan(plan)
+      const selection = selectPlan(plan)
       setIsChosen(true)
+      setCelebrate(true)
+      await selection
     }
   }
 
@@ -141,7 +146,21 @@ export default function SelectedPlanPage() {
   const totalCost = plan ? knownTotal(plan).total : 0
 
   return (
-    <div className="selected-page-container">
+    <div className={`selected-page-container${isChosen ? ' is-chosen' : ''}`}>
+      <Fireworks active={celebrate} onDone={() => setCelebrate(false)} />
+      {celebrate && plan && (
+        <div className="chosen-toast" role="status" aria-live="polite">
+          <span className="chosen-toast-icon" aria-hidden="true">
+            <Icon name="check" size={18} />
+          </span>
+          <span className="chosen-toast-copy">
+            <strong>Trip chosen</strong>
+            <span className="chosen-toast-meta">
+              {plan.destination} · {dayCount} days
+            </span>
+          </span>
+        </div>
+      )}
       <nav className="page-back no-print" aria-label="Breadcrumb">
         <Link to="/results" className="back-link">
           <Icon name="arrowLeft" size={16} />
@@ -256,9 +275,11 @@ export default function SelectedPlanPage() {
                   <Icon name="star" size={22} />
                 </span>
                 <div>
-                  <strong className="chosen-header-title">This is your chosen trip</strong>
+                  <strong className="chosen-header-title">
+                    You&rsquo;re going to {plan.destination}
+                  </strong>
                   <p className="chosen-header-sub">
-                    It is saved for your journey. You can revise it below, print the schedule, or switch plans.
+                    This itinerary is saved to your trip. Revise it below, print the schedule, or switch plans.
                   </p>
                 </div>
               </div>
