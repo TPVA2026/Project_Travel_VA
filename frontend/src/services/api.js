@@ -78,7 +78,20 @@ async function requestJson(path, payload) {
   });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const error = new Error(body.message || "The assistant could not build an itinerary.");
+    const validationMessages = body.detail?.messages
+    const defaults = {
+      422: "The request or candidate plan is invalid.",
+      500: "The planning service encountered an internal error.",
+      501: "This planning feature is not available yet.",
+      502: "The AI service is temporarily unavailable.",
+      504: "The AI service timed out. Please try again.",
+    }
+    const error = new Error(
+      body.message ||
+      (Array.isArray(validationMessages) ? validationMessages.join(" ") : null) ||
+      defaults[res.status] ||
+      "The assistant could not complete the request."
+    );
     error.status = res.status;
     error.body = body;
     throw error;
@@ -87,21 +100,27 @@ async function requestJson(path, payload) {
 }
 
 export async function generateItinerary(payload) {
-  const generated = await requestJson("/itineraries/generate", payload);
-  const evaluation = await requestJson("/itineraries/evaluate", {
-    request: payload,
-    plan: generated.plan,
-  });
-  const ranking = await requestJson("/itineraries/rank", {
-    request: payload,
-    plans: [generated.plan],
-  });
+  return requestJson("/itineraries/generate", payload)
+}
+
+export async function evaluateItinerary(request, plan) {
+  return requestJson("/itineraries/evaluate", { request, plan })
+}
+
+export async function rankItineraries(request, plans) {
+  return requestJson("/itineraries/rank", { request, plans })
+}
+
+export async function runItineraryPipeline(payload) {
+  const generated = await generateItinerary(payload)
+  const evaluation = await evaluateItinerary(payload, generated.plan)
+  const ranking = await rankItineraries(payload, [generated.plan])
   return {
     status: evaluation.status,
     plan: generated.plan,
     evaluation,
     ranking,
-  };
+  }
 }
 
 export async function validateTravelRequest(payload) {

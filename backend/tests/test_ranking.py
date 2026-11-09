@@ -141,3 +141,110 @@ def test_rank_api_re_evaluates_and_separates_unverified(monkeypatch, m4_case):
     assert body["ranked"] == [] and body["unscored"] == []
     assert body["excluded"][0]["status"] == "UNVERIFIED"
     assert body["limit"] == 3
+
+
+def test_rank_api_rejects_empty_candidates(m4_case):
+    request, _, _, _ = _rank_case(m4_case)
+    response = TestClient(app).post(
+        "/itineraries/rank", json={"request": request, "plans": []}
+    )
+    assert response.status_code == 422
+
+
+def test_rank_api_rejects_candidate_schema(monkeypatch, m4_case):
+    request, plan, dataset, _ = _rank_case(m4_case)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    plan["score"] = 1
+    response = TestClient(app).post(
+        "/itineraries/rank", json={"request": request, "plans": [plan]}
+    )
+    assert response.status_code == 422
+    assert response.json()["error"] == "INVALID_PLAN"
+
+
+def test_rank_api_rejects_unknown_place(monkeypatch, m4_case):
+    request, plan, dataset, _ = _rank_case(m4_case)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    plan["days"][0]["activities"][0]["placeId"] = "unknown"
+    response = TestClient(app).post(
+        "/itineraries/rank", json={"request": request, "plans": [plan]}
+    )
+    assert response.status_code == 422
+    assert response.json()["error"] == "INVALID_PLAN"
+
+
+def test_rank_api_excludes_infeasible_candidate(monkeypatch, m4_case):
+    request, plan, dataset, _ = _rank_case(m4_case)
+    request["budget"]["amount"] = 1
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    response = TestClient(app).post(
+        "/itineraries/rank", json={"request": request, "plans": [plan]}
+    )
+    assert response.status_code == 200
+    assert response.json()["excluded"][0]["status"] == "INFEASIBLE"
+
+
+def test_rank_candidates_preserves_tie_order(m4_case):
+    request, plan, dataset, supplemental = _rank_case(m4_case)
+    plans, costs = [], {}
+    for index in range(4):
+        candidate = deepcopy(plan)
+        candidate["planId"] = f"p{index}"
+        plans.append(candidate)
+        costs[candidate["planId"]] = supplemental["p1"]
+    result = rank_candidates(
+        request, plans, dataset=dataset, supplemental_costs_by_plan=costs
+    )
+    assert [item["planId"] for item in result["ranked"]] == ["p0", "p1", "p2", "p3"]
+    assert len({item["score"] for item in result["ranked"]}) == 1
+
+
+def test_rank_service_limits_ranked_only_to_three(monkeypatch, m4_case):
+    request, plan, dataset, _ = _rank_case(m4_case)
+    plans = []
+    for index in range(5):
+        candidate = deepcopy(plan)
+        candidate["planId"] = f"p{index}"
+        plans.append(candidate)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+
+    def fake_rank(_request, candidates, dataset=None):
+        return {
+            "ranked": [{"planId": item["planId"], "score": 1} for item in candidates],
+            "unscored": [{"planId": "kept-unscored"}],
+            "excluded": [{"planId": "kept-excluded"}],
+        }
+
+    monkeypatch.setattr("app.services.planning_service.rank_candidates", fake_rank)
+    result = rank_candidate_plans(request, plans)
+    assert [item["planId"] for item in result["ranked"]] == ["p0", "p1", "p2"]
+    assert result["totalRanked"] == 5
+    assert result["unscored"] == [{"planId": "kept-unscored"}]
+    assert result["excluded"] == [{"planId": "kept-excluded"}]
+
+
+def test_rank_api_maps_dataset_error(monkeypatch, m4_case):
+    request, plan, _, _ = _rank_case(m4_case)
+    monkeypatch.setattr(
+        "app.services.planning_service.load_dataset",
+        lambda: (_ for _ in ()).throw(OSError("private path")),
+    )
+    response = TestClient(app).post(
+        "/itineraries/rank", json={"request": request, "plans": [plan]}
+    )
+    assert response.status_code == 500
+    assert response.json()["error"] == "DATASET_ERROR"
+    assert "private path" not in response.text
+
+
+def test_rank_api_hides_internal_error(monkeypatch, m4_case):
+    request, plan, _, _ = _rank_case(m4_case)
+    monkeypatch.setattr(
+        "app.api.itineraries.rank_candidate_plans",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("secret")),
+    )
+    response = TestClient(app).post(
+        "/itineraries/rank", json={"request": request, "plans": [plan]}
+    )
+    assert response.status_code == 500
+    assert response.json() == {"error": "INTERNAL"}

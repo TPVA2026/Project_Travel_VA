@@ -1,4 +1,4 @@
-"""Client flow through real generation gates and evaluation; no external AI."""
+"""Client flow through generate, evaluate and rank; no external AI."""
 from copy import deepcopy
 import json
 from unittest.mock import Mock
@@ -33,7 +33,7 @@ def pipeline(m4_case, monkeypatch):
 
 
 @pytest.mark.parametrize("case", ["valid", "budget", "missing_matrix"])
-def test_generate_then_evaluate_pipeline(pipeline, case):
+def test_generate_evaluate_rank_pipeline(pipeline, case):
     request, plan, dataset, text, prompt, evaluator = pipeline
     if case == "budget":
         request["budget"]["amount"] = 1
@@ -50,12 +50,25 @@ def test_generate_then_evaluate_pipeline(pipeline, case):
     assert normalized["budget"]["currency"] == "VND"
     evaluated = client.post("/itineraries/evaluate", json={"request": request, "plan": generated.json()["plan"]})
     assert evaluated.status_code == 200
-    evaluator.assert_called_once()
     result = evaluated.json()
     assert result["status"] == ("INFEASIBLE" if case == "budget" else "UNVERIFIED")
     if case == "missing_matrix":
         assert any(c["code"] == "UNSUPPORTED_LEG" for c in result["reasons"])
         assert plan["days"][0]["travelLegs"][0]["durationMin"] is None
+
+    ranked = client.post(
+        "/itineraries/rank", json={"request": request, "plans": [generated.json()["plan"]]}
+    )
+    assert ranked.status_code == 200
+    ranking = ranked.json()
+    assert ranking["ranked"] == []
+    assert ranking["unscored"] == []
+    assert ranking["excluded"][0]["status"] == (
+        "INFEASIBLE" if case == "budget" else "UNVERIFIED"
+    )
+    # The evaluate route uses the service reference; ranking independently
+    # re-evaluates through the ranking module's imported validator.
+    evaluator.assert_called_once()
     assert (request, plan, dataset) == before
 
 

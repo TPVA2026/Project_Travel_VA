@@ -33,6 +33,27 @@ class PlanningError(Exception):
         self.status_code = status_code
 
 
+def _load_planning_dataset() -> dict:
+    """Load and validate dataset containers without exposing internal errors."""
+    try:
+        dataset = load_dataset()
+    except Exception:
+        raise PlanningError(
+            "DATASET_ERROR", "Unable to load planning data.", status_code=500
+        ) from None
+    if (not isinstance(dataset, dict)
+            or any(not isinstance(dataset.get(key, []), list)
+                   for key in ("destinations", "attractions", "dining"))
+            or not isinstance(
+                dataset.get("travel_matrix", dataset.get("travelMatrix", [])),
+                (list, dict),
+            )):
+        raise PlanningError(
+            "DATASET_ERROR", "Invalid planning data structure.", status_code=500
+        )
+    return dataset
+
+
 def evaluate_plan(request: dict, plan: dict) -> dict:
     """Evaluate a submitted pair without AI, inferred data, or ranking.
 
@@ -52,18 +73,7 @@ def evaluate_plan(request: dict, plan: dict) -> dict:
             exc.errors(include_input=False, include_context=False, include_url=False),
         ) from None
 
-    try:
-        dataset = load_dataset()
-    except Exception:
-        raise PlanningError("DATASET_ERROR", "Unable to load planning data.", status_code=500) from None
-
-    # Container errors are server dataset failures, not invalid client plans.
-    # The existing nested matrix is allowed but remains unsupported by M4.
-    if (not isinstance(dataset, dict)
-            or any(not isinstance(dataset.get(key, []), list)
-                   for key in ("destinations", "attractions", "dining"))
-            or not isinstance(dataset.get("travel_matrix", dataset.get("travelMatrix", [])), (list, dict))):
-        raise PlanningError("DATASET_ERROR", "Invalid planning data structure.", status_code=500)
+    dataset = _load_planning_dataset()
 
     context = build_context(normalized_request, dataset)
     if not valid_destination_ids(context):
@@ -212,10 +222,7 @@ def rank_candidate_plans(request: dict, plans: list[dict], limit: int = 3) -> di
                 exc.errors(include_input=False, include_context=False, include_url=False),
             ) from None
 
-    try:
-        dataset = load_dataset()
-    except Exception:
-        raise PlanningError("DATASET_ERROR", "Unable to load planning data.", status_code=500) from None
+    dataset = _load_planning_dataset()
     context = build_context(normalized_request, dataset)
     if not valid_destination_ids(context) or not supported_place_ids(context):
         raise PlanningError("NO_DATA", "No supported planning data is available for this request.")

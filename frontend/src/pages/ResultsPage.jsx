@@ -2,12 +2,12 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import {
   fetchDestinationRecommendations,
-  generateItinerary,
+  runItineraryPipeline,
   getSelectedPlanId,
   selectPlan,
   clearSelectedPlan,
 } from '../services/api.js'
-import { getTopFeasiblePlans } from '../services/recommendations.js'
+import { getCandidatePresentation, getTopFeasiblePlans } from '../services/recommendations.js'
 import PlanComparison from '../components/comparison/PlanComparison.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
@@ -88,8 +88,10 @@ function RequestSummary({ request }) {
   )
 }
 
-function CandidatePlanView({ status, plan, evaluation, selected, onSelect }) {
-  const reasons = evaluation?.reasons || []
+function CandidatePlanView({ status, plan, evaluation, ranking, selected, onSelect }) {
+  const presentation = getCandidatePresentation(status, evaluation, ranking, plan.planId)
+  const { reasons, recommended } = presentation
+  status = presentation.status
   return (
     <article className="ai-plan">
       <header className="ai-plan-head">
@@ -99,6 +101,7 @@ function CandidatePlanView({ status, plan, evaluation, selected, onSelect }) {
           <p className="muted">Destination: {plan.destinationId}</p>
         </div>
         <span className={`badge badge-${status || 'UNVERIFIED'}`}>{status || 'UNVERIFIED'}</span>
+        {recommended && <span className="badge">Ranked recommendation</span>}
       </header>
 
       <div className="ai-plan-days">
@@ -172,6 +175,7 @@ export default function ResultsPage() {
   const [aiPlan, setAiPlan] = useState(null)
   const [aiStatus, setAiStatus] = useState(null)
   const [aiEvaluation, setAiEvaluation] = useState(null)
+  const [aiRanking, setAiRanking] = useState(null)
   const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
   const [aiError, setAiError] = useState(null)
 
@@ -181,13 +185,15 @@ export default function ResultsPage() {
     setAiLoading(true)
     setAiError(null)
     try {
-      const body = await generateItinerary(pendingRequest)
+      const body = await runItineraryPipeline(pendingRequest)
       sessionStorage.setItem(PLAN_KEY, JSON.stringify({
-        requestKey, status: body.status, plan: body.plan, evaluation: body.evaluation,
+        requestKey, status: body.status, plan: body.plan,
+        evaluation: body.evaluation, ranking: body.ranking,
       }))
       setAiStatus(body.status)
       setAiPlan(body.plan)
       setAiEvaluation(body.evaluation)
+      setAiRanking(body.ranking)
     } catch (err) {
       setAiError(err?.message || 'The assistant could not build an itinerary.')
       setAiPlan(null)
@@ -228,6 +234,7 @@ export default function ResultsPage() {
         setAiStatus(saved.status)
         setAiPlan(saved.plan)
         setAiEvaluation(saved.evaluation || null)
+        setAiRanking(saved.ranking || null)
         setAiLoading(false)
         return
       }
@@ -376,6 +383,7 @@ export default function ResultsPage() {
           status={aiStatus || 'UNVERIFIED'}
           plan={aiPlan}
           evaluation={aiEvaluation}
+          ranking={aiRanking}
           selected={selectedPlanId === aiPlan.planId}
           onSelect={async () => {
             const savedPlan = {
