@@ -83,6 +83,7 @@ function CalendarIcon() {
 export default function TravelForm() {
   const navigate = useNavigate();
   const formRef = useRef(null);
+  const [step, setStep] = useState(0);
   const [budgetSliderValue, setBudgetSliderValue] = useState(0);
   const [budgetSliderMax, setBudgetSliderMax] = useState(BUDGET_SLIDER_MAX);
   const [budgetIsSet, setBudgetIsSet] = useState(false);
@@ -118,9 +119,25 @@ export default function TravelForm() {
   }
 
   function focusError(form, found) {
-    requestAnimationFrame(() => {
-      Array.from(form.elements).find(control => found[control.name] && control.type !== "hidden")?.focus();
-    });
+    const first = Array.from(form.elements).find(control => found[control.name] && control.type !== "hidden");
+    if (first) setStep(first.closest(".request-step")?.id === "request-trip-step" ? 0 : 1);
+    requestAnimationFrame(() => first?.focus());
+  }
+
+  function goToStep(next) {
+    setStep(next);
+    requestAnimationFrame(() => formRef.current?.querySelector(next === 0 ? "#departureLocation" : "#travelerCount")?.focus());
+  }
+
+  function nextStep() {
+    const form = formRef.current;
+    const all = clientErrors(new FormData(form));
+    const names = mode === "month" ? ["departureLocation", "destination", "month", "durationDays"] : ["departureLocation", "destination", "startDate", "endDate"];
+    const found = Object.fromEntries(Object.entries(all).filter(([name]) => names.includes(name)));
+    setErrors(found);
+    setBad(found);
+    if (Object.keys(found).length) { focusError(form, found); return; }
+    goToStep(1);
   }
 
   function onInput(event) {
@@ -138,6 +155,7 @@ export default function TravelForm() {
   function clearForm() {
     setFormKey((key) => key + 1);
     setMode("dates");
+    setStep(0);
     setBudgetSliderValue(0);
     setBudgetSliderMax(BUDGET_SLIDER_MAX);
     setBudgetIsSet(false);
@@ -150,6 +168,7 @@ export default function TravelForm() {
 
   async function onSubmit(event) {
     event.preventDefault();
+    if (step === 0) { nextStep(); return; }
     const data = new FormData(event.currentTarget);
     const found = clientErrors(data);
     setSubmitted(true);
@@ -186,8 +205,12 @@ export default function TravelForm() {
 
   return (
     <form ref={formRef} key={formKey} className="planner compact-form simple-request-form" onSubmit={onSubmit} onInput={onInput} noValidate>
-      <section className="card simple-trip-card" aria-label="Trip details">
-        <h2>Trip details</h2>
+      <ol className="request-steps" aria-label="Request steps">
+        <li><button type="button" aria-current={step === 0 ? "step" : undefined} aria-controls="request-trip-step" onClick={() => goToStep(0)}>1. Where &amp; when</button></li>
+        <li><button type="button" aria-current={step === 1 ? "step" : undefined} aria-controls="request-budget-step" onClick={() => goToStep(1)}>2. Travelers &amp; budget</button></li>
+      </ol>
+      <section id="request-trip-step" className="card simple-trip-card request-step" hidden={step !== 0} aria-label="Where and when">
+        <h2>Where &amp; when</h2>
         <div className="compact-grid route-grid">
           <Field label="Departure" name="departureLocation" error={errors.departureLocation} bad={bad} required>
             <input id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required {...described("departureLocation")} />
@@ -219,6 +242,9 @@ export default function TravelForm() {
             </Field>
           </>}
         </div>
+      </section>
+      <section id="request-budget-step" className="card simple-trip-card request-step" hidden={step !== 1} aria-label="Travelers and budget">
+        <h2>Travelers &amp; budget</h2>
         <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad} required>
           <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" placeholder="e.g. 2" required {...described("travelerCount")} />
         </Field>
@@ -236,7 +262,7 @@ export default function TravelForm() {
         </div>
       </section>
 
-      <details className="compact-options" open={expanded} onToggle={event => setExpanded(event.currentTarget.open)}>
+      <details hidden={step !== 1} className="compact-options" open={expanded} onToggle={event => setExpanded(event.currentTarget.open)}>
         <summary>Describe more</summary>
         <div className="compact-options-body">
           <h2>Travel interests</h2>
@@ -272,7 +298,8 @@ export default function TravelForm() {
         <p className="completion-label" aria-live="polite">{progress}% finding</p>
         {errors.form && <p className="error" role="alert">{errors.form}</p>}
         <div className="action-row">
-          <button className="primary" type="submit">Create itinerary</button>
+          {step === 1 && <button className="secondary" type="button" onClick={() => goToStep(0)}>Back</button>}
+          <button className="primary" type="submit">{step === 0 ? "Continue" : "Create itinerary"}</button>
           <button className="secondary" type="button" onClick={clearForm}>Clear form</button>
         </div>
       </div>
