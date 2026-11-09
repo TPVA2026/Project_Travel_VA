@@ -41,7 +41,6 @@ def test_invalid_duration():
 
     assert response.status_code == 422
     assert "detail" in response.json()
-# TODO(ZT): add end-to-end tests for /requests, /destinations, /itineraries
 
 import pytest
 from fastapi.testclient import TestClient

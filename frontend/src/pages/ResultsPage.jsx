@@ -88,7 +88,8 @@ function RequestSummary({ request }) {
   )
 }
 
-function CandidatePlanView({ status, plan }) {
+function CandidatePlanView({ status, plan, evaluation, selected, onSelect }) {
+  const reasons = evaluation?.reasons || []
   return (
     <article className="ai-plan">
       <header className="ai-plan-head">
@@ -97,7 +98,7 @@ function CandidatePlanView({ status, plan }) {
           <h2>{plan.title}</h2>
           <p className="muted">Destination: {plan.destinationId}</p>
         </div>
-        <span className="badge badge-UNVERIFIED">{status || 'UNVERIFIED'}</span>
+        <span className={`badge badge-${status || 'UNVERIFIED'}`}>{status || 'UNVERIFIED'}</span>
       </header>
 
       <div className="ai-plan-days">
@@ -133,6 +134,29 @@ function CandidatePlanView({ status, plan }) {
           Assumptions: {plan.assumptions.join(' ')}
         </p>
       )}
+      {reasons.length > 0 && (
+        <div className={`plan-alert-box alert-${String(status).toLowerCase()}`}>
+          <Icon name="info" size={16} />
+          <div>
+            <strong>{status === 'INFEASIBLE' ? 'Why this plan does not fit' : 'Information still needed'}</strong>
+            <ul>
+              {reasons.map((reason, index) => (
+                <li key={`${reason.code || 'reason'}-${index}`}>{reason.message || reason.code}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+      <div className="no-print">
+        <button
+          type="button"
+          className="btn btn-primary"
+          disabled={status === 'INFEASIBLE'}
+          onClick={onSelect}
+        >
+          {selected ? 'Saved as your trip' : 'Choose this plan'}
+        </button>
+      </div>
     </article>
   )
 }
@@ -147,6 +171,7 @@ export default function ResultsPage() {
   const [pendingRequest] = useState(readPendingRequest)
   const [aiPlan, setAiPlan] = useState(null)
   const [aiStatus, setAiStatus] = useState(null)
+  const [aiEvaluation, setAiEvaluation] = useState(null)
   const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
   const [aiError, setAiError] = useState(null)
 
@@ -157,9 +182,12 @@ export default function ResultsPage() {
     setAiError(null)
     try {
       const body = await generateItinerary(pendingRequest)
-      sessionStorage.setItem(PLAN_KEY, JSON.stringify({ requestKey, status: body.status, plan: body.plan }))
+      sessionStorage.setItem(PLAN_KEY, JSON.stringify({
+        requestKey, status: body.status, plan: body.plan, evaluation: body.evaluation,
+      }))
       setAiStatus(body.status)
       setAiPlan(body.plan)
+      setAiEvaluation(body.evaluation)
     } catch (err) {
       setAiError(err?.message || 'The assistant could not build an itinerary.')
       setAiPlan(null)
@@ -199,6 +227,7 @@ export default function ResultsPage() {
       if (saved?.requestKey === requestKey && saved.plan) {
         setAiStatus(saved.status)
         setAiPlan(saved.plan)
+        setAiEvaluation(saved.evaluation || null)
         setAiLoading(false)
         return
       }
@@ -343,7 +372,25 @@ export default function ResultsPage() {
       )}
 
       {pendingRequest && !aiLoading && !aiError && aiPlan && (
-        <CandidatePlanView status={aiStatus || 'UNVERIFIED'} plan={aiPlan} />
+        <CandidatePlanView
+          status={aiStatus || 'UNVERIFIED'}
+          plan={aiPlan}
+          evaluation={aiEvaluation}
+          selected={selectedPlanId === aiPlan.planId}
+          onSelect={async () => {
+            const savedPlan = {
+              ...aiPlan,
+              status: aiStatus || 'UNVERIFIED',
+              evaluation: aiEvaluation,
+              request: pendingRequest,
+              destination: aiPlan.destinationId,
+              missing: aiEvaluation?.reasons?.map((reason) => reason.message || reason.code) || [],
+              fit: [],
+            }
+            await selectPlan(savedPlan)
+            setSelectedPlanId(aiPlan.planId)
+          }}
+        />
       )}
 
       {!pendingRequest && loading && (

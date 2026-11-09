@@ -1,10 +1,8 @@
 // TODO(M6): API client for the backend. The browser must never hold third-party API credentials.
-export const API_BASE = import.meta.env.VITE_API_BASE ?? "/api";
+export const API_BASE = import.meta.env?.VITE_API_BASE ?? "/api";
 
 export {
   fetchDestinationRecommendations,
-  fetchPlanById,
-  revisePlanMock,
   MOCK_PLANS,
   knownTotal,
   fmtMoney,
@@ -18,8 +16,8 @@ export {
   isPlanSelected,
 } from "./planSelection.js";
 
-import { revisePlanMock } from "./mockData.js";
-import { setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
+import { fetchPlanById as fetchPlanByIdMock, revisePlanMock } from "./mockData.js";
+import { getSelectedPlan, setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
 
 function apiUrl(path) {
   if (!API_BASE || API_BASE === "/api") return path;
@@ -28,51 +26,42 @@ function apiUrl(path) {
 
 /**
  * Select a plan as the chosen trip itinerary (TPVA-31 M5).
- * Saves to local persistence and attempts backend notification if available.
+ * Saves to local persistence for the no-account MVP.
  */
 export async function selectPlan(planOrId) {
   setSelectedPlan(planOrId);
   const id = typeof planOrId === 'string' ? planOrId : planOrId.id || planOrId.planId;
-
-  try {
-    const res = await fetch(apiUrl("/itineraries/select"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ planId: id }),
-    });
-    if (res.ok) {
-      return await res.json();
-    }
-  } catch {
-    // Backend select route is optional in current phase
-  }
-
-  return { status: "SUCCESS", planId: id };
+  return { status: "SUCCESS", planId: id, storage: "localStorage" };
 }
 
 /**
  * Submit an itinerary revision request (TPVA-31 M5).
- * Falls back to mock simulation when backend endpoint is in progress.
+ * Uses mock simulation only when an explicit demo plan has no original request.
  */
 export async function revisePlan(planId, revisionPayload, opts = {}) {
-  // If backend endpoint is implemented and not forced to mock:
-  if (!opts.forceMock && !opts.shouldFail) {
-    try {
-      const res = await fetch(apiUrl("/itineraries/revise"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(revisionPayload),
-      });
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {
-      // Fallback to client mock
-    }
+  if (opts.forceMock) {
+    return revisePlanMock(planId, revisionPayload, opts);
   }
+  if (!opts.request || !opts.plan) {
+    throw new Error("The original request and candidate plan are required for re-evaluation.");
+  }
+  const candidate = Object.fromEntries(
+    ["planId", "title", "destinationId", "days", "missingData", "assumptions"]
+      .filter((key) => Object.hasOwn(opts.plan, key))
+      .map((key) => [key, opts.plan[key]])
+  );
+  return requestJson("/itineraries/revise", {
+    request: opts.request,
+    plan: candidate,
+    revision: revisionPayload,
+  });
+}
 
-  // Client mock simulation
-  return await revisePlanMock(planId, revisionPayload, opts);
+export async function fetchPlanById(id, opts = {}) {
+  const selected = getSelectedPlan();
+  const selectedId = selected?.id || selected?.planId;
+  if (selected && String(selectedId) === String(id)) return { data: selected };
+  return fetchPlanByIdMock(id, opts); // Explicit sample/demo route only.
 }
 
 export function saveTripForResults(payload) {
@@ -81,8 +70,8 @@ export function saveTripForResults(payload) {
   clearSelectedPlan();
 }
 
-export async function generateItinerary(payload) {
-  const res = await fetch(apiUrl("/itineraries/generate"), {
+async function requestJson(path, payload) {
+  const res = await fetch(apiUrl(path), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -95,6 +84,24 @@ export async function generateItinerary(payload) {
     throw error;
   }
   return body;
+}
+
+export async function generateItinerary(payload) {
+  const generated = await requestJson("/itineraries/generate", payload);
+  const evaluation = await requestJson("/itineraries/evaluate", {
+    request: payload,
+    plan: generated.plan,
+  });
+  const ranking = await requestJson("/itineraries/rank", {
+    request: payload,
+    plans: [generated.plan],
+  });
+  return {
+    status: evaluation.status,
+    plan: generated.plan,
+    evaluation,
+    ranking,
+  };
 }
 
 export async function validateTravelRequest(payload) {

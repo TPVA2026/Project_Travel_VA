@@ -163,12 +163,24 @@ export default function RevisionForm({ plan, onPlanRevised }) {
       const res = await revisePlan(plan.id || plan.planId, payload, {
         delay: 450,
         shouldFail: shouldSimulateError,
+        forceMock: !plan.request,
+        request: plan.request,
+        plan,
       })
 
-      if (res && res.data) {
+      const revised = res?.data || (res?.plan ? {
+        ...res.plan,
+        status: res.evaluation?.status || 'UNVERIFIED',
+        evaluation: res.evaluation,
+        request: res.request,
+        destination: res.plan.destinationId,
+        missing: res.evaluation?.reasons?.map((reason) => reason.message || reason.code) || [],
+        fit: [],
+      } : null)
+      if (revised) {
         setSuccessMessage(`✓ Revision applied successfully! Itinerary updated and feasibility recalculated.`)
         if (onPlanRevised) {
-          onPlanRevised(res.data)
+          onPlanRevised(revised)
         }
       }
     } catch (err) {

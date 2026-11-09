@@ -7,7 +7,6 @@ from app.services.input_service import (
     validate_travel_request,
     request_problems,
 )
-# TODO(ZT): POST /validate (calls input_service)
 router = APIRouter(
     prefix="/api/v1/requests",
     tags=["Requests"],

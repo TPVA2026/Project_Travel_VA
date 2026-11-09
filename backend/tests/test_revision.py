@@ -2,8 +2,10 @@ import json
 from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
+from app.main import app
 from app.services.input_service import validate_revision_request
 
 FIX = Path(__file__).resolve().parent / "fixtures"
@@ -39,3 +41,23 @@ def test_period_and_duration_revisions_parse():
 def test_invalid_revisions_are_rejected(case):
     with pytest.raises(ValidationError):
         validate_revision_request(case["body"])
+
+
+def test_revision_api_recalculates_feasibility(monkeypatch, m4_case):
+    request, plan, dataset, _ = m4_case
+    dataset["attractions"][0]["destinationId"] = "HUE"
+    dataset["dining"][0]["destinationId"] = "HUE"
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    response = TestClient(app).post("/itineraries/revise", json={
+        "request": request,
+        "plan": plan,
+        "revision": {
+            "planId": "p1", "changeType": "budget",
+            "budget": {"amount": 1, "currency": "VND", "scope": "group"},
+        },
+    })
+    assert response.status_code == 200
+    body = response.json()
+    assert body["request"]["budget"]["amount"] == 1
+    assert body["evaluation"]["status"] == "INFEASIBLE"
+    assert any(reason["code"] == "BUDGET" for reason in body["evaluation"]["reasons"])

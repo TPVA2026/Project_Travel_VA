@@ -98,11 +98,10 @@ def test_generation_dataset_failure_is_safe(pipeline, monkeypatch):
     evaluator.assert_not_called()
 
 
-def test_ranking_is_explicitly_unavailable(pipeline):
+def test_ranking_rejects_client_declared_status_and_score(pipeline):
     _, _, _, text, _, evaluator = pipeline
     response = client.post("/itineraries/rank", json={"status": "FEASIBLE", "score": 100})
-    assert response.status_code == 501
-    assert response.json()["error"] == "RANKING_UNAVAILABLE"
-    assert "plans" not in response.json()
+    assert response.status_code == 422
+    assert response.json()["detail"]
     text.assert_not_called()
     evaluator.assert_not_called()

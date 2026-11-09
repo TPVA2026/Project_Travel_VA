@@ -70,15 +70,20 @@ def test_missing_destination_ids_fail_closed(data, plan, destinations, monkeypat
     text.assert_not_called()
 
 
-def test_real_dataset_without_place_membership_does_not_call_gemini(monkeypatch):
-    text = Mock(side_effect=AssertionError("Gemini must not run"))
-    monkeypatch.setattr(generator, "request_text", text)
-    with pytest.raises(GeminiError) as exc:
-        generator.generate_candidate(
-            {"preferences": {"destination": "H"}}, load_dataset()
-        )
-    assert (exc.value.code, exc.value.status) == ("NO_DATA", 422)
-    text.assert_not_called()
+def test_real_dataset_is_canonicalized_with_explicit_relationships():
+    dataset = load_dataset()
+    context = build_context({"preferences": {"destination": "Hue"}}, dataset)
+    assert [item["id"] for item in context["destinations"]] == ["H"]
+    assert supported_place_ids(context)
+    assert all(item.get("destinationId") == "H"
+               for item in context["attractions"] + context["dining"])
+
+
+@pytest.mark.parametrize("name", ["Hồ Chí Minh", "Ho Chi Minh City", "TP. Ho Chi Minh"])
+def test_destination_name_normalization_is_unambiguous(name):
+    context = build_context({"preferences": {"destination": name}}, load_dataset())
+    assert [item["id"] for item in context["destinations"]] == ["HCM"]
+    assert supported_place_ids(context)
 
 
 @pytest.mark.parametrize("selection", ["unsupported", "", 123])
