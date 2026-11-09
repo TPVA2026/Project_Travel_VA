@@ -7,7 +7,7 @@ evaluate_candidate_costs: chuyển TravelRequest/CandidatePlan sang các nhóm �
 from math import isfinite
 
 
-# Tuple (dấu ngoặc tròn) chứa tên các nhóm bắt buộc, không sửa khi chạy.
+
 REQUIRED_COSTS = ("transport", "accommodation", "dining", "activities")
 
 
@@ -31,13 +31,9 @@ def _amount(value):
     return amount if isfinite(amount) and amount >= 0 else None
 
 
+
 def validate_cost_budget(request: dict, plan: dict) -> dict:
     """Tính chi phí cả chuyến và so với ngân sách dạng số.
-
-    request: {"budget": 500}; plan: {"costs": {"transport": 100, ...}}.
-    Mỗi nhóm nhận số, chuỗi số hoặc list các dict {"name": ..., "amount": ...}.
-    Chi phí đã biết vượt ngân sách được ưu tiên kết luận INFEASIBLE.
-    Chú thích ': dict' và '-> dict' mô tả kiểu đầu vào/đầu ra, không tự ép kiểu.
     """
     request = request if isinstance(request, dict) else {}
     plan = plan if isinstance(plan, dict) else {}
