@@ -2897,7 +2897,7 @@ body {
 .selected {
   display: grid;
   grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
-  align-items: start;
+  align-items: stretch;
   gap: 22px;
 }
 
@@ -2910,11 +2910,54 @@ body {
   box-shadow: var(--rv-shadow-sm);
 }
 
-.selected-left {
-  position: sticky;
-  top: 20px;
-  align-self: start;
+.selected-right {
+  position: relative;
   overflow: hidden;
+}
+
+.selected-right-scroll {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 22px 22px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rv-line-strong) transparent;
+}
+
+.selected-right-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.selected-right-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.selected-right-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: var(--rv-line-strong);
+}
+
+.selected-right-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--rv-terra);
+}
+
+@media print {
+  .selected-right {
+    overflow: visible;
+  }
+
+  .selected-right-scroll {
+    position: static;
+    overflow: visible;
+    scrollbar-gutter: auto;
+  }
 }
 
 .selected-img-wrap {
@@ -3093,11 +3136,8 @@ body {
 }
 
 /* Schedule column */
-.selected-right {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 20px 22px 22px;
+.selected-right-scroll > * {
+  flex: 0 0 auto;
 }
 
 .schedule-header {
@@ -3507,8 +3547,15 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .selected-left {
+  .selected-right {
+    overflow: visible;
+  }
+
+  .selected-right-scroll {
     position: static;
+    overflow: visible;
+    overscroll-behavior: auto;
+    scrollbar-gutter: auto;
   }
 
   .selected-img-wrap {
@@ -3553,7 +3600,7 @@ body {
     border-radius: 14px;
   }
 
-  .selected-right {
+  .selected-right-scroll {
     padding: 18px 16px;
   }
 

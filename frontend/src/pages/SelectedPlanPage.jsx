@@ -431,25 +431,32 @@ export default function SelectedPlanPage() {
 
             {/* Right Column: Timeline Schedule & Cost Breakdown */}
             <div className="selected-right">
-              <div className="schedule-header">
-                <div>
-                  <h2 className="itinerary-heading">Daily schedule</h2>
-                  <p className="muted small">
-                    Attractions, dining stops, time windows, and travel legs.
-                  </p>
+              <div
+                className="selected-right-scroll"
+                role="region"
+                aria-label="Daily schedule and cost summary"
+                tabIndex={0}
+              >
+                <div className="schedule-header">
+                  <div>
+                    <h2 className="itinerary-heading">Daily schedule</h2>
+                    <p className="muted small">
+                      Attractions, dining stops, time windows, and travel legs.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline no-print print-schedule-btn"
+                    onClick={() => window.print()}
+                  >
+                    <Icon name="printer" size={15} />
+                    Print schedule
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline no-print print-schedule-btn"
-                  onClick={() => window.print()}
-                >
-                  <Icon name="printer" size={15} />
-                  Print schedule
-                </button>
-              </div>
 
-              <ItineraryTimeline days={plan.days} />
-              <CostSummary plan={plan} />
+                <ItineraryTimeline days={plan.days} />
+                <CostSummary plan={plan} />
+              </div>
             </div>
           </div>
 
