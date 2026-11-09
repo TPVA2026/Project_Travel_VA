@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { validateTravelRequest } from "../../services/api";
-import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors } from "./travelRequest";
+import { BusIllustration } from "../common/Illustrations.jsx";
+import { saveTripForResults, validateTravelRequest } from "../../services/api";
+import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput } from "./travelRequest";
 
 const TRANSPORT = [
   ["taxi", "Taxi"],
@@ -10,14 +11,6 @@ const TRANSPORT = [
   ["car", "Car"],
   ["publicTransport", "Public transport"],
 ];
-
-function progressOf(data) {
-  const keys = data.get("periodMode") === "month"
-    ? ["month", "durationDays", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"]
-    : ["startDate", "endDate", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"];
-  const filled = keys.filter((key) => String(data.get(key) ?? "").trim()).length;
-  return Math.round((filled / keys.length) * 100);
-}
 
 function Field({ label, name, error, bad, required, children }) {
   const wrong = Boolean(bad?.[name]);
@@ -62,6 +55,7 @@ function Tags({ name, label, placeholder }) {
           value={draft}
           placeholder={placeholder}
           onChange={(event) => setDraft(event.target.value)}
+          onBlur={() => add(draft)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
@@ -91,6 +85,7 @@ export default function TravelForm() {
   const [submitted, setSubmitted] = useState(false);
   const [mode, setMode] = useState("dates");
   const [progress, setProgress] = useState(0);
+  const [expanded, setExpanded] = useState(false);
 
   function refresh(form) {
     const data = new FormData(form);
@@ -119,6 +114,7 @@ export default function TravelForm() {
     setBad({});
     setSubmitted(false);
     setProgress(0);
+    setExpanded(false);
   }
 
   async function onSubmit(event) {
@@ -129,9 +125,19 @@ export default function TravelForm() {
     setBad(found);
     setErrors(found);
     setProgress(progressOf(data));
-    if (Object.keys(found).length) return;
+    if (Object.keys(found).length) {
+      if (["maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "interests"].some(key => found[key])) setExpanded(true);
+      const form = event.currentTarget;
+      requestAnimationFrame(() => {
+        const input = Array.from(form.elements).find(control => found[control.name] && control.type !== "hidden");
+        input?.focus();
+      });
+      return;
+    }
     try {
-      await validateTravelRequest(buildPayload(data));
+      const payload = buildPayload(data);
+      await validateTravelRequest(payload);
+      saveTripForResults(payload);
       setErrors({});
       setBad({});
       navigate("/results");
@@ -149,148 +155,93 @@ export default function TravelForm() {
     : {});
 
   return (
-    <form key={formKey} className="planner" onSubmit={onSubmit} onInput={onInput} noValidate>
-      <section className="card">
-        <h2><CalendarIcon /> Trip dates</h2>
-        <Field label="Trip timing" name="periodMode" error={errors.periodMode} bad={bad}>
-          <select id="periodMode" name="periodMode" value={mode} onChange={(event) => setMode(event.target.value)}>
-            <option value="dates">By dates</option>
-            <option value="month">By month</option>
-          </select>
-        </Field>
-        <div className="grid-2">
-          {mode === "dates" ? (
-            <>
-              <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required>
-                <input id="startDate" name="startDate" type="date" required {...described("startDate")} />
-              </Field>
-              <Field label="End date" name="endDate" error={errors.endDate} bad={bad} required>
-                <input id="endDate" name="endDate" type="date" required {...described("endDate")} />
-              </Field>
-            </>
-          ) : (
-            <>
-              <Field label="Month" name="month" error={errors.month} bad={bad} required>
-                <input id="month" name="month" type="month" required {...described("month")} />
-              </Field>
-              <Field label="Number of days" name="durationDays" error={errors.durationDays} bad={bad} required>
-                <input id="durationDays" name="durationDays" type="number" min="1" step="1" required {...described("durationDays")} />
-              </Field>
-            </>
-          )}
-        </div>
-      </section>
-
+    <form key={formKey} className="planner compact-form" onSubmit={onSubmit} onInput={onInput} noValidate>
       <section className="card">
         <h2>Trip details</h2>
-        <div className="grid-2">
+        <div className="compact-grid">
           <Field label="Departure" name="departureLocation" error={errors.departureLocation} bad={bad} required>
-            <input id="departureLocation" name="departureLocation" required {...described("departureLocation")} />
+            <input id="departureLocation" name="departureLocation" placeholder="e.g. Ho Chi Minh City" required {...described("departureLocation")} />
           </Field>
           <Field label="Destination" name="destination" error={errors.destination} bad={bad}>
-            <input id="destination" name="destination" maxLength={200} {...described("destination")} />
+            <input id="destination" name="destination" placeholder="e.g. Da Nang" maxLength={200} {...described("destination")} />
           </Field>
+        </div>
+        <div className="compact-timing">
+          <h2><CalendarIcon /> Trip dates</h2>
+          <select aria-label="Trip timing" id="periodMode" name="periodMode" value={mode} onChange={(event) => setMode(event.target.value)}>
+            <option value="dates">By dates</option><option value="month">By month</option>
+          </select>
+        </div>
+        <div className="compact-grid">
+          {mode === "dates" ? <>
+            <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required>
+              <input id="startDate" name="startDate" type="date" required {...described("startDate")} />
+            </Field>
+            <Field label="End date" name="endDate" error={errors.endDate} bad={bad} required>
+              <input id="endDate" name="endDate" type="date" required {...described("endDate")} />
+            </Field>
+          </> : <>
+            <Field label="Month" name="month" error={errors.month} bad={bad} required>
+              <input id="month" name="month" type="month" required {...described("month")} />
+            </Field>
+            <Field label="Number of days" name="durationDays" error={errors.durationDays} bad={bad} required>
+              <input id="durationDays" name="durationDays" type="number" min="1" step="1" placeholder="e.g. 3" required {...described("durationDays")} />
+            </Field>
+          </>}
+        </div>
+        <div className="compact-grid people-budget-grid">
           <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad} required>
-            <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" required {...described("travelerCount")} />
+            <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" placeholder="e.g. 2" required {...described("travelerCount")} />
           </Field>
-          <Field label="Budget (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad} required>
-            <input id="budgetAmount" name="budgetAmount" type="number" min="0" step="1" required {...described("budgetAmount")} />
-          </Field>
-        </div>
-        <div className="field">
-          <span id="budget-label">Budget applies to <span className="req" aria-hidden="true">*</span></span>
-          <div className="pills" role="radiogroup" aria-labelledby="budget-label">
-            <label className="pill">
-              <input type="radio" name="budgetScope" value="group" />
-              Whole group
-            </label>
-            <label className="pill">
-              <input type="radio" name="budgetScope" value="perPerson" />
-              Per person
-            </label>
-          </div>
-          {errors.budgetScope && (
-            <span className={bad.budgetScope ? "error" : undefined} id="budgetScope-error">{errors.budgetScope}</span>
-          )}
-        </div>
-      </section>
-
-      <section className="card">
-        <h2>Travel interests</h2>
-        <div className="choices">
-          {INTERESTS.map(([type, label]) => (
-            <div className="choice" key={type}>
-              <label>
-                <input type="checkbox" name="interest" value={type} />
-                <span>{label}</span>
-              </label>
-              <div className="priorities" role="radiogroup" aria-label={`${label} priority`}>
-                {[1, 2, 3, 4].map((level) => (
-                  <label className="priority" key={level}>
-                    <input type="radio" name={`${type}Priority`} value={level} />
-                    {level}
-                  </label>
-                ))}
-              </div>
+          <div>
+            <Field label="Budget (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad} required>
+              <input id="budgetAmount" name="budgetAmount" type="text" inputMode="numeric" placeholder="e.g. 5,000,000" onBlur={event => { event.currentTarget.value = formatBudgetInput(event.currentTarget.value); }} required {...described("budgetAmount")} />
+            </Field>
+            <div className="compact-budget" role="radiogroup" aria-label="Budget applies to" aria-required="true" aria-describedby={errors.budgetScope ? "budgetScope-error" : undefined}>
+              <label><input type="radio" name="budgetScope" value="group" /> Whole group</label>
+              <label><input type="radio" name="budgetScope" value="perPerson" /> Per person</label>
             </div>
-          ))}
-        </div>
-        {errors.interests && <span className={bad.interests ? "error" : undefined}>{errors.interests}</span>}
-      </section>
-
-      <section className="card">
-        <h2>Food</h2>
-        <div className="grid-2">
-          <Tags name="diningPreferred" label="Foods you like" placeholder="Type a dish, then press Enter. Example: seafood" />
-          <Tags name="diningAvoid" label="Foods to avoid" placeholder="Example: spicy food" />
+            {errors.budgetScope && <span className="error" id="budgetScope-error">{errors.budgetScope}</span>}
+          </div>
         </div>
       </section>
 
-      <details className="card">
+      <details className="compact-options" open={expanded} onToggle={event => setExpanded(event.currentTarget.open)}>
         <summary>Advanced options</summary>
-        <div className="grid-2">
-          <Field label="Group notes" name="characteristics" error={errors.characteristics} bad={bad}>
-            <input id="characteristics" name="characteristics" placeholder="Example: children, older adults" />
-          </Field>
-          <Field label="Max distance (km)" name="maxDistanceKm" error={errors.maxDistanceKm} bad={bad}>
-            <input id="maxDistanceKm" name="maxDistanceKm" type="number" min="0" step="any" {...described("maxDistanceKm")} />
-          </Field>
-          <Field label="Max travel time (minutes)" name="maxTravelTimeMinutes" error={errors.maxTravelTimeMinutes} bad={bad}>
-            <input id="maxTravelTimeMinutes" name="maxTravelTimeMinutes" type="number" min="1" step="1" {...described("maxTravelTimeMinutes")} />
-          </Field>
-          <Field label="Limit applies to" name="appliesTo" error={errors.appliesTo} bad={bad}>
-            <select id="appliesTo" name="appliesTo" defaultValue="" {...described("appliesTo")}>
-              <option value="">No limit</option>
-              <option value="fromDeparture">From departure</option>
-              <option value="betweenActivities">Between stops</option>
-              <option value="daily">Within one day</option>
-            </select>
-          </Field>
+        <div className="compact-options-body">
+          <h2>Travel interests</h2>
+          <div className="pills compact-chips">{INTERESTS.map(([type, label]) => <label className="pill" key={type}><input type="checkbox" name="interest" value={type} />{label}</label>)}</div>
+          {errors.interests && <span className="error">{errors.interests}</span>}
+          <h2>Food</h2>
+          <div className="grid-2">
+            <Tags name="diningPreferred" label="Foods you like" placeholder="e.g. seafood (Enter)" />
+            <Tags name="diningAvoid" label="Foods to avoid" placeholder="e.g. spicy food (Enter)" />
+          </div>
+          <h2>Transportation</h2>
+          <div className="pills compact-chips">{TRANSPORT.map(([value, label]) => <label className="pill" key={value}><input type="checkbox" name="transportation" value={value} />{label}</label>)}</div>
+          <div className="grid-2">
+            <Field label="Group notes" name="characteristics" error={errors.characteristics} bad={bad}>
+              <input id="characteristics" name="characteristics" placeholder="e.g. children, older adults" />
+            </Field>
+            <Field label="Max distance (km)" name="maxDistanceKm" error={errors.maxDistanceKm} bad={bad}>
+              <input id="maxDistanceKm" name="maxDistanceKm" type="number" min="0" step="any" {...described("maxDistanceKm")} />
+            </Field>
+            <Field label="Max travel time (minutes)" name="maxTravelTimeMinutes" error={errors.maxTravelTimeMinutes} bad={bad}>
+              <input id="maxTravelTimeMinutes" name="maxTravelTimeMinutes" type="number" min="1" step="1" {...described("maxTravelTimeMinutes")} />
+            </Field>
+            <Field label="Limit applies to" name="appliesTo" error={errors.appliesTo} bad={bad}>
+              <select id="appliesTo" name="appliesTo" defaultValue="" {...described("appliesTo")}>
+                <option value="">No limit</option><option value="fromDeparture">From departure</option><option value="betweenActivities">Between stops</option><option value="daily">Within one day</option>
+              </select>
+            </Field>
+          </div>
         </div>
       </details>
-
-      <section className="card">
-        <h2>Transportation</h2>
-        <div className="pills">
-          {TRANSPORT.map(([value, label]) => (
-            <label className="pill" key={value}>
-              <input type="checkbox" name="transportation" value={value} />
-              {label}
-            </label>
-          ))}
-        </div>
-      </section>
-
       <div className="actions">
-        <div className="progress">
-          <span style={{ width: `${progress}%` }} />
-        </div>
-        <p>{progress}% complete</p>
-        {errors.form && <p className="error">{errors.form}</p>}
-        <div className="action-row">
-          <button className="primary" type="submit">Create itinerary</button>
-          <button className="secondary" type="button" onClick={clearForm}>Clear form</button>
-        </div>
+        <BusIllustration progress={progress} />
+        <p className="completion-label" aria-live="polite">{progress}% finding</p>
+        {errors.form && <p className="error" role="alert">{errors.form}</p>}
+        <div className="action-row"><button className="primary" type="submit">Create itinerary</button><button className="secondary" type="button" onClick={clearForm}>Clear form</button></div>
       </div>
     </form>
   );

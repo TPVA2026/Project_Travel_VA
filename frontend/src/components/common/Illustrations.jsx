@@ -15,11 +15,25 @@ export function AirplaneIllustration() {
   )
 }
 
-export function BusIllustration() {
+export function TravelSkyIllustration() {
   return (
-    <div className="illustration-bus-wrap" aria-hidden="true">
-      <img className="bus-svg" src={busImage} alt="" />
-      <div className="bus-road-line"></div>
+    <div className="travel-sky" role="img" aria-label="Airplane flying through clouds">
+      <span className="travel-sky-path" aria-hidden="true" />
+      <img className="travel-sky-cloud travel-sky-cloud-a" src={cloudImage} alt="" />
+      <img className="travel-sky-cloud travel-sky-cloud-b" src={cloudImage} alt="" />
+      <img className="travel-sky-plane" src={airplaneImage} alt="" />
+    </div>
+  )
+}
+
+export function BusIllustration({ progress = 0 }) {
+  const position = Math.max(0, Math.min(100, Number(progress) || 0));
+  return (
+    <div className="bus-progress" role="progressbar" aria-label="Form completion" aria-valuemin={0} aria-valuemax={100} aria-valuenow={position}>
+      <div className="bus-motion-lane" aria-hidden="true">
+        <img className="bus-progress-image" src={busImage} alt="" style={{ left: `${position}%` }} />
+      </div>
+      <div className="bus-progress-track" aria-hidden="true"><span style={{ width: `${position}%` }} /></div>
     </div>
   )
 }

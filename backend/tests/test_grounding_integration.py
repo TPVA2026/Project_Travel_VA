@@ -70,11 +70,13 @@ def test_missing_destination_ids_fail_closed(data, plan, destinations, monkeypat
     text.assert_not_called()
 
 
-def test_real_dataset_without_ids_does_not_call_gemini(monkeypatch):
+def test_real_dataset_without_place_membership_does_not_call_gemini(monkeypatch):
     text = Mock(side_effect=AssertionError("Gemini must not run"))
     monkeypatch.setattr(generator, "request_text", text)
     with pytest.raises(GeminiError) as exc:
-        generator.generate_candidate({}, load_dataset())
+        generator.generate_candidate(
+            {"preferences": {"destination": "H"}}, load_dataset()
+        )
     assert (exc.value.code, exc.value.status) == ("NO_DATA", 422)
     text.assert_not_called()
 

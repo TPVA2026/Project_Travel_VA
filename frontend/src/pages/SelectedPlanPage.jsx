@@ -13,6 +13,13 @@ import CostSummary from '../components/itinerary/CostSummary.jsx'
 import RevisionForm from '../components/revision/RevisionForm.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
+import Icon from '../components/common/Icon.jsx'
+
+const STATUS_LABEL = {
+  FEASIBLE: 'Fits your trip',
+  INFEASIBLE: 'Not feasible',
+  UNVERIFIED: 'Needs checking',
+}
 
 export default function SelectedPlanPage() {
   const [params] = useSearchParams()
@@ -105,51 +112,120 @@ export default function SelectedPlanPage() {
   // View when no plan has been selected and no ?id was provided in URL
   if (!activePlanId && !loading) {
     return (
-      <div className="empty-chosen-view box">
-        <div className="empty-chosen-icon">🗺️</div>
-        <h2>No travel plan selected yet</h2>
+      <div className="empty-chosen-view">
+        <span className="empty-chosen-icon" aria-hidden="true">
+          <Icon name="compass" size={34} />
+        </span>
+        <p className="page-eyebrow">Step 3 of 3 · Review</p>
+        <h1>Your next trip starts here</h1>
         <p className="muted">
-          Browse through our personalized destination recommendations based on your travel request, compare itineraries, and choose your favorite plan to review and customize.
+          Choose an itinerary to see its day-by-day schedule, review the estimated costs, and make it your own.
         </p>
         <div className="empty-actions">
           <Link to="/results" className="btn btn-primary">
-            Browse Recommended Plans →
+            Explore recommended plans
+            <Icon name="arrowRight" size={16} />
           </Link>
           <Link to="/selected?id=p1" className="btn btn-outline">
-            Preview Sample Plan (Ha Giang)
+            Preview a sample itinerary
           </Link>
         </div>
       </div>
     )
   }
 
+  const statusLabel = plan ? STATUS_LABEL[plan.status] || plan.status : null
+  const dayCount = plan?.days?.length || 0
+  const activityCount =
+    plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
+  const totalCost = plan ? knownTotal(plan).total : 0
+
   return (
     <div className="selected-page-container">
-      {/* Reviewer / Test controls bar */}
-      <div className="demo-controls-bar selected-demo-bar no-print">
-        <span className="demo-controls-label">Test States:</span>
-        <button
-          type="button"
-          className="btn btn-sm btn-outline demo-btn"
-          onClick={() => {
-            setShouldSimulateError(false)
-            loadPlan({ shouldFail: false, delay: 400 })
-          }}
-        >
-          ↻ Reload timeline
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
-          onClick={() => {
-            const next = !shouldSimulateError
-            setShouldSimulateError(next)
-            loadPlan({ shouldFail: next, delay: 200 })
-          }}
-        >
-          {shouldSimulateError ? '✓ Error simulated' : 'Simulate error'}
-        </button>
-      </div>
+      <nav className="page-back no-print" aria-label="Breadcrumb">
+        <Link to="/results" className="back-link">
+          <Icon name="arrowLeft" size={16} />
+          All plans
+        </Link>
+      </nav>
+
+      <header className="selected-page-intro">
+        <div className="results-intro-copy">
+          <p className="page-eyebrow">Step 3 of 3 · Review</p>
+          <h1>{plan?.destination || 'Review your itinerary'}</h1>
+          <p className="selected-lead muted">
+            {plan?.title || 'Loading your itinerary details…'}
+          </p>
+          {plan && (
+            <div className="intro-badges">
+              <span className={`badge badge-${plan.status}`}>{statusLabel}</span>
+              <span className="muted small">
+                <Icon name="calendar" size={15} />
+                {dayCount} days
+              </span>
+              <span className="muted small">
+                <Icon name="landmark" size={15} />
+                {activityCount} activities
+              </span>
+            </div>
+          )}
+        </div>
+
+        {plan && (
+          <div className="intro-actions no-print">
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={() => window.print()}
+              title="Print or save as PDF"
+            >
+              <Icon name="printer" size={16} />
+              Print
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={handleCopySummary}
+              title="Copy a text summary to your clipboard"
+            >
+              <Icon name={copyFeedback ? 'check' : 'copy'} size={16} />
+              {copyFeedback ? 'Copied' : 'Copy summary'}
+            </button>
+          </div>
+        )}
+      </header>
+
+      {/* Demo / reviewer controls, kept out of the main reading flow */}
+      <details className="dev-panel selected-dev-panel no-print">
+        <summary>
+          <Icon name="refresh" size={15} />
+          Demo controls
+        </summary>
+        <div className="dev-panel-body">
+          <span className="demo-controls-label">Test states</span>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline demo-btn"
+            onClick={() => {
+              setShouldSimulateError(false)
+              loadPlan({ shouldFail: false, delay: 400 })
+            }}
+          >
+            Reload timeline
+          </button>
+          <button
+            type="button"
+            className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
+            onClick={() => {
+              const next = !shouldSimulateError
+              setShouldSimulateError(next)
+              loadPlan({ shouldFail: next, delay: 200 })
+            }}
+          >
+            {shouldSimulateError ? 'Error simulated' : 'Simulate error'}
+          </button>
+        </div>
+      </details>
 
       {loading && (
         <Loading message="Loading daily activity timeline, attractions, and dining..." />
@@ -158,10 +234,10 @@ export default function SelectedPlanPage() {
       {!loading && error && (
         <div className="selected-error-wrapper">
           <ErrorMessage
-            title="Itinerary Not Available"
+            title="Itinerary not available"
             message={error}
             actionLink="/results"
-            actionText="← Back to results"
+            actionText="Back to results"
             onRetry={() => {
               setShouldSimulateError(false)
               loadPlan({ shouldFail: false, delay: 300 })
@@ -176,11 +252,13 @@ export default function SelectedPlanPage() {
           {isChosen && (
             <div className="chosen-header-banner" role="status">
               <div className="chosen-header-content">
-                <span className="chosen-badge-icon">⭐</span>
+                <span className="chosen-badge-icon" aria-hidden="true">
+                  <Icon name="star" size={22} />
+                </span>
                 <div>
-                  <h2 className="chosen-header-title">Your Chosen Trip Plan</h2>
-                  <p className="chosen-header-sub muted small">
-                    This itinerary is currently selected for your journey. You can request revisions below, print/save the schedule, or switch destinations.
+                  <strong className="chosen-header-title">This is your chosen trip</strong>
+                  <p className="chosen-header-sub">
+                    It is saved for your journey. You can revise it below, print the schedule, or switch plans.
                   </p>
                 </div>
               </div>
@@ -188,140 +266,190 @@ export default function SelectedPlanPage() {
               <div className="chosen-header-tools no-print">
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline tool-btn"
+                  className="tool-btn"
                   onClick={() => window.print()}
                   title="Print or save as PDF"
                 >
-                  🖨️ Print / Save PDF
+                  <Icon name="printer" size={15} />
+                  Print / Save PDF
                 </button>
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline tool-btn"
+                  className="tool-btn"
                   onClick={handleCopySummary}
                   title="Copy text summary to clipboard"
                 >
-                  {copyFeedback ? '✓ Copied!' : '📋 Copy Summary'}
+                  <Icon name={copyFeedback ? 'check' : 'copy'} size={15} />
+                  {copyFeedback ? 'Copied' : 'Copy summary'}
                 </button>
-                <Link to="/results" className="btn btn-sm btn-outline tool-btn">
-                  🔄 Switch Plan
+                <Link to="/results" className="tool-btn">
+                  <Icon name="swap" size={15} />
+                  Switch plan
                 </Link>
               </div>
             </div>
           )}
 
-          <section className="selected">
+          <div className="selected">
             {/* Left Column: Overview, Fit Criteria, Selection Actions */}
-            <div className="selected-left">
+            <aside className="selected-left" aria-label="Trip overview">
               <div className="img-wrap selected-img-wrap">
                 <img
                   src={plan.image}
-                  alt={plan.destination}
+                  alt={`${plan.destination} landscape`}
                   onError={(e) => {
                     e.currentTarget.style.display = 'none'
                   }}
                 />
                 {isChosen && (
                   <div className="card-selected-ribbon">
-                    ✓ Selected Plan
+                    <Icon name="check" size={14} />
+                    Chosen
                   </div>
                 )}
               </div>
 
-              <h1 className="selected-title">{plan.destination}</h1>
-              <p className="selected-plan-subtitle muted">{plan.title}</p>
-              <div className={`badge badge-${plan.status}`}>{plan.status}</div>
+              <div className="selected-summary-body">
+                <div className="selected-summary-head">
+                  <span className={`badge badge-${plan.status}`}>{statusLabel}</span>
+                  <h2 className="selected-title">{plan.title}</h2>
+                </div>
 
-              <div className="reasons-block">
-                <h4 className="reasons-title">Fit Criteria & Reasons:</h4>
-                <ul className="reasons-list">
-                  {plan.fit?.map((r) => (
-                    <li key={r}>{r}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {plan.status === 'INFEASIBLE' && (
-                <div className="plan-alert-box alert-infeasible">
-                  <strong>Cannot be chosen:</strong> {plan.failReason}
-                  <div className="small-tip">
-                    Tip: Use the revision form below to adjust your budget or constraints to make this plan feasible.
+                <div className="selected-quick-facts" aria-label="Trip overview">
+                  <div>
+                    <Icon name="calendar" size={16} />
+                    <span>Duration</span>
+                    <strong>{dayCount} days</strong>
+                  </div>
+                  <div>
+                    <Icon name="landmark" size={16} />
+                    <span>Activities</span>
+                    <strong>{activityCount}</strong>
+                  </div>
+                  <div>
+                    <Icon name="wallet" size={16} />
+                    <span>Estimated</span>
+                    <strong>{fmtMoney(totalCost)}</strong>
                   </div>
                 </div>
-              )}
 
-              {plan.status === 'UNVERIFIED' && (
-                <div className="plan-alert-box alert-unverified">
-                  <strong>Unverified items:</strong> {plan.missing?.join(', ')} (not counted as 0)
+                <div className="reasons-block">
+                  <h3 className="reasons-title">
+                    <Icon name="sparkle" size={16} />
+                    Why this plan fits
+                  </h3>
+                  <ul className="reasons-list">
+                    {plan.fit?.map((r) => (
+                      <li key={r}>
+                        <Icon name="check" size={15} />
+                        {r}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              )}
 
-              {/* Primary Selection Actions Block */}
-              <div className="actions-block no-print">
-                <button
-                  type="button"
-                  className={`btn btn-choose ${
-                    isChosen
-                      ? 'btn-selected-active'
-                      : plan.status === 'INFEASIBLE'
-                      ? 'btn-disabled'
-                      : 'btn-primary'
-                  }`}
-                  disabled={plan.status === 'INFEASIBLE'}
-                  onClick={handleToggleChoose}
-                >
-                  {isChosen ? '✓ Selected as your plan (Click to unselect)' : 'Choose this plan'}
-                </button>
-
-                {isChosen && (
-                  <div className="ok chosen-notice">
-                    ✓ This plan is currently selected for your trip!
+                {plan.status === 'INFEASIBLE' && (
+                  <div className="plan-alert-box alert-infeasible">
+                    <Icon name="alert" size={16} />
+                    <span>
+                      <strong>Cannot be chosen:</strong> {plan.failReason}
+                      <span className="small-tip">
+                        Use the revision form below to adjust your budget or constraints.
+                      </span>
+                    </span>
                   </div>
                 )}
 
-                <div className="back-link-wrap">
+                {plan.status === 'UNVERIFIED' && (
+                  <div className="plan-alert-box alert-unverified">
+                    <Icon name="info" size={16} />
+                    <span>
+                      <strong>Unverified items:</strong> {plan.missing?.join(', ')} (not counted as 0)
+                    </span>
+                  </div>
+                )}
+
+                {/* Primary Selection Actions Block */}
+                <div className="actions-block no-print">
+                  <button
+                    type="button"
+                    className={`btn btn-choose ${
+                      isChosen
+                        ? 'btn-selected-active'
+                        : plan.status === 'INFEASIBLE'
+                        ? 'btn-disabled'
+                        : 'btn-primary'
+                    }`}
+                    disabled={plan.status === 'INFEASIBLE'}
+                    onClick={handleToggleChoose}
+                  >
+                    {isChosen ? (
+                      <>
+                        <Icon name="check" size={18} />
+                        Selected — click to remove
+                      </>
+                    ) : (
+                      'Choose this plan'
+                    )}
+                  </button>
+
+                  {isChosen && (
+                    <p className="chosen-notice">
+                      <Icon name="check" size={15} />
+                      Saved as your trip. Find it again under Selected.
+                    </p>
+                  )}
+
                   <Link to="/results" className="back-link">
-                    ← Back to results
+                    <Icon name="arrowLeft" size={15} />
+                    Back to all plans
                   </Link>
                 </div>
               </div>
-            </div>
+            </aside>
 
             {/* Right Column: Timeline Schedule & Cost Breakdown */}
             <div className="selected-right">
               <div className="schedule-header">
                 <div>
-                  <h3 className="itinerary-heading">Daily Schedule</h3>
-                  <span className="muted small">
-                    Timeline shows attractions, dining stops, time windows, and travel legs.
-                  </span>
+                  <h2 className="itinerary-heading">Daily schedule</h2>
+                  <p className="muted small">
+                    Attractions, dining stops, time windows, and travel legs.
+                  </p>
                 </div>
                 <button
                   type="button"
                   className="btn btn-sm btn-outline no-print print-schedule-btn"
                   onClick={() => window.print()}
                 >
-                  🖨️ Print schedule
+                  <Icon name="printer" size={15} />
+                  Print schedule
                 </button>
               </div>
 
               <ItineraryTimeline days={plan.days} />
               <CostSummary plan={plan} />
             </div>
+          </div>
 
-            {/* Revision Section (TPVA-31) */}
-            <details className="box selected-wide revision-accordion no-print" open>
-              <summary className="revision-summary-header">
-                <span className="summary-title">✏️ Request a change or revise this plan</span>
-                <span className="muted small">(Adjust budget, duration, dates, travelers, preferences)</span>
-              </summary>
-              <div className="revision-panel-body">
-                <RevisionForm
-                  plan={plan}
-                  onPlanRevised={handlePlanRevised}
-                />
-              </div>
-            </details>
-          </section>
+          {/* Revision Section (TPVA-31) */}
+          <details className="revision-accordion selected-wide no-print">
+            <summary className="revision-summary-header">
+              <span className="revision-summary-icon" aria-hidden="true">
+                <Icon name="edit" size={18} />
+              </span>
+              <span className="revision-summary-copy">
+                <strong className="summary-title">Request a change</strong>
+                <span className="muted small">
+                  Adjust budget, duration, dates, travelers, or preferences
+                </span>
+              </span>
+              <Icon name="chevronDown" size={18} className="summary-chevron" />
+            </summary>
+            <div className="revision-panel-body">
+              <RevisionForm plan={plan} onPlanRevised={handlePlanRevised} />
+            </div>
+          </details>
         </>
       )}
     </div>
