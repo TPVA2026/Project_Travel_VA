@@ -9,7 +9,7 @@ import React, { act } from "react";
 import { buildPayload, clientErrors } from "./travelRequest.js";
 
 // DOM-level integration, not a browser visual or screen-reader test.
-test("M1 quick request: validation, exact choices, retention, clear and payload", async () => {
+test("M1 compact request: budget slider, exact manual input, validation and retention", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
@@ -40,70 +40,99 @@ test("M1 quick request: validation, exact choices, retention, clear and payload"
     root = createRoot(dom.window.document.querySelector("#root"));
     await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(HomePage))));
     const form = dom.window.document.querySelector("form");
-    // Preserve main's page shell and its separate non-M1 entry flow.
     assert.ok(dom.window.document.querySelector(".plan-intro"));
     assert.ok(dom.window.document.querySelector(".plan-layout .plan-aside"));
     assert.equal(dom.window.document.querySelector("#plan-prep-title").textContent, "Three things make the first draft easier.");
     assert.equal(dom.window.document.querySelector(".plan-outcomes h2").textContent, "What you get");
-    assert.ok(dom.window.document.querySelector("#trip-describe-panel"));
-    assert.equal(dom.window.document.querySelector("#trip-form-panel").hidden, true);
     await actOn(() => dom.window.document.querySelector(".entry-choice-card").click());
     assert.equal(dom.window.document.querySelector("#trip-form-panel").hidden, false);
     assert.equal(dom.window.document.activeElement.id, "departureLocation");
     assert.ok(button("Switch to describing"));
-    // Step buttons allow free navigation, but final submission still validates.
-    await click("2. Travelers & budget");
-    assert.equal(dom.window.document.activeElement.id, "travelerCount");
-    assert.equal(form.querySelector('[aria-current="step"]').textContent, "2. Travelers & budget");
-    const initialFetch = globalThis.fetch;
-    let invalidSubmitCalls = 0;
-    globalThis.fetch = () => { invalidSubmitCalls += 1; throw new Error("Invalid input must never call the API"); };
-    try { await click("Create itinerary"); } finally { globalThis.fetch = initialFetch; }
-    assert.equal(invalidSubmitCalls, 0, "Incomplete requests must not reach the API");
-    assert.equal(form.querySelector('[aria-label="Where and when"]').hidden, false);
-    assert.equal(dom.window.document.activeElement.id, "departureLocation");
-    await click("2. Travelers & budget");
-    await click("1. Where & when");
+    assert.equal(form.querySelector(".request-steps"), null);
+    assert.equal(button("Continue"), undefined);
+    assert.equal(form.querySelectorAll(".simple-trip-card").length, 1);
+    assert.equal(field("departureLocation").closest(".simple-trip-card"), field("budgetAmount").closest(".simple-trip-card"));
     assert.equal(form.querySelector("summary").textContent, "Describe more");
+    assert.equal(form.querySelector("details").open, false);
     assert.equal(field("travelerCount").value, "");
     assert.equal(field("budgetAmount").value, "");
     assert.equal(field("budgetScope").checked, false);
-    await click("Continue");
+    assert.equal(field("budgetSlider").value, "0");
+    assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
+    assert.equal(field("budgetSlider").name, "");
+    assert.equal(new FormData(form).has("budgetSlider"), false);
+    const initialFetch = globalThis.fetch;
+    let invalidSubmitCalls = 0;
+    globalThis.fetch = () => { invalidSubmitCalls += 1; throw new Error("Incomplete input must not call the API"); };
+    try { await click("Create itinerary"); } finally { globalThis.fetch = initialFetch; }
+    assert.equal(invalidSubmitCalls, 0);
     assert.equal(dom.window.document.activeElement.id, "departureLocation");
-    assert.equal(form.querySelector('[aria-label="Travelers and budget"]').hidden, true);
+
+    // Explicitly choosing zero at the untouched thumb works with keyboard or pointer.
+    await actOn(() => field("budgetSlider").dispatchEvent(new dom.window.KeyboardEvent("keyup", { key: "Home", bubbles: true })));
+    assert.equal(field("budgetAmount").value, "0");
+    await fill("budgetAmount", "");
+    await actOn(() => field("budgetSlider").dispatchEvent(new dom.window.Event("pointerup", { bubbles: true })));
+    assert.equal(field("budgetAmount").value, "0");
+    // Slider -> field, manual field -> exact slider value, no rounding or price chips.
+    await fill("budgetSlider", "7500000");
+    assert.equal(field("budgetAmount").value, "7,500,000");
+    assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "7,500,000 VND");
+    await fill("budgetAmount", "1234567");
+    assert.equal(field("budgetSlider").value, "1234567");
+    await fill("budgetAmount", "45,678,901");
+    assert.equal(field("budgetSlider").max, "45678901");
+    assert.equal(field("budgetSlider").value, "45678901");
+    assert.equal(buildPayload(new FormData(form)).budget.amount, 45678901);
+    await fill("budgetSlider", "12345678");
+    assert.equal(field("budgetAmount").value, "12,345,678");
+    assert.equal(field("budgetSlider").max, "45678901", "Sliding must not shrink its own range");
+    for (const invalid of ["-1", "1.5", "abc", "1,00", "9007199254740992"]) {
+      await fill("budgetAmount", invalid);
+      assert.equal(field("budgetAmount").value, invalid);
+      assert.ok(clientErrors(new FormData(form)).budgetAmount);
+    }
+    await fill("budgetAmount", "0");
+    assert.equal(field("budgetSlider").value, "0");
+    assert.equal(buildPayload(new FormData(form)).budget.amount, 0);
+    assert.equal(clientErrors(new FormData(form)).budgetAmount, undefined);
+    await fill("budgetAmount", "");
+    assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
+    assert.equal(clientErrors(new FormData(form)).budgetAmount, "This field is required.");
+    assert.equal(new FormData(form).get("budgetAmount"), "");
+    await fill("budgetAmount", "7654321");
+    await actOn(() => { field("budgetAmount").focus(); field("budgetAmount").blur(); });
+    assert.equal(field("budgetAmount").value, "7,654,321");
+    assert.equal(field("budgetSlider").value, "7654321");
+    assert.equal(field("budgetSlider").max, "20000000");
+
     await fill("departureLocation", "Hue");
     await fill("startDate", "2030-06-01");
     await fill("endDate", "2030-06-03");
-    await click("Continue");
-    assert.equal(dom.window.document.activeElement.id, "travelerCount");
-    for (const count of ["1", "3", "4", "2"]) {
-      await click(count);
-      assert.equal(field("travelerCount").value, count);
-    }
-    for (const amount of ["1,000,000", "3,000,000", "10,000,000", "5,000,000"]) {
-      await click(amount);
-      assert.equal(field("budgetAmount").value, amount);
-    }
-    assert.equal(field("travelerCount").value, "2");
-    assert.equal(field("budgetAmount").value, "5,000,000");
+    await fill("travelerCount", "2");
     assert.equal(clientErrors(new FormData(form)).budgetScope, "This field is required.");
     await actOn(() => form.querySelector('[name="budgetScope"][value="group"]').click());
     await actOn(() => form.querySelector("summary").click());
     await fill("characteristics", "older adult");
     await fill("diningPreferred", "seafood");
     await actOn(() => field("diningPreferred").dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Enter", bubbles: true })));
-    assert.equal(form.querySelector('[name="diningPreferred"][type="hidden"]').value, "seafood");
     await actOn(() => form.querySelector('[name="interest"][value="nature"]').click());
     await fill("maxDistanceKm", "50");
     await fill("appliesTo", "daily");
-    await click("1. Where & when");
-    assert.equal(field("departureLocation").value, "Hue");
-    assert.equal(field("startDate").value, "2030-06-01");
-    await click("2. Travelers & budget");
-    assert.equal(field("budgetAmount").value, "5,000,000");
-    assert.equal(form.querySelector('[name="budgetScope"][value="group"]').checked, true);
+
+    // Optional errors reopen Describe more and focus the visible invalid field.
+    await fill("maxDistanceKm", "0");
+    await actOn(() => form.querySelector("summary").click());
+    assert.equal(form.querySelector("details").open, false);
+    const beforeOptional = globalThis.fetch;
+    let optionalCalls = 0;
+    globalThis.fetch = () => { optionalCalls += 1; throw new Error("Invalid optional values must not call the API"); };
+    try { await click("Create itinerary"); } finally { globalThis.fetch = beforeOptional; }
+    assert.equal(optionalCalls, 0);
     assert.equal(form.querySelector("details").open, true);
-    // Both mode panels stay mounted: keep form state and Describe answers/draft.
+    assert.equal(dom.window.document.activeElement.id, "maxDistanceKm");
+    await fill("maxDistanceKm", "50");
+    // Both panels stay mounted: preserve form values, Describe answers and draft.
     await click("Switch to describing");
     assert.equal(dom.window.document.querySelector("#trip-form-panel").hidden, true);
     assert.equal(dom.window.document.activeElement.id, "describe-draft");
@@ -111,26 +140,24 @@ test("M1 quick request: validation, exact choices, retention, clear and payload"
     await click("Send");
     await fill("describe-draft", "Two adults");
     await click("Switch to the form");
-    assert.equal(dom.window.document.activeElement.id, "travelerCount");
-    assert.equal(field("budgetAmount").value, "5,000,000");
+    assert.equal(dom.window.document.activeElement.id, "departureLocation");
+    assert.equal(field("budgetAmount").value, "7,654,321");
+    assert.equal(field("budgetSlider").value, "7654321");
     assert.equal(field("characteristics").value, "older adult");
+    assert.equal(form.querySelector("details").open, true);
     assert.equal(form.querySelector('[name="diningPreferred"][type="hidden"]').value, "seafood");
     await click("Switch to describing");
     assert.equal(field("describe-draft").value, "Two adults");
     assert.equal(dom.window.document.querySelector(".describe-answer").textContent, "A quiet coastal place");
     await click("Switch to the form");
-    await click("Back");
-    await click("Continue");
-    assert.equal(field("characteristics").value, "older adult");
-    assert.equal(field("travelerCount").value, "2");
     const payload = buildPayload(new FormData(form));
     assert.deepEqual(payload.travelers, { count: 2, characteristics: ["older adult"] });
-    assert.deepEqual(payload.budget, { amount: 5000000, currency: "VND", scope: "group" });
+    assert.deepEqual(payload.budget, { amount: 7654321, currency: "VND", scope: "group" });
     assert.equal(payload.durationDays, 3);
     assert.deepEqual(payload.preferences.interests, [{ type: "nature" }]);
     assert.deepEqual(payload.preferences.dining, { preferred: ["seafood"], avoid: [] });
     assert.deepEqual(payload.limits, { maxDistanceKm: 50, appliesTo: "daily" });
-    assert.equal("prompt" in payload || "description" in payload, false);
+    assert.equal("prompt" in payload || "description" in payload || "budgetSlider" in payload, false);
     const oldFetch = globalThis.fetch;
     const requests = [];
     globalThis.fetch = async (url, options) => { requests.push({ url, payload: JSON.parse(options.body) }); return { ok: true, json: async () => ({ valid: true, data: payload }) }; };
@@ -139,8 +166,12 @@ test("M1 quick request: validation, exact choices, retention, clear and payload"
     await click("Clear form");
     assert.equal(dom.window.document.activeElement.id, "departureLocation");
     assert.equal(field("travelerCount").value, "");
+    assert.equal(field("budgetAmount").value, "");
+    assert.equal(field("budgetSlider").value, "0");
+    assert.equal(field("budgetSlider").max, "20000000");
+    assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
     assert.equal(field("characteristics").value, "");
-    assert.equal(form.isConnected, false); // React remount clears uncontrolled fields/tags.
+    assert.equal(form.isConnected, false);
     const clean = dom.window.document.querySelector("form");
     assert.equal(clean.querySelector("details").open, false);
     assert.equal(clean.querySelector('[name="diningPreferred"][type="hidden"]'), null);
@@ -148,20 +179,17 @@ test("M1 quick request: validation, exact choices, retention, clear and payload"
     await actOn(() => { field("periodMode").value = "month"; field("periodMode").dispatchEvent(new dom.window.Event("change", { bubbles: true })); });
     await fill("departureLocation", "Hue");
     await fill("month", "2030-07");
-    for (const days of ["2", "5", "7", "3"]) {
-      await click(`${days} days`);
-      assert.equal(field("durationDays").value, days);
-    }
-    await click("Continue");
+    await fill("durationDays", "3");
     await fill("travelerCount", "6");
-    await fill("budgetAmount", "7000000");
+    await fill("budgetAmount", "70123456");
     await actOn(() => clean.querySelector('[name="budgetScope"][value="perPerson"]').click());
     const custom = buildPayload(new FormData(clean));
     assert.deepEqual(custom.travelPeriod, { month: "2030-07" });
     assert.equal(custom.durationDays, 3);
     assert.equal(custom.travelers.count, 6);
-    assert.equal(custom.budget.amount, 7000000);
+    assert.equal(custom.budget.amount, 70123456);
     assert.equal(custom.budget.scope, "perPerson");
+    assert.equal(field("budgetSlider").value, "70123456");
     assert.deepEqual(clientErrors(new FormData(clean)), {});
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {

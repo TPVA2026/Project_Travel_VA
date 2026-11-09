@@ -21,9 +21,7 @@ export default function HomePage() {
   useEffect(() => {
     const panel = mode === 'form' ? formPanelRef.current : mode === 'describe' ? describePanelRef.current : null
     if (!panel) return
-    const first = mode === 'form'
-      ? panel.querySelector('.request-step:not([hidden]) input:not([type="hidden"]), .request-step:not([hidden]) select, .request-step:not([hidden]) textarea')
-      : panel.querySelector('input:not([type="hidden"]), select, textarea, button')
+    const first = panel.querySelector('input:not([type="hidden"]):not([type="range"]), select, textarea, button')
     first?.focus({ preventScroll: true })
   }, [mode])
 

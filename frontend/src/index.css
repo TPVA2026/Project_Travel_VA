@@ -5253,20 +5253,20 @@ body {
   }
 }
 
-/* M1 request steps. Scoped to the form; the page shell remains the main layout. */
-.quick-request-form [hidden] { display: none !important; }
-.quick-request-form .request-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; list-style: none; margin: 0; padding: 0; }
-.quick-request-form .request-steps li { min-width: 0; }
-.quick-request-form .request-steps button { display: block; width: 100%; min-height: 44px; padding: 12px; border: 0; border-bottom: 3px solid var(--rv-line); background: transparent; color: var(--rv-muted); font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
-.quick-request-form .request-steps button[aria-current=step] { border-bottom-color: var(--rv-terra); color: var(--rv-ink); font-weight: 600; }
-.quick-request-form .quick-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
-.quick-request-form .quick-choices button { min-width: 0; min-height: 44px; padding: 8px 6px; border: 1px solid var(--rv-line-strong); border-radius: var(--rv-radius-sm); background: var(--rv-paper); color: var(--rv-ink-soft); font: inherit; font-size: 13px; cursor: pointer; }
-.quick-request-form .quick-choices button[aria-pressed=true] { border-color: var(--rv-terra); background: var(--rv-terra-soft); color: var(--rv-terra-dark); box-shadow: inset 0 0 0 1px var(--rv-terra); }
-.quick-request-form .interest-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.quick-request-form .interest-choices .pill { min-height: 48px; justify-content: flex-start; border-radius: 10px; }
-.quick-request-form textarea { box-sizing: border-box; width: 100%; min-height: 76px; resize: vertical; font: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid var(--rv-line-strong); border-radius: var(--rv-radius-sm); }
-.quick-request-form .action-row { flex-wrap: wrap; }
+/* M1 compact request form; keep the main page shell and its palette intact. */
+.simple-request-form { gap: 12px; }
+.simple-request-form .simple-trip-card { gap: 14px; }
+.simple-request-form .field, .simple-request-form .simple-budget { min-width: 0; }
+.simple-request-form .date-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.simple-request-form .budget-range-labels { display: flex; justify-content: space-between; gap: 12px; color: var(--rv-muted); font-size: 12px; }
+.plan-page .planner.simple-request-form input[type="range"] { display: block; width: 100%; min-width: 0; min-height: 44px; margin: 2px 0 0; padding: 0; border: 0; background: transparent; accent-color: var(--rv-terra); cursor: pointer; }
+.simple-request-form textarea { box-sizing: border-box; width: 100%; min-height: 76px; resize: vertical; font: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid var(--rv-line-strong); border-radius: var(--rv-radius-sm); }
+.simple-request-form .interest-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.simple-request-form .interest-choices .pill { min-height: 48px; justify-content: flex-start; border-radius: 10px; }
+.simple-request-form .action-row { flex-wrap: wrap; }
 @media (max-width: 480px) {
-  .quick-request-form .request-steps { gap: 6px; }
-  .quick-request-form .request-steps button { padding: 10px 6px; font-size: 12px; }
+  .simple-request-form .date-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .plan-page .simple-request-form .date-grid input { font-size: 13px; padding: 10px 6px; }
+  .simple-request-form .route-grid { grid-template-columns: minmax(0, 1fr); }
+  .simple-request-form .simple-trip-card { padding: 14px; }
 }

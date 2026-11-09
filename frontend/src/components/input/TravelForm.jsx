@@ -2,19 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
-import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput } from "./travelRequest";
+import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput } from "./travelRequest";
 
-const QUICK_CHOICES = {
-  travelerCount: [["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]],
-  budgetAmount: [["1000000", "1,000,000"], ["3000000", "3,000,000"], ["5000000", "5,000,000"], ["10000000", "10,000,000"]],
-  durationDays: [["2", "2 days"], ["3", "3 days"], ["5", "5 days"], ["7", "7 days"]],
-};
-
-function QuickChoices({ name, value, onChoose }) {
-  return <div className="quick-choices" role="group" aria-label={name === "travelerCount" ? "Choose number of travelers" : name === "budgetAmount" ? "Choose budget in VND" : "Choose number of days"}>
-    {QUICK_CHOICES[name].map(([amount, label]) => <button type="button" key={amount} aria-pressed={String(value).replaceAll(",", "") === amount} onClick={() => onChoose(name, amount)}>{label}</button>)}
-  </div>;
-}
+// A starting viewport for the slider, not a limit on valid budget input.
+const BUDGET_SLIDER_MAX = 20_000_000;
 
 const TRANSPORT = [
   ["taxi", "Taxi"],
@@ -92,8 +83,9 @@ function CalendarIcon() {
 export default function TravelForm() {
   const navigate = useNavigate();
   const formRef = useRef(null);
-  const [step, setStep] = useState(0);
-  const [choiceValues, setChoiceValues] = useState({});
+  const [budgetSliderValue, setBudgetSliderValue] = useState(0);
+  const [budgetSliderMax, setBudgetSliderMax] = useState(BUDGET_SLIDER_MAX);
+  const [budgetIsSet, setBudgetIsSet] = useState(false);
   const [formKey, setFormKey] = useState(0);
   const [errors, setErrors] = useState({});
   const [bad, setBad] = useState({});
@@ -106,19 +98,22 @@ export default function TravelForm() {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
-  function refresh(form) {
+  function refresh(form, resizeBudgetRange = false) {
     const data = new FormData(form);
     const wrong = submitted ? clientErrors(data) : valueErrors(data);
     setBad(wrong);
     setErrors(wrong);
     setProgress(progressOf(data));
-    setChoiceValues(Object.fromEntries(["travelerCount", "budgetAmount", "durationDays"].map(name => [name, data.get(name) ?? ""])));
+    const amount = normalizeBudgetInput(data.get("budgetAmount"));
+    const validBudget = /^\d+$/.test(amount) && Number.isSafeInteger(Number(amount));
+    setBudgetIsSet(validBudget);
+    if (validBudget || amount === "") setBudgetSliderValue(validBudget ? Number(amount) : 0);
+    if (resizeBudgetRange) setBudgetSliderMax(Math.max(BUDGET_SLIDER_MAX, validBudget ? Number(amount) : 0));
   }
 
-  function choose(name, value) {
-    const field = formRef.current?.elements.namedItem(name);
-    if (!field || !QUICK_CHOICES[name]?.some(([option]) => option === value)) return;
-    field.value = name === "budgetAmount" ? formatBudgetInput(value) : value;
+  function slideBudget(event) {
+    const value = event.currentTarget.value;
+    formRef.current.elements.namedItem("budgetAmount").value = formatBudgetInput(value);
     refresh(formRef.current);
   }
 
@@ -126,22 +121,6 @@ export default function TravelForm() {
     requestAnimationFrame(() => {
       Array.from(form.elements).find(control => found[control.name] && control.type !== "hidden")?.focus();
     });
-  }
-
-  function goToStep(next) {
-    setStep(next);
-    requestAnimationFrame(() => formRef.current?.querySelector(next === 0 ? "#departureLocation" : "#travelerCount")?.focus());
-  }
-
-  function nextStep() {
-    const form = formRef.current;
-    const all = clientErrors(new FormData(form));
-    const names = mode === "month" ? ["departureLocation", "destination", "month", "durationDays"] : ["departureLocation", "destination", "startDate", "endDate"];
-    const found = Object.fromEntries(Object.entries(all).filter(([name]) => names.includes(name)));
-    setErrors(found);
-    setBad(found);
-    if (Object.keys(found).length) { focusError(form, found); return; }
-    goToStep(1);
   }
 
   function onInput(event) {
@@ -153,14 +132,15 @@ export default function TravelForm() {
       const box = form.querySelector(`input[name="interest"][value="${type}"]`);
       if (box) box.checked = true;
     }
-    refresh(form);
+    refresh(form, target.name === "budgetAmount");
   }
 
   function clearForm() {
     setFormKey((key) => key + 1);
     setMode("dates");
-    setStep(0);
-    setChoiceValues({});
+    setBudgetSliderValue(0);
+    setBudgetSliderMax(BUDGET_SLIDER_MAX);
+    setBudgetIsSet(false);
     setErrors({});
     setBad({});
     setSubmitted(false);
@@ -170,7 +150,6 @@ export default function TravelForm() {
 
   async function onSubmit(event) {
     event.preventDefault();
-    if (step === 0) { nextStep(); return; }
     const data = new FormData(event.currentTarget);
     const found = clientErrors(data);
     setSubmitted(true);
@@ -180,7 +159,6 @@ export default function TravelForm() {
     if (Object.keys(found).length) {
       if (["maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "interests", "characteristics"].some(key => found[key])) setExpanded(true);
       const form = event.currentTarget;
-      if (["departureLocation", "destination", "startDate", "endDate", "month", "durationDays"].some(name => found[name])) setStep(0);
       focusError(form, found);
       return;
     }
@@ -197,7 +175,6 @@ export default function TravelForm() {
         : { form: "Could not send the request." };
       setErrors(serverErrors);
       setBad(serverErrors);
-      if (["departureLocation", "destination", "startDate", "endDate", "month", "durationDays"].some(name => serverErrors[name])) setStep(0);
       if (["maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "interests", "characteristics"].some(name => serverErrors[name])) setExpanded(true);
       focusError(formRef.current, serverErrors);
     }
@@ -208,14 +185,10 @@ export default function TravelForm() {
     : {});
 
   return (
-    <form ref={formRef} key={formKey} className="planner compact-form quick-request-form" onSubmit={onSubmit} onInput={onInput} noValidate>
-      <ol className="request-steps" aria-label="Request steps">
-        <li><button type="button" aria-current={step === 0 ? "step" : undefined} aria-controls="request-trip-step" onClick={() => goToStep(0)}>1. Where &amp; when</button></li>
-        <li><button type="button" aria-current={step === 1 ? "step" : undefined} aria-controls="request-budget-step" onClick={() => goToStep(1)}>2. Travelers &amp; budget</button></li>
-      </ol>
-      <section id="request-trip-step" className="card request-step" hidden={step !== 0} aria-label="Where and when">
+    <form ref={formRef} key={formKey} className="planner compact-form simple-request-form" onSubmit={onSubmit} onInput={onInput} noValidate>
+      <section className="card simple-trip-card" aria-label="Trip details">
         <h2>Trip details</h2>
-        <div className="compact-grid">
+        <div className="compact-grid route-grid">
           <Field label="Departure" name="departureLocation" error={errors.departureLocation} bad={bad} required>
             <input id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required {...described("departureLocation")} />
           </Field>
@@ -229,7 +202,7 @@ export default function TravelForm() {
             <option value="dates">By dates</option><option value="month">By month</option>
           </select>
         </div>
-        <div className="compact-grid">
+        <div className="compact-grid date-grid">
           {mode === "dates" ? <>
             <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required>
               <input id="startDate" name="startDate" type="date" required {...described("startDate")} />
@@ -243,33 +216,27 @@ export default function TravelForm() {
             </Field>
             <Field label="Number of days" name="durationDays" error={errors.durationDays} bad={bad} required>
               <input id="durationDays" name="durationDays" type="number" min="1" step="1" placeholder="e.g. 3" required {...described("durationDays")} />
-              <QuickChoices name="durationDays" value={choiceValues.durationDays ?? ""} onChoose={choose} />
             </Field>
           </>}
         </div>
-      </section>
-      <section id="request-budget-step" className="card request-step" hidden={step !== 1} aria-label="Travelers and budget">
-        <h2>Travelers &amp; budget</h2>
-        <div className="compact-grid people-budget-grid">
-          <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad} required>
-            <QuickChoices name="travelerCount" value={choiceValues.travelerCount ?? ""} onChoose={choose} />
-            <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" placeholder="e.g. 2" required {...described("travelerCount")} />
+        <Field label="Travelers" name="travelerCount" error={errors.travelerCount} bad={bad} required>
+          <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" placeholder="e.g. 2" required {...described("travelerCount")} />
+        </Field>
+        <div className="simple-budget">
+          <Field label="Budget (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad} required>
+            <input id="budgetAmount" name="budgetAmount" type="text" inputMode="numeric" placeholder="e.g. 5,000,000" onBlur={event => { event.currentTarget.value = formatBudgetInput(event.currentTarget.value); }} required {...described("budgetAmount")} />
           </Field>
-          <div>
-            <Field label="Budget (VND)" name="budgetAmount" error={errors.budgetAmount} bad={bad} required>
-              <QuickChoices name="budgetAmount" value={choiceValues.budgetAmount ?? ""} onChoose={choose} />
-              <input id="budgetAmount" name="budgetAmount" type="text" inputMode="numeric" placeholder="e.g. 5,000,000" onBlur={event => { event.currentTarget.value = formatBudgetInput(event.currentTarget.value); }} required {...described("budgetAmount")} />
-            </Field>
-            <div className="compact-budget" role="radiogroup" aria-label="Budget applies to" aria-required="true" aria-describedby={errors.budgetScope ? "budgetScope-error" : undefined}>
-              <label><input type="radio" name="budgetScope" value="group" /> Whole group</label>
-              <label><input type="radio" name="budgetScope" value="perPerson" /> Per person</label>
-            </div>
-            {errors.budgetScope && <span className="error" id="budgetScope-error">{errors.budgetScope}</span>}
+          <input id="budgetSlider" type="range" min="0" max={budgetSliderMax} step="1" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
+          <div className="budget-range-labels" aria-hidden="true"><span>0 VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
+          <div className="compact-budget" role="radiogroup" aria-label="Budget applies to" aria-required="true" aria-describedby={errors.budgetScope ? "budgetScope-error" : undefined}>
+            <label><input type="radio" name="budgetScope" value="group" /> Whole group</label>
+            <label><input type="radio" name="budgetScope" value="perPerson" /> Per person</label>
           </div>
+          {errors.budgetScope && <span className="error" id="budgetScope-error">{errors.budgetScope}</span>}
         </div>
       </section>
 
-      <details hidden={step !== 1} className="compact-options" open={expanded} onToggle={event => setExpanded(event.currentTarget.open)}>
+      <details className="compact-options" open={expanded} onToggle={event => setExpanded(event.currentTarget.open)}>
         <summary>Describe more</summary>
         <div className="compact-options-body">
           <h2>Travel interests</h2>
@@ -305,8 +272,7 @@ export default function TravelForm() {
         <p className="completion-label" aria-live="polite">{progress}% finding</p>
         {errors.form && <p className="error" role="alert">{errors.form}</p>}
         <div className="action-row">
-          {step === 1 && <button className="secondary" type="button" onClick={() => goToStep(0)}>Back</button>}
-          {step === 0 ? <button className="primary" type="submit">Continue</button> : <button className="primary" type="submit">Create itinerary</button>}
+          <button className="primary" type="submit">Create itinerary</button>
           <button className="secondary" type="button" onClick={clearForm}>Clear form</button>
         </div>
       </div>
