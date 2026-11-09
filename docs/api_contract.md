@@ -62,8 +62,8 @@ This endpoint must remain unchanged until Frontend and Backend agree on a coordi
 | GET | `/api/v1/destinations` | M6/M2 | TPVA-33 — contract update |
 | POST | `/api/v1/requests/validate` | M6/M1 | TPVA-33 — contract update |
 | POST | `/itineraries/generate` | M3/M6 | Existing — candidate only |
-| POST | `/itineraries/evaluate` | M4/M6 | Planned |
-| POST | `/itineraries/rank` | M4/M6 | Planned |
+| POST | `/itineraries/evaluate` | M4/M6 | Implemented — TPVA-34.3 |
+| POST | `/itineraries/rank` | M4/M6 | Unavailable — HTTP 501 |
 | POST | `/itineraries/revise` | M3/M6 | Planned |
 | POST | `/itineraries/select` | M6 | Planned |
 
@@ -441,23 +441,61 @@ Candidate generation returns UNVERIFIED.
 
 Any final feasibility states must be defined and supplied by the deterministic validation module, not independently invented by the AI generation layer.
 
-## 7. Planned Itinerary Endpoints
+## 7. Itinerary Evaluation and Planned Endpoints
 
-The following endpoints are reserved for future integration. Their detailed request and response schemas have not yet been finalized.
+Evaluation is implemented below; ranking, revision and selection remain planned.
 
 ### 7.1 POST `/itineraries/evaluate`
 
-Evaluate candidate itinerary feasibility against:
+Request body has exactly two required object fields:
 
-- Budget
-- Schedule conflicts
-- Travel time
-- Travel distance
-- Available dataset information
+- `request`: a TravelRequest, normalized by the existing input service.
+- `plan`: a CandidatePlan, validated by its shared Pydantic schema.
+
+No client dataset or supplemental costs are accepted. The server loads its dataset
+once, builds the request context and runs the same grounding checks as generation
+before calling M4 `evaluate_feasibility`. The full loaded dataset is passed to M4
+so opening hours, price scopes and departure routes are retained.
+
+HTTP 200 returns the M4 result directly, without a wrapper:
+
+- `status`: `FEASIBLE`, `INFEASIBLE` or `UNVERIFIED`.
+- `planId`: evaluated plan identifier.
+- `checks`: array of `{status, code, path, message}`.
+- `reasons`: checks whose status is not `FEASIBLE`.
+- `components`: `{cost, schedule, travel}`, preserving the validator output.
+
+Missing travel references or costs remain unknown; no leg or cost is synthesized.
+Without trusted transport/accommodation costs, the cost result stays `UNVERIFIED`
+unless known costs already prove a budget violation.
+
+HTTP 422 service errors have `{error, message, details}` with codes
+`VALIDATION_ERROR`, `INVALID_PLAN` or `NO_DATA`. Missing/invalid envelope fields or
+malformed JSON use FastAPI's default `{detail: [...]}` response.
+
+Dataset loading failures return HTTP 500 with
+`{"error": "DATASET_ERROR", "message": "Unable to load planning data.", "details": null}`.
+Malformed dataset containers return HTTP 500 with `DATASET_ERROR` and the safe
+message `Invalid planning data structure.` Unexpected context-building or
+evaluator failures return HTTP 500 with `{"error": "INTERNAL"}`.
+Internal exception text is never included.
 
 ### 7.2 POST `/itineraries/rank`
 
-Rank validated candidate plans using agreed deterministic criteria.
+The route currently always returns HTTP 501:
+
+```json
+{
+  "error": "RANKING_UNAVAILABLE",
+  "message": "Ranking is not implemented; algorithm and contract are pending."
+}
+```
+
+There is no accepted ranking request schema yet. No input is ranked, scored or
+passed to an algorithm. Sand must supply a callable, input/output contract and
+eligibility rules before the adapter can be implemented. Future ranking must
+receive schema-valid, grounded candidates with server-computed feasibility;
+client-provided feasibility flags must never be trusted.
 
 The ranking rules must be documented and must not override mandatory feasibility constraints.
 
