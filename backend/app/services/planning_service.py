@@ -77,7 +77,9 @@ def evaluate_plan(request: dict, plan: dict) -> dict:
 
     context = build_context(normalized_request, dataset)
     if not valid_destination_ids(context):
-        raise PlanningError("NO_DATA", "No verified destination IDs available for this request")
+        raise PlanningError(
+            "NO_DATA", "The selected destination is not supported by the current dataset."
+        )
     if not supported_place_ids(context):
         raise PlanningError("NO_DATA", "No supported places in the curated dataset for this request")
     errors = check_grounding(validated_plan, context)

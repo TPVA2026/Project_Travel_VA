@@ -3,6 +3,7 @@ import test from 'node:test'
 
 import {
   evaluateItinerary,
+  fetchDestinations,
   generateItinerary,
   rankItineraries,
   runItineraryPipeline,
@@ -81,4 +82,17 @@ test('HTTP status without a message gets a useful user-facing error', async () =
     assert.match(error.message, /not available/i)
     return true
   })
+})
+
+test('fetchDestinations returns the backend-supported destination list', async () => {
+  const destinations = [{ id: 'H', city: 'Huế' }, { id: 'NT', city: 'Nha Trang' }]
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, '/api/v1/destinations')
+    assert.equal(options, undefined)
+    return new Response(JSON.stringify({ total: 2, destinations }), {
+      status: 200, headers: { 'content-type': 'application/json' },
+    })
+  }
+
+  assert.deepEqual(await fetchDestinations(), destinations)
 })

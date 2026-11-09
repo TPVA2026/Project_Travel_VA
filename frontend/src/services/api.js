@@ -70,6 +70,18 @@ export function saveTripForResults(payload) {
   clearSelectedPlan();
 }
 
+export async function fetchDestinations() {
+  const res = await fetch(apiUrl("/api/v1/destinations"));
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const error = new Error(body.detail?.message || "Could not load supported destinations.");
+    error.status = res.status;
+    error.body = body;
+    throw error;
+  }
+  return Array.isArray(body.destinations) ? body.destinations : [];
+}
+
 async function requestJson(path, payload) {
   const res = await fetch(apiUrl(path), {
     method: "POST",
