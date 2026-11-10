@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test 'src/**/*.test.mjs'"
+    "test": "node --test src/components/input/travelRequest.test.mjs src/components/revision/revision.test.mjs src/services/api.test.mjs src/services/planSelection.test.mjs src/services/recommendations.test.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

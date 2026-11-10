@@ -1,4 +1,4 @@
-"""Client flow through real generation gates and evaluation; no external AI."""
+"""Client flow through generate, evaluate and rank; no external AI."""
 from copy import deepcopy
 import json
 from unittest.mock import Mock
@@ -33,7 +33,7 @@ def pipeline(m4_case, monkeypatch):
 
 
 @pytest.mark.parametrize("case", ["valid", "budget", "missing_matrix"])
-def test_generate_then_evaluate_pipeline(pipeline, case):
+def test_generate_evaluate_rank_pipeline(pipeline, case):
     request, plan, dataset, text, prompt, evaluator = pipeline
     if case == "budget":
         request["budget"]["amount"] = 1
@@ -50,12 +50,25 @@ def test_generate_then_evaluate_pipeline(pipeline, case):
     assert normalized["budget"]["currency"] == "VND"
     evaluated = client.post("/itineraries/evaluate", json={"request": request, "plan": generated.json()["plan"]})
     assert evaluated.status_code == 200
-    evaluator.assert_called_once()
     result = evaluated.json()
     assert result["status"] == ("INFEASIBLE" if case == "budget" else "UNVERIFIED")
     if case == "missing_matrix":
         assert any(c["code"] == "UNSUPPORTED_LEG" for c in result["reasons"])
         assert plan["days"][0]["travelLegs"][0]["durationMin"] is None
+
+    ranked = client.post(
+        "/itineraries/rank", json={"request": request, "plans": [generated.json()["plan"]]}
+    )
+    assert ranked.status_code == 200
+    ranking = ranked.json()
+    assert ranking["ranked"] == []
+    assert ranking["unscored"] == []
+    assert ranking["excluded"][0]["status"] == (
+        "INFEASIBLE" if case == "budget" else "UNVERIFIED"
+    )
+    # The evaluate route uses the service reference; ranking independently
+    # re-evaluates through the ranking module's imported validator.
+    evaluator.assert_called_once()
     assert (request, plan, dataset) == before
 
 
@@ -98,11 +111,10 @@ def test_generation_dataset_failure_is_safe(pipeline, monkeypatch):
     evaluator.assert_not_called()
 
 
-def test_ranking_is_explicitly_unavailable(pipeline):
+def test_ranking_rejects_client_declared_status_and_score(pipeline):
     _, _, _, text, _, evaluator = pipeline
     response = client.post("/itineraries/rank", json={"status": "FEASIBLE", "score": 100})
-    assert response.status_code == 501
-    assert response.json()["error"] == "RANKING_UNAVAILABLE"
-    assert "plans" not in response.json()
+    assert response.status_code == 422
+    assert response.json()["detail"]
     text.assert_not_called()
     evaluator.assert_not_called()

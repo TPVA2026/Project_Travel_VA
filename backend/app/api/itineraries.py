@@ -1,12 +1,17 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from app.services.ai.gemini_client import GeminiError
 from app.services.ai.itinerary_generator import generate_candidate
 from app.services.input_service import request_problems, validate_travel_request
 
-from app.services.planning_service import PlanningError, evaluate_plan
+from app.services.planning_service import (
+    PlanningError,
+    evaluate_plan,
+    rank_candidate_plans,
+    revise_and_evaluate,
+)
 
 router = APIRouter()
 
@@ -60,13 +65,43 @@ def evaluate(body: EvaluateBody):
         return JSONResponse({"error": "INTERNAL"}, status_code=500)
 
 
-@router.post("/rank", status_code=501)
-def rank():
-    # No ranking callable or agreed payload contract exists yet.
-    return {
-        "error": "RANKING_UNAVAILABLE",
-        "message": "Ranking is not implemented; algorithm and contract are pending.",
-    }
+class RankBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    request: dict
+    plans: list[dict] = Field(min_length=1, max_length=20)
 
 
-# TODO(ZT): POST /revise, /select
+@router.post("/rank")
+def rank(body: RankBody):
+    try:
+        return rank_candidate_plans(body.request, body.plans)
+    except PlanningError as exc:
+        return JSONResponse(
+            {"error": exc.code, "message": exc.message, "details": exc.details},
+            status_code=exc.status_code,
+        )
+    except Exception:
+        return JSONResponse({"error": "INTERNAL"}, status_code=500)
+
+
+class ReviseBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    request: dict
+    plan: dict
+    revision: dict
+
+
+@router.post("/revise")
+def revise(body: ReviseBody):
+    try:
+        return revise_and_evaluate(body.request, body.plan, body.revision)
+    except PlanningError as exc:
+        return JSONResponse(
+            {"error": exc.code, "message": exc.message, "details": exc.details},
+            status_code=exc.status_code,
+        )
+    except Exception:
+        return JSONResponse({"error": "INTERNAL"}, status_code=500)
+
+
+# Selection remains browser-local for the no-account MVP.

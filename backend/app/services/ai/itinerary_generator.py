@@ -113,7 +113,9 @@ def generate_candidate(request: dict, dataset: dict | None = None, **client_kwar
     dataset = load_dataset() if dataset is None else dataset
     context = build_context(request, dataset)
     if not valid_destination_ids(context):
-        raise GeminiError("NO_DATA", "No verified destination IDs available for this request", 422)
+        raise GeminiError(
+            "NO_DATA", "The selected destination is not supported by the current dataset.", 422
+        )
     if not supported_place_ids(context):  # never ask the LLM to plan without real places: it would invent them
         raise GeminiError("NO_DATA", "No supported places in the curated dataset for this request", 422)
     text = request_text(build_prompt(request, context), CANDIDATE_PLAN_SCHEMA, **client_kwargs)

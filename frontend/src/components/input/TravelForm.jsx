@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
-import { saveTripForResults, validateTravelRequest } from "../../services/api";
+import { fetchDestinations, saveTripForResults, validateTravelRequest } from "../../services/api";
 import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput } from "./travelRequest";
 
 const TRANSPORT = [
@@ -86,6 +86,15 @@ export default function TravelForm() {
   const [mode, setMode] = useState("dates");
   const [progress, setProgress] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const [destinations, setDestinations] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    fetchDestinations()
+      .then((items) => { if (active) setDestinations(items); })
+      .catch(() => { /* Server validation still prevents unsupported submissions. */ });
+    return () => { active = false; };
+  }, []);
 
   function refresh(form) {
     const data = new FormData(form);
@@ -163,7 +172,13 @@ export default function TravelForm() {
             <input id="departureLocation" name="departureLocation" placeholder="e.g. Ho Chi Minh City" required {...described("departureLocation")} />
           </Field>
           <Field label="Destination" name="destination" error={errors.destination} bad={bad}>
-            <input id="destination" name="destination" placeholder="e.g. Da Nang" maxLength={200} {...described("destination")} />
+            <input id="destination" name="destination" list="supported-destinations" placeholder="Choose a supported destination" maxLength={200} {...described("destination")} />
+            <datalist id="supported-destinations">
+              {destinations.map((item) => {
+                const label = item.city || item.city_name || item.name || item.id;
+                return label ? <option key={item.id || label} value={label} /> : null;
+              })}
+            </datalist>
           </Field>
         </div>
         <div className="compact-timing">

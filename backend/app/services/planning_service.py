@@ -1,4 +1,4 @@
-"""Backend orchestration for evaluation and deterministic revalidation.
+"""Backend orchestration for evaluation, ranking and deterministic revalidation.
 
 Candidate evaluation validates and grounds data before M4. Revision helpers
 from TPVA-26 then re-run feasibility and ranking without trusting stale state.
@@ -11,6 +11,7 @@ from app.algorithms.feasibility import evaluate_feasibility
 from app.algorithms.ranking import rank_candidates
 from app.algorithms.validation_common import result_from_checks
 from app.schemas.candidate_plan import CandidatePlan
+from app.schemas.revision import RevisionRequest
 from app.services.ai.context_builder import build_context, supported_place_ids, valid_destination_ids
 from app.services.ai.itinerary_generator import check_grounding
 from app.services.data_service import load_dataset
@@ -32,6 +33,27 @@ class PlanningError(Exception):
         self.status_code = status_code
 
 
+def _load_planning_dataset() -> dict:
+    """Load and validate dataset containers without exposing internal errors."""
+    try:
+        dataset = load_dataset()
+    except Exception:
+        raise PlanningError(
+            "DATASET_ERROR", "Unable to load planning data.", status_code=500
+        ) from None
+    if (not isinstance(dataset, dict)
+            or any(not isinstance(dataset.get(key, []), list)
+                   for key in ("destinations", "attractions", "dining"))
+            or not isinstance(
+                dataset.get("travel_matrix", dataset.get("travelMatrix", [])),
+                (list, dict),
+            )):
+        raise PlanningError(
+            "DATASET_ERROR", "Invalid planning data structure.", status_code=500
+        )
+    return dataset
+
+
 def evaluate_plan(request: dict, plan: dict) -> dict:
     """Evaluate a submitted pair without AI, inferred data, or ranking.
 
@@ -51,22 +73,13 @@ def evaluate_plan(request: dict, plan: dict) -> dict:
             exc.errors(include_input=False, include_context=False, include_url=False),
         ) from None
 
-    try:
-        dataset = load_dataset()
-    except Exception:
-        raise PlanningError("DATASET_ERROR", "Unable to load planning data.", status_code=500) from None
-
-    # Container errors are server dataset failures, not invalid client plans.
-    # The existing nested matrix is allowed but remains unsupported by M4.
-    if (not isinstance(dataset, dict)
-            or any(not isinstance(dataset.get(key, []), list)
-                   for key in ("destinations", "attractions", "dining"))
-            or not isinstance(dataset.get("travel_matrix", dataset.get("travelMatrix", [])), (list, dict))):
-        raise PlanningError("DATASET_ERROR", "Invalid planning data structure.", status_code=500)
+    dataset = _load_planning_dataset()
 
     context = build_context(normalized_request, dataset)
     if not valid_destination_ids(context):
-        raise PlanningError("NO_DATA", "No verified destination IDs available for this request")
+        raise PlanningError(
+            "NO_DATA", "The selected destination is not supported by the current dataset."
+        )
     if not supported_place_ids(context):
         raise PlanningError("NO_DATA", "No supported places in the curated dataset for this request")
     errors = check_grounding(validated_plan, context)
@@ -188,3 +201,73 @@ def revalidate_revision(request: dict, original_plan: dict, revision: dict, *,
         candidate_plans=candidate_plans, selected_history=selected_history,
         trip_time_limit_minutes=trip_time_limit_minutes,
     )
+
+
+def rank_candidate_plans(request: dict, plans: list[dict], limit: int = 3) -> dict:
+    """Validate, ground and re-evaluate candidates before using Sand's ranking."""
+    try:
+        normalized_request = validate_travel_request(request).model_dump(mode="json", by_alias=True)
+    except ValidationError as exc:
+        raise PlanningError(
+            "VALIDATION_ERROR", "Invalid travel request.", request_problems(request, exc)
+        ) from None
+    if not isinstance(plans, list) or not plans:
+        raise PlanningError("INVALID_PLANS", "At least one candidate plan is required.")
+
+    validated_plans = []
+    for index, plan in enumerate(plans):
+        try:
+            validated_plans.append(CandidatePlan.model_validate(plan).model_dump(mode="json"))
+        except ValidationError as exc:
+            raise PlanningError(
+                "INVALID_PLAN", f"Candidate plan at index {index} failed schema checks.",
+                exc.errors(include_input=False, include_context=False, include_url=False),
+            ) from None
+
+    dataset = _load_planning_dataset()
+    context = build_context(normalized_request, dataset)
+    if not valid_destination_ids(context) or not supported_place_ids(context):
+        raise PlanningError("NO_DATA", "No supported planning data is available for this request.")
+    for index, plan in enumerate(validated_plans):
+        errors = check_grounding(plan, context)
+        if errors:
+            raise PlanningError(
+                "INVALID_PLAN", f"Candidate plan at index {index} failed grounding checks.", errors
+            )
+    try:
+        result = rank_candidates(normalized_request, validated_plans, dataset=dataset)
+    except (ValidationError, ValueError, TypeError) as exc:
+        raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.") from None
+    result["totalRanked"] = len(result["ranked"])
+    result["ranked"] = result["ranked"][:limit]
+    result["limit"] = limit
+    return result
+
+
+def revise_and_evaluate(request: dict, plan: dict, revision: dict) -> dict:
+    """Apply one request change and always evaluate the unchanged plan again."""
+    try:
+        current = validate_travel_request(request).model_dump(mode="json", by_alias=True)
+        validated_plan = CandidatePlan.model_validate(plan).model_dump(mode="json")
+        change = RevisionRequest.model_validate(revision)
+    except ValidationError as exc:
+        raise PlanningError(
+            "VALIDATION_ERROR", "Invalid revision request.",
+            exc.errors(include_input=False, include_context=False, include_url=False),
+        ) from None
+    if change.plan_id != validated_plan["planId"]:
+        raise PlanningError("PLAN_MISMATCH", "Revision planId does not match the candidate plan.")
+
+    updated_request = deepcopy(current)
+    public_change = change.model_dump(mode="json", by_alias=True, exclude_none=True)
+    field = public_change["changeType"]
+    updated_request[field] = public_change[field]
+    try:
+        normalized = validate_travel_request(updated_request).model_dump(mode="json", by_alias=True)
+    except ValidationError as exc:
+        raise PlanningError(
+            "VALIDATION_ERROR", "The revised request is invalid.",
+            request_problems(updated_request, exc),
+        ) from None
+    evaluation = evaluate_plan(normalized, validated_plan)
+    return {"request": normalized, "plan": validated_plan, "evaluation": evaluation}
