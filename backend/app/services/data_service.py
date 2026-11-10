@@ -152,7 +152,29 @@ def load_dataset() -> dict:
             raise ValueError("Invalid OpenTripMap attraction snapshot")
         existing_ids = {place.get("id") for place in raw["attractions"]}
         raw["attractions"].extend(place for place in extra if place.get("id") not in existing_ids)
-    return normalize_dataset(raw)
+    national = DATA_DIR / "opentripmap_vietnam.json"
+    national_enabled = national.exists()
+    if national_enabled:
+        with national.open(encoding="utf-8") as file:
+            nationwide = json.load(file)
+        if (not isinstance(nationwide, dict)
+                or not isinstance(nationwide.get("destinations"), list)
+                or not isinstance(nationwide.get("attractions"), list)):
+            raise ValueError("Invalid nationwide OpenTripMap snapshot")
+        destination_ids = {item.get("id") for item in raw["destinations"]}
+        raw["destinations"].extend(
+            item for item in nationwide["destinations"]
+            if isinstance(item, dict) and item.get("id") not in destination_ids
+        )
+        attraction_ids = {item.get("id") for item in raw["attractions"]}
+        raw["attractions"].extend(
+            item for item in nationwide["attractions"]
+            if isinstance(item, dict) and item.get("id") not in attraction_ids
+        )
+    dataset = normalize_dataset(raw)
+    if national_enabled:
+        dataset["nationwide"] = True
+    return dataset
 
 
 def get_destinations() -> list[dict]:
