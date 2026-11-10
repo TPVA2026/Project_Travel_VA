@@ -172,4 +172,6 @@ def test_real_repository_dataset_is_not_invented_into_pairwise_routes(m4_case):
     # Không truyền dataset để kiểm tra cả đường đọc dataset thật mặc định.
     result = evaluate_feasibility(request, plan, supplemental_costs=supplemental)
     assert result["status"] == "UNVERIFIED"
-    assert any(item["code"] == "UNSUPPORTED_LEG" for item in result["reasons"])
+    # The adapter now exposes the real nested pair, but its measurements remain
+    # null until verified; recognizing the pair must not make it feasible.
+    assert any(item["code"] == "TRAVEL_DATA" for item in result["reasons"])

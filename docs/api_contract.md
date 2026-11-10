@@ -62,10 +62,10 @@ This endpoint must remain unchanged until Frontend and Backend agree on a coordi
 | GET | `/api/v1/destinations` | M6/M2 | TPVA-33 — contract update |
 | POST | `/api/v1/requests/validate` | M6/M1 | TPVA-33 — contract update |
 | POST | `/itineraries/generate` | M3/M6 | Existing — candidate only |
-| POST | `/itineraries/evaluate` | M4/M6 | Planned |
-| POST | `/itineraries/rank` | M4/M6 | Planned |
-| POST | `/itineraries/revise` | M3/M6 | Planned |
-| POST | `/itineraries/select` | M6 | Planned |
+| POST | `/itineraries/evaluate` | M4/M6 | Implemented — TPVA-34.3 |
+| POST | `/itineraries/rank` | M4/M6 | Implemented — server evaluation required |
+| POST | `/itineraries/revise` | M3/M6 | Implemented — request revision + re-evaluation |
+| POST | `/itineraries/select` | M6 | Browser-local for no-account MVP |
 
 The endpoint contracts described below are integration targets. Documentation alone does not establish that the corresponding implementation is complete.
 
@@ -441,37 +441,82 @@ Candidate generation returns UNVERIFIED.
 
 Any final feasibility states must be defined and supplied by the deterministic validation module, not independently invented by the AI generation layer.
 
-## 7. Planned Itinerary Endpoints
+## 7. Itinerary Evaluation, Ranking and Revision
 
-The following endpoints are reserved for future integration. Their detailed request and response schemas have not yet been finalized.
+Evaluation, ranking and request revision are implemented below. Selection is
+stored in browser `localStorage` for the no-account MVP and has no server route.
 
 ### 7.1 POST `/itineraries/evaluate`
 
-Evaluate candidate itinerary feasibility against:
+Request body has exactly two required object fields:
 
-- Budget
-- Schedule conflicts
-- Travel time
-- Travel distance
-- Available dataset information
+- `request`: a TravelRequest, normalized by the existing input service.
+- `plan`: a CandidatePlan, validated by its shared Pydantic schema.
+
+No client dataset or supplemental costs are accepted. The server loads its dataset
+once, builds the request context and runs the same grounding checks as generation
+before calling M4 `evaluate_feasibility`. The full loaded dataset is passed to M4
+so opening hours, price scopes and departure routes are retained.
+
+HTTP 200 returns the M4 result directly, without a wrapper:
+
+- `status`: `FEASIBLE`, `INFEASIBLE` or `UNVERIFIED`.
+- `planId`: evaluated plan identifier.
+- `checks`: array of `{status, code, path, message}`.
+- `reasons`: checks whose status is not `FEASIBLE`.
+- `components`: `{cost, schedule, travel}`, preserving the validator output.
+
+Missing travel references or costs remain unknown; no leg or cost is synthesized.
+Without trusted transport/accommodation costs, the cost result stays `UNVERIFIED`
+unless known costs already prove a budget violation.
+
+HTTP 422 service errors have `{error, message, details}` with codes
+`VALIDATION_ERROR`, `INVALID_PLAN` or `NO_DATA`. Missing/invalid envelope fields or
+malformed JSON use FastAPI's default `{detail: [...]}` response.
+
+Dataset loading failures return HTTP 500 with
+`{"error": "DATASET_ERROR", "message": "Unable to load planning data.", "details": null}`.
+Malformed dataset containers return HTTP 500 with `DATASET_ERROR` and the safe
+message `Invalid planning data structure.` Unexpected context-building or
+evaluator failures return HTTP 500 with `{"error": "INTERNAL"}`.
+Internal exception text is never included.
 
 ### 7.2 POST `/itineraries/rank`
 
-Rank validated candidate plans using agreed deterministic criteria.
+Request body:
 
-The ranking rules must be documented and must not override mandatory feasibility constraints.
+```json
+{
+  "request": {},
+  "plans": []
+}
+```
+
+`request` must satisfy TravelRequest and `plans` must contain 1–20 distinct
+CandidatePlan objects. The server loads the dataset, validates and grounds every
+plan, calls `rank_candidates()` and recomputes feasibility. Client-provided
+status, score or other extra CandidatePlan fields fail schema validation.
+
+HTTP 200 returns `ranked`, `unscored`, and `excluded` separately. `ranked` is
+limited to the top three results; `totalRanked` reports the count before that
+limit. Feasible plans missing a score component stay in `unscored`; infeasible
+or unverified plans stay in `excluded`. No missing component is invented.
 
 ### 7.3 POST `/itineraries/revise`
 
-Accept a revision request and recalculate the relevant plan constraints.
+Request body has `request`, `plan`, and `revision`. `revision` follows
+`RevisionRequest`, changes exactly one TravelRequest field, and its `planId`
+must match the CandidatePlan. The server validates the revised TravelRequest and
+runs the complete grounding and feasibility pipeline again.
 
-Any revised candidate must be validated again.
+HTTP 200 returns `{request, plan, evaluation}`. The unchanged CandidatePlan is
+not regenerated and its previous feasibility state is never retained.
 
 ### 7.4 POST `/itineraries/select`
 
-Allow a user to select a preferred itinerary.
-
-Selection and persistence behavior must be agreed before this endpoint is implemented.
+No backend endpoint is implemented. The no-account MVP saves the selected plan
+in the current browser's `localStorage`. It is not synchronized across devices
+and clearing browser storage removes it.
 
 ## 8. Frontend–Backend Integration Rules
 
@@ -496,11 +541,10 @@ Frontend must handle nullable values explicitly.
 
 ### 8.3 Dataset Identifiers
 
-The current destination dataset does not define stable destination IDs.
-
-Frontend must not assume that a destination ID exists in the destinations response until the dataset owner and Backend agree on stable identifiers.
-
-This issue must be resolved before integrating candidate generation and selection flows that require destinationId.
+Destination records expose their curated `id`. At runtime the data adapter maps
+places to that ID only through an exact, unambiguous city/name match. It also
+flattens the nested route matrix without changing the source JSON. Ambiguous
+prices and unverified route measurements remain null.
 
 ### 8.4 Backend Documentation
 

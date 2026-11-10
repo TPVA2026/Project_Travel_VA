@@ -7,9 +7,10 @@ Output: the prompt shape {destinations, attractions, dining, travelMatrix}.
 Rules (so the LLM can only reference real, supported data):
 - Only records with a well-formed, unique string `id` are kept. Others are dropped (and logged).
   Ids are never generated, repaired or guessed.
-- If the request names a `preferredDestination`, only that destination and its places are kept.
-  A place belongs to a destination via its `destinationId` field, or else the prefix of its id
-  ("DN-ATT-001" -> "DN"). An unknown/unsupported destination yields an EMPTY context.
+- Read `preferences.destination`; legacy `preferredDestination` is a fallback only.
+  Resolve exact IDs or unambiguous dataset name/city/city_name values.
+  Filter places using explicit destinationId only; never infer membership from ID prefixes.
+  Missing destination IDs or unsupported/ambiguous selections yield an EMPTY context.
 - Each place type keeps only its own price field (attractions: priceVnd, dining: avgPricePerPersonVnd);
   the other type's price key is dropped so an unvalidated value can never be read as a price.
 - Costs, durations and distances are copied as-is. Missing, non-numeric, negative or non-finite
@@ -18,6 +19,8 @@ Rules (so the LLM can only reference real, supported data):
 """
 import logging
 import math
+import re
+import unicodedata
 from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator, model_validator
@@ -126,22 +129,64 @@ def _unique(records: list, seen: set, kind: str) -> list:
     return out
 
 
-def _destination_of(record: _Record) -> str:
+def valid_destination_ids(dataset: dict) -> set[str]:
+    """Only explicit, well-formed dataset IDs can establish a destination."""
+    return {
+        d["id"] for d in dataset.get("destinations", [])
+        if isinstance(d, dict) and isinstance(d.get("id"), str)
+        and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", d["id"])
+    }
+
+
+def _destination_of(record: _Record) -> str | None:
     dest = (record.model_extra or {}).get("destinationId")
-    return dest if isinstance(dest, str) and dest else record.id.split("-", 1)[0]
+    return dest if isinstance(dest, str) and dest else None
 
 
 def _empty() -> dict:
     return {"destinations": [], "attractions": [], "dining": [], "travelMatrix": []}
 
 
+def _name_key(value: object) -> str | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    folded = unicodedata.normalize("NFKD", value.strip()).casefold()
+    plain = "".join(char for char in folded if not unicodedata.combining(char))
+    words = re.sub(r"[^a-z0-9]+", " ", plain).split()
+    if words[:2] == ["thanh", "pho"]:
+        words = words[2:]
+    elif words[:1] == ["tp"]:
+        words = words[1:]
+    if words[-1:] == ["city"]:
+        words = words[:-1]
+    return " ".join(words) or None
+
+
 def build_context(request: dict, dataset: dict) -> dict:
-    wanted = request.get("preferredDestination") if isinstance(request, dict) else None
+    preferences = request.get("preferences") if isinstance(request, dict) else None
+    if isinstance(preferences, dict) and "destination" in preferences:
+        wanted = preferences["destination"]
+    else:
+        wanted = request.get("preferredDestination") if isinstance(request, dict) else None
 
     destinations = _unique(_parse(_Destination, dataset.get("destinations"), "destination"), set(), "destination")
+    if not destinations:
+        return _empty()
     if wanted is not None:
-        if not isinstance(wanted, str) or wanted not in {d.id for d in destinations}:
-            return _empty()  # unsupported destination: retrieve nothing rather than guess
+        if not isinstance(wanted, str) or not wanted.strip():
+            return _empty()
+        wanted = wanted.strip()
+        wanted_key = _name_key(wanted)
+        matches = {d.id for d in destinations if wanted_key == _name_key(d.id)}
+        if not matches:
+            matches = {
+                d.id for d in destinations
+                if any(wanted_key == _name_key((d.model_extra or {}).get(key))
+                       for key in ("name", "city", "city_name"))
+            }
+        if len(matches) != 1:
+            return _empty()  # never guess a destination or broaden the search
+        wanted = matches.pop()
         destinations = [d for d in destinations if d.id == wanted]
 
     seen: set[str] = set()  # place ids must be unique across attractions AND dining

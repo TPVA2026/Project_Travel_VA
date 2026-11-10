@@ -39,8 +39,27 @@ function lines(value) {
     .filter(Boolean);
 }
 
+const ISO_MONTH = /^(?!0000)\d{4}-(0[1-9]|1[0-2])$/;
+
+// A real calendar date in YYYY-MM-DD form; any four-digit year is accepted.
+function isIsoDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value ?? ""));
+  if (!match || Number(match[1]) < 1) return false;
+  const [year, month, day] = match.slice(1).map(Number);
+  const date = new Date(0);
+  date.setUTCFullYear(year, month - 1, day);
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+
 function daySpan(start, end) {
   return Math.round((Date.parse(end) - Date.parse(start)) / 86400000) + 1;
+}
+
+// Inclusive calendar-day count for two ISO dates, computed in UTC (no timezone shift).
+export function inclusiveDays(start, end) {
+  if (!isIsoDate(start) || !isIsoDate(end) || end < start) return null;
+  const count = daySpan(start, end);
+  return Number.isInteger(count) && count > 0 ? count : null;
 }
 
 export const REQUIRED = "This field is required.";
@@ -53,7 +72,13 @@ export function valueErrors(data) {
   const errors = {};
   const start = data.get("startDate");
   const end = data.get("endDate");
-  if (data.get("periodMode") !== "month" && start && end && end < start) {
+  if (data.get("periodMode") !== "month") {
+    if (start && !isIsoDate(start)) errors.startDate = "Use a full date (YYYY-MM-DD).";
+    if (end && !isIsoDate(end)) errors.endDate = "Use a full date (YYYY-MM-DD).";
+  }
+  const month = data.get("month");
+  if (data.get("periodMode") === "month" && month && !ISO_MONTH.test(month)) errors.month = "Use a month and year (YYYY-MM).";
+  if (data.get("periodMode") !== "month" && start && end && !errors.startDate && !errors.endDate && end < start) {
     errors.endDate = "End date must be on or after the start date.";
   }
   if (data.get("periodMode") === "month" && filledWrong(data.get("durationDays"), (n) => n < 1 || !Number.isInteger(n))) {

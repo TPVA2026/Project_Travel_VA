@@ -24,8 +24,8 @@ json_schema = Draft202012Validator(CANDIDATE_PLAN_SCHEMA)
 # Dataset with real prices, so cost VALUES (not only statuses) can be checked.
 PRICED = {
     "destinations": [{"id": "DN"}],
-    "attractions": [{"id": "DN-ATT-001", "name": "a", "durationMin": 60, "priceVnd": 100000, "openHours": None, "source": "M2-VERIFIED"}],
-    "dining": [{"id": "DN-DIN-001", "name": "d", "durationMin": 60, "avgPricePerPersonVnd": 50000, "openHours": None, "source": "M2-VERIFIED"}],
+    "attractions": [{"id": "DN-ATT-001", "destinationId": "DN", "name": "a", "durationMin": 60, "priceVnd": 100000, "openHours": None, "source": "M2-VERIFIED"}],
+    "dining": [{"id": "DN-DIN-001", "destinationId": "DN", "name": "d", "durationMin": 60, "avgPricePerPersonVnd": 50000, "openHours": None, "source": "M2-VERIFIED"}],
     "travel_matrix": [],
 }
 
@@ -115,8 +115,12 @@ def test_pydantic_rejects_impossible_date_and_duplicate_activity_ids():
 def test_ai_extra_fields_never_reach_the_caller():
     smuggled = copy.deepcopy(sample)
     smuggled["feasible"] = True
+    dataset = load("sample_dataset.json")
+    # Explicit single-destination fixture relationships; never applied to curated data.
+    for place in dataset["attractions"] + dataset["dining"]:
+        place["destinationId"] = "DN"
     with pytest.raises(GeminiError) as e:
-        generate_candidate(request, load("sample_dataset.json"), api_key="k", client=ok(smuggled))
+        generate_candidate(request, dataset, api_key="k", client=ok(smuggled))
     assert e.value.code == "INVALID_PLAN" and e.value.status == 422
     assert any("feasible" in x for x in e.value.details)
 

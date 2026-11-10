@@ -115,7 +115,8 @@ def check_overlap(first_activity, second_activity):
     first_end = time_to_minutes(first_activity["endTime"])
     second_start = time_to_minutes(second_activity["startTime"])
     second_end = time_to_minutes(second_activity["endTime"])
-    # Hai khoảng giao nhau khi mỗi khoảng bắt đầu trước khoảng kia kết thúc.
+    
+    
     return first_start < second_end and second_start < first_end
 
 
