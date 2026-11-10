@@ -138,12 +138,21 @@ def normalize_dataset(raw: dict) -> dict:
 
 
 def load_dataset() -> dict:
-    return normalize_dataset({
+    raw = {
         "destinations": _load("destinations.json"),
         "attractions": _load("attractions.json"),
         "dining": _load("restaurants.json"),
         "travel_matrix": _load("travel_matrix.json"),
-    })
+    }
+    imported = DATA_DIR / "opentripmap_attractions.json"
+    if imported.exists():
+        with imported.open(encoding="utf-8") as file:
+            extra = json.load(file)
+        if not isinstance(extra, list) or not all(isinstance(place, dict) for place in extra):
+            raise ValueError("Invalid OpenTripMap attraction snapshot")
+        existing_ids = {place.get("id") for place in raw["attractions"]}
+        raw["attractions"].extend(place for place in extra if place.get("id") not in existing_ids)
+    return normalize_dataset(raw)
 
 
 def get_destinations() -> list[dict]:
