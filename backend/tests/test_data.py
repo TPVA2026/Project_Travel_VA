@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from app.services.data_service import load_dataset, normalize_dataset
+from app.services.data_service import _apply_routing_points, load_dataset, normalize_dataset
 
 
 def test_dataset_has_expected_keys():
@@ -15,6 +15,22 @@ def test_production_dataset_has_canonical_relationships_and_flat_matrix():
     assert all(item["destinationId"] in destination_ids for item in dataset["dining"])
     assert all(set(("from", "to", "durationMin", "distanceKm")) <= leg.keys()
                for leg in dataset["travel_matrix"])
+
+
+def test_reviewed_routing_points_are_an_overlay_not_snapshot_mutation():
+    dataset = load_dataset()
+    places = {place["id"]: place for place in dataset["attractions"]}
+    assert places["OTM_H_N669249200"]["routingPoint"]["profile"] == "driving"
+    assert places["OTM_H_W161714451"]["routingPoint"]["reviewed"] is True
+
+    raw = {"attractions": [{"id": "a"}], "dining": []}
+    before = deepcopy(raw)
+    result = _apply_routing_points(deepcopy(raw), {"points": [{
+        "placeId": "a", "reviewed": True, "profile": "driving",
+        "latitude": 1, "longitude": 2,
+    }]})
+    assert result["attractions"][0]["routingPoint"]["latitude"] == 1
+    assert before == {"attractions": [{"id": "a"}], "dining": []}
 
 
 def test_adapter_is_conservative_and_does_not_mutate_input():
