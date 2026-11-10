@@ -4,8 +4,9 @@ import { BusIllustration } from "../common/Illustrations.jsx";
 import { fetchDestinations, saveTripForResults, validateTravelRequest } from "../../services/api";
 import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays } from "./travelRequest";
 
-// A starting viewport for the slider, not a limit on valid budget input.
-const BUDGET_SLIDER_MAX = 20_000_000;
+// The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
+// input: a larger exact amount typed by hand widens the range so the slider can show it.
+export const BUDGET_SLIDER_MAX = 80_000_000;
 const QUICK_TRAVELERS = [1, 2, 3, 4];
 const DESCRIBE = 5;
 const REVIEW = 6;
@@ -319,6 +320,12 @@ export default function TravelForm({ monthInputSupported }) {
     goToStep(editing ? REVIEW : 2);
   }
 
+  // Skipping means "nothing to add": discard any typed draft before showing review.
+  function skipDescription() {
+    setDescriptionDraft("");
+    goToStep(REVIEW);
+  }
+
   function openPicker(name) {
     const input = formRef.current.elements.namedItem(name);
     input.focus();
@@ -505,7 +512,7 @@ export default function TravelForm({ monthInputSupported }) {
         {/* Deliberately unnamed: the draft is never part of the TravelRequest payload. */}
         <textarea id="tripDescription" className="request-describe" rows="7" value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus aria-describedby={`request-step-${DESCRIBE}-hint${hasDraft ? " request-draft-note" : ""}`} />
         {hasDraft && <p className="request-draft-note" id="request-draft-note">{DESCRIPTION_DRAFT_NOTE}</p>}
-        <button type="button" className="request-link" onClick={() => goToStep(REVIEW)}>Skip for now</button>
+        <button type="button" className="request-link" onClick={skipDescription}>Skip for now</button>
       </>, "Optional. Food, transport, interests, your group or travel limits.")}
 
       <section id={`request-step-${REVIEW}`} data-step={REVIEW} className="request-step request-question" hidden={step !== REVIEW} aria-labelledby={`request-step-${REVIEW}-title`}>

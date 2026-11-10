@@ -174,12 +174,29 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "7,500,000 VND");
     await fill("budgetAmount", "1234567");
     assert.equal(field("budgetSlider").value, "1234567");
+    // Standard slider range is 0..80,000,000 VND.
+    assert.equal(field("budgetSlider").min, "0");
+    assert.equal(field("budgetSlider").max, "80000000");
+    assert.equal(doc.querySelector(".budget-range-labels").textContent, "0 VND80,000,000 VND");
     await fill("budgetAmount", "45,678,901");
-    assert.equal(field("budgetSlider").max, "45678901");
+    assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(field("budgetSlider").value, "45678901");
+    await fill("budgetSlider", "80000000");
+    assert.equal(field("budgetAmount").value, "80,000,000");
+    assert.equal(buildPayload(new FormData(form)).budget.amount, 80000000);
+    await fill("budgetAmount", "79,999,999");
+    assert.equal(field("budgetSlider").value, "79999999");
+    // A larger exact amount is still valid and widens the range instead of being capped.
+    await fill("budgetAmount", "123,456,789");
+    assert.equal(field("budgetSlider").max, "123456789");
+    assert.equal(field("budgetSlider").value, "123456789");
+    assert.equal(buildPayload(new FormData(form)).budget.amount, 123456789);
     await fill("budgetSlider", "12345678");
     assert.equal(field("budgetAmount").value, "12,345,678");
-    assert.equal(field("budgetSlider").max, "45678901", "Sliding must not shrink its own range");
+    assert.equal(field("budgetSlider").max, "123456789", "Sliding must not shrink its own range");
+    await fill("budgetAmount", "");
+    assert.equal(field("budgetSlider").max, "80000000", "Clearing the amount returns to the standard range");
+    assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
     for (const invalid of ["-1", "1.5", "abc", "1,00", "9007199254740992"]) {
       await fill("budgetAmount", invalid);
       assert.equal(field("budgetAmount").value, invalid, "Invalid input is kept, not rewritten");
@@ -197,7 +214,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await fill("budgetAmount", "7654321");
     await actOn(() => { field("budgetAmount").focus(); field("budgetAmount").blur(); });
     assert.equal(field("budgetAmount").value, "7,654,321", "Formatting happens on blur");
-    assert.equal(field("budgetSlider").max, "20000000");
+    assert.equal(field("budgetSlider").max, "80000000");
     await radio("budgetScope", "perPerson");
     assert.equal(apiCalls(), 0, "No API call before the final review");
     await click("Next");
@@ -222,8 +239,34 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.ok(draft.getAttribute("aria-describedby").includes("request-draft-note"));
     await click("Skip for now");
     assertStep(6, "Skip goes to review");
-    assert.equal(field("tripDescription").value, "We love seafood.\nOne of us is an older adult.", "Skip keeps the draft");
+    assert.equal(field("tripDescription").value, "", "Skip discards typed text");
     assert.equal(doc.activeElement, doc.querySelector("#request-step-6 h2"));
+    assert.equal(doc.querySelector(".request-draft-note"), null, "No draft note after skip");
+    const skippedRow = () => [...doc.querySelectorAll(".request-review > div")].find(row => row.querySelector("dt").textContent === "Extra description").querySelector("dd").textContent;
+    assert.equal(skippedRow(), "Nothing added");
+    // Back and Edit do not bring skipped text back.
+    await click("Back");
+    assertStep(5);
+    assert.equal(field("tripDescription").value, "");
+    assert.equal(doc.querySelector(".request-draft-note"), null);
+    await click("Next");
+    assertStep(6);
+    assert.equal(skippedRow(), "Nothing added");
+    await click("Edit description");
+    assert.equal(field("tripDescription").value, "");
+    // Regular Next keeps the text; skipping while editing clears it again.
+    await fill("tripDescription", "Typed by mistake");
+    await click("Skip for now");
+    assertStep(6, "Skip while editing returns to review");
+    assert.equal(skippedRow(), "Nothing added");
+    await click("Back");
+    await fill("tripDescription", "We love seafood.\nOne of us is an older adult.");
+    await click("Next");
+    assertStep(6);
+    assert.equal(field("tripDescription").value, "We love seafood.\nOne of us is an older adult.", "Next keeps the draft");
+    await click("Back");
+    assert.equal(field("tripDescription").value, "We love seafood.\nOne of us is an older adult.", "Back keeps the draft");
+    await click("Next");
 
     // Review summary with the draft shown as prose, no structured drawer, Edit returns to the right step.
     const rows = () => Object.fromEntries([...doc.querySelectorAll(".request-review > div")].map(row => [row.querySelector("dt").textContent, row.querySelector("dd").textContent]));
@@ -360,7 +403,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(active(), "departureLocation");
     for (const name of ["departureLocation", "destination", "startDate", "endDate", "month", "durationDays", "travelerCount", "budgetAmount", "tripDescription"]) assert.equal(field(name).value, "", name);
     assert.equal(field("budgetSlider").value, "0");
-    assert.equal(field("budgetSlider").max, "20000000");
+    assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
     assert.equal(clean.querySelector('[name="periodMode"][value="dates"]').checked, true);
     assert.equal(clean.querySelector(".request-draft-note"), null);
