@@ -102,12 +102,12 @@ def tiles_for_provinces(provinces: list[dict], step: float = 0.5) -> list[tuple[
 
 
 def fetch_tile(client: httpx.Client, box: tuple, api_key: str, *, page_size: int = 500,
-               pause: float = 0.12) -> list[dict]:
-    """Read every result page for one bounding box."""
+               pause: float = 0.12, depth: int = 0) -> list[dict]:
+    """Read all pages; split dense boxes when the API repeats an offset page."""
     if not 1 <= page_size <= 500:
         raise ValueError("page_size must be 1..500")
     left, bottom, right, top = box
-    offset, all_items = 0, []
+    offset, all_items, page_signatures = 0, [], set()
     while True:
         page = request_json(client, "https://api.opentripmap.com/0.1/en/places/bbox", params={
             "lon_min": left, "lat_min": bottom, "lon_max": right, "lat_max": top,
@@ -116,6 +116,21 @@ def fetch_tile(client: httpx.Client, box: tuple, api_key: str, *, page_size: int
         }, pause=pause)
         if not isinstance(page, list):
             raise OpenTripMapError("Invalid OpenTripMap bbox response")
+        signature = tuple(item.get("xid") if isinstance(item, dict) else None for item in page)
+        if signature in page_signatures:
+            if depth >= 8:
+                raise OpenTripMapError("OpenTripMap repeats pages in a very dense map area")
+            middle_lon, middle_lat = (left + right) / 2, (bottom + top) / 2
+            quarters = (
+                (left, bottom, middle_lon, middle_lat),
+                (middle_lon, bottom, right, middle_lat),
+                (left, middle_lat, middle_lon, top),
+                (middle_lon, middle_lat, right, top),
+            )
+            return [item for quarter in quarters for item in fetch_tile(
+                client, quarter, api_key, page_size=page_size, pause=pause, depth=depth + 1
+            )]
+        page_signatures.add(signature)
         all_items.extend(page)
         if len(page) < page_size:
             return all_items

@@ -172,7 +172,8 @@ def build_context(request: dict, dataset: dict) -> dict:
     destinations = _unique(_parse(_Destination, dataset.get("destinations"), "destination"), set(), "destination")
     if not destinations:
         return _empty()
-    if dataset.get("nationwide") and wanted is None:
+    nationwide = any(destination.id.startswith("VN_") for destination in destinations)
+    if nationwide and wanted is None:
         return _empty()  # a country-wide snapshot cannot fit in one model prompt
     if wanted is not None:
         if not isinstance(wanted, str) or not wanted.strip():
@@ -197,7 +198,7 @@ def build_context(request: dict, dataset: dict) -> dict:
     if wanted is not None:
         attractions = [p for p in attractions if _destination_of(p) == wanted]
         dining = [p for p in dining if _destination_of(p) == wanted]
-    if dataset.get("nationwide"):
+    if nationwide:
         curated = [p for p in attractions if (p.model_extra or {}).get("source") != "OpenTripMap"]
         imported = [p for p in attractions if (p.model_extra or {}).get("source") == "OpenTripMap"]
         imported.sort(key=lambda p: (

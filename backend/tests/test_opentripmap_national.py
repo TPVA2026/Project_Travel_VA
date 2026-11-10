@@ -49,6 +49,24 @@ def test_fetch_tile_reads_all_pages():
     assert len(items) == 2
 
 
+def test_fetch_tile_splits_when_api_repeats_offset_page():
+    boxes = []
+
+    def respond(request):
+        box = (float(request.url.params["lon_min"]), float(request.url.params["lat_min"]),
+               float(request.url.params["lon_max"]), float(request.url.params["lat_max"]))
+        boxes.append(box)
+        if box == (0, 0, 1, 1):
+            return httpx.Response(200, json=[{"xid": "SAME"}])
+        return httpx.Response(200, json=[{"xid": str(box)}]
+                              if request.url.params["offset"] == "0" else [])
+
+    with httpx.Client(transport=httpx.MockTransport(respond)) as client:
+        items = fetch_tile(client, (0, 0, 1, 1), "test-key", page_size=1, pause=0)
+    assert len(items) == 4
+    assert len(set(item["xid"] for item in items)) == 4
+
+
 def test_nationwide_snapshot_is_available_to_planner(tmp_path, monkeypatch):
     monkeypatch.setattr(data_service, "DATA_DIR", tmp_path)
     for filename, value in {
@@ -62,7 +80,7 @@ def test_nationwide_snapshot_is_available_to_planner(tmp_path, monkeypatch):
     }.items():
         (tmp_path / filename).write_text(json.dumps(value), encoding="utf-8")
     dataset = data_service.load_dataset()
-    assert dataset["nationwide"] is True
+    assert set(dataset) == {"destinations", "attractions", "dining", "travel_matrix"}
     assert len(dataset["destinations"]) == 2
     assert build_context({"preferences": {"destination": "Hà Nội"}}, dataset)[
         "attractions"][0]["id"] == "OTM_VN_01_W1"

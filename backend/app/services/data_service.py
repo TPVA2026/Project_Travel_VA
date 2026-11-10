@@ -171,10 +171,7 @@ def load_dataset() -> dict:
             item for item in nationwide["attractions"]
             if isinstance(item, dict) and item.get("id") not in attraction_ids
         )
-    dataset = normalize_dataset(raw)
-    if national_enabled:
-        dataset["nationwide"] = True
-    return dataset
+    return normalize_dataset(raw)
 
 
 def get_destinations() -> list[dict]:
