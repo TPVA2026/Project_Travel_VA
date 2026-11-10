@@ -2,14 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import { fetchDestinations, saveTripForResults, validateTravelRequest } from "../../services/api";
-import { INTERESTS, buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays } from "./travelRequest";
 
 // A starting viewport for the slider, not a limit on valid budget input.
 const BUDGET_SLIDER_MAX = 20_000_000;
 const QUICK_TRAVELERS = [1, 2, 3, 4];
-const REVIEW = 5;
-const STEP_COUNT = 6;
-const OPTIONAL_FIELDS = ["maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "interests", "characteristics", "transportation"];
+const DESCRIBE = 5;
+const REVIEW = 6;
+const STEP_COUNT = 7;
+// Local draft only: there is no agreed M3 contract for turning prose into request fields yet.
+export const DESCRIPTION_DRAFT_NOTE = "Saved here as a draft only. It is not sent or used to create your itinerary yet.";
+const DESCRIPTION_PLACEHOLDER = [
+  "For example:",
+  "We love seafood but would rather avoid spicy food.",
+  "We prefer taxis and short walks over motorbikes.",
+  "We enjoy culture, nature and slow mornings.",
+  "One of us is an older adult, so an easy pace helps.",
+  "Ideally no more than 50 km or about an hour of travel per day.",
+].join("\n");
 // Which question owns each field, for step validation and error routing.
 const FIELD_STEP = {
   departureLocation: 0,
@@ -20,15 +30,20 @@ const FIELD_STEP = {
 };
 const CONTROL_NAME = { interests: "interest" };
 
-const TRANSPORT = [
-  ["taxi", "Taxi"],
-  ["walking", "Walking"],
-  ["motorbike", "Motorbike"],
-  ["car", "Car"],
-  ["publicTransport", "Public transport"],
-];
-
 const EMPTY_VALUES = { periodMode: "dates" };
+
+// Errors for fields this form no longer shows become one visible request-level message.
+export function placeErrors(errors) {
+  const placed = {};
+  const loose = [];
+  for (const [name, message] of Object.entries(errors)) {
+    if (name === "form" || name in FIELD_STEP) placed[name] = message;
+    else loose.push(message);
+  }
+  const form = [placed.form, ...loose].filter(Boolean).join(" ");
+  if (form) placed.form = form;
+  return placed;
+}
 
 function stepOf(name) {
   return FIELD_STEP[name] ?? REVIEW;
@@ -74,46 +89,6 @@ function StepError({ name, error }) {
   return error ? <span className="error" id={`${name}-error`}>{error}</span> : null;
 }
 
-function Tags({ name, label, placeholder }) {
-  const [tags, setTags] = useState([]);
-  const [draft, setDraft] = useState("");
-
-  function add(value) {
-    const next = value.trim();
-    if (!next || tags.includes(next)) return;
-    setTags([...tags, next]);
-    setDraft("");
-  }
-
-  return (
-    <div className="field">
-      <label htmlFor={name}>{label}</label>
-      <div className="tag-box">
-        {tags.map((tag) => (
-          <span className="tag" key={tag}>
-            {tag}
-            <button type="button" aria-label={`Remove ${tag}`} onClick={() => setTags(tags.filter((item) => item !== tag))}>×</button>
-            <input type="hidden" name={name} value={tag} />
-          </span>
-        ))}
-        <input
-          id={name}
-          value={draft}
-          placeholder={placeholder}
-          onChange={(event) => setDraft(event.target.value)}
-          onBlur={() => add(draft)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              add(draft);
-            }
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
 // Small line-art marks for each question; decorative only.
 const ART = {
   departure: <><path d="M32 52S18 38.5 18 27a14 14 0 0 1 28 0c0 11.5-14 25-14 25Z" /><circle cx="32" cy="27" r="5" /><path d="M14 56c6-3 30-3 36 0" /></>,
@@ -121,6 +96,7 @@ const ART = {
   calendar: <><rect x="10" y="14" width="44" height="38" rx="5" /><path d="M10 24h44M21 9v9M43 9v9M19 32h4M30 32h4M41 32h4M19 41h4M30 41h4M41 41h4" /></>,
   travelers: <><rect x="12" y="22" width="34" height="28" rx="5" /><path d="M24 22v-5a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v5M20 22v28M38 22v28" /><circle cx="51" cy="40" r="5" /><path d="M46 52a5 5 0 0 1 10 0" /></>,
   budget: <><path d="M12 20h34a6 6 0 0 1 6 6v20a5 5 0 0 1-5 5H13a5 5 0 0 1-5-5V24a4 4 0 0 1 4-4Z" /><path d="M14 20l26-8 3 8" /><path d="M42 31h10v10H42a5 5 0 0 1 0-10Z" /><circle cx="43" cy="36" r="1.2" /></>,
+  describe: <><path d="M12 14h40a5 5 0 0 1 5 5v20a5 5 0 0 1-5 5H30l-11 9v-9h-7a5 5 0 0 1-5-5V19a5 5 0 0 1 5-5Z" /><path d="M19 25h26M19 33h18" /></>,
   review: <><rect x="14" y="22" width="22" height="30" rx="4" /><path d="M21 22v-6h8v6M20 52v4M30 52v4M25 28v18" /><circle cx="48" cy="18" r="5" /><path d="M48 7v3M48 26v3M37 18h3M56 18h3M40.5 10.5l2 2M53.5 23.5l2 2M55.5 10.5l-2 2" /></>,
 };
 
@@ -243,7 +219,7 @@ export default function TravelForm({ monthInputSupported }) {
   const [mode, setMode] = useState("dates");
   const [nativeMonth] = useState(() => monthInputSupported ?? supportsMonthInput());
   const [progress, setProgress] = useState(0);
-  const [expanded, setExpanded] = useState(false);
+  const [descriptionDraft, setDescriptionDraft] = useState("");
   const [destinations, setDestinations] = useState([]);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
@@ -317,7 +293,6 @@ export default function TravelForm({ monthInputSupported }) {
     }
     const first = names.sort((a, b) => stepOf(a) - stepOf(b))[0];
     const target = stepOf(first);
-    if (target === REVIEW && OPTIONAL_FIELDS.some(name => found[name])) setExpanded(true);
     goToStep(target, { edit: target !== REVIEW, name: first });
   }
 
@@ -332,7 +307,7 @@ export default function TravelForm({ monthInputSupported }) {
       focusStep(step, names.find(name => found[name]));
       return;
     }
-    goToStep(editing ? REVIEW : step + 1);
+    goToStep(editing || step === DESCRIBE ? REVIEW : step + 1);
   }
 
   function back() {
@@ -357,11 +332,6 @@ export default function TravelForm({ monthInputSupported }) {
     const form = event.currentTarget;
     const target = event.target;
     if (target.name === "periodMode") setMode(target.value);
-    if (target.name?.endsWith("Priority")) {
-      const type = target.name.slice(0, -"Priority".length);
-      const box = form.querySelector(`input[name="interest"][value="${type}"]`);
-      if (box) box.checked = true;
-    }
     refresh(form, target.name === "budgetAmount");
   }
 
@@ -378,7 +348,7 @@ export default function TravelForm({ monthInputSupported }) {
     setBad({});
     setSubmitted(false);
     setProgress(0);
-    setExpanded(false);
+    setDescriptionDraft("");
   }
 
   async function onSubmit(event) {
@@ -386,7 +356,7 @@ export default function TravelForm({ monthInputSupported }) {
     if (step !== REVIEW) { next(); return; }
     if (sending) return;
     const data = new FormData(event.currentTarget);
-    const found = clientErrors(data);
+    const found = placeErrors(clientErrors(data));
     setSubmitted(true);
     setBad(found);
     setErrors(found);
@@ -401,9 +371,9 @@ export default function TravelForm({ monthInputSupported }) {
       setBad({});
       navigate("/results");
     } catch (error) {
-      const serverErrors = error.status === 422
+      const serverErrors = placeErrors(error.status === 422
         ? serverFieldErrors(error.body)
-        : { form: "Could not send the request." };
+        : { form: "Could not send the request." });
       if (!Object.keys(serverErrors).length) serverErrors.form = "The request is invalid.";
       setErrors(serverErrors);
       setBad(serverErrors);
@@ -438,6 +408,7 @@ export default function TravelForm({ monthInputSupported }) {
     ["Travelers", travelers, 3, "travelers"],
     ["Budget", budget, 4, "budget"],
   ];
+  const hasDraft = descriptionDraft.trim() !== "";
   const nextLabel = editing ? "Back to review" : "Next";
 
   const question = (index, art, title, children, hint) => (
@@ -530,9 +501,16 @@ export default function TravelForm({ monthInputSupported }) {
         </div>
       </>, "In VND. Slide, or type an exact amount.")}
 
-      <section id="request-step-5" data-step={REVIEW} className="request-step request-question" hidden={step !== REVIEW} aria-labelledby="request-step-5-title">
+      {question(DESCRIBE, "describe", <label htmlFor="tripDescription">Is there anything else you’d like to describe?</label>, <>
+        {/* Deliberately unnamed: the draft is never part of the TravelRequest payload. */}
+        <textarea id="tripDescription" className="request-describe" rows="7" value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus aria-describedby={`request-step-${DESCRIBE}-hint${hasDraft ? " request-draft-note" : ""}`} />
+        {hasDraft && <p className="request-draft-note" id="request-draft-note">{DESCRIPTION_DRAFT_NOTE}</p>}
+        <button type="button" className="request-link" onClick={() => goToStep(REVIEW)}>Skip for now</button>
+      </>, "Optional. Food, transport, interests, your group or travel limits.")}
+
+      <section id={`request-step-${REVIEW}`} data-step={REVIEW} className="request-step request-question" hidden={step !== REVIEW} aria-labelledby={`request-step-${REVIEW}-title`}>
         <StepArt name="review" />
-        <h2 id="request-step-5-title" className="request-question-title" tabIndex={-1} data-step-focus>Your trip, ready to review.</h2>
+        <h2 id={`request-step-${REVIEW}-title`} className="request-question-title" tabIndex={-1} data-step-focus>Your trip, ready to review.</h2>
         <div className="request-question-body">
           <dl className="request-review">
             {review.map(([label, value, target, key]) => (
@@ -542,39 +520,13 @@ export default function TravelForm({ monthInputSupported }) {
                 <button type="button" className="request-edit" aria-label={`Edit ${key}`} onClick={() => goToStep(target, { edit: true })}>Edit</button>
               </div>
             ))}
-          </dl>
-          <details className="compact-options" open={expanded} onToggle={event => setExpanded(event.currentTarget.open)}>
-            <summary>Describe more</summary>
-            <div className="compact-options-body">
-              <p className="request-question-hint">Optional details. Leave them empty if they do not matter.</p>
-              <h2>Travel interests</h2>
-              <div className="pills compact-chips interest-choices">{INTERESTS.map(([type, label]) => <label className="pill" key={type}><input type="checkbox" name="interest" value={type} />{label}</label>)}</div>
-              {errors.interests && <span className="error">{errors.interests}</span>}
-              <h2>Food</h2>
-              <div className="grid-2">
-                <Tags name="diningPreferred" label="Foods you like" placeholder="e.g. seafood (Enter)" />
-                <Tags name="diningAvoid" label="Foods to avoid" placeholder="e.g. spicy food (Enter)" />
-              </div>
-              <h2>Transportation</h2>
-              <div className="pills compact-chips">{TRANSPORT.map(([value, label]) => <label className="pill" key={value}><input type="checkbox" name="transportation" value={value} />{label}</label>)}</div>
-              <div className="grid-2">
-                <Field label="Group notes" name="characteristics" error={errors.characteristics} bad={bad}>
-                  <textarea id="characteristics" name="characteristics" rows="2" placeholder="e.g. 2 adults, 1 older adult" {...described("characteristics")} />
-                </Field>
-                <Field label="Max distance (km)" name="maxDistanceKm" error={errors.maxDistanceKm} bad={bad}>
-                  <input id="maxDistanceKm" name="maxDistanceKm" type="number" min="0" step="any" placeholder="e.g. 50" {...described("maxDistanceKm")} />
-                </Field>
-                <Field label="Max travel time (minutes)" name="maxTravelTimeMinutes" error={errors.maxTravelTimeMinutes} bad={bad}>
-                  <input id="maxTravelTimeMinutes" name="maxTravelTimeMinutes" type="number" min="1" step="1" placeholder="e.g. 60" {...described("maxTravelTimeMinutes")} />
-                </Field>
-                <Field label="Limit applies to" name="appliesTo" error={errors.appliesTo} bad={bad}>
-                  <select id="appliesTo" name="appliesTo" defaultValue="" {...described("appliesTo")}>
-                    <option value="">No limit</option><option value="fromDeparture">From departure</option><option value="betweenActivities">Between stops</option><option value="daily">Within one day</option>
-                  </select>
-                </Field>
-              </div>
+            <div className="request-review-draft">
+              <dt>Extra description</dt>
+              <dd>{hasDraft ? descriptionDraft.trim() : "Nothing added"}</dd>
+              <button type="button" className="request-edit" aria-label="Edit description" onClick={() => goToStep(DESCRIBE, { edit: true })}>Edit</button>
             </div>
-          </details>
+          </dl>
+          {hasDraft && <p className="request-draft-note" id="request-review-draft-note">{DESCRIPTION_DRAFT_NOTE}</p>}
         </div>
       </section>
 

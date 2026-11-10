@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 import React, { act } from "react";
 import { buildPayload, clientErrors } from "./travelRequest.js";
 
+const DRAFT_NOTE = "Saved here as a draft only. It is not sent or used to create your itinerary yet.";
+
 // DOM-level integration, not a browser visual or screen-reader test.
 test("M1 one-question request flow: steps, validation, budget, dates, review and submit", async () => {
   const runtimeErrors = [];
@@ -45,7 +47,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const assertStep = (index, message) => {
     assert.deepEqual(visible(), [index], message);
-    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${index + 1} of 6`);
+    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${index + 1} of 7`);
   };
   const active = () => doc.activeElement?.id || doc.activeElement?.textContent;
   const apiCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate").length;
@@ -65,7 +67,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.querySelector("#trip-form-panel").hidden, false);
 
     // Six screens, one visible question, Back only after the first.
-    assert.equal(form.querySelectorAll(".request-step").length, 6);
+    assert.equal(form.querySelectorAll(".request-step").length, 7);
     assertStep(0);
     assert.equal(active(), "departureLocation");
     assert.equal(doc.querySelector("#request-step-0 h2").textContent, "Where are you leaving from?");
@@ -199,10 +201,31 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await radio("budgetScope", "perPerson");
     assert.equal(apiCalls(), 0, "No API call before the final review");
     await click("Next");
-    assertStep(5);
-    assert.equal(doc.activeElement, doc.querySelector("#request-step-5 h2"));
 
-    // Review summary, collapsed optional details, Edit returns to the right step.
+    // Optional describe step: message icon, white textarea with example placeholder, local draft only.
+    assertStep(5);
+    assert.equal(doc.querySelector("#request-step-5 h2").textContent, "Is there anything else you’d like to describe?");
+    assert.ok(doc.querySelector("#request-step-5 svg.request-art"));
+    const draft = field("tripDescription");
+    assert.equal(draft.tagName, "TEXTAREA");
+    assert.equal(active(), "tripDescription");
+    assert.equal(draft.name, "", "The draft is not a form field");
+    assert.equal(draft.value, "");
+    for (const hint of ["seafood", "spicy", "taxis", "culture", "older adult", "50 km", "per day"]) assert.ok(draft.placeholder.includes(hint), hint);
+    assert.equal(doc.querySelector(".request-draft-note"), null, "No draft note while empty");
+    await click("Next");
+    assertStep(6, "Empty description is allowed");
+    await click("Back");
+    assertStep(5);
+    await fill("tripDescription", "We love seafood.\nOne of us is an older adult.");
+    assert.equal(doc.querySelector("#request-draft-note").textContent, DRAFT_NOTE);
+    assert.ok(draft.getAttribute("aria-describedby").includes("request-draft-note"));
+    await click("Skip for now");
+    assertStep(6, "Skip goes to review");
+    assert.equal(field("tripDescription").value, "We love seafood.\nOne of us is an older adult.", "Skip keeps the draft");
+    assert.equal(doc.activeElement, doc.querySelector("#request-step-6 h2"));
+
+    // Review summary with the draft shown as prose, no structured drawer, Edit returns to the right step.
     const rows = () => Object.fromEntries([...doc.querySelectorAll(".request-review > div")].map(row => [row.querySelector("dt").textContent, row.querySelector("dd").textContent]));
     assert.deepEqual(rows(), {
       "Leaving from": "Hue",
@@ -210,42 +233,36 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       When: "February 2035 · 5 days",
       Travelers: "7 travelers",
       Budget: "7,654,321 VND · per person",
+      "Extra description": "We love seafood.\nOne of us is an older adult.",
     });
-    assert.equal(form.querySelector("details summary").textContent, "Describe more");
-    assert.equal(form.querySelector("details").open, false);
-    assert.equal(form.querySelector("textarea[name='description'], [name='prompt']"), null);
+    assert.equal(doc.querySelector("#request-review-draft-note").textContent, DRAFT_NOTE);
+    assert.equal(form.querySelector("details"), null, "Advanced options drawer is removed");
+    for (const name of ["characteristics", "maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "interest", "transportation", "diningPreferred"]) assert.equal(field(name), null, name);
+    assert.equal(form.querySelector("[name='description'], [name='prompt'], [name='tripDescription']"), null);
+    assert.equal([...new FormData(form).keys()].some(key => /descri|prompt|note/i.test(key)), false);
+    await click("Edit description");
+    assertStep(5);
+    await fill("tripDescription", "We love seafood and prefer taxis.");
+    await click("Back to review");
+    assertStep(6);
+    assert.equal(rows()["Extra description"], "We love seafood and prefer taxis.");
     await click("Edit travelers");
     assertStep(3);
     assert.equal(field("travelerCount").value, "7");
     assert.equal(button("Back to review").type, "submit");
     await click("Back to review");
-    assertStep(5);
+    assertStep(6);
     await click("Edit dates");
     await radio("periodMode", "dates");
     await click("Back to review");
     assert.equal(rows().When, "30 Dec 2031 – 2 Jan 2032 · 4 days");
-    // Back/Next keeps every earlier answer.
-    for (let index = 4; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
+    // Back/Next keeps every earlier answer, including the draft.
+    for (let index = 5; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
     assert.equal(field("departureLocation").value, "Hue");
-    for (let index = 1; index <= 5; index += 1) { await click("Next"); assertStep(index); }
+    for (let index = 1; index <= 6; index += 1) { await click("Next"); assertStep(index); }
     assert.equal(field("budgetAmount").value, "7,654,321");
     assert.equal(field("budgetSlider").value, "7654321");
-
-    // Invalid optional detail blocks submit and is focused inside the opened details.
-    await actOn(() => form.querySelector("summary").click());
-    await fill("characteristics", "older adult");
-    await fill("diningPreferred", "seafood");
-    await actOn(() => field("diningPreferred").dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Enter", bubbles: true })));
-    await actOn(() => form.querySelector('[name="interest"][value="nature"]').click());
-    await fill("maxDistanceKm", "0");
-    await fill("appliesTo", "daily");
-    await actOn(() => form.querySelector("summary").click());
-    assert.equal(form.querySelector("details").open, false);
-    await click("Create itinerary");
-    assert.equal(apiCalls(), 0);
-    assert.equal(form.querySelector("details").open, true);
-    assert.equal(active(), "maxDistanceKm");
-    await fill("maxDistanceKm", "50");
+    assert.equal(field("tripDescription").value, "We love seafood and prefer taxis.");
 
     // Editing from review still validates the edited question before returning.
     await click("Edit departure");
@@ -257,7 +274,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(field("departureLocation").getAttribute("aria-invalid"), "true");
     await fill("departureLocation", "Hue");
     await click("Back to review");
-    assertStep(5);
+    assertStep(6);
     assert.equal(apiCalls(), 0);
 
     // Server 422 errors route to their step.
@@ -271,7 +288,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.getElementById("destination-error").textContent, "Destination is not supported.");
     assert.equal(active(), "destination");
     await click("Not sure yet");
-    assertStep(5, "Skipping while editing returns to review");
+    assertStep(6, "Skipping while editing returns to review");
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["body", "budget", "amount"], msg: "Budget too large." }] } }) });
     await click("Create itinerary");
     assertStep(4);
@@ -285,13 +302,19 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Back to review");
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { messages: ["Dates conflict with the destination season."] } }) });
     await click("Create itinerary");
-    assertStep(5, "Form-level errors stay on review");
+    assertStep(6, "Form-level errors stay on review");
     assert.equal(active(), "request-form-error");
     assert.equal(doc.getElementById("request-form-error").textContent, "Dates conflict with the destination season.");
     fetchImpl = async () => { throw new TypeError("network down"); };
     await click("Create itinerary");
-    assertStep(5);
+    assertStep(6);
     assert.equal(doc.getElementById("request-form-error").textContent, "Could not send the request.");
+    // Server errors for fields the form does not show become a visible request-level message.
+    fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["body", "limits", "maxDistanceKm"], msg: "Distance must be positive." }] } }) });
+    await click("Create itinerary");
+    assertStep(6);
+    assert.equal(doc.getElementById("request-form-error").textContent, "Distance must be positive.");
+    assert.equal(active(), "request-form-error");
 
     // Form <-> Describe keeps both panels mounted and focus lands on the visible question.
     await click("Edit budget");
@@ -305,7 +328,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assertStep(4);
     assert.equal(active(), "budgetAmount");
     assert.equal(field("budgetAmount").value, "7,654,321");
-    assert.equal(field("characteristics").value, "older adult");
+    assert.equal(field("tripDescription").value, "We love seafood and prefer taxis.");
     await click("Switch to describing");
     assert.equal(field("describe-draft").value, "Two adults");
     assert.equal(doc.querySelector(".describe-answer").textContent, "A quiet coastal place");
@@ -318,16 +341,16 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       travelPeriod: { startDate: "2031-12-30", endDate: "2032-01-02" },
       durationDays: 4,
       departureLocation: "Hue",
-      travelers: { count: 7, characteristics: ["older adult"] },
+      travelers: { count: 7 },
       budget: { amount: 7654321, currency: "VND", scope: "perPerson" },
-      preferences: { interests: [{ type: "nature" }], dining: { preferred: ["seafood"], avoid: [] } },
-      limits: { appliesTo: "daily", maxDistanceKm: 50 },
     });
+    assert.equal(JSON.stringify(payload).includes("taxis"), false, "The draft never enters the TravelRequest");
     fetchImpl = async () => ({ ok: true, json: async () => ({ valid: true, data: payload }) });
     fetchCalls = [];
     await click("Create itinerary");
     assert.deepEqual(fetchCalls, [{ url: "/api/v1/requests/validate", payload }]);
     assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), payload);
+    for (const store of [sessionStorage, localStorage]) for (let i = 0; i < store.length; i += 1) assert.equal(store.getItem(store.key(i)).includes("prefer taxis"), false, "Draft is not persisted");
 
     // Clear resets to the first question with empty values.
     await click("Clear form");
@@ -335,13 +358,12 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     const clean = doc.querySelector("form");
     assertStep(0);
     assert.equal(active(), "departureLocation");
-    for (const name of ["departureLocation", "destination", "startDate", "endDate", "month", "durationDays", "travelerCount", "budgetAmount", "characteristics"]) assert.equal(field(name).value, "", name);
+    for (const name of ["departureLocation", "destination", "startDate", "endDate", "month", "durationDays", "travelerCount", "budgetAmount", "tripDescription"]) assert.equal(field(name).value, "", name);
     assert.equal(field("budgetSlider").value, "0");
     assert.equal(field("budgetSlider").max, "20000000");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
     assert.equal(clean.querySelector('[name="periodMode"][value="dates"]').checked, true);
-    assert.equal(clean.querySelector("details").open, false);
-    assert.equal(clean.querySelector('[name="diningPreferred"][type="hidden"]'), null);
+    assert.equal(clean.querySelector(".request-draft-note"), null);
     assert.equal(clean.querySelector(".completion-label").textContent, "0% finding");
     assert.equal(button("Back"), undefined);
 
@@ -358,7 +380,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await fill("budgetAmount", "70123456");
     await radio("budgetScope", "group");
     await click("Next");
-    assertStep(5);
+    await click("Next");
+    assertStep(6);
     const custom = buildPayload(new FormData(clean));
     assert.deepEqual(custom, { travelPeriod: { month: "2030-07" }, durationDays: 3, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
     assert.equal(field("budgetSlider").value, "70123456");
@@ -487,6 +510,8 @@ test("M1 month fallback: probe, labelled month/year controls, canonical field, v
     await radio("budgetScope", "group");
     await click("Next");
     assert.deepEqual(step(), [5]);
+    await click("Next");
+    assert.deepEqual(step(), [6]);
     const when = () => [...doc.querySelectorAll(".request-review > div")].find(row => row.querySelector("dt").textContent === "When").querySelector("dd").textContent;
     assert.equal(when(), "March 9999 · 4 days");
     // Edit, change the year, return: summary and payload follow the latest value.
