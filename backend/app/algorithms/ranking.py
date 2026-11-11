@@ -402,4 +402,15 @@ def rank_candidates(request: dict, plans: list, dataset: dict | None = None,
     for item in result["unscored"]:
         item["missingTagPlaceIds"] = missing_by_plan[item["planId"]]
     result["excluded"] = excluded + result["excluded"]
+    from app.algorithms.quality import evaluate_quality
+    from pydantic import ValidationError
+    reports = {}
+    for plan in plans:
+        try:
+            reports[plan["planId"]] = evaluate_quality(plan)
+        except ValidationError:
+            # Invalid candidates retain their feasibility diagnostics.
+            reports[plan["planId"]] = {"warnings": [{"code": "QUALITY_INVALID_PLAN"}],
+                                        "metrics": None, "score": None}
+    result["quality_report"] = reports
     return result
