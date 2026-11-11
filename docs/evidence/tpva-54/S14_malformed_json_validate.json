@@ -1,0 +1,35 @@
+{
+  "id": "S14_malformed_json_validate",
+  "title": "Malformed JSON body to /api/v1/requests/validate",
+  "endpoint": "/api/v1/requests/validate",
+  "server": "default",
+  "owner": "M6",
+  "expected": {
+    "http": 422,
+    "detailList": true
+  },
+  "rule": "Malformed JSON is a 422, never a 500.",
+  "requestRaw": "{\"travelPeriod\": ",
+  "httpStatus": 422,
+  "response": {
+    "detail": [
+      {
+        "type": "json_invalid",
+        "loc": [
+          "body",
+          17
+        ],
+        "msg": "JSON decode error",
+        "input": {},
+        "ctx": {
+          "error": "Expecting value"
+        }
+      }
+    ]
+  },
+  "verdict": "PASS",
+  "notes": [],
+  "actualStatus": null,
+  "actualError": null,
+  "checkCodes": []
+}

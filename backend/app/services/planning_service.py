@@ -56,6 +56,76 @@ def _load_planning_dataset() -> dict:
     return dataset
 
 
+def _prepare_evaluation_inputs(
+    request: dict, plans: list[dict], *, single: bool
+) -> tuple[dict, list[dict], dict]:
+    """Validate and ground one or more candidates against one dataset snapshot."""
+    try:
+        normalized_request = validate_travel_request(request).model_dump(mode="json", by_alias=True)
+    except ValidationError as exc:
+        raise PlanningError("VALIDATION_ERROR", "Invalid travel request.", request_problems(request, exc)) from None
+
+    validated_plans = []
+    for index, plan in enumerate(plans):
+        try:
+            validated_plans.append(
+                CandidatePlan.model_validate(plan).model_dump(mode="json")
+            )
+        except ValidationError as exc:
+            message = (
+                "Plan failed schema checks." if single
+                else f"Candidate plan at index {index} failed schema checks."
+            )
+            raise PlanningError(
+                "INVALID_PLAN", message,
+                exc.errors(include_input=False, include_context=False, include_url=False),
+            ) from None
+
+    dataset = _load_planning_dataset()
+    context = build_context(normalized_request, dataset)
+    if not valid_destination_ids(context):
+        message = (
+            "The selected destination is not supported by the current dataset."
+            if single else "No supported planning data is available for this request."
+        )
+        raise PlanningError("NO_DATA", message)
+    if not supported_place_ids(context):
+        message = (
+            "No supported places in the curated dataset for this request"
+            if single else "No supported planning data is available for this request."
+        )
+        raise PlanningError("NO_DATA", message)
+    for index, plan in enumerate(validated_plans):
+        errors = check_grounding(plan, context)
+        if errors:
+            message = (
+                "Plan failed schema/grounding checks" if single
+                else f"Candidate plan at index {index} failed grounding checks."
+            )
+            raise PlanningError("INVALID_PLAN", message, errors)
+    return normalized_request, validated_plans, dataset
+
+
+def _evaluate_candidate(
+    request: dict, plan: dict, dataset: dict, service: RoutingService,
+    supplemental_costs: dict | None = None,
+) -> dict:
+    """Apply the shared trusted-routing and deterministic M4 policy."""
+    evaluation_dataset, routes = enrich_routes(request, plan, dataset, service)
+    if supplemental_costs is None:
+        result = evaluate_feasibility(request, plan, evaluation_dataset)
+    else:
+        result = evaluate_feasibility(
+            request, plan, evaluation_dataset, supplemental_costs
+        )
+    if service.config.enabled:
+        result.setdefault("components", {})["routing"] = {
+            "enabled": True,
+            "routes": routes,
+        }
+    return result
+
+
 def evaluate_plan(request: dict, plan: dict, *,
                   routing_service: RoutingService | None = None) -> dict:
     """Evaluate a submitted pair without AI, inferred data, or ranking.
@@ -64,41 +134,14 @@ def evaluate_plan(request: dict, plan: dict, *,
     departure routes. The filtered context is used for the existing M3 gate.
     Transport/accommodation costs remain unknown until a trusted source exists.
     """
-    try:
-        normalized_request = validate_travel_request(request).model_dump(mode="json", by_alias=True)
-    except ValidationError as exc:
-        raise PlanningError("VALIDATION_ERROR", "Invalid travel request.", request_problems(request, exc)) from None
-    try:
-        validated_plan = CandidatePlan.model_validate(plan).model_dump(mode="json")
-    except ValidationError as exc:
-        raise PlanningError(
-            "INVALID_PLAN", "Plan failed schema checks.",
-            exc.errors(include_input=False, include_context=False, include_url=False),
-        ) from None
-
-    dataset = _load_planning_dataset()
-
-    context = build_context(normalized_request, dataset)
-    if not valid_destination_ids(context):
-        raise PlanningError(
-            "NO_DATA", "The selected destination is not supported by the current dataset."
-        )
-    if not supported_place_ids(context):
-        raise PlanningError("NO_DATA", "No supported places in the curated dataset for this request")
-    errors = check_grounding(validated_plan, context)
-    if errors:
-        raise PlanningError("INVALID_PLAN", "Plan failed schema/grounding checks", errors)
+    normalized_request, validated_plans, dataset = _prepare_evaluation_inputs(
+        request, [plan], single=True
+    )
+    validated_plan = validated_plans[0]
     service = routing_service or get_default_routing_service()
-    evaluation_dataset, routes = enrich_routes(
+    return _evaluate_candidate(
         normalized_request, validated_plan, dataset, service
     )
-    result = evaluate_feasibility(normalized_request, validated_plan, evaluation_dataset)
-    if service.config.enabled:
-        result.setdefault("components", {})["routing"] = {
-            "enabled": True,
-            "routes": routes,
-        }
-    return result
 
 
 def apply_revision(request: dict, revision: dict) -> dict:
@@ -216,39 +259,35 @@ def revalidate_revision(request: dict, original_plan: dict, revision: dict, *,
     )
 
 
-def rank_candidate_plans(request: dict, plans: list[dict], limit: int = 3) -> dict:
+def rank_candidate_plans(
+    request: dict, plans: list[dict], limit: int = 3, *,
+    routing_service: RoutingService | None = None,
+    supplemental_costs_by_plan: dict | None = None,
+) -> dict:
     """Validate, ground and re-evaluate candidates before using Sand's ranking."""
-    try:
-        normalized_request = validate_travel_request(request).model_dump(mode="json", by_alias=True)
-    except ValidationError as exc:
-        raise PlanningError(
-            "VALIDATION_ERROR", "Invalid travel request.", request_problems(request, exc)
-        ) from None
     if not isinstance(plans, list) or not plans:
         raise PlanningError("INVALID_PLANS", "At least one candidate plan is required.")
-
-    validated_plans = []
-    for index, plan in enumerate(plans):
-        try:
-            validated_plans.append(CandidatePlan.model_validate(plan).model_dump(mode="json"))
-        except ValidationError as exc:
-            raise PlanningError(
-                "INVALID_PLAN", f"Candidate plan at index {index} failed schema checks.",
-                exc.errors(include_input=False, include_context=False, include_url=False),
-            ) from None
-
-    dataset = _load_planning_dataset()
-    context = build_context(normalized_request, dataset)
-    if not valid_destination_ids(context) or not supported_place_ids(context):
-        raise PlanningError("NO_DATA", "No supported planning data is available for this request.")
-    for index, plan in enumerate(validated_plans):
-        errors = check_grounding(plan, context)
-        if errors:
-            raise PlanningError(
-                "INVALID_PLAN", f"Candidate plan at index {index} failed grounding checks.", errors
-            )
+    normalized_request, validated_plans, dataset = _prepare_evaluation_inputs(
+        request, plans, single=False
+    )
+    if supplemental_costs_by_plan is None:
+        supplemental_costs_by_plan = {}
+    if not isinstance(supplemental_costs_by_plan, dict):
+        raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.")
+    service = routing_service or get_default_routing_service()
+    evaluations_by_plan_id = {
+        plan["planId"]: _evaluate_candidate(
+            normalized_request, plan, dataset, service,
+            supplemental_costs_by_plan.get(plan["planId"]),
+        )
+        for plan in validated_plans
+    }
     try:
-        result = rank_candidates(normalized_request, validated_plans, dataset=dataset)
+        result = rank_candidates(
+            normalized_request, validated_plans, dataset=dataset,
+            supplemental_costs_by_plan=supplemental_costs_by_plan,
+            evaluations_by_plan_id=evaluations_by_plan_id,
+        )
     except (ValidationError, ValueError, TypeError) as exc:
         raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.") from None
     result["totalRanked"] = len(result["ranked"])
