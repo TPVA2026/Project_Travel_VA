@@ -49,7 +49,11 @@ test('runItineraryPipeline surfaces a backend error and stops the pipeline', asy
       status: 502, headers: { 'content-type': 'application/json' },
     })
   }
-  await assert.rejects(() => runItineraryPipeline(request), (error) => {
+  const nonDemoRequest = {
+    ...request,
+    preferences: { destination: 'Da Nang' },
+  }
+  await assert.rejects(() => runItineraryPipeline(nonDemoRequest), (error) => {
     assert.equal(error.status, 502)
     assert.equal(error.message, 'Gemini unavailable')
     return true
