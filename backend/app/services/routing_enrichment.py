@@ -47,6 +47,10 @@ def _existing_result(reference: dict, origin: str, destination: str, mode: str) 
         "evidenceStatus": "VERIFIED",
         "originReviewed": reference.get("originReviewed", True),
         "destinationReviewed": reference.get("destinationReviewed", True),
+        "diagnostic": {
+            "code": "EXISTING_VERIFIED_ROUTE",
+            "message": "Reused existing verified routing evidence.",
+        },
         "reused": True,
     }
 

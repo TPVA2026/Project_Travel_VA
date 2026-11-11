@@ -31,17 +31,18 @@ Routing is disabled unless all required opt-in settings are provided:
 
 ```dotenv
 OSRM_ROUTING_ENABLED=true
-OSRM_BASE_URL=https://your-osrm-compatible-host
-OSRM_MVP_PLACE_IDS=OTM_H_N669249200,OTM_H_W161714451
+OSRM_BASE_URL=http://osrm:5000
+OSRM_MVP_PLACE_IDS=REST_H_05,ATTR_H_03,ATTR_H_08,ATTR_H_01,ATTR_H_05,REST_H_10
 OSRM_ENABLED_PROFILES=driving
 OSRM_TIMEOUT_SECONDS=3
 OSRM_MAX_SNAP_DISTANCE_METERS=100
 OSRM_CACHE_SIZE=256
 ```
 
-`OSRM_BASE_URL` has no default. The public OSRM demo may be configured locally
-for a few manual development requests subject to its policy, but is not a
-production dependency. The cache is process-local, bounded, and directed:
+`OSRM_BASE_URL` has no default and accepts only an absolute `http` or `https`
+URL. The example assumes a self-hosted OSRM service named `osrm`; this project
+does not provide or assume a public routing endpoint. The cache is process-local,
+bounded, and directed:
 `A -> B` never satisfies `B -> A`. There are no retries.
 
 Supported request transportation values are:
@@ -55,9 +56,7 @@ Supported request transportation values are:
 The configured OSRM deployment must actually provide the selected profile.
 `OSRM_ENABLED_PROFILES` defaults to `driving`; walking/cycling must be verified
 on that deployment before being added. Other values return `UNSUPPORTED_MODE`
-without a network request. On 2026-11-11, the public demo returned identical
-route metrics and waypoints for the `driving`, `walking`, and `cycling` paths in
-the Huế probe, so only `driving` is treated as verified.
+without a network request.
 
 ## Evaluation behavior
 
@@ -87,7 +86,13 @@ The evaluation response gains `components.routing` when routing is enabled:
       "profile": "driving",
       "evidenceStatus": "PROVISIONAL",
       "originReviewed": false,
-      "destinationReviewed": false
+      "destinationReviewed": false,
+      "originSnappedDistanceMeters": 0.0,
+      "destinationSnappedDistanceMeters": 0.0,
+      "diagnostic": {
+        "code": "ENDPOINT_REVIEW_REQUIRED",
+        "message": "Endpoint review required (REVIEWED_POINT_MISSING)."
+      }
     }
   ]
 }
@@ -118,10 +123,21 @@ curl -X POST http://localhost:3001/itineraries/evaluate \
   --data @tests/fixtures/hue_osrm_evaluate.json
 ```
 
-The fixture uses the reviewed, driving-specific overlay in
-`app/data/routing_points.json`. Chùa Thiên Mụ is tied to OSM way `205794937`
-and Chợ Đông Ba to OSM way `771244229`; both measured `0 m` OSRM snap distance
-on 2026-11-11. The OpenTripMap snapshot itself remains unchanged.
+The OpenTripMap fixture uses the reviewed, driving-specific overlay in
+`app/data/routing_points.json`. The curated Hue routes required by TPVA-45 are:
+
+1. `REST_H_05` -> `ATTR_H_03`
+2. `ATTR_H_08` -> `ATTR_H_01`
+3. `ATTR_H_05` -> `REST_H_10`
+
+As of 2026-11-11, none of those six curated IDs has a reviewed routing point in
+the overlay. A live VERIFIED demonstration is therefore **BLOCKED BY FIX-10**.
+After FIX-10 supplies manually reviewed, profile-specific coordinates, add them
+to `routing_points.json`, configure the six-ID allowlist above, point
+`OSRM_BASE_URL` at the controlled self-hosted service, and submit plans containing
+each directed pair. Confirm `ROUTE_AVAILABLE`, `evidenceStatus: VERIFIED`, both
+review flags, and both snap distances before accepting the result. Do not copy
+the source POI coordinate into the overlay merely to complete this check.
 
 Automated tests must continue using `httpx.MockTransport`, never a live server.
 

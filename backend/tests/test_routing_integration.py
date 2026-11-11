@@ -123,13 +123,29 @@ def test_unverified_existing_values_are_replaced_not_promoted():
         "from": "hue-a", "to": "hue-b", "durationMin": 999, "distanceKm": 999,
         "source": "unverified import", "evidenceStatus": "PROVISIONAL",
     }]
+    before = deepcopy(dataset)
     service = router(lambda request: httpx.Response(200, json=osrm_payload()))
     enriched, _ = enrich_routes(request, plan, dataset, service)
     row = enriched["travel_matrix"][0]
     assert (row["durationMin"], row["distanceKm"]) == (15, 2.5)
     assert row["source"] == "OSRM"
     assert row["evidenceStatus"] == "VERIFIED"
-    assert dataset["travel_matrix"][0]["durationMin"] == 999
+    assert dataset == before
+
+
+def test_seed_route_remains_unverified_when_osrm_is_unavailable():
+    request, plan, dataset = small_case()
+    dataset["travel_matrix"] = [{
+        "from": "hue-a", "to": "hue-b", "durationMin": 999, "distanceKm": 999,
+        "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    }]
+    service = router(lambda request: httpx.Response(503))
+    enriched, routes = enrich_routes(request, plan, dataset, service)
+    result = evaluate_feasibility(request, plan, enriched)
+    assert enriched is dataset
+    assert routes[0]["status"] == ROUTING_UNAVAILABLE
+    assert result["status"] == "UNVERIFIED"
+    assert any(reason["code"] == "UNSUPPORTED_LEG" for reason in result["reasons"])
 
 
 def test_provider_failure_does_not_become_infeasible_or_mutate_inputs():
