@@ -34,6 +34,12 @@
     "preferences": {
       "description": "Optional ranking signals. Omitting this object means the user stated no preferences.",
       "$ref": "#/$defs/preferences"
+    },
+    "additionalRequirements": {
+      "description": "Optional free-text extra requirements from the user. Form-selected fields take precedence when this text conflicts with them. M3 should treat the text as user preferences in the prompt.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
     }
   },
   "$defs": {

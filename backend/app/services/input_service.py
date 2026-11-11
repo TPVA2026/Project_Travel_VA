@@ -29,6 +29,14 @@ def normalize_travel_request(payload: dict) -> dict:
     if isinstance(data.get("departureLocation"), str):
         data["departureLocation"] = data["departureLocation"].strip()
 
+    for key in ("additionalRequirements", "additional_requirements"):
+        if key not in data:
+            continue
+        value = data[key]
+        if isinstance(value, str):
+            trimmed = value.strip()
+            data[key] = trimmed if trimmed else None
+
     travelers = data.get("travelers")
     if isinstance(travelers, dict):
         travelers = dict(travelers)
