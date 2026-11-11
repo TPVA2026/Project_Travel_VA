@@ -1,5 +1,5 @@
 import Icon from '../common/Icon.jsx'
-import { getCheckStatus, VERIFICATION_CHECKS } from '../../services/recommendations.js'
+import { getCheckStatus, VERIFICATION_CHECKS } from '../../services/api.js'
 
 const CHECK_ICONS = {
   cost: 'wallet',
@@ -15,8 +15,8 @@ function travelDaySummary(day) {
   if (!day || typeof day !== 'object') return null
   const minutes = formatMeasure(day.durationMin, 'min')
   const kilometers = formatMeasure(day.distanceKm, 'km')
-  if (minutes == null && kilometers == null) return 'travel data unverified'
-  return [minutes || 'time unverified', kilometers || 'distance unverified']
+  if (minutes == null && kilometers == null) return 'chưa xác minh dữ liệu di chuyển'
+  return [minutes || 'chưa rõ thời gian', kilometers || 'chưa rõ khoảng cách']
     .filter(Boolean)
     .join(' · ')
 }
@@ -50,7 +50,7 @@ export default function EvaluationChecks({ evaluation }) {
             <li key={day?.dayNumber}>
               <Icon name="clock" size={13} />
               <span>
-                <strong>Day {day?.dayNumber}</strong> {travelDaySummary(day)}
+                <strong>Ngày {day?.dayNumber}</strong> {travelDaySummary(day)}
               </span>
             </li>
           ))}
