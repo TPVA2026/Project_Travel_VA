@@ -47,6 +47,14 @@ assert.equal(
 assert.equal(valueErrors(form({ ...valid, departureLocation: "" })).departureLocation, undefined);
 assert.equal(clientErrors(form({ periodMode: "dates" })).departureLocation, "This field is required.");
 
+// Departure stays required and is trimmed; a skipped or blank destination is omitted, never guessed.
+const trimmed = buildPayload(form({ ...valid, departureLocation: "  Ho Chi Minh City  ", destination: "   " }));
+assert.equal(trimmed.departureLocation, "Ho Chi Minh City");
+assert.equal(Object.hasOwn(trimmed.preferences, "destination"), false);
+const noPreferences = buildPayload(form({ ...valid, interest: [], sightseeingPriority: "" }));
+assert.equal(noPreferences.preferences, undefined);
+assert.equal(buildPayload(form({ ...valid, destination: " Da Nang " })).preferences.destination, "Da Nang");
+
 const bad = clientErrors(form({ ...valid, endDate: "2026-11-01", departureLocation: "  " }));
 assert.equal(bad.endDate, "End date must be on or after the start date.");
 assert.equal(bad.departureLocation, "This field is required.");
