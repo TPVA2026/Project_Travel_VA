@@ -45,7 +45,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const assertStep = (index, message) => {
     assert.deepEqual(visible(), [index], message);
-    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${Math.min(index, 6) + 1} of 7`);
+    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${index + 1} of 7`);
   };
   const active = () => doc.activeElement?.id || doc.activeElement?.textContent;
   const apiCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate").length;
@@ -65,7 +65,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.querySelector("#trip-form-panel").hidden, false);
 
     // Six screens, one visible question, Back only after the first.
-    assert.equal(form.querySelectorAll(".request-step").length, 8, "Seven questions plus the destination suggestion screen");
+    assert.equal(form.querySelectorAll(".request-step").length, 7);
     assertStep(0);
     assert.equal(active(), "departureLocation");
     assert.equal(doc.querySelector("#request-step-0 h2").textContent, "Where are you leaving from?");
@@ -85,8 +85,6 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.deepEqual([...doc.querySelectorAll("#supported-destinations option")].map(node => node.value), ["Da Nang", "Hue"]);
 
     // Destination is optional and can be skipped on purpose.
-    assert.equal(doc.getElementById("request-step-1-hint").textContent, "Optional. Skip it and we'll suggest destinations that fit your trip after you review.");
-    assert.doesNotMatch(form.textContent, /we will suggest places/i, "Old destination copy is gone");
     await fill("destination", "Somewhere");
     await click("Not sure yet");
     assertStep(2);
@@ -276,7 +274,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     const rows = () => Object.fromEntries([...doc.querySelectorAll(".request-review > div")].map(row => [row.querySelector("dt").textContent, row.querySelector("dd").textContent]));
     assert.deepEqual(rows(), {
       "Leaving from": "Hue",
-      "Going to": "Not chosen yet. We'll suggest some.",
+      "Going to": "Not sure yet",
       When: "February 2035 · 5 days",
       Travelers: "7 travelers",
       Budget: "7,654,321 VND · per person",
@@ -403,17 +401,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     fetchCalls = [];
     await click("Create itinerary");
     assert.deepEqual(fetchCalls, [{ url: "/api/v1/requests/validate", payload }]);
-    // No destination: the user confirms a supported suggestion before anything is generated.
-    assertStep(7);
-    assert.equal(doc.querySelector(".request-step-count").textContent, "Question 7 of 7");
-    assert.equal(sessionStorage.getItem("tpva-travel-request"), null);
-    assert.deepEqual([...doc.querySelectorAll('[name="suggestedDestination"]')].map(node => node.value), ["Da Nang"], "Departure city Hue is not suggested");
-    await radio("suggestedDestination", "Da Nang");
-    fetchCalls = [];
-    await click("Use this destination");
-    const chosen = { ...payload, preferences: { destination: "Da Nang" } };
-    assert.deepEqual(fetchCalls, [{ url: "/api/v1/requests/validate", payload: chosen }]);
-    assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), chosen);
+    assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), payload);
     assert.equal(JSON.parse(sessionStorage.getItem("tpva-travel-request")).additionalRequirements, "We love seafood and prefer taxis.");
 
     // Clear resets to the first question with empty values.
@@ -449,7 +437,6 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assertStep(6);
     const custom = buildPayload(new FormData(clean));
     assert.deepEqual(custom, { travelPeriod: { month: "2030-07" }, durationDays: 3, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
-    assert.equal(custom.preferences?.destination, undefined, "Skipped destination is omitted, never filled in");
     assert.equal(field("budgetSlider").value, "70123456");
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {
