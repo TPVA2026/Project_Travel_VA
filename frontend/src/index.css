@@ -5858,13 +5858,6 @@ body {
 .question-form .request-choice strong { color: var(--rv-ink); font-size: 17px; }
 .question-form .request-choice:hover { border-color: var(--rv-line-strong); background: #fff; }
 .question-form .request-choice[aria-pressed="true"] { border-color: var(--rv-terra); background: var(--rv-terra-soft); color: var(--rv-terra-dark); box-shadow: inset 0 0 0 1px var(--rv-terra); }
-/* Destination suggestions (shown after review when the destination was skipped). */
-.question-form .request-suggestions { grid-template-columns: minmax(0, 1fr); }
-.question-form .request-suggestion { flex-wrap: wrap; min-height: 0; padding: 12px 18px; }
-.question-form .request-suggestion input { accent-color: var(--rv-terra); }
-.question-form .request-suggestion-reason { flex-basis: 100%; padding-left: 26px; font-size: 14px; }
-.question-form .request-suggestion:has(input:checked) { border-color: var(--rv-terra); background: var(--rv-terra-soft); box-shadow: inset 0 0 0 1px var(--rv-terra); }
-.question-form .request-suggestion:focus-within { outline: 3px solid rgba(164, 91, 40, 0.45); outline-offset: 2px; }
 .question-form .request-budget { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 16px; background: var(--rv-sand); }
 .simple-request-form .budget-range-labels { display: flex; justify-content: space-between; gap: 12px; color: var(--rv-muted); font-size: 12px; }
 .plan-page .planner.simple-request-form input[type="range"] { display: block; width: 100%; min-width: 0; min-height: 44px; margin: 2px 0 0; padding: 0; border: 0; background: transparent; accent-color: var(--rv-terra); cursor: pointer; }

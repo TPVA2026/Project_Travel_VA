@@ -45,7 +45,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const assertStep = (index, message) => {
     assert.deepEqual(visible(), [index], message);
-    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${Math.min(index, 6) + 1} of 7`);
+    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${index + 1} of 7`);
   };
   const active = () => doc.activeElement?.id || doc.activeElement?.textContent;
   const apiCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate").length;
@@ -65,7 +65,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.querySelector("#trip-form-panel").hidden, false);
 
     // Six screens, one visible question, Back only after the first.
-    assert.equal(form.querySelectorAll(".request-step").length, 8, "Seven questions plus the destination suggestion screen");
+    assert.equal(form.querySelectorAll(".request-step").length, 7);
     assertStep(0);
     assert.equal(active(), "departureLocation");
     assert.equal(doc.querySelector("#request-step-0 h2").textContent, "Where are you leaving from?");
@@ -82,10 +82,12 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await enter("departureLocation");
     assertStep(1, "Enter acts as Next");
     assert.equal(active(), "destination");
-    assert.deepEqual([...doc.querySelectorAll("#supported-destinations option")].map(node => node.value), ["Da Nang", "Hue"]);
+    assert.equal(field("destination").placeholder, "e.g. Da Nang, Da Lat");
+    assert.equal(field("destination").hasAttribute("list"), false, "No supported-city dropdown on the destination input");
+    assert.equal(doc.querySelector("datalist"), null);
 
     // Destination is optional and can be skipped on purpose.
-    assert.equal(doc.getElementById("request-step-1-hint").textContent, "Optional. Skip it and we'll suggest destinations that fit your trip after you review.");
+    assert.equal(doc.getElementById("request-step-1-hint").textContent, "Optional. Skip it and we'll suggest destinations based on your trip.");
     assert.doesNotMatch(form.textContent, /we will suggest places/i, "Old destination copy is gone");
     await fill("destination", "Somewhere");
     await click("Not sure yet");
@@ -276,7 +278,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     const rows = () => Object.fromEntries([...doc.querySelectorAll(".request-review > div")].map(row => [row.querySelector("dt").textContent, row.querySelector("dd").textContent]));
     assert.deepEqual(rows(), {
       "Leaving from": "Hue",
-      "Going to": "Not chosen yet. We'll suggest some.",
+      "Going to": "Not chosen. We'll suggest destinations based on your trip.",
       When: "February 2035 · 5 days",
       Travelers: "7 travelers",
       Budget: "7,654,321 VND · per person",
@@ -324,16 +326,22 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assertStep(6);
     assert.equal(apiCalls(), 0);
 
-    // Server 422 errors route to their step.
-    fetchImpl = async url => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["body", "preferences", "destination"], msg: "Destination is not supported." }] } }) });
+    // A destination 422 stays on review with one short message: no field error, no city list.
+    const longMessage = "Destination is not supported by the current dataset. Choose one of: Da Nang, Hue.";
+    fetchImpl = async url => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["preferences", "destination"], msg: longMessage }], missing: [], conflicts: [], messages: [longMessage] } }) });
     await click("Edit destination");
     await fill("destination", "Atlantis");
     await click("Back to review");
     await click("Create itinerary");
     assert.equal(apiCalls(), 1);
-    assertStep(1, "Unsupported destination returns to the destination question");
-    assert.equal(doc.getElementById("destination-error").textContent, "Destination is not supported.");
-    assert.equal(active(), "destination");
+    assertStep(6, "Unsupported destination stays on review");
+    assert.equal(doc.getElementById("destination-error"), null, "No destination error under the field");
+    assert.equal(field("destination").hasAttribute("aria-invalid"), false);
+    assert.equal(doc.getElementById("request-form-error").textContent, "We couldn't plan a trip to that destination. Edit it or skip it to get suggestions.");
+    assert.equal(doc.querySelectorAll(".error").length, 1, "The message is shown once");
+    assert.doesNotMatch(form.textContent, /Choose one of/, "The supported-city list is never rendered");
+    assert.equal(active(), "request-form-error");
+    await click("Edit destination");
     await click("Not sure yet");
     assertStep(6, "Skipping while editing returns to review");
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["body", "budget", "amount"], msg: "Budget too large." }] } }) });
@@ -403,17 +411,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     fetchCalls = [];
     await click("Create itinerary");
     assert.deepEqual(fetchCalls, [{ url: "/api/v1/requests/validate", payload }]);
-    // No destination: the user confirms a supported suggestion before anything is generated.
-    assertStep(7);
-    assert.equal(doc.querySelector(".request-step-count").textContent, "Question 7 of 7");
-    assert.equal(sessionStorage.getItem("tpva-travel-request"), null);
-    assert.deepEqual([...doc.querySelectorAll('[name="suggestedDestination"]')].map(node => node.value), ["Da Nang"], "Departure city Hue is not suggested");
-    await radio("suggestedDestination", "Da Nang");
-    fetchCalls = [];
-    await click("Use this destination");
-    const chosen = { ...payload, preferences: { destination: "Da Nang" } };
-    assert.deepEqual(fetchCalls, [{ url: "/api/v1/requests/validate", payload: chosen }]);
-    assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), chosen);
+    assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), payload);
     assert.equal(JSON.parse(sessionStorage.getItem("tpva-travel-request")).additionalRequirements, "We love seafood and prefer taxis.");
 
     // Clear resets to the first question with empty values.
