@@ -223,8 +223,10 @@ export function serverFieldErrors(body) {
     const name = MISSING_FIELD[field] ?? field;
     if (!errors[name]) errors[name] = REQUIRED;
   }
-  const messages = detail.messages ?? detail.conflicts;
-  if (messages?.length) errors.form = messages.join(" ");
+  // Skip messages already shown on a field so the same text never appears twice.
+  const shown = new Set(Object.values(errors));
+  const messages = (detail.messages ?? detail.conflicts ?? []).filter(message => !shown.has(message));
+  if (messages.length) errors.form = messages.join(" ");
   return errors;
 }
 
