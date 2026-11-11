@@ -2,6 +2,14 @@
 
 Owner: M4
 
+OSRM enrichment is performed before these validators at the planning-service
+boundary. Only a route based on reviewed routing points with acceptable OSRM
+snapping is copied into the temporary evaluation matrix. Raw OpenTripMap POI
+coordinates remain provisional, so a successful OSRM response alone cannot
+turn an itinerary `FEASIBLE`. Provider failure and `NoRoute` also remain
+unknown evidence rather than confirmed physical infeasibility. Details are in
+`backend/docs/osrm-routing.md`.
+
 ## Trạng thái và thứ tự ưu tiên
 
 - `INFEASIBLE`: có ít nhất một vi phạm đã được xác nhận bằng dữ liệu.

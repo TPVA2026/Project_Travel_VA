@@ -1,0 +1,56 @@
+{
+  "request": {
+    "travelPeriod": {"startDate": "2026-12-01"},
+    "durationDays": 1,
+    "departureLocation": "Huế",
+    "travelers": {"count": 1},
+    "budget": {"amount": 1000000, "currency": "VND", "scope": "group"},
+    "preferences": {
+      "destination": "H",
+      "transportation": ["car"]
+    }
+  },
+  "plan": {
+    "planId": "manual-hue-osrm",
+    "title": "Small Huế OSRM check",
+    "destinationId": "H",
+    "missingData": ["prices", "opening hours"],
+    "assumptions": [],
+    "days": [
+      {
+        "dayNumber": 1,
+        "date": "2026-12-01",
+        "activities": [
+          {
+            "activityId": "hue-1",
+            "placeId": "OTM_H_N669249200",
+            "type": "sightseeing",
+            "startTime": "08:00",
+            "endTime": "09:00",
+            "estimatedCostVnd": null,
+            "costStatus": "NO_DATA",
+            "reason": "Thien Mu Pagoda"
+          },
+          {
+            "activityId": "hue-2",
+            "placeId": "OTM_H_W161714451",
+            "type": "sightseeing",
+            "startTime": "09:30",
+            "endTime": "10:30",
+            "estimatedCostVnd": null,
+            "costStatus": "NO_DATA",
+            "reason": "Dong Ba Market"
+          }
+        ],
+        "travelLegs": [
+          {
+            "fromPlaceId": "OTM_H_N669249200",
+            "toPlaceId": "OTM_H_W161714451",
+            "durationMin": null,
+            "distanceKm": null
+          }
+        ]
+      }
+    ]
+  }
+}
