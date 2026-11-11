@@ -2764,6 +2764,101 @@ body {
   font-size: 0.85rem;
 }
 
+/* Verification status per check (result page) */
+.check-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.check-chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.check-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--rv-line);
+  border-radius: var(--rv-radius-sm);
+  background: var(--rv-sand);
+}
+
+.check-chip-icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--rv-terra);
+}
+
+.check-chip-label {
+  flex: 1;
+  color: var(--rv-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.check-travel-totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.check-travel-totals li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--rv-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.check-travel-totals .icon {
+  flex: none;
+  color: var(--rv-terra);
+}
+
+.check-travel-totals strong {
+  color: var(--rv-ink);
+}
+
+.plan-alert-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.plan-alert-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.plan-alert-group-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.plan-alert-group ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+@media (max-width: 620px) {
+  .check-chips {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Selected page shell */
 .page-back {
   display: flex;

@@ -18,6 +18,7 @@ export {
 
 import { fetchPlanById as fetchPlanByIdMock, revisePlanMock } from "./mockData.js";
 import { getSelectedPlan, setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
+import { buildDemoPipeline, supportsDemoDestination } from "./demoPlan.js";
 
 function apiUrl(path) {
   if (!API_BASE || API_BASE === "/api") return path;
@@ -123,15 +124,38 @@ export async function rankItineraries(request, plans) {
   return requestJson("/itineraries/rank", { request, plans })
 }
 
+/**
+ * The AI step is "unavailable" when the server has no working Gemini access
+ * (missing key CONFIG, quota/API error 502, timeout 504). Validation errors
+ * (422) are real user-input problems and are always surfaced instead.
+ */
+function isAiUnavailable(error) {
+  const status = error?.status
+  const code = error?.body?.error
+  return (status === 500 && code === 'CONFIG') || status === 502 || status === 504
+}
+
 export async function runItineraryPipeline(payload) {
-  const generated = await generateItinerary(payload)
-  const evaluation = await evaluateItinerary(payload, generated.plan)
-  const ranking = await rankItineraries(payload, [generated.plan])
+  let usedRequest = payload
+  let generated
+  let generator = 'ai'
+  try {
+    generated = await generateItinerary(payload)
+  } catch (error) {
+    if (!isAiUnavailable(error) || !supportsDemoDestination(payload)) throw error
+    const demo = buildDemoPipeline(payload)
+    usedRequest = demo.request
+    generated = { status: 'UNVERIFIED', plan: demo.plan }
+    generator = 'demo'
+  }
+  const evaluation = await evaluateItinerary(usedRequest, generated.plan)
+  const ranking = await rankItineraries(usedRequest, [generated.plan])
   return {
     status: evaluation.status,
     plan: generated.plan,
     evaluation,
     ranking,
+    generator,
   }
 }
 
