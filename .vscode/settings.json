@@ -3,5 +3,6 @@
     "./",
     "./backend",
     "./backend/app/algorithms"
-  ]
+  ],
+  "python.terminal.useEnvFile": true
 }
