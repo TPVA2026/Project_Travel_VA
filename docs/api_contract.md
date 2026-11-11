@@ -528,6 +528,15 @@ No backend endpoint is implemented. The no-account MVP saves the selected plan
 in the current browser's `localStorage`. It is not synchronized across devices
 and clearing browser storage removes it.
 
+### 7.5 Internal M4 destination prefilter (TPVA-39)
+
+`filter_feasible_destinations()` supplies `feasibleDestinationIds` to M3 and
+verified travel/cost information per eligible city. It keeps unverified cities
+separate and does not change user constraints. This is a Python service contract,
+not a new HTTP endpoint or a replacement for the M6 destination-suggestion API
+decision. See [destination_feasibility.md](destination_feasibility.md) for the
+server evidence schema, limits, missing-data handling and integration example.
+
 ## 8. Frontend–Backend Integration Rules
 
 ### 8.1 Response Consistency
