@@ -86,29 +86,21 @@ Quote được truyền qua `trip_costs_by_destination`, hoặc
 đọc file server tùy chọn `backend/app/data/destination_trip_costs.json`.
 Không đọc bảng giá do client gửi. Không tự tạo file bằng giá phỏng đoán.
 
-Ví dụ mapping **synthetic, chỉ minh họa schema, không phải giá thực tế**:
+Mapping dùng destination ID làm key; mỗi bản ghi dữ liệu thật cần các trường:
 
-```json
-{
-  "H": {
-    "departureLocation": "HCM",
-    "travelPeriod": {"month": "2026-12"},
-    "durationDays": 2,
-    "travelersCount": 2,
-    "currency": "VND",
-    "scope": "group",
-    "transportation": [],
-    "evidenceStatus": "VERIFIED",
-    "source": "SYNTHETIC TEST QUOTE",
-    "costs": {
-      "transport": 1000000,
-      "accommodation": 1000000,
-      "dining": 800000,
-      "activities": 200000
-    }
-  }
-}
-```
+| Trường | Ý nghĩa |
+| --- | --- |
+| departureLocation | Nơi xuất phát của báo giá |
+| travelPeriod | Ngày hoặc tháng áp dụng |
+| durationDays | Số ngày của chuyến đi |
+| travelersCount | Số người trong nhóm |
+| currency / scope | VND / group: tổng tiền cả nhóm |
+| transportation | Các phương tiện áp dụng |
+| evidenceStatus / source | Trạng thái xác minh và nguồn dữ liệu thật |
+| costs.transport | Tổng chi phí di chuyển đi/về |
+| costs.accommodation | Tổng chi phí lưu trú |
+| costs.dining | Tổng chi phí ăn uống |
+| costs.activities | Tổng chi phí tham quan/hoạt động |
 
 Source phải không rỗng, evidenceStatus phải là VERIFIED. Departure, travelPeriod,
 durationDays, travelersCount và tập phương tiện phải khớp request. Thiếu khoản
@@ -119,16 +111,10 @@ Production hiện chủ yếu có tuyến giữa POI và chưa có bộ quote li
 xác nhận; danh sách khả thi rỗng là kết quả đúng cho dữ liệu hiện tại. Nhóm cần
 bổ sung tuyến liên tỉnh và quote đúng phạm vi để M3 có thành phố đã qua bộ lọc.
 
-## Kiểm thử
+## Kết nối dữ liệu thật
 
-Từ `backend`:
-
-```powershell
-..\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider tests/test_destination_filter.py
-..\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider
-```
-
-Tests dùng dữ liệu synthetic cho trường hợp khả thi, sát giới hạn, không có kết
-quả, alias, loại nơi xuất phát, route có hướng/trùng/thiếu/provisional, quote sai
-ngày/số người/phương tiện, ưu tiên INFEASIBLE, miễn phí khác thiếu dữ liệu,
-form thắng prose và inputs/file nguồn không bị sửa.
+Sau khi nạp các tuyến liên tỉnh và báo giá đã xác minh vào dataset/provider phía
+server, gọi `filter_feasible_destinations` với request thực tế. Đối chiếu các
+thành phố trong `feasibleDestinations`; xem `unverified` và `excluded` để biết
+dữ liệu còn thiếu hoặc ràng buộc đã vi phạm. Service không có dữ liệu giả hoặc
+cơ chế dùng dữ liệu mẫu thay thế khi nguồn thật thiếu thông tin.
