@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, serverFieldErrors } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -184,4 +184,22 @@ assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12",
   for (const key of ["tripCosts", "transportCost", "accommodationCost"]) {
     assert.equal(Object.hasOwn(perPerson, key), false, `${key} is not sent until the contract is agreed`);
   }
+}
+
+// One traveler can only be submitted with a per-person budget.
+assert.equal(isSoloTravelerCount("1"), true);
+assert.equal(isSoloTravelerCount(" 1 "), true);
+assert.equal(isSoloTravelerCount(1), true);
+assert.equal(isSoloTravelerCount("01"), true);
+assert.equal(isSoloTravelerCount("2"), false);
+assert.equal(isSoloTravelerCount(""), false);
+assert.equal(isSoloTravelerCount("1.5"), false);
+{
+  const coerced = buildPayload(form({ ...valid, travelerCount: "1", budgetScope: "group" }));
+  assert.equal(coerced.travelers.count, 1);
+  assert.equal(coerced.budget.scope, "perPerson", "group is never sent with one traveler");
+  const kept = buildPayload(form({ ...valid, travelerCount: "1", budgetScope: "perPerson" }));
+  assert.equal(kept.budget.scope, "perPerson");
+  const group = buildPayload(form({ ...valid, travelerCount: "2", budgetScope: "group" }));
+  assert.equal(group.budget.scope, "group");
 }

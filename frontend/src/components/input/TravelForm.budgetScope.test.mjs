@@ -7,9 +7,9 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import React, { act } from "react";
 
-// DOM-level integration: the budget scope defaults to per person for one traveler,
-// following the traveler count only until the user picks a scope.
-test("M1 budget scope: 1 traveler defaults to per person, a user-picked scope is never overridden", async () => {
+// DOM-level integration: one traveler can only use a per-person budget.
+// Whole group is disabled, and a previous group choice is switched to per person.
+test("M1 budget scope: one traveler can only choose per person", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
@@ -48,9 +48,14 @@ test("M1 budget scope: 1 traveler defaults to per person, a user-picked scope is
   const radio = async (name, value) => actOn(() => doc.querySelector(`[name="${name}"][value="${value}"]`).click());
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const validateCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate");
-  const generateCalls = () => fetchCalls.filter(call => /\/itineraries\//.test(call.url));
-  const onResults = () => Boolean(doc.querySelector("#results-probe"));
   const scope = () => doc.querySelector('[name="budgetScope"]:checked')?.value ?? null;
+  const groupRadio = () => doc.querySelector('[name="budgetScope"][value="group"]');
+  const assertGroupEnabled = (enabled, message) => {
+    const control = groupRadio();
+    assert.equal(control.disabled, !enabled, message ?? `Group disabled=${!enabled}`);
+    if (enabled) assert.notEqual(control.getAttribute("aria-disabled"), "true");
+    else assert.equal(control.getAttribute("aria-disabled"), "true");
+  };
   const toTravelers = async () => {
     await fill("departureLocation", "Ha Noi");
     await click("Next");
@@ -63,22 +68,30 @@ test("M1 budget scope: 1 traveler defaults to per person, a user-picked scope is
   try {
     const { default: TravelForm } = await import(output);
     const { createRoot } = await import("react-dom/client");
-    const { MemoryRouter } = await import("react-router-dom");
+    const { MemoryRouter, Routes, Route } = await import("react-router-dom");
     const mount = async () => {
       if (root) await act(async () => root.unmount());
       root = createRoot(doc.querySelector("#root"));
-      await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(TravelForm))));
+      await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(Routes, null,
+        React.createElement(Route, { path: "/", element: React.createElement(TravelForm) }),
+        React.createElement(Route, { path: "/results", element: React.createElement("p", { id: "results-probe" }, "results") }),
+      ))));
     };
 
-    // 1 traveler (quick pick): per person is preselected; Back/Next keep it.
+    // 1 traveler (quick pick): per person is selected; Whole group is disabled and cannot be chosen.
     await mount();
     await toTravelers();
     assert.equal(scope(), null, "No scope before a traveler count");
+    assertGroupEnabled(true, "Group starts enabled before a count is chosen");
     await click("1 traveler");
     assert.equal(scope(), "perPerson");
+    assertGroupEnabled(false);
+    await radio("budgetScope", "group");
+    assert.equal(scope(), "perPerson", "A disabled Whole group option cannot be selected");
     await click("Next");
     assert.deepEqual(visible(), [4]);
     assert.equal(scope(), "perPerson");
+    assertGroupEnabled(false);
     await click("Back");
     await click("Next");
     assert.equal(scope(), "perPerson", "Back/Next keeps the scope");
@@ -88,25 +101,49 @@ test("M1 budget scope: 1 traveler defaults to per person, a user-picked scope is
     await click("Skip for now");
     assert.match(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /per person/);
 
-    // Changing to a group clears the automatic choice; going back to 1 sets it again.
+    // Changing to a group clears the automatic choice and re-enables Whole group.
     await click("Edit travelers");
     await click("2 travelers");
     assert.equal(scope(), null, "An automatic per-person choice does not stick for a group");
+    assertGroupEnabled(true, "Whole group is enabled again for more than one traveler");
     await fill("travelerCount", "1");
     assert.equal(scope(), "perPerson", "Typed 1 works like the quick pick");
+    assertGroupEnabled(false);
 
-    // Once the user picks a scope, traveler changes never override it.
+    // An explicit per-person choice is kept when the count changes, including back through 1.
+    await click("Back to review");
+    await click("Edit travelers");
+    await click("3 travelers");
+    await click("Back to review");
+    await click("Edit budget");
+    await radio("budgetScope", "perPerson");
+    assert.equal(scope(), "perPerson");
+    await click("Back to review");
+    await click("Edit travelers");
+    await click("1 traveler");
+    assert.equal(scope(), "perPerson");
+    assertGroupEnabled(false);
+    await click("3 travelers");
+    assert.equal(scope(), "perPerson", "The user's own per-person choice is kept");
+    assertGroupEnabled(true);
+
+    // A previous group choice is switched to per person when the count becomes 1.
     await click("Back to review");
     await click("Edit budget");
     await radio("budgetScope", "group");
     assert.equal(scope(), "group");
     await click("Back to review");
+    assert.match(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /whole group/);
+    await click("Edit travelers");
+    await click("1 traveler");
+    assert.equal(scope(), "perPerson", "Group is switched to per person for one traveler");
+    assertGroupEnabled(false);
+    await click("Back to review");
+    assert.match(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /per person/);
     await click("Edit travelers");
     await click("3 travelers");
-    await click("1 traveler");
-    assert.equal(scope(), "group", "The user's own choice is kept");
-    await click("Back to review");
-    assert.match(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /whole group/);
+    assert.equal(scope(), null, "The forced per-person scope is cleared for a group");
+    assertGroupEnabled(true);
 
     // A group never gets an automatic scope; the existing "choose a scope" rule still applies.
     await click("Clear form");
@@ -114,6 +151,7 @@ test("M1 budget scope: 1 traveler defaults to per person, a user-picked scope is
     await click("4 travelers");
     await click("Next");
     assert.equal(scope(), null);
+    assertGroupEnabled(true);
     await fill("budgetAmount", "3000000");
     await click("Next");
     assert.deepEqual(visible(), [4]);
@@ -125,6 +163,16 @@ test("M1 budget scope: 1 traveler defaults to per person, a user-picked scope is
     await toTravelers();
     await click("1 traveler");
     assert.equal(scope(), "perPerson");
+    assertGroupEnabled(false);
+
+    // The submitted request never has group scope with one traveler.
+    await click("Next");
+    await fill("budgetAmount", "3000000");
+    await click("Next");
+    await click("Skip for now");
+    await click("Create itinerary");
+    assert.equal(validateCalls().at(-1).payload.travelers.count, 1);
+    assert.equal(validateCalls().at(-1).payload.budget.scope, "perPerson");
     assert.deepEqual(runtimeErrors, []);
   } finally {
     if (root) await act(async () => root.unmount());

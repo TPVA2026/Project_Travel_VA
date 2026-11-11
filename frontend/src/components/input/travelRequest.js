@@ -166,7 +166,7 @@ export function buildPayload(data) {
     budget: {
       amount: Number(normalizeBudgetInput(data.get("budgetAmount"))),
       currency: "VND",
-      scope: data.get("budgetScope"),
+      scope: isSoloTravelerCount(data.get("travelerCount")) ? "perPerson" : data.get("budgetScope"),
     },
   };
 
@@ -264,4 +264,10 @@ export function normalizeBudgetInput(value) {
 export function formatBudgetInput(value) {
   const raw = normalizeBudgetInput(value);
   return /^\d+$/.test(raw) ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : String(value ?? "");
+}
+
+// A single traveler can only use a per-person budget.
+export function isSoloTravelerCount(value) {
+  const n = Number(String(value ?? "").trim());
+  return Number.isInteger(n) && n === 1;
 }

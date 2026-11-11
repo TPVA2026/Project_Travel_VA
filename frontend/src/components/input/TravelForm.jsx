@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
 
 // The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -236,7 +236,8 @@ export default function TravelForm({ monthInputSupported }) {
   const [descriptionDraft, setDescriptionDraft] = useState("");
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
-  // Budget scope follows the traveler count (1 traveler -> per person) until the user picks a scope.
+  // One traveler can only use per person. For a group, an automatic scope is cleared;
+  // a per-person scope the user picked is kept.
   const scopeTouched = useRef(false);
   const scopeAuto = useRef(false);
 
@@ -257,16 +258,24 @@ export default function TravelForm({ monthInputSupported }) {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
-  // Only the scope set by this rule is ever changed; a scope the user picked is left alone.
   function applyScopeDefault(form) {
-    if (scopeTouched.current) return;
-    const solo = form.elements.namedItem("travelerCount")?.value.trim() === "1";
+    const solo = isSoloTravelerCount(form.elements.namedItem("travelerCount")?.value);
+    const group = form.querySelector('[name="budgetScope"][value="group"]');
     const perPerson = form.querySelector('[name="budgetScope"][value="perPerson"]');
-    if (!perPerson) return;
+    if (!group || !perPerson) return;
+    group.disabled = solo;
+    if (solo) group.setAttribute("aria-disabled", "true");
+    else group.removeAttribute("aria-disabled");
     if (solo) {
+      if (group.checked) {
+        scopeTouched.current = false;
+        scopeAuto.current = true;
+      } else if (!scopeTouched.current) {
+        scopeAuto.current = true;
+      }
+      group.checked = false;
       perPerson.checked = true;
-      scopeAuto.current = true;
-    } else if (scopeAuto.current) {
+    } else if (scopeAuto.current && !scopeTouched.current) {
       form.querySelectorAll('[name="budgetScope"]').forEach(radio => { radio.checked = false; });
       scopeAuto.current = false;
     }
@@ -430,6 +439,7 @@ export default function TravelForm({ monthInputSupported }) {
   const when = mode === "month"
     ? (values.month ? `${showMonth(values.month)}${values.durationDays ? ` · ${days(Number(values.durationDays))}` : ""}` : "")
     : (values.startDate && values.endDate ? `${showDate(values.startDate)} – ${showDate(values.endDate)}${dayCount ? ` · ${days(dayCount)}` : ""}` : "");
+  const soloTraveler = isSoloTravelerCount(values.travelerCount);
   const budget = values.budgetAmount
     ? `${formatBudgetInput(values.budgetAmount)} VND${values.budgetScope ? ` · ${values.budgetScope === "perPerson" ? "per person" : "whole group"}` : ""}`
     : "";
@@ -521,7 +531,7 @@ export default function TravelForm({ monthInputSupported }) {
           <input id="budgetSlider" type="range" min="0" max={budgetSliderMax} step="1" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
           <div className="budget-range-labels" aria-hidden="true"><span>0 VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
           <div className="request-segmented" role="radiogroup" aria-label="Budget applies to" aria-required="true" aria-describedby={errors.budgetScope ? "budgetScope-error" : undefined}>
-            <label><input type="radio" name="budgetScope" value="group" onChange={() => { scopeTouched.current = true; }} />Whole group</label>
+            <label><input type="radio" name="budgetScope" value="group" disabled={soloTraveler} aria-disabled={soloTraveler || undefined} onChange={() => { scopeTouched.current = true; }} />Whole group</label>
             <label><input type="radio" name="budgetScope" value="perPerson" onChange={() => { scopeTouched.current = true; }} />Per person</label>
           </div>
           <StepError name="budgetScope" error={errors.budgetScope} />
