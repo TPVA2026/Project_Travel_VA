@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
-import { fetchDestinations, saveTripForResults, validateTravelRequest } from "../../services/api";
+import { saveTripForResults, validateTravelRequest } from "../../services/api";
 import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
 
 // The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
@@ -28,11 +28,22 @@ const FIELD_STEP = {
   budgetAmount: 4, budgetScope: 4,
   additionalRequirements: DESCRIBE,
 };
-// Shown on review when the destination is skipped; suggestions come after review.
-export const NO_DESTINATION = "Not chosen yet. We'll suggest some.";
+// Shown on review when the destination is skipped; destinations are suggested downstream.
+export const NO_DESTINATION = "Not chosen. We'll suggest destinations based on your trip.";
+export const DESTINATION_HINT = "Optional. Skip it and we'll suggest destinations based on your trip.";
+// One short request-level message when the server cannot plan the typed destination.
+export const DESTINATION_UNAVAILABLE = "We couldn't plan a trip to that destination. Edit it or skip it to get suggestions.";
 const CONTROL_NAME = { interests: "interest" };
 
 const EMPTY_VALUES = { periodMode: "dates" };
+
+// Server errors for the destination are not shown on the field (no long city list);
+// they become one short request-level message instead.
+export function hideDestinationErrors(errors) {
+  if (!errors.destination) return errors;
+  const { destination: _hidden, ...rest } = errors;
+  return { ...rest, form: DESTINATION_UNAVAILABLE };
+}
 
 // Errors for fields this form no longer shows become one visible request-level message.
 export function placeErrors(errors) {
@@ -222,17 +233,8 @@ export default function TravelForm({ monthInputSupported }) {
   const [nativeMonth] = useState(() => monthInputSupported ?? supportsMonthInput());
   const [progress, setProgress] = useState(0);
   const [descriptionDraft, setDescriptionDraft] = useState("");
-  const [destinations, setDestinations] = useState([]);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
-
-  useEffect(() => {
-    let active = true;
-    fetchDestinations()
-      .then((items) => { if (active) setDestinations(items); })
-      .catch(() => { /* Server validation still prevents unsupported submissions. */ });
-    return () => { active = false; };
-  }, []);
 
   // Runs after the alert renders, so a request-level error is announced and focusable.
   useEffect(() => {
@@ -380,7 +382,7 @@ export default function TravelForm({ monthInputSupported }) {
       navigate("/results");
     } catch (error) {
       const serverErrors = placeErrors(error.status === 422
-        ? serverFieldErrors(error.body)
+        ? hideDestinationErrors(serverFieldErrors(error.body))
         : { form: "Could not send the request." });
       if (!Object.keys(serverErrors).length) serverErrors.form = "The request is invalid.";
       setErrors(serverErrors);
@@ -443,16 +445,10 @@ export default function TravelForm({ monthInputSupported }) {
       </>)}
 
       {question(1, "destination", <label htmlFor="destination">Where do you want to go?</label>, <>
-        <input id="destination" name="destination" list="supported-destinations" placeholder="e.g. Da Nang" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
-        <datalist id="supported-destinations">
-          {destinations.map((item) => {
-            const label = item.city || item.city_name || item.name || item.id;
-            return label ? <option key={item.id || label} value={label} /> : null;
-          })}
-        </datalist>
+        <input id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
         <StepError name="destination" error={errors.destination} />
         <button type="button" className="request-link" onClick={skipDestination}>Not sure yet</button>
-      </>, "Optional. Skip it and we'll suggest destinations that fit your trip after you review.")}
+      </>, DESTINATION_HINT)}
 
       {question(2, "calendar", "When are you going?", <>
         <div className="request-segmented" role="radiogroup" aria-label="Trip timing">
