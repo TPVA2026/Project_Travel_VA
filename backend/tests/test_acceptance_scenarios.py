@@ -5,6 +5,7 @@ and are judged by the same code as the live runner (scripts/run_acceptance_scena
 Known product gaps are xfails with their owner. When the owning team fixes one,
 the scenario passes and the entry should be removed from KNOWN_GAPS.
 """
+from copy import deepcopy
 import os
 
 import pytest
@@ -54,3 +55,26 @@ def test_never_feasible_without_evidence():
         resp = client.post(scenario["endpoint"], json=scenario["body"])
         if resp.status_code == 200:
             assert resp.json()["status"] != "FEASIBLE", scenario["id"]
+
+
+def test_unverified_seed_route_with_numeric_values_is_rejected(monkeypatch):
+    """Provisional seed measurements cannot pass the grounding boundary."""
+    scenario = next(
+        item for item in load_scenarios()
+        if item["id"] == "S03_valid_3day_evaluate"
+    )
+    body = deepcopy(scenario["body"])
+    leg = body["plan"]["days"][0]["travelLegs"][0]
+    assert leg["durationMin"] is None and leg["distanceKm"] is None
+    leg.update(durationMin=7, distanceKm=2.1)
+    monkeypatch.setenv("OSRM_ROUTING_ENABLED", "false")
+
+    response = client.post("/itineraries/evaluate", json=body)
+
+    assert response.status_code == 422
+    result = response.json()
+    assert result["error"] == "INVALID_PLAN"
+    assert any(
+        "ATTR_H_03->ATTR_H_05 durationMin must be None per dataset, got 7"
+        in detail for detail in result["details"]
+    )
