@@ -104,7 +104,13 @@ def _check_travel_legs(day: dict, places: dict, matrix: dict) -> list[str]:
     return errs
 
 
-def generate_candidate(request: dict, dataset: dict | None = None, **client_kwargs) -> dict:
+def generate_candidate(
+        request: dict,
+        dataset: dict | None = None,
+        *,
+        previous_plans: list[dict] | None = None,
+        **client_kwargs,
+    ) -> dict:
     """Return a schema-valid, dataset-grounded candidate plan (still UNVERIFIED).
 
     `dataset` defaults to the M2 repository. `client_kwargs` go to gemini_client.request_text
@@ -118,7 +124,11 @@ def generate_candidate(request: dict, dataset: dict | None = None, **client_kwar
         )
     if not supported_place_ids(context):  # never ask the LLM to plan without real places: it would invent them
         raise GeminiError("NO_DATA", "No supported places in the curated dataset for this request", 422)
-    text = request_text(build_prompt(request, context), CANDIDATE_PLAN_SCHEMA, **client_kwargs)
+    text = request_text(
+        build_prompt(request, context, previous_plans=previous_plans),
+        CANDIDATE_PLAN_SCHEMA,
+        **client_kwargs,
+    )
 
     try:
         raw = json.loads(text)
@@ -134,3 +144,74 @@ def generate_candidate(request: dict, dataset: dict | None = None, **client_kwar
     if errors:
         raise GeminiError("INVALID_PLAN", "Plan failed schema/grounding checks", 422, errors)
     return plan
+
+
+
+def _candidate_signature(plan: dict) -> tuple:
+    """Identify a plan by its ordered places on each day."""
+
+    return tuple(
+        (
+            day["dayNumber"],
+            tuple(
+                activity["placeId"]
+                for activity in sorted(
+                    day["activities"],
+                    key=lambda a: a["startTime"],
+                )
+            ),
+        )
+        for day in sorted(
+            plan["days"],
+            key=lambda d: d["dayNumber"],
+        )
+    )
+
+
+
+
+def generate_candidates(
+    request: dict,
+    dataset: dict | None = None,
+    count: int = 3,
+    **client_kwargs,
+) -> list[dict]:
+    """Generate distinct, validated candidate itineraries."""
+
+    if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+        raise ValueError("count must be a positive integer")
+
+    dataset = load_dataset() if dataset is None else dataset
+
+    candidates = []
+    seen = set()
+    max_attempts = count * 3
+
+    for i in range(max_attempts):
+        if len(candidates) == count:
+            break
+
+
+        plan = generate_candidate(
+            request,
+            dataset,
+            previous_plans=candidates.copy(),
+            **client_kwargs,
+        )
+
+        signature = _candidate_signature(plan)
+
+        if signature in seen:
+            continue
+
+        seen.add(signature)
+        candidates.append(plan)
+
+    if len(candidates) < count:
+        raise GeminiError(
+            "INSUFFICIENT_CANDIDATES",
+            f"Only {len(candidates)} distinct candidates generated; expected {count}",
+            422,
+        )
+
+    return candidates

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput } from "./travelRequest.js";
+import { buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -86,3 +86,37 @@ assert.equal(clientErrors(form({ ...valid, budgetAmount: "   " })).budgetAmount,
 for (const value of ["0x10", "1e3", "+1", "9007199254740993"]) {
   assert.ok(clientErrors(form({ ...valid, budgetAmount: value })).budgetAmount);
 }
+
+// Optional fields follow the same limits as the backend schema.
+{
+  const data = new FormData();
+  data.set("maxDistanceKm", "0");
+  assert.equal(Boolean(valueErrors(data).maxDistanceKm), true);
+  data.set("maxDistanceKm", "0.5");
+  assert.equal(valueErrors(data).maxDistanceKm, undefined);
+  data.set("characteristics", "x".repeat(81));
+  assert.equal(Boolean(valueErrors(data).characteristics), true);
+  data.set("characteristics", "older adults, children");
+  assert.equal(valueErrors(data).characteristics, undefined);
+}
+
+{
+  const data = form({ ...valid, characteristics: "older adults\nchildren, vegetarian" });
+  assert.deepEqual(buildPayload(data).travelers.characteristics, ["older adults", "children", "vegetarian"]);
+}
+
+// Calendar values: ISO only, real dates, any four-digit year, inclusive UTC day count.
+assert.equal(inclusiveDays("2031-12-30", "2032-01-02"), 4);
+assert.equal(inclusiveDays("2028-02-28", "2028-03-01"), 3);
+assert.equal(inclusiveDays("2026-03-28", "2026-03-30"), 3);
+assert.equal(inclusiveDays("2026-12-15", "2026-12-12"), null);
+assert.equal(inclusiveDays("2026-02-30", "2026-03-01"), null);
+assert.equal(valueErrors(form({ ...valid, startDate: "2026-02-30" })).startDate, "Use a full date (YYYY-MM-DD).");
+assert.equal(valueErrors(form({ ...valid, startDate: "12/11/2026" })).startDate, "Use a full date (YYYY-MM-DD).");
+assert.equal(valueErrors(form({ ...valid, startDate: "2099-01-01", endDate: "2099-01-31" })).startDate, undefined);
+assert.equal(buildPayload(form({ ...valid, startDate: "2099-01-01", endDate: "2099-01-31" })).durationDays, 31);
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "2026-13", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "2040-01", durationDays: "2" })).month, undefined);
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "0000-01", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "incomplete:-03", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12", durationDays: "2" })).month, undefined);

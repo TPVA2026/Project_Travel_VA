@@ -143,3 +143,72 @@ def test_api_runs_schema_and_grounding(data, plan, monkeypatch, failure):
         assert response.status_code == 422
         assert response.json()["error"] == "INVALID_PLAN"
         assert "plan" not in response.json()
+
+
+def test_gemini_rejects_place_outside_filtered_context():
+    dataset = load_dataset()
+    context = build_context(
+        {"preferences": {"destination": "Huế"}},
+        dataset,
+    )
+
+    allowed_ids = supported_place_ids(context)
+
+    excluded = [
+        place for place in dataset["attractions"]
+        if place.get("destinationId") == "H"
+        and place["id"] not in allowed_ids
+    ]
+
+    assert excluded, "Expected at least one excluded Hue attraction"
+
+    plan = {
+        "destinationId": "H",
+        "days": [
+            {
+                "dayNumber": 1,
+                "activities": [
+                    {
+                        "activityId": "A1",
+                        "placeId": excluded[0]["id"],
+                        "type": "sightseeing",
+                        "startTime": "09:00",
+                        "endTime": "10:00",
+                        "estimatedCostVnd": None,
+                        "costStatus": "NO_DATA",
+                    }
+                ],
+                "travelLegs": [],
+            }
+        ],
+    }
+
+    errors = generator.check_grounding(plan, context)
+
+    assert any("unknown placeId" in error for error in errors)
+
+
+
+def test_generate_candidate_rejects_excluded_place(monkeypatch, data, plan):
+    from copy import deepcopy
+
+    excluded_plan = deepcopy(plan)
+    excluded_plan["days"][0]["activities"][0]["placeId"] = "FAKE_PLACE_999"
+
+    monkeypatch.setattr(
+        generator,
+        "request_text",
+        lambda *args, **kwargs: json.dumps(excluded_plan),
+    )
+
+    with pytest.raises(GeminiError) as exc:
+        generator.generate_candidate(
+            {"preferredDestination": "DN"},
+            data,
+        )
+
+    assert exc.value.code == "INVALID_PLAN"
+    assert any(
+        "unknown placeId" in error
+        for error in exc.value.details
+    )

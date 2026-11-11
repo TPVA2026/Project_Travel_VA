@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Icon from '../components/common/Icon.jsx'
 import { TravelSkyIllustration } from '../components/common/Illustrations.jsx'
+import FlightIntro from '../components/intro/FlightIntro.jsx'
+import { INTRO_STORAGE_KEY } from '../components/intro/introAssets.js'
 import DescribeChat from '../components/input/DescribeChat.jsx'
 import TravelForm from '../components/input/TravelForm.jsx'
 
@@ -15,18 +17,49 @@ function SwitchMode({ label, onClick }) {
 
 export default function HomePage() {
   const [mode, setMode] = useState('choose')
+  const [showIntro, setShowIntro] = useState(false)
   const formPanelRef = useRef(null)
   const describePanelRef = useRef(null)
 
   useEffect(() => {
     const panel = mode === 'form' ? formPanelRef.current : mode === 'describe' ? describePanelRef.current : null
     if (!panel) return
-    const first = panel.querySelector('input:not([type="hidden"]), select, textarea, button')
+    const first = mode === 'form'
+      ? panel.querySelector('.request-step:not([hidden]) [data-step-focus]:not([disabled])')
+      : panel.querySelector('input:not([type="hidden"]), select, textarea, button')
     first?.focus({ preventScroll: true })
   }, [mode])
 
+  useEffect(() => {
+    let shouldPlay = false
+    try {
+      shouldPlay = sessionStorage.getItem(INTRO_STORAGE_KEY) === '1'
+      if (shouldPlay) sessionStorage.removeItem(INTRO_STORAGE_KEY)
+    } catch {}
+    if (!shouldPlay) return
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    if (reduce) return
+    setShowIntro(true)
+  }, [])
+
+  useEffect(() => {
+    if (!showIntro) return undefined
+    document.body.classList.add('intro-playing')
+    return () => {
+      document.body.classList.remove('intro-playing')
+      document.body.classList.remove('intro-flying')
+    }
+  }, [showIntro])
+
+  const finishIntro = useCallback(() => {
+    document.body.classList.remove('intro-playing')
+    document.body.classList.remove('intro-flying')
+    setShowIntro(false)
+  }, [])
+
   return (
     <div className="plan-page">
+      {showIntro && <FlightIntro onDone={finishIntro} />}
       <header className="plan-intro">
         <p className="page-eyebrow">Step 1 of 3 · Plan</p>
         <h1 className="plan-title">Tell us the trip. We’ll build the plan.</h1>

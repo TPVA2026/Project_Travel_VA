@@ -25,3 +25,6 @@ specs/
 .pub-cache/
 .pub/
 flutter_app/build/
+
+awesome-design-md/
+.agents/skills/design-taste-frontend/
