@@ -26,6 +26,10 @@ def build_prompt(
     dataset: dict,
     previous_plans: list[dict] | None = None,
 ) -> str:
+    request = dict(request)
+    if not request.get("additionalRequirements"):
+        request.pop("additionalRequirements", None)
+
     prompt = (
         f"TRAVEL_REQUEST:\n{json.dumps(request, ensure_ascii=False)}\n\n"
         f"DATASET:\n{json.dumps(dataset, ensure_ascii=False)}"
