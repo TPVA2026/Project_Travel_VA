@@ -352,10 +352,13 @@ def _candidate_tags(plan, dataset, interests):
 def rank_candidates(request: dict, plans: list, dataset: dict | None = None,
                     supplemental_costs_by_plan: dict | None = None,
                     selected_history: list | None = None,
-                    trip_time_limit_minutes: float | None = None) -> dict:
+                    trip_time_limit_minutes: float | None = None,
+                    evaluations_by_plan_id: dict | None = None) -> dict:
     """Điểm vào an toàn cho M6: đánh giá lại rồi mới xếp hạng CandidatePlan.
 
     supplemental_costs_by_plan ánh xạ planId -> chi phí cả chuyến đã xác nhận.
+    evaluations_by_plan_id chỉ dành cho kết quả M4 do planning service vừa tạo;
+    API không nhận trường này từ client hoặc Gemini.
     selected_history chứa các lịch đã chọn và tag đã kiểm chứng của đúng user.
     trip_time_limit_minutes là giới hạn cho cả chuyến; không tự biến giới hạn
     daily/betweenActivities/fromDeparture thành giới hạn cả chuyến.
@@ -379,14 +382,23 @@ def rank_candidates(request: dict, plans: list, dataset: dict | None = None,
     supplemental_costs_by_plan = supplemental_costs_by_plan or {}
     if not isinstance(supplemental_costs_by_plan, dict):
         raise ValueError("supplemental_costs_by_plan must be a dictionary")
+    if evaluations_by_plan_id is not None and not isinstance(evaluations_by_plan_id, dict):
+        raise ValueError("evaluations_by_plan_id must be a dictionary")
     interests = (request.get("preferences") or {}).get("interests", [])
     profile = build_history_profile(selected_history)
     evaluations, tags_by_plan, history_tags_by_plan, missing_by_plan, excluded = [], {}, {}, {}, []
     for plan in plans:
         plan_id = plan["planId"]
-        evaluation = evaluate_feasibility(
-            request, plan, dataset, supplemental_costs_by_plan.get(plan_id),
-        )
+        if evaluations_by_plan_id is None:
+            evaluation = evaluate_feasibility(
+                request, plan, dataset, supplemental_costs_by_plan.get(plan_id),
+            )
+        else:
+            evaluation = evaluations_by_plan_id.get(plan_id)
+            if (not isinstance(evaluation, dict)
+                    or evaluation.get("planId") != plan_id
+                    or evaluation.get("status") not in {"FEASIBLE", "INFEASIBLE", "UNVERIFIED"}):
+                raise ValueError("each plan needs a matching trusted evaluation")
         if evaluation["status"] != "FEASIBLE":
             excluded.append({"planId": plan_id, "status": evaluation["status"],
                              "reasons": evaluation["reasons"]})
