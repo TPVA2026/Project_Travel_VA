@@ -53,6 +53,13 @@ Existing itinerary generation currently uses `/itineraries/generate`.
 
 This endpoint must remain unchanged until Frontend and Backend agree on a coordinated versioning migration.
 
+When OSRM enrichment is explicitly enabled, `POST /itineraries/evaluate` adds
+`components.routing` to its existing evaluation object. Each item records the
+directed leg, provider/profile, distance in kilometers, duration in minutes,
+review flags and evidence status. `PROVISIONAL` routes are display estimates
+only and are not accepted by M4 as verified matrix evidence. See
+`backend/docs/osrm-routing.md` for configuration and failure semantics.
+
 ## 2. Endpoint Overview
 
 | Method | Endpoint | Owner | Status |

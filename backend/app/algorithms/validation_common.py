@@ -78,4 +78,10 @@ def route_reference(dataset, origin, destination):
     reference = matches[0]
     if "unverified" in str(reference.get("source", "")).lower():
         return None
+    evidence = reference.get("evidenceStatus")
+    if evidence is not None and evidence != "VERIFIED":
+        return None
+    route_status = str(reference.get("status", "")).casefold()
+    if any(marker in route_status for marker in ("unverified", "provisional", "review")):
+        return None
     return reference

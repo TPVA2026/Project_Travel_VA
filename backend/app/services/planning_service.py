@@ -20,6 +20,8 @@ from app.services.input_service import (
     validate_revision_request,
     validate_travel_request,
 )
+from app.services.routing_enrichment import enrich_routes
+from app.services.routing_service import RoutingService, get_default_routing_service
 
 
 class PlanningError(Exception):
@@ -54,7 +56,8 @@ def _load_planning_dataset() -> dict:
     return dataset
 
 
-def evaluate_plan(request: dict, plan: dict) -> dict:
+def evaluate_plan(request: dict, plan: dict, *,
+                  routing_service: RoutingService | None = None) -> dict:
     """Evaluate a submitted pair without AI, inferred data, or ranking.
 
     The full dataset is passed to M4 to retain opening hours, price scopes and
@@ -85,7 +88,17 @@ def evaluate_plan(request: dict, plan: dict) -> dict:
     errors = check_grounding(validated_plan, context)
     if errors:
         raise PlanningError("INVALID_PLAN", "Plan failed schema/grounding checks", errors)
-    return evaluate_feasibility(normalized_request, validated_plan, dataset)
+    service = routing_service or get_default_routing_service()
+    evaluation_dataset, routes = enrich_routes(
+        normalized_request, validated_plan, dataset, service
+    )
+    result = evaluate_feasibility(normalized_request, validated_plan, evaluation_dataset)
+    if service.config.enabled:
+        result.setdefault("components", {})["routing"] = {
+            "enabled": True,
+            "routes": routes,
+        }
+    return result
 
 
 def apply_revision(request: dict, revision: dict) -> dict:
