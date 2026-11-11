@@ -1,0 +1,49 @@
+{
+  "id": "S16_no_destination_generate",
+  "title": "No destination: generation should suggest a destination",
+  "endpoint": "/itineraries/generate",
+  "server": "default",
+  "owner": "M3/M4",
+  "expected": {
+    "http": 200,
+    "status": "UNVERIFIED"
+  },
+  "rule": "Product decision: a skipped destination means the AI suggests one from the other constraints (TPVA-39/40, PR #50).",
+  "request": {
+    "travelPeriod": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-03"
+    },
+    "durationDays": 3,
+    "departureLocation": "Huế",
+    "travelers": {
+      "count": 2
+    },
+    "budget": {
+      "amount": 3000000,
+      "currency": "VND",
+      "scope": "group"
+    },
+    "preferences": {
+      "interests": [
+        {
+          "type": "culture",
+          "priority": 1
+        }
+      ]
+    }
+  },
+  "httpStatus": 422,
+  "response": {
+    "error": "NO_DATA",
+    "message": "The selected destination is not supported by the current dataset.",
+    "details": null
+  },
+  "verdict": "FAIL",
+  "notes": [
+    "HTTP 422, expected 200"
+  ],
+  "actualStatus": null,
+  "actualError": "NO_DATA",
+  "checkCodes": []
+}

@@ -236,6 +236,9 @@ export default function TravelForm({ monthInputSupported }) {
   const [descriptionDraft, setDescriptionDraft] = useState("");
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
+  // Budget scope follows the traveler count (1 traveler -> per person) until the user picks a scope.
+  const scopeTouched = useRef(false);
+  const scopeAuto = useRef(false);
 
   // Runs after the alert renders, so a request-level error is announced and focusable.
   useEffect(() => {
@@ -254,7 +257,23 @@ export default function TravelForm({ monthInputSupported }) {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
+  // Only the scope set by this rule is ever changed; a scope the user picked is left alone.
+  function applyScopeDefault(form) {
+    if (scopeTouched.current) return;
+    const solo = form.elements.namedItem("travelerCount")?.value.trim() === "1";
+    const perPerson = form.querySelector('[name="budgetScope"][value="perPerson"]');
+    if (!perPerson) return;
+    if (solo) {
+      perPerson.checked = true;
+      scopeAuto.current = true;
+    } else if (scopeAuto.current) {
+      form.querySelectorAll('[name="budgetScope"]').forEach(radio => { radio.checked = false; });
+      scopeAuto.current = false;
+    }
+  }
+
   function refresh(form, resizeBudgetRange = false) {
+    applyScopeDefault(form);
     const data = new FormData(form);
     const wrong = submitted ? clientErrors(data) : valueErrors(data);
     setBad(wrong);
@@ -343,6 +362,7 @@ export default function TravelForm({ monthInputSupported }) {
     const form = event.currentTarget;
     const target = event.target;
     if (target.name === "periodMode") setMode(target.value);
+    if (target.name === "budgetScope") scopeTouched.current = true;
     refresh(form, target.name === "budgetAmount");
   }
 
@@ -360,6 +380,8 @@ export default function TravelForm({ monthInputSupported }) {
     setSubmitted(false);
     setProgress(0);
     setDescriptionDraft("");
+    scopeTouched.current = false;
+    scopeAuto.current = false;
   }
 
   async function onSubmit(event) {
@@ -499,8 +521,8 @@ export default function TravelForm({ monthInputSupported }) {
           <input id="budgetSlider" type="range" min="0" max={budgetSliderMax} step="1" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
           <div className="budget-range-labels" aria-hidden="true"><span>0 VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
           <div className="request-segmented" role="radiogroup" aria-label="Budget applies to" aria-required="true" aria-describedby={errors.budgetScope ? "budgetScope-error" : undefined}>
-            <label><input type="radio" name="budgetScope" value="group" />Whole group</label>
-            <label><input type="radio" name="budgetScope" value="perPerson" />Per person</label>
+            <label><input type="radio" name="budgetScope" value="group" onChange={() => { scopeTouched.current = true; }} />Whole group</label>
+            <label><input type="radio" name="budgetScope" value="perPerson" onChange={() => { scopeTouched.current = true; }} />Per person</label>
           </div>
           <StepError name="budgetScope" error={errors.budgetScope} />
         </div>

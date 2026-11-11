@@ -1,0 +1,337 @@
+{
+  "id": "S18_osrm_timeout",
+  "title": "OSRM enabled, provider never answers (timeout)",
+  "endpoint": "/itineraries/evaluate",
+  "server": "osrm_timeout",
+  "owner": "M2/M4",
+  "expected": {
+    "http": 200,
+    "notStatus": "FEASIBLE",
+    "routingStatusNot": "VERIFIED"
+  },
+  "rule": "Provider failure stays unknown evidence (osrm-routing.md); no 500, not FEASIBLE.",
+  "request": {
+    "request": {
+      "travelPeriod": {
+        "startDate": "2026-12-01"
+      },
+      "durationDays": 1,
+      "departureLocation": "Huế",
+      "travelers": {
+        "count": 1
+      },
+      "budget": {
+        "amount": 1000000,
+        "currency": "VND",
+        "scope": "group"
+      },
+      "preferences": {
+        "destination": "H",
+        "transportation": [
+          "car"
+        ]
+      }
+    },
+    "plan": {
+      "planId": "manual-hue-osrm",
+      "title": "Small Huế OSRM check",
+      "destinationId": "H",
+      "missingData": [
+        "prices",
+        "opening hours"
+      ],
+      "assumptions": [],
+      "days": [
+        {
+          "dayNumber": 1,
+          "date": "2026-12-01",
+          "activities": [
+            {
+              "activityId": "hue-1",
+              "placeId": "OTM_H_N669249200",
+              "type": "sightseeing",
+              "startTime": "08:00",
+              "endTime": "09:00",
+              "estimatedCostVnd": null,
+              "costStatus": "NO_DATA",
+              "reason": "Thien Mu Pagoda"
+            },
+            {
+              "activityId": "hue-2",
+              "placeId": "OTM_H_W161714451",
+              "type": "sightseeing",
+              "startTime": "09:30",
+              "endTime": "10:30",
+              "estimatedCostVnd": null,
+              "costStatus": "NO_DATA",
+              "reason": "Dong Ba Market"
+            }
+          ],
+          "travelLegs": [
+            {
+              "fromPlaceId": "OTM_H_N669249200",
+              "toPlaceId": "OTM_H_W161714451",
+              "durationMin": null,
+              "distanceKm": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "httpStatus": 200,
+  "response": {
+    "status": "UNVERIFIED",
+    "checks": [
+      {
+        "status": "UNVERIFIED",
+        "code": "BUDGET",
+        "path": "costs",
+        "message": "Required costs are missing or invalid: transport, accommodation, dining, hue-1, hue-2"
+      },
+      {
+        "status": "FEASIBLE",
+        "code": "DAY_SCHEDULE",
+        "path": "days.0",
+        "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "OPENING_HOURS",
+        "path": "days.0.activities.0",
+        "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "OPENING_HOURS",
+        "path": "days.0.activities.1",
+        "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.0",
+        "message": "Thời gian giữa hue-1 và hue-2."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.0.travelLegs",
+        "message": "Chưa có chặng đã xác minh OTM_H_N669249200 -> OTM_H_W161714451."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu durationMin cho OTM_H_N669249200 -> OTM_H_W161714451."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu distanceKm cho OTM_H_N669249200 -> OTM_H_W161714451."
+      }
+    ],
+    "reasons": [
+      {
+        "status": "UNVERIFIED",
+        "code": "BUDGET",
+        "path": "costs",
+        "message": "Required costs are missing or invalid: transport, accommodation, dining, hue-1, hue-2"
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "OPENING_HOURS",
+        "path": "days.0.activities.0",
+        "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "OPENING_HOURS",
+        "path": "days.0.activities.1",
+        "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.0",
+        "message": "Thời gian giữa hue-1 và hue-2."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.0.travelLegs",
+        "message": "Chưa có chặng đã xác minh OTM_H_N669249200 -> OTM_H_W161714451."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu durationMin cho OTM_H_N669249200 -> OTM_H_W161714451."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu distanceKm cho OTM_H_N669249200 -> OTM_H_W161714451."
+      }
+    ],
+    "planId": "manual-hue-osrm",
+    "components": {
+      "cost": {
+        "status": "UNVERIFIED",
+        "budget": 1000000.0,
+        "known_total": 0.0,
+        "total_cost": null,
+        "remaining_budget": null,
+        "breakdown": {
+          "transport": null,
+          "accommodation": null,
+          "dining": null,
+          "activities": null
+        },
+        "missing_costs": [
+          "transport",
+          "accommodation",
+          "dining",
+          "hue-1",
+          "hue-2"
+        ],
+        "reasons": [
+          "Required costs are missing or invalid: transport, accommodation, dining, hue-1, hue-2"
+        ]
+      },
+      "schedule": {
+        "status": "UNVERIFIED",
+        "checks": [
+          {
+            "status": "FEASIBLE",
+            "code": "DAY_SCHEDULE",
+            "path": "days.0",
+            "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "OPENING_HOURS",
+            "path": "days.0.activities.0",
+            "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "OPENING_HOURS",
+            "path": "days.0.activities.1",
+            "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.0",
+            "message": "Thời gian giữa hue-1 và hue-2."
+          }
+        ],
+        "reasons": [
+          {
+            "status": "UNVERIFIED",
+            "code": "OPENING_HOURS",
+            "path": "days.0.activities.0",
+            "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "OPENING_HOURS",
+            "path": "days.0.activities.1",
+            "message": "Chưa biết giờ mở cửa đủ rõ để kiểm tra."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.0",
+            "message": "Thời gian giữa hue-1 và hue-2."
+          }
+        ]
+      },
+      "travel": {
+        "status": "UNVERIFIED",
+        "checks": [
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs",
+            "message": "Chưa có chặng đã xác minh OTM_H_N669249200 -> OTM_H_W161714451."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu durationMin cho OTM_H_N669249200 -> OTM_H_W161714451."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu distanceKm cho OTM_H_N669249200 -> OTM_H_W161714451."
+          }
+        ],
+        "reasons": [
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs",
+            "message": "Chưa có chặng đã xác minh OTM_H_N669249200 -> OTM_H_W161714451."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu durationMin cho OTM_H_N669249200 -> OTM_H_W161714451."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu distanceKm cho OTM_H_N669249200 -> OTM_H_W161714451."
+          }
+        ],
+        "dailyTotals": [
+          {
+            "dayNumber": 1,
+            "durationMin": null,
+            "known_durationMin": 0,
+            "distanceKm": null,
+            "known_distanceKm": 0
+          }
+        ]
+      },
+      "routing": {
+        "enabled": true,
+        "routes": [
+          {
+            "status": "ROUTING_UNAVAILABLE",
+            "originPlaceId": "OTM_H_N669249200",
+            "destinationPlaceId": "OTM_H_W161714451",
+            "distanceKm": null,
+            "durationMin": null,
+            "transportMode": "car",
+            "provider": "OSRM",
+            "profile": "driving",
+            "evidenceStatus": "NO_DATA",
+            "originReviewed": true,
+            "destinationReviewed": true
+          }
+        ]
+      }
+    }
+  },
+  "verdict": "PASS",
+  "notes": [],
+  "actualStatus": "UNVERIFIED",
+  "actualError": null,
+  "checkCodes": [
+    "BUDGET",
+    "DAY_SCHEDULE",
+    "OPENING_HOURS",
+    "TRANSFER_GAP",
+    "TRAVEL_DATA",
+    "UNSUPPORTED_LEG"
+  ]
+}
