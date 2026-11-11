@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -120,3 +120,30 @@ assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "2040-01",
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "0000-01", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "incomplete:-03", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12", durationDays: "2" })).month, undefined);
+
+// Optional additionalRequirements: trim, omit when blank, enforce the 500-character limit.
+{
+  const data = form({ ...valid, additionalRequirements: "  We prefer taxis.  " });
+  assert.equal(buildPayload(data).additionalRequirements, "We prefer taxis.");
+  assert.equal(valueErrors(data).additionalRequirements, undefined);
+}
+{
+  const data = form({ ...valid, additionalRequirements: "   " });
+  assert.equal(buildPayload(data).additionalRequirements, undefined);
+  assert.equal("additionalRequirements" in buildPayload(data), false);
+}
+{
+  const data = form(valid);
+  assert.equal("additionalRequirements" in buildPayload(data), false);
+}
+{
+  const tooLong = "x".repeat(ADDITIONAL_REQUIREMENTS_MAX + 1);
+  const data = form({ ...valid, additionalRequirements: tooLong });
+  assert.equal(
+    valueErrors(data).additionalRequirements,
+    `Extra description must be ${ADDITIONAL_REQUIREMENTS_MAX} characters or fewer.`,
+  );
+  const exact = form({ ...valid, additionalRequirements: "x".repeat(ADDITIONAL_REQUIREMENTS_MAX) });
+  assert.equal(valueErrors(exact).additionalRequirements, undefined);
+  assert.equal(buildPayload(exact).additionalRequirements.length, ADDITIONAL_REQUIREMENTS_MAX);
+}

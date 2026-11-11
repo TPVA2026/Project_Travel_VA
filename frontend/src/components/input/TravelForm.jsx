@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import { fetchDestinations, saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
 
 // The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -11,8 +11,6 @@ const QUICK_TRAVELERS = [1, 2, 3, 4];
 const DESCRIBE = 5;
 const REVIEW = 6;
 const STEP_COUNT = 7;
-// Local draft only: there is no agreed M3 contract for turning prose into request fields yet.
-export const DESCRIPTION_DRAFT_NOTE = "Saved here as a draft only. It is not sent or used to create your itinerary yet.";
 const DESCRIPTION_PLACEHOLDER = [
   "For example:",
   "We love seafood but would rather avoid spicy food.",
@@ -28,6 +26,7 @@ const FIELD_STEP = {
   startDate: 2, endDate: 2, month: 2, durationDays: 2,
   travelerCount: 3,
   budgetAmount: 4, budgetScope: 4,
+  additionalRequirements: DESCRIBE,
 };
 const CONTROL_NAME = { interests: "interest" };
 
@@ -320,7 +319,7 @@ export default function TravelForm({ monthInputSupported }) {
     goToStep(editing ? REVIEW : 2);
   }
 
-  // Skipping means "nothing to add": discard any typed draft before showing review.
+  // Skipping means "nothing to add": discard any typed text before showing review.
   function skipDescription() {
     setDescriptionDraft("");
     goToStep(REVIEW);
@@ -509,9 +508,9 @@ export default function TravelForm({ monthInputSupported }) {
       </>, "In VND. Slide, or type an exact amount.")}
 
       {question(DESCRIBE, "describe", <label htmlFor="tripDescription">Is there anything else you’d like to describe?</label>, <>
-        {/* Deliberately unnamed: the draft is never part of the TravelRequest payload. */}
-        <textarea id="tripDescription" className="request-describe" rows="7" value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus aria-describedby={`request-step-${DESCRIBE}-hint${hasDraft ? " request-draft-note" : ""}`} />
-        {hasDraft && <p className="request-draft-note" id="request-draft-note">{DESCRIPTION_DRAFT_NOTE}</p>}
+        <textarea id="tripDescription" name="additionalRequirements" className="request-describe" rows="7" maxLength={ADDITIONAL_REQUIREMENTS_MAX} value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus {...described("additionalRequirements", `request-step-${DESCRIBE}-hint request-describe-count`, "request-describe")} />
+        <p className="request-char-count" id="request-describe-count">{descriptionDraft.length}/{ADDITIONAL_REQUIREMENTS_MAX}</p>
+        <StepError name="additionalRequirements" error={errors.additionalRequirements} />
         <button type="button" className="request-link" onClick={skipDescription}>Skip for now</button>
       </>, "Optional. Food, transport, interests, your group or travel limits.")}
 
@@ -533,7 +532,6 @@ export default function TravelForm({ monthInputSupported }) {
               <button type="button" className="request-edit" aria-label="Edit description" onClick={() => goToStep(DESCRIBE, { edit: true })}>Edit</button>
             </div>
           </dl>
-          {hasDraft && <p className="request-draft-note" id="request-review-draft-note">{DESCRIPTION_DRAFT_NOTE}</p>}
         </div>
       </section>
 

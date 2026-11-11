@@ -66,6 +66,7 @@ def test_valid_request_is_normalized_before_gemini(valid_request, generate_mock)
         "budget": {"amount": 3000000, "currency": "VND", "scope": "group"},
         "limits": None,
         "preferences": None,
+        "additionalRequirements": None,
     })
     assert response.json() == {"status": "UNVERIFIED", "plan": generate_mock.return_value}
     # Dates are strings, field names use aliases, and all values serialize to JSON.
