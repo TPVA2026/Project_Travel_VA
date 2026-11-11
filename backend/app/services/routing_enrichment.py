@@ -63,7 +63,9 @@ def _merge_verified_route(dataset: dict, route: dict) -> None:
     if existing is None:
         existing = {"from": origin, "to": destination}
         rows.append(existing)
-    trusted_existing = route_reference(dataset, origin, destination) is existing
+    trusted_existing = route_reference(
+        dataset, origin, destination, route.get("transportMode")
+    ) is existing
     # Only a trusted repository value has priority. A number explicitly marked
     # provisional/unverified must not silently survive as authoritative data.
     if not trusted_existing or known_number(existing.get("distanceKm")) is None:
@@ -107,7 +109,7 @@ def enrich_routes(request: dict, plan: dict, dataset: dict,
     for origin, destination in _required_legs(plan):
         if origin not in config.allowed_place_ids or destination not in config.allowed_place_ids:
             continue
-        reference = route_reference(dataset, origin, destination)
+        reference = route_reference(dataset, origin, destination, mode)
         if (reference is not None
                 and known_number(reference.get("distanceKm")) is not None
                 and known_number(reference.get("durationMin")) is not None):

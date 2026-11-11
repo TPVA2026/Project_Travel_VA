@@ -103,6 +103,32 @@ Provider timeouts, HTTP failures, and malformed payloads become
 that this provider/profile did not construct a route. Neither condition proves
 physical impossibility, so absent verified evidence remains `UNVERIFIED` in M4.
 
+## Evaluate and rank consistency
+
+Both orchestration paths now use the same trusted evaluation policy:
+
+```text
+request + candidate
+  -> TravelRequest/CandidatePlan validation
+  -> dataset loading and grounding against provisional-safe context
+  -> reviewed OSRM enrichment on an evaluation-only dataset copy
+  -> deterministic M4 feasibility
+  -> evaluate response or trusted input to ranking
+```
+
+`/itineraries/rank` evaluates each candidate through this flow before invoking
+the scoring algorithm. The ranking layer receives evaluations keyed by
+`planId`; it does not accept client/Gemini status or routing evidence. One
+`RoutingService` instance is shared within a rank request, so its directed cache
+avoids duplicate calls for repeated legs without sharing evidence between
+candidates. Independent HTTP requests can still observe different provider
+availability and therefore are not promised identical live results.
+
+Grounding occurs before enrichment. Numeric matrix rows marked unverified,
+provisional, estimated, review-required, or profile-incompatible are exposed to
+Gemini as unknown measurements. This prevents a provisional seed value from
+being mistaken for either verified grounding data or M4 routing evidence.
+
 ## Offline tests and a small manual request
 
 Run all routing tests without network access:

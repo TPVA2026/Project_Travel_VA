@@ -61,7 +61,7 @@ def places_by_id(dataset):
     return places
 
 
-def route_reference(dataset, origin, destination):
+def route_reference(dataset, origin, destination, transport_mode=None):
     """Lấy chặng có hướng from/to; không suy ngược hoặc cộng khoảng cách từ tâm.
 
     Chỉ dùng bảng chuẩn dạng list. Bảng lồng 'destinations' hiện tại trong repo
@@ -76,12 +76,47 @@ def route_reference(dataset, origin, destination):
     if len(matches) != 1:
         return None
     reference = matches[0]
-    if "unverified" in str(reference.get("source", "")).lower():
+    source = str(reference.get("source", "")).casefold()
+    if any(marker in source for marker in ("unverified", "provisional", "estimated")):
+        return None
+    verification = reference.get("verificationStatus")
+    if verification is not None and str(verification).casefold() != "verified":
         return None
     evidence = reference.get("evidenceStatus")
-    if evidence is not None and evidence != "VERIFIED":
+    if evidence is not None and str(evidence).casefold() != "verified":
         return None
     route_status = str(reference.get("status", "")).casefold()
-    if any(marker in route_status for marker in ("unverified", "provisional", "review")):
+    if any(marker in route_status for marker in (
+        "unverified", "provisional", "review", "estimated", "unknown", "no_data",
+    )):
         return None
+    if ("originReviewed" in reference or "destinationReviewed" in reference) and (
+        reference.get("originReviewed") is not True
+        or reference.get("destinationReviewed") is not True
+    ):
+        return None
+
+    profile = reference.get("profile")
+    profiles = {
+        "car": "driving", "driving": "driving",
+        "walk": "walking", "walking": "walking",
+        "bicycle": "cycling", "cycling": "cycling",
+    }
+    requested_profile = (
+        profiles.get(transport_mode.strip().casefold())
+        if isinstance(transport_mode, str) else None
+    )
+    if profile is not None:
+        if not isinstance(profile, str) or profile.casefold() not in set(profiles.values()):
+            return None
+        if requested_profile is not None and profile.casefold() != requested_profile:
+            return None
+
+    provider = str(reference.get("provider", "")).casefold()
+    if "osrm" in source or "osrm" in provider:
+        if (str(evidence).casefold() != "verified"
+                or reference.get("originReviewed") is not True
+                or reference.get("destinationReviewed") is not True
+                or not isinstance(profile, str)):
+            return None
     return reference

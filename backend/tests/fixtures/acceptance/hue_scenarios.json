@@ -145,8 +145,8 @@
                 {
                   "fromPlaceId": "ATTR_H_03",
                   "toPlaceId": "ATTR_H_05",
-                  "durationMin": 7,
-                  "distanceKm": 2.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -179,8 +179,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -213,8 +213,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
@@ -300,8 +300,8 @@
                   {
                     "fromPlaceId": "ATTR_H_03",
                     "toPlaceId": "ATTR_H_05",
-                    "durationMin": 7,
-                    "distanceKm": 2.1
+                    "durationMin": null,
+                    "distanceKm": null
                   }
                 ]
               },
@@ -334,8 +334,8 @@
                   {
                     "fromPlaceId": "ATTR_H_01",
                     "toPlaceId": "ATTR_H_08",
-                    "durationMin": 22,
-                    "distanceKm": 7.1
+                    "durationMin": null,
+                    "distanceKm": null
                   }
                 ]
               },
@@ -368,8 +368,8 @@
                   {
                     "fromPlaceId": "ATTR_H_02",
                     "toPlaceId": "ATTR_H_09",
-                    "durationMin": 20,
-                    "distanceKm": 6.5
+                    "durationMin": null,
+                    "distanceKm": null
                   }
                 ]
               }
@@ -453,8 +453,8 @@
                 {
                   "fromPlaceId": "ATTR_H_03",
                   "toPlaceId": "ATTR_H_05",
-                  "durationMin": 7,
-                  "distanceKm": 2.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -487,8 +487,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -521,8 +521,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
@@ -737,8 +737,8 @@
                 {
                   "fromPlaceId": "ATTR_H_03",
                   "toPlaceId": "ATTR_H_05",
-                  "durationMin": 7,
-                  "distanceKm": 2.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -771,8 +771,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -805,8 +805,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
@@ -889,8 +889,8 @@
                 {
                   "fromPlaceId": "ATTR_H_03",
                   "toPlaceId": "ATTR_H_05",
-                  "durationMin": 7,
-                  "distanceKm": 2.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -923,8 +923,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -957,8 +957,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
@@ -1051,8 +1051,8 @@
                 {
                   "fromPlaceId": "ATTR_H_03",
                   "toPlaceId": "ATTR_H_05",
-                  "durationMin": 7,
-                  "distanceKm": 2.1
+                  "durationMin": null,
+                  "distanceKm": null
                 },
                 {
                   "fromPlaceId": "ATTR_H_05",
@@ -1091,8 +1091,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -1125,8 +1125,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
@@ -1210,8 +1210,8 @@
                 {
                   "fromPlaceId": "ATTR_H_03",
                   "toPlaceId": "ATTR_H_05",
-                  "durationMin": 7,
-                  "distanceKm": 2.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -1244,8 +1244,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -1278,8 +1278,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
@@ -1367,8 +1367,8 @@
                 {
                   "fromPlaceId": "ATTR_H_03",
                   "toPlaceId": "ATTR_H_05",
-                  "durationMin": 7,
-                  "distanceKm": 2.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -1401,8 +1401,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -1435,8 +1435,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
@@ -1554,8 +1554,8 @@
                 {
                   "fromPlaceId": "ATTR_H_01",
                   "toPlaceId": "ATTR_H_08",
-                  "durationMin": 22,
-                  "distanceKm": 7.1
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             },
@@ -1588,8 +1588,8 @@
                 {
                   "fromPlaceId": "ATTR_H_02",
                   "toPlaceId": "ATTR_H_09",
-                  "durationMin": 20,
-                  "distanceKm": 6.5
+                  "durationMin": null,
+                  "distanceKm": null
                 }
               ]
             }
