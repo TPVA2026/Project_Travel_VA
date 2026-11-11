@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, serverFieldErrors } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -46,6 +46,14 @@ assert.equal(
 );
 assert.equal(valueErrors(form({ ...valid, departureLocation: "" })).departureLocation, undefined);
 assert.equal(clientErrors(form({ periodMode: "dates" })).departureLocation, "This field is required.");
+
+// Departure stays required and is trimmed; a skipped or blank destination is omitted, never guessed.
+const trimmed = buildPayload(form({ ...valid, departureLocation: "  Ho Chi Minh City  ", destination: "   " }));
+assert.equal(trimmed.departureLocation, "Ho Chi Minh City");
+assert.equal(Object.hasOwn(trimmed.preferences, "destination"), false);
+const noPreferences = buildPayload(form({ ...valid, interest: [], sightseeingPriority: "" }));
+assert.equal(noPreferences.preferences, undefined);
+assert.equal(buildPayload(form({ ...valid, destination: " Da Nang " })).preferences.destination, "Da Nang");
 
 const bad = clientErrors(form({ ...valid, endDate: "2026-11-01", departureLocation: "  " }));
 assert.equal(bad.endDate, "End date must be on or after the start date.");
@@ -120,3 +128,39 @@ assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "2040-01",
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "0000-01", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "incomplete:-03", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12", durationDays: "2" })).month, undefined);
+
+// Optional additionalRequirements: trim, omit when blank, enforce the 500-character limit.
+{
+  const data = form({ ...valid, additionalRequirements: "  We prefer taxis.  " });
+  assert.equal(buildPayload(data).additionalRequirements, "We prefer taxis.");
+  assert.equal(valueErrors(data).additionalRequirements, undefined);
+}
+{
+  const data = form({ ...valid, additionalRequirements: "   " });
+  assert.equal(buildPayload(data).additionalRequirements, undefined);
+  assert.equal("additionalRequirements" in buildPayload(data), false);
+}
+{
+  const data = form(valid);
+  assert.equal("additionalRequirements" in buildPayload(data), false);
+}
+{
+  const tooLong = "x".repeat(ADDITIONAL_REQUIREMENTS_MAX + 1);
+  const data = form({ ...valid, additionalRequirements: tooLong });
+  assert.equal(
+    valueErrors(data).additionalRequirements,
+    `Extra description must be ${ADDITIONAL_REQUIREMENTS_MAX} characters or fewer.`,
+  );
+  const exact = form({ ...valid, additionalRequirements: "x".repeat(ADDITIONAL_REQUIREMENTS_MAX) });
+  assert.equal(valueErrors(exact).additionalRequirements, undefined);
+  assert.equal(buildPayload(exact).additionalRequirements.length, ADDITIONAL_REQUIREMENTS_MAX);
+}
+
+// A server message already shown on a field is not repeated at form level.
+{
+  const long = "Destination is not supported by the current dataset. Choose one of: Da Nang, Hue.";
+  const errors = serverFieldErrors({ detail: { errors: [{ loc: ["preferences", "destination"], msg: long }], missing: [], conflicts: [], messages: [long] } });
+  assert.deepEqual(errors, { destination: long });
+  const both = serverFieldErrors({ detail: { errors: [{ loc: ["preferences", "destination"], msg: long }], messages: [long, "Dates conflict."] } });
+  assert.deepEqual(both, { destination: long, form: "Dates conflict." });
+}

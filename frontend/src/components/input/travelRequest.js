@@ -5,6 +5,8 @@ export const INTERESTS = [
   ["relaxation", "Relaxation"],
 ];
 
+export const ADDITIONAL_REQUIREMENTS_MAX = 500;
+
 const LOC_FIELD = {
   startDate: "startDate",
   endDate: "endDate",
@@ -26,6 +28,8 @@ const LOC_FIELD = {
   transportation: "transportation",
   priority: "interests",
   type: "interests",
+  additionalRequirements: "additionalRequirements",
+  additional_requirements: "additionalRequirements",
 };
 
 function listed(data, name) {
@@ -109,6 +113,10 @@ export function valueErrors(data) {
   if (lines(data.get("characteristics")).some(note => note.length > 80)) {
     errors.characteristics = "Each group note must be 80 characters or fewer, separated by commas.";
   }
+  const extra = String(data.get("additionalRequirements") ?? "").trim();
+  if (extra.length > ADDITIONAL_REQUIREMENTS_MAX) {
+    errors.additionalRequirements = `Extra description must be ${ADDITIONAL_REQUIREMENTS_MAX} characters or fewer.`;
+  }
   return errors;
 }
 
@@ -188,6 +196,9 @@ export function buildPayload(data) {
       payload.limits.maxTravelTimeMinutes = Number(data.get("maxTravelTimeMinutes"));
     }
   }
+
+  const additionalRequirements = String(data.get("additionalRequirements") ?? "").trim();
+  if (additionalRequirements) payload.additionalRequirements = additionalRequirements;
   return payload;
 }
 
@@ -212,8 +223,10 @@ export function serverFieldErrors(body) {
     const name = MISSING_FIELD[field] ?? field;
     if (!errors[name]) errors[name] = REQUIRED;
   }
-  const messages = detail.messages ?? detail.conflicts;
-  if (messages?.length) errors.form = messages.join(" ");
+  // Skip messages already shown on a field so the same text never appears twice.
+  const shown = new Set(Object.values(errors));
+  const messages = (detail.messages ?? detail.conflicts ?? []).filter(message => !shown.has(message));
+  if (messages.length) errors.form = messages.join(" ");
   return errors;
 }
 

@@ -117,3 +117,24 @@ def test_invalid_body_type():
     response = client.post(URL, json=[1, 2, 3])
 
     assert response.status_code == 422
+
+
+# TEST 10: additionalRequirements is optional, trimmed, and length-limited
+def test_additional_requirements(valid_request):
+    response = client.post(URL, json=valid_request)
+    assert response.status_code == 200
+    assert response.json()["data"]["additionalRequirements"] is None
+
+    valid_request["additionalRequirements"] = "  Prefer taxis.  "
+    response = client.post(URL, json=valid_request)
+    assert response.status_code == 200
+    assert response.json()["data"]["additionalRequirements"] == "Prefer taxis."
+
+    valid_request["additionalRequirements"] = "   "
+    response = client.post(URL, json=valid_request)
+    assert response.status_code == 200
+    assert response.json()["data"]["additionalRequirements"] is None
+
+    valid_request["additionalRequirements"] = "x" * 501
+    response = client.post(URL, json=valid_request)
+    assert response.status_code == 422

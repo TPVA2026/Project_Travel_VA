@@ -44,6 +44,12 @@ A field in **Limits** is optional to send. Once sent, it is a mandatory constrai
 | `preferences.dining.preferred` | Foods or cuisines the user wants. |
 | `preferences.dining.avoid` | Foods the user does not want. |
 
+## Optional additional requirements
+
+| Field | Rule |
+| --- | --- |
+| `additionalRequirements` | Optional free-text string, at most 500 characters after trimming. Empty or whitespace-only values are omitted (null). This is a preference for search, not a mandatory constraint. Form-selected fields take precedence when this text conflicts with them. M3 should treat it as user preferences in the prompt and must not use it to override structured fields. |
+
 ## Examples
 
 - Valid dates and limits: `backend/tests/fixtures/sampleRequest.json`

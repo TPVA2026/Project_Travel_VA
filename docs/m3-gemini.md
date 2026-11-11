@@ -33,6 +33,7 @@ python -m uvicorn app.main:app --reload --port 3001   # POST /itineraries/genera
 
 ## Contract
 - In: validated `TravelRequest` (M1). Out: `{ "status": "UNVERIFIED", "plan": CandidatePlan }`.
+- Optional `additionalRequirements` is free-text user preference for search (max 500 characters). Structured TravelRequest fields take precedence if the prose conflicts. Treat the text as prompt context, not as a way to override dates, budget, traveler count, or limits.
 - The plan is never "feasible" until M4 `/itineraries/evaluate` verifies it. Costs are references only; unknown = `null` + `NO_DATA`, never 0.
 - Guards: Pydantic `CandidatePlan` validation (extra fields such as scores/flags are rejected; unknown cost = null + `NO_DATA`, never 0), then grounding (placeId/destinationId in dataset, type matches place, no overlap, cost VALUE equals the dataset price and status agrees with its source, travel legs equal the dataset).
 - AI scores/costs are never verified: the endpoint always returns `status: UNVERIFIED`; only M4 decides feasibility. Opening hours, durations and budget checks are M4's, not repeated here.

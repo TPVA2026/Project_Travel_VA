@@ -1,352 +1,1266 @@
 [
   {
     "id": "REST_H_01",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "quán bánh O Lê",
-    "address": "https://www.google.com/maps/search/?api=1&query=Quán+bánh+O+Lé",
-    "opening_hours": "11:00-20:00",
-    "distance_from_center": "3.5km",
-    "travel_time": "10 phút",
-    "cost": "15.000 - 50.000 VND"
+    "name": "Quán bánh O Lé",
+    "address": "9/17, kiệt 104 Kim Long, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Qu%C3%A1n%20b%C3%A1nh%20O%20L%C3%A9%209%2F17%20ki%E1%BB%87t%20104%20Kim%20Long%20Hu%E1%BA%BF",
+    "openingHours": "11:00 - 20:00",
+    "priceScope": "perServing",
+    "priceScopeNotes": "Khoảng 35.000 VND/set bánh theo bài Traveloka; mức tham khảo.",
+    "distanceFromCenter": {
+      "distanceKm": 3.5,
+      "durationMin": 10,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/explore/culinary/gns-quan-banh-hue/188015",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "verificationStatus": "partial",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "unitPriceVnd",
+          "priceScope"
+        ],
+        "reportedValues": {
+          "address": "9/17, kiệt 104 Kim Long, thành phố Huế",
+          "priceVnd": "35.000 VND",
+          "priceScope": "perServing"
+        },
+        "notes": "Bài công bố khoảng 35.000 VND/set và địa chỉ; không công bố giờ mở cửa hoặc tuyến đường."
+      }
+    ],
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/explore/culinary/gns-quan-banh-hue/188015",
+    "unverifiedFields": [
+      "openingHours",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "priceDisplay": "35.000 VND",
+    "unitPriceVnd": 35000,
+    "priceType": "approximate",
+    "priceVerificationStatus": "estimate"
   },
   {
     "id": "REST_H_02",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "Bánh ướt - bún thịt nướng Huyền Anh",
-    "address": "https://www.google.com/maps/search/?api=1&query=50+Kim+Long+Hue",
-    "opening_hours": "8:00-19:00",
-    "distance_from_center": "4km",
-    "travel_time": "12 phút",
-    "cost": "30.000 - 70.000 VND"
+    "name": "Bánh Ướt Huyền Anh 2",
+    "address": "3 Hồ Tùng Mậu, thành phố Huế",
+    "sources": [
+      {
+        "url": "https://www.foody.vn/hue/banh-uot-huyen-anh-2",
+        "publisher": "Foody",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "verificationStatus": "partial",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "reportedValues": {
+          "name": "Bánh Ướt Huyền Anh 2",
+          "address": "3 Hồ Tùng Mậu, thành phố Huế",
+          "openingHours": "08:00 - 20:00",
+          "priceVnd": "10.000 - 30.000 VND"
+        },
+        "notes": "Huyền Anh 2 tại 3 Hồ Tùng Mậu; không sử dụng dữ liệu cơ sở 50 Kim Long."
+      }
+    ],
+    "preferredSourceUrl": "https://www.foody.vn/hue/banh-uot-huyen-anh-2",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=B%C3%A1nh%20%C6%AF%E1%BB%9Bt%20Huy%E1%BB%81n%20Anh%202%203%20H%E1%BB%93%20T%C3%B9ng%20M%E1%BA%ADu%20Hu%E1%BA%BF",
+    "openingHours": "08:00 - 20:00",
+    "priceScope": "unspecified",
+    "priceScopeNotes": "Foody công bố khoảng giá, không nói rõ theo người, phần hay nhóm.",
+    "distanceFromCenter": {
+      "distanceKm": null,
+      "durationMin": null,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      }
+    ],
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "priceDisplay": "10.000 - 30.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 10000,
+      "max": 30000
+    },
+    "priceType": "range"
   },
   {
     "id": "REST_H_03",
+    "destinationId": "H",
     "city": "Huế",
     "name": "Bún giấm nuốc Gia Hội",
-    "address": "https://www.google.com/maps/search/?api=1&query=Bún+Giấm+Nuốc+Gia+Hội+Hue",
-    "opening_hours": "13:00-17:00",
-    "distance_from_center": "2km",
-    "travel_time": "6 phút",
-    "cost": "35.000 VND"
+    "address": "02 Chi Lăng, phường Phú Cát, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bún+Giấm+Nuốc+Gia+Hội+Hue",
+    "openingHours": "15:00 - 18:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 2,
+      "durationMin": 6,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 0.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 1.9,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.8,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách.",
+        "reportedValues": {
+          "address": "2 Chi Lăng, Huế"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceVnd"
+        ],
+        "notes": "Một tô bún.",
+        "reportedValues": {
+          "priceVnd": "35.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+        "publisher": "Khám Phá Huế",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceVnd",
+          "priceScope"
+        ],
+        "notes": "Ưu tiên bài Khám Phá Huế trong link.txt cho giờ và giá; khác bài VnExpress cũ.",
+        "reportedValues": {
+          "address": "02 Chi Lăng, phường Phú Cát, thành phố Huế",
+          "openingHours": "15:00 - 18:00",
+          "priceVnd": "30.000 VND",
+          "priceScope": "perServing"
+        }
+      }
+    ],
+    "priceScopeNotes": "Một tô bún giấm nuốc; món theo mùa hè, theo Khám Phá Huế.",
+    "preferredSourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+    "unverifiedFields": [
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "30.000 VND",
+    "unitPriceVnd": 30000,
+    "priceType": "exact"
   },
   {
     "id": "REST_H_04",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "quán hến Hoa Đông",
-    "address": "https://www.google.com/maps/search/?api=1&query=Cơm+hến+Hoa+Đông+Hue",
-    "opening_hours": "7:00-22:00",
-    "distance_from_center": "3km",
-    "travel_time": "8 phút",
-    "cost": "15.000 - 20.000 VND"
+    "name": "Quán hến Hoa Đông",
+    "address": "64 kiệt 7 Ưng Bình, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cơm+hến+Hoa+Đông+Hue",
+    "openingHours": "07:00 - 22:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 3,
+      "durationMin": 8,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 6.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 2.2,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 5,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://heritagevietnamairlines.cdn.vccloud.vn/wp-content/uploads/2023/09/HeritageGuide.Hue_.T10.Vie_.pdf",
+        "publisher": "Vietnam Airlines — Heritage Guide (2023)",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một tô cơm hoặc bún hến.",
+        "reportedValues": {
+          "priceVnd": "15.000 - 20.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Giá theo phần thông tin chung trong bài MIA.vn; nguồn không xác nhận số lượng món cho một bữa/người.",
+        "reportedValues": {
+          "address": "64 kiệt 7 Ưng Bình, Huế",
+          "openingHours": "07:00 - 22:00",
+          "priceVnd": "7.000 - 10.000 VND"
+        }
+      }
+    ],
+    "priceScopeNotes": "Khoảng giá tham khảo của bài MIA.vn cho quán cơm hến; cần xác nhận khẩu phần/menu trước khi dùng tính chi phí.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "7.000 - 10.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 7000,
+      "max": 10000
+    },
+    "priceType": "range"
   },
   {
     "id": "REST_H_05",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "bún bò mệ Kéo",
-    "address": "https://www.google.com/maps/search/?api=1&query=Bún+bò+mệ+Kéo+Hue",
-    "opening_hours": "6:00-8:00",
-    "distance_from_center": "1.5km",
-    "travel_time": "5 phút",
-    "cost": "50.000 VND"
+    "name": "Bún bò mệ Kéo",
+    "address": "20 Bạch Đằng, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bún+bò+mệ+Kéo+Hue",
+    "openingHours": "06:00 - 10:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 1.5,
+      "durationMin": 5,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 0.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 2,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.8,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.5,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://visithue.vn/quan-bun-bo-la-nhat-xu-hue-ban-hang-than-toc-khach-tu-phuc-vu/?pid=MjEzNjV8Y3NkbGRs0",
+        "publisher": "Visit Hue",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một tô đầy đủ; bài viết ghi 94 Bạch Đằng, khác địa chỉ 20 Bạch Đằng trong nguồn cũ; cần đối chiếu đúng cơ sở.",
+        "reportedValues": {
+          "priceVnd": "50.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Dùng khung giờ ghi trong mục thông tin chung; bài có câu mô tả thời lượng không khớp, không dùng câu đó để tính giờ.",
+        "reportedValues": {
+          "address": "20 Bạch Đằng, Huế",
+          "openingHours": "06:00 - 10:00",
+          "priceVnd": "20.000 - 30.000 VND"
+        }
+      }
+    ],
+    "priceScopeNotes": "Giá tham khảo cho bún theo bài MIA.vn tại số 20 Bạch Đằng.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "20.000 - 30.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 20000,
+      "max": 30000
+    },
+    "priceType": "range"
   },
   {
     "id": "REST_H_06",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "cơm niêu chạn",
-    "address": "https://www.google.com/maps/search/?api=1&query=Cơm+niêu+Chạn+Hue",
-    "opening_hours": "10:30-21:00",
-    "distance_from_center": "1km",
-    "travel_time": "4 phút",
-    "cost": "250.000 - 300.000 VND"
+    "name": "Cơm niêu chạn",
+    "address": "1 Nguyễn Thái Học, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cơm+niêu+Chạn+Hue",
+    "openingHours": "08:00 - 22:00",
+    "priceScope": "unspecified",
+    "distanceFromCenter": {
+      "distanceKm": 1,
+      "durationMin": 4,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.9,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 1.9,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 2.2,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 2,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 0.7000000000000001,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 0.85,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.2,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://wanderlog.com/place/details/2317194/c%C6%A1m-ni%C3%AAu-ch%E1%BA%A1n",
+        "publisher": "Wanderlog",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một người, bữa gồm 4–5 món.",
+        "reportedValues": {
+          "priceScope": "perPerson",
+          "priceVnd": "250.000 - 300.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Khoảng giá theo MIA.vn; chưa đủ căn cứ xác nhận đơn vị priceScope, cần menu hoặc xác nhận của quán.",
+        "reportedValues": {
+          "address": "1 Nguyễn Thái Học, Huế",
+          "openingHours": "08:00 - 22:00",
+          "priceVnd": "50.000 - 250.000 VND"
+        }
+      }
+    ],
+    "priceScopeNotes": "Bài MIA.vn chỉ ghi khoảng giá tham khảo, không nêu theo người, món hay nhóm; không tiếp tục gán perPerson từ nguồn giá cũ.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "50.000 - 250.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 50000,
+      "max": 250000
+    },
+    "priceType": "range"
   },
   {
     "id": "REST_H_07",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "bánh mì O Tho",
-    "address": "https://www.google.com/maps/search/?api=1&query=Bánh+Mì+Trường+Tiền+O+Tho+Hue",
-    "opening_hours": "6:30-3:00",
-    "distance_from_center": "1km",
-    "travel_time": "4 phút",
-    "cost": "15.000 VND"
+    "name": "Bánh mì O Tho",
+    "address": "14 Trần Cao Vân, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bánh+Mì+Trường+Tiền+O+Tho+Hue",
+    "openingHours": "06:30 - 11:00; 15:00 - 03:00",
+    "priceScope": "perItem",
+    "distanceFromCenter": {
+      "distanceKm": 1,
+      "durationMin": 4,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.3,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 0.7000000000000001,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 2.8,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 1.3,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 0.4,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://hues.vn/dia-diem/tiem-banh-mi-truong-tien-o-tho/",
+        "publisher": "HueS — Huế trong tầm tay",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address",
+          "openingHours"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách.",
+        "reportedValues": {
+          "openingHours": "06:30 - 10:30; 16:00 - 03:00"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một ổ bánh mì; 15.000 là giá khởi điểm.",
+        "reportedValues": {
+          "priceVnd": "15.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Cập nhật hai ca và khoảng giá theo mục O Tho; giữ giá dạng khoảng, không tự tính trung bình.",
+        "reportedValues": {
+          "address": "14 Trần Cao Vân, Huế",
+          "openingHours": "06:30 - 11:00; 15:00 - 03:00",
+          "priceVnd": "10.000 - 25.000 VND"
+        }
+      }
+    ],
+    "openingHoursNote": "Ca thứ hai kết thúc 03:00 ngày hôm sau; giờ theo bài MIA.vn trong link.txt.",
+    "priceScopeNotes": "Khoảng giá tham khảo bánh mì theo bài MIA.vn; không phải giá cố định cho mọi loại nhân.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "10.000 - 25.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 10000,
+      "max": 25000
+    },
+    "priceType": "range"
   },
   {
     "id": "REST_H_08",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "quán vịt Thuận",
-    "address": "https://www.google.com/maps/search/?api=1&query=Cháo+Vịt+Thuận+Hue",
-    "opening_hours": "11:00-20:00",
-    "distance_from_center": "2-3km",
-    "travel_time": "7-10 phút",
-    "cost": "35.000 - 100.000 VND"
+    "name": "Cháo Vịt Thuận",
+    "address": "94 Bùi Thị Xuân, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cháo+Vịt+Thuận+Hue",
+    "openingHours": "11:00 - 20:00",
+    "priceScope": "unspecified",
+    "distanceFromCenter": {
+      "distanceKm": null,
+      "durationMin": null,
+      "distanceRangeKm": {
+        "min": 2,
+        "max": 3
+      },
+      "durationRangeMin": {
+        "min": 7,
+        "max": 10
+      },
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 2.5,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 5,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 3.6,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 2.6,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 3.6,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 2.4,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://news.huengaynay.vn/travel/the-best-food-in-vietnam-60385.html",
+        "publisher": "Báo Huế ngày nay",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một người, tùy lựa chọn món ăn kèm."
+      },
+      {
+        "url": "https://huetripo.hue.gov.vn/co-so-an-uong/quan-an/vit-thuan-897020",
+        "publisher": "Huế TRIPO",
+        "providedVia": "backend/app/data/link.txt",
+        "lastCheckedOn": "2026-11-11",
+        "verificationStatus": "unverified",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Link do người dùng cung cấp; công cụ đọc web chưa tải được trang. Chưa dùng link để xác nhận trường dữ liệu nào."
+      },
+      {
+        "url": "https://thanhphohue.net/dia-diem-hue/chao-vit-thuan",
+        "publisher": "Thành Phố Huế NET",
+        "providedVia": "backend/app/data/link.txt",
+        "publishedOn": "2024-09-29",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "unitPriceRangeVnd"
+        ],
+        "reportedValues": {
+          "name": "Cháo Vịt Thuận",
+          "address": "94 Bùi Thị Xuân, Huế",
+          "priceVnd": "35.000 - 100.000 VND"
+        },
+        "notes": "Trang công bố tên, địa chỉ và khoảng giá; không công bố giờ mở cửa hoặc đơn vị tính giá."
+      }
+    ],
+    "priceScopeNotes": "Thành Phố Huế NET ghi khoảng giá 35.000–100.000 VND nhưng không nêu đơn vị theo người, món hay nhóm; không suy perPerson từ bài này.",
+    "dataReviewNotes": [
+      "Giữ giờ 11:00–20:00 từ dữ liệu trước; bài Thành Phố Huế NET không công bố giờ nên chưa xác minh theo nguồn được chọn.",
+      "Khoảng giá trong bài ngày 29/09/2024 là thông tin tham khảo, không xác nhận giá hiện hành."
+    ],
+    "preferredSourceUrl": "https://thanhphohue.net/dia-diem-hue/chao-vit-thuan",
+    "unverifiedFields": [
+      "openingHours",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Đã đối chiếu tên, địa chỉ và khoảng giá theo link mới; giờ và số liệu di chuyển chưa được trang này xác nhận.",
+    "priceDisplay": "35.000 - 100.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 35000,
+      "max": 100000
+    },
+    "priceType": "range"
   },
   {
     "id": "REST_H_09",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "chè Cầm",
-    "address": "https://www.google.com/maps/search/?api=1&query=Chè+Cầm+Hue",
-    "opening_hours": "16:00-22:00",
-    "distance_from_center": "1km",
-    "travel_time": "3 phút",
-    "cost": "15.000 VND"
+    "name": "Chè Cầm",
+    "address": "10 Nguyễn Sinh Cung, Vỹ Dạ, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Chè+Cầm+Hue",
+    "openingHours": "16:00 - 22:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 1,
+      "durationMin": 3,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 5.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 0.85,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 1.3,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.6,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://hue-ictc.husc.edu.vn/baiviet.php?id=5",
+        "publisher": "Hue-ICT Challenge 2026 — Trường Đại học Khoa học, Đại học Huế",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceFromVnd"
+        ],
+        "notes": "Một phần chè."
+      },
+      {
+        "url": "https://huetripo.hue.gov.vn/co-so-an-uong/quan-an/che-cam-742890",
+        "publisher": "Huế TRIPO",
+        "providedVia": "backend/app/data/link.txt",
+        "lastCheckedOn": "2026-11-11",
+        "verificationStatus": "unverified",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Link do người dùng cung cấp; công cụ đọc web chưa tải được trang. Chưa dùng link để xác nhận trường dữ liệu nào."
+      },
+      {
+        "url": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/",
+        "publisher": "iVIVU",
+        "providedVia": "backend/app/data/link.txt",
+        "publishedOn": "2026-06-10",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "verificationStatus": "partial",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceFromVnd",
+          "unitPriceFromVnd",
+          "priceType",
+          "priceUnit",
+          "priceScope"
+        ],
+        "reportedValues": {
+          "address": "10 Nguyễn Sinh Cung, Vỹ Dạ, Huế",
+          "openingHours": "16:00 - 22:00",
+          "priceVnd": "Từ 15.000 VND/ly",
+          "priceFromVnd": 15000,
+          "priceType": "from",
+          "priceUnit": "ly",
+          "priceScope": "perServing"
+        },
+        "notes": "Mục 6 — Chè Cầm. Bài nêu giờ hằng ngày 16h–22h và giá khoảng từ 15.000 VND/ly tùy loại; không công bố khoảng cách hoặc thời gian di chuyển."
+      }
+    ],
+    "priceScopeNotes": "Một ly chè; giá từ 15.000 VND tùy loại, không phải giá cố định cho mọi ly.",
+    "dataReviewNotes": [
+      "Giá khởi điểm theo bài ngày 10/06/2026, có thể thay đổi theo loại chè; chưa xác nhận giá hiện hành.",
+      "Link Huế TRIPO cũ chưa tải được, giữ trong sources để đối chiếu; không dùng làm nguồn cho lần cập nhật này."
+    ],
+    "preferredSourceUrl": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/",
+    "unverifiedFields": [
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Địa chỉ, giờ và giá khởi điểm đối chiếu theo mục Chè Cầm trong bài iVIVU; chưa xác minh số liệu tuyến đường.",
+    "priceType": "from",
+    "priceUnit": "ly",
+    "priceDisplay": "Từ 15.000 VND/ly",
+    "unitPriceFromVnd": 15000
   },
   {
     "id": "REST_H_10",
+    "destinationId": "H",
     "city": "Huế",
-    "name": "bánh canh Nam Phổ - Thúy",
-    "address": "https://www.google.com/maps/search/?api=1&query=Thúy+Bánh+Canh+Nam+Phổ+Hue",
-    "opening_hours": "11:15-20:00",
-    "distance_from_center": "2.5km",
-    "travel_time": "7 phút",
-    "cost": "5.000 - 15.000 VND"
-  },
-  {
-    "id": "REST_NT_01",
-    "city": "Nha Trang",
-    "name": "Hải sản Thanh Sương",
-    "address": "https://www.google.com/maps/search/?api=1&query=Hải+Sản+Thanh+Sương+Nha+Trang",
-    "opening_hours": "10h00-22h30",
-    "distance_from_center": "5km",
-    "travel_time": "20 phút",
-    "cost": "150.000 - 300.000 VND"
-  },
-  {
-    "id": "REST_NT_02",
-    "city": "Nha Trang",
-    "name": "Bánh căn hải sản",
-    "address": "https://www.google.com/maps/search/?api=1&query=09+Thái+Nguyên+Nha+Trang",
-    "opening_hours": "15h00-21h00",
-    "distance_from_center": "1.5km",
-    "travel_time": "7 phút",
-    "cost": "30.000 - 60.000 VND"
-  },
-  {
-    "id": "REST_NT_03",
-    "city": "Nha Trang",
-    "name": "Bún cá Mịn",
-    "address": "https://www.google.com/maps/search/?api=1&query=170+Bạch+Đằng+Nha+Trang",
-    "opening_hours": "06h00-21h00",
-    "distance_from_center": "1km",
-    "travel_time": "3 phút",
-    "cost": "35.000 - 55.000 VND"
-  },
-  {
-    "id": "REST_NT_04",
-    "city": "Nha Trang",
-    "name": "Hải sản Bờ Kè Tháp Bà",
-    "address": "https://www.google.com/maps/search/?api=1&query=Hải+Sản+Bờ+Kè+Tháp+Bà+Nha+Trang",
-    "opening_hours": "09h00-23h00",
-    "distance_from_center": "4km",
-    "travel_time": "17 phút",
-    "cost": "200.000 - 400.000 VND"
-  },
-  {
-    "id": "REST_NT_05",
-    "city": "Nha Trang",
-    "name": "Tiệm nướng Cây Bàng",
-    "address": "https://www.google.com/maps/search/?api=1&query=25+Đường+Cây+Bàng+Nha+Trang",
-    "opening_hours": "16h00 - Khuya",
-    "distance_from_center": "4.5km",
-    "travel_time": "20 phút",
-    "cost": "100.000 - 250.000 VND"
-  },
-  {
-    "id": "REST_NT_06",
-    "city": "Nha Trang",
-    "name": "Nem nướng Đặng Văn Quyên",
-    "address": "https://www.google.com/maps/search/?api=1&query=Nem+Nướng+Đặng+Văn+Quyên+Nha+Trang",
-    "opening_hours": "08h00-22h00",
-    "distance_from_center": "2 km",
-    "travel_time": "5 phút",
-    "cost": "50.000 - 100.000 VND"
-  },
-  {
-    "id": "REST_NT_07",
-    "city": "Nha Trang",
-    "name": "Bánh xèo Vân Đồn",
-    "address": "https://www.google.com/maps/search/?api=1&query=12+Vân+Đồn+Nha+Trang",
-    "opening_hours": "14h00 – Tối",
-    "distance_from_center": "2.5km",
-    "travel_time": "7 phút",
-    "cost": "40.000 - 100.000 VND"
-  },
-  {
-    "id": "REST_NT_08",
-    "city": "Nha Trang",
-    "name": "Bò nướng Lạc Cảnh",
-    "address": "https://www.google.com/maps/search/?api=1&query=77+Đường+Lạc+Long+Quân+Nha+Trang",
-    "opening_hours": "09h30-21h00",
-    "distance_from_center": "2 km",
-    "travel_time": "5 phút",
-    "cost": "50.000 - 120.000 VND"
-  },
-  {
-    "id": "REST_NT_09",
-    "city": "Nha Trang",
-    "name": "Bún đậu mắm tôm Meo Meo",
-    "address": "https://www.google.com/maps/search/?api=1&query=99+Trần+Nhật+Duật+Nha+Trang",
-    "opening_hours": "15h30-21h00",
-    "distance_from_center": "2 km",
-    "travel_time": "5 phút",
-    "cost": "40.000 - 90.000 VND"
-  },
-  {
-    "id": "REST_NT_10",
-    "city": "Nha Trang",
-    "name": "Tàu hủ đá Hàn Thuyên",
-    "address": "https://www.google.com/maps/search/?api=1&query=14+Đường+Hàn+Thuyên+Nha+Trang",
-    "opening_hours": "15h00-21h00",
-    "distance_from_center": "2 km",
-    "travel_time": "5 phút",
-    "cost": "30.000 - 80.000 VND"
-  },
-  {
-    "id": "REST_NT_11",
-    "city": "Nha Trang",
-    "name": "Bánh canh Bà Thừa",
-    "address": "https://www.google.com/maps/search/?api=1&query=Bánh+Canh+Bà+Thừa+Nha+Trang",
-    "opening_hours": "06h00-20h00",
-    "distance_from_center": "1.6km",
-    "travel_time": "4 phút",
-    "cost": "30.000 - 55.000 VND"
-  },
-  {
-    "id": "REST_NT_12",
-    "city": "Nha Trang",
-    "name": "Cơm gà đài",
-    "address": "https://www.google.com/maps/search/?api=1&query=Cơm+Gà+Đài+Nha+Trang",
-    "opening_hours": "10h00-21h30",
-    "distance_from_center": "1.2km",
-    "travel_time": "3 phút",
-    "cost": "45.000 - 90.000 VND"
-  },
-  {
-    "id": "REST_NT_13",
-    "city": "Nha Trang",
-    "name": "Bánh mì chả cá Nguyên Hương",
-    "address": "https://www.google.com/maps/search/?api=1&query=02A+Tô+Hiến+Thành+Nha+Trang",
-    "opening_hours": "06h00-10h00 & 15h30-21h00",
-    "distance_from_center": "1.5km",
-    "travel_time": "5 phút",
-    "cost": "35.000 - 70.000 VND"
-  },
-  {
-    "id": "REST_NT_14",
-    "city": "Nha Trang",
-    "name": "Bánh bèo Bé Tư",
-    "address": "https://www.google.com/maps/search/?api=1&query=Bánh+Bèo+Bé+Tư+Nha+Trang",
-    "opening_hours": "06h00-21h00",
-    "distance_from_center": "3km",
-    "travel_time": "10 phút",
-    "cost": "25.000 - 50.000 VND"
-  },
-  {
-    "id": "REST_NT_15",
-    "city": "Nha Trang",
-    "name": "Lẩu bò Bà Triệu",
-    "address": "https://www.google.com/maps/search/?api=1&query=Lẩu+bò+Bà+Triệu+Nha+Trang",
-    "opening_hours": "10h00-14h00 & 15h00-23h00",
-    "distance_from_center": "1.5km",
-    "travel_time": "5 phút",
-    "cost": "150.000 - 250.000 VND"
-  },
-  {
-    "id": "REST_HCM_01",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "há cảo dương ký",
-    "address": "https://www.google.com/maps/search/?api=1&query=há+cảo+dương+ký+Hồ+Chí+Minh",
-    "opening_hours": "07:30-20:00",
-    "distance_from_center": "~3.5 km",
-    "travel_time": "~12-15 phút",
-    "cost": "25.000 - 50.000 VND"
-  },
-  {
-    "id": "REST_HCM_02",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "khổ qua cà ớt",
-    "address": "https://www.google.com/maps/search/?api=1&query=khổ+qua+cà+ớt+Hồ+Chí+Minh",
-    "opening_hours": "13:00-18:00",
-    "distance_from_center": "~4.8 km",
-    "travel_time": "~15-18 phút",
-    "cost": "30.000 - 50.000 VND"
-  },
-  {
-    "id": "REST_HCM_03",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "cơm tấm Sà Bì Chưởng",
-    "address": "https://www.google.com/maps/search/?api=1&query=cơm+tấm+Sà+Bì+Chưởng+Hồ+Chí+Minh",
-    "opening_hours": "07:00-21:00",
-    "distance_from_center": "~3.2 km",
-    "travel_time": "~10 - 15 phút",
-    "cost": "45.000 - 100.000 VND"
-  },
-  {
-    "id": "REST_HCM_04",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "bánh mì bà Huynh",
-    "address": "https://www.google.com/maps/search/?api=1&query=bánh+mì+bà+Huynh+Hồ+Chí+Minh",
-    "opening_hours": "06:00-22:00",
-    "distance_from_center": "~1.5 km",
-    "travel_time": "~5-7 phút",
-    "cost": "40.000 - 65.000 VND"
-  },
-  {
-    "id": "REST_HCM_05",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "chè mâm Khánh Vy",
-    "address": "https://www.google.com/maps/search/?api=1&query=chè+mâm+Khánh+Vy+Hồ+Chí+Minh",
-    "opening_hours": "15:00-22:30",
-    "distance_from_center": "~3.8 km",
-    "travel_time": "~12-15 phút",
-    "cost": "10.000 - 150.000 VND"
-  },
-  {
-    "id": "REST_HCM_06",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "hủ tiếu thành đạt",
-    "address": "https://www.google.com/maps/search/?api=1&query=hủ+tiếu+thành+đạt+Hồ+Chí+Minh",
-    "opening_hours": "24/7 (Cả ngày)",
-    "distance_from_center": "~1.2 km",
-    "travel_time": "~5 phút",
-    "cost": "45.000 - 75.000 VND"
-  },
-  {
-    "id": "REST_HCM_07",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "nem nướng Gánh",
-    "address": "https://www.google.com/maps/search/?api=1&query=nem+nướng+Gánh+Hồ+Chí+Minh",
-    "opening_hours": "08:00-22:00",
-    "distance_from_center": "~0.8 km",
-    "travel_time": "~3-5 phút",
-    "cost": "60.000 - 150.000 VND"
-  },
-  {
-    "id": "REST_HCM_08",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "bánh đúc nóng đặng văn ngữ",
-    "address": "https://www.google.com/maps/search/?api=1&query=bánh+đúc+nóng+đặng+văn+ngữ+Hồ+Chí+Minh",
-    "opening_hours": "12:00-18:00",
-    "distance_from_center": "~5.5 km",
-    "travel_time": "~15 - 20 phút",
-    "cost": "20.000 - 40.000 VND"
-  },
-  {
-    "id": "REST_HCM_09",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "bún bò huế chú há",
-    "address": "https://www.google.com/maps/search/?api=1&query=bún+bò+huế+chú+há+Hồ+Chí+Minh",
-    "opening_hours": "06:00-22:00",
-    "distance_from_center": "~2.5 km",
-    "travel_time": "~8-10 phút",
-    "cost": "55.000 - 85.000 VND"
-  },
-  {
-    "id": "REST_HCM_10",
-    "city": "Thành phố Hồ Chí Minh",
-    "name": "Xôi chè bùi thị xuân",
-    "address": "https://www.google.com/maps/search/?api=1&query=Xôi+chè+bùi+thị+xuân+Hồ+Chí+Minh",
-    "opening_hours": "06:30-21:00",
-    "distance_from_center": "~1.3 km",
-    "travel_time": "~5 phút",
-    "cost": "25.000 - 55.000 VND"
+    "name": "Bánh canh Nam Phổ - Thúy",
+    "address": "16 Phạm Hồng Thái, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Thúy+Bánh+Canh+Nam+Phổ+Hue",
+    "openingHours": "11:15 - 20:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 2.5,
+      "durationMin": 7,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 7.7,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": null,
+        "status": "needs_route_verification",
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 1.5,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 1.1,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 0.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 2.4,
+        "verificationStatus": "unverified"
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://thanhphohue.net/dia-diem-hue/banh-canh-nam-pho-chi-thuy",
+        "publisher": "Thành Phố Huế NET",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://www.foody.vn/bai-viet/thuc-hu-top-5-quan-banh-canh-nam-pho-phai-thu-o-hue-lieu-co-ngon-nhu-loi-don-19534",
+        "publisher": "Foody",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2022-09-19",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một phần món ăn; khoảng giá từ bài năm 2022, cần cập nhật menu trước khi dùng tính chi phí hiện tại."
+      },
+      {
+        "url": "https://nangtrip.com/activities/thuy-banh-canh-nam-pho",
+        "publisher": "NangTrip",
+        "providedVia": "backend/app/data/link.txt",
+        "lastCheckedOn": "2026-11-11",
+        "verificationStatus": "unverified",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Link do người dùng cung cấp; công cụ đọc web chưa tải được trang. Chưa dùng link để xác nhận trường dữ liệu nào."
+      }
+    ],
+    "priceScopeNotes": "Một phần món ăn; khoảng giá từ bài năm 2022, cần cập nhật menu trước khi dùng tính chi phí hiện tại.",
+    "dataReviewNotes": [
+      "Link trong link.txt vẫn chưa tải được; giữ các giá trị cũ và nguồn đã có, chưa xác minh thông tin hiện tại qua link này."
+    ],
+    "preferredSourceUrl": "https://nangtrip.com/activities/thuy-banh-canh-nam-pho",
+    "unverifiedFields": [
+      "address",
+      "openingHours",
+      "unitPriceRangeVnd",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "pending_access",
+    "sourceAlignmentNote": "Chưa đọc được link chỉ định; các giá trị giữ từ nguồn cũ chưa được đối chiếu với link.txt.",
+    "priceDisplay": "5.000 - 15.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 5000,
+      "max": 15000
+    },
+    "priceType": "range"
   }
 ]

@@ -100,6 +100,44 @@ def test_conflicting_constraints_have_a_clear_message():
     assert "durationDays" in span_report["conflicts"][0]
 
 
+def test_additional_requirements_are_optional_and_trimmed():
+    raw = _load("sampleRequest.json")
+    request = validate_travel_request(raw)
+    assert request.additional_requirements is None
+
+    raw["additionalRequirements"] = "  We prefer taxis and short walks.  "
+    request = validate_travel_request(raw)
+    assert request.additional_requirements == "We prefer taxis and short walks."
+    dumped = request.model_dump(mode="json", by_alias=True)
+    assert dumped["additionalRequirements"] == "We prefer taxis and short walks."
+    assert "additional_requirements" not in dumped
+
+
+def test_blank_additional_requirements_are_omitted():
+    raw = _load("sampleRequest.json")
+    for value in ("", "   ", "\n\t"):
+        raw["additionalRequirements"] = value
+        request = validate_travel_request(raw)
+        assert request.additional_requirements is None
+
+
+def test_additional_requirements_reject_text_over_500_characters():
+    raw = _load("sampleRequest.json")
+    raw["additionalRequirements"] = "x" * 501
+    with pytest.raises(ValidationError) as exc:
+        validate_travel_request(raw)
+    errors = exc.value.errors()
+    assert any(
+        err["loc"][-1] in {"additionalRequirements", "additional_requirements"}
+        and "500" in err["msg"]
+        for err in errors
+    )
+
+    raw["additionalRequirements"] = "x" * 500
+    request = validate_travel_request(raw)
+    assert request.additional_requirements == "x" * 500
+
+
 def test_valid_request_round_trips_camel_case():
     raw = _load("sampleRequest.json")
     dumped = validate_travel_request(raw).model_dump(mode="json", by_alias=True)

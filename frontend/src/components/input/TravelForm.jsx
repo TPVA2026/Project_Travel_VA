@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
-import { fetchDestinations, saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays } from "./travelRequest";
+import { saveTripForResults, validateTravelRequest } from "../../services/api";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
 
 // The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -11,8 +11,6 @@ const QUICK_TRAVELERS = [1, 2, 3, 4];
 const DESCRIBE = 5;
 const REVIEW = 6;
 const STEP_COUNT = 7;
-// Local draft only: there is no agreed M3 contract for turning prose into request fields yet.
-export const DESCRIPTION_DRAFT_NOTE = "Saved here as a draft only. It is not sent or used to create your itinerary yet.";
 const DESCRIPTION_PLACEHOLDER = [
   "For example:",
   "We love seafood but would rather avoid spicy food.",
@@ -28,10 +26,24 @@ const FIELD_STEP = {
   startDate: 2, endDate: 2, month: 2, durationDays: 2,
   travelerCount: 3,
   budgetAmount: 4, budgetScope: 4,
+  additionalRequirements: DESCRIBE,
 };
+// Shown on review when the destination is skipped; destinations are suggested downstream.
+export const NO_DESTINATION = "Not chosen. We'll suggest destinations based on your trip.";
+export const DESTINATION_HINT = "Optional. Skip it and we'll suggest destinations based on your trip.";
+// One short request-level message when the server cannot plan the typed destination.
+export const DESTINATION_UNAVAILABLE = "We couldn't plan a trip to that destination. Edit it or skip it to get suggestions.";
 const CONTROL_NAME = { interests: "interest" };
 
 const EMPTY_VALUES = { periodMode: "dates" };
+
+// Server errors for the destination are not shown on the field (no long city list);
+// they become one short request-level message instead.
+export function hideDestinationErrors(errors) {
+  if (!errors.destination) return errors;
+  const { destination: _hidden, ...rest } = errors;
+  return { ...rest, form: DESTINATION_UNAVAILABLE };
+}
 
 // Errors for fields this form no longer shows become one visible request-level message.
 export function placeErrors(errors) {
@@ -221,17 +233,8 @@ export default function TravelForm({ monthInputSupported }) {
   const [nativeMonth] = useState(() => monthInputSupported ?? supportsMonthInput());
   const [progress, setProgress] = useState(0);
   const [descriptionDraft, setDescriptionDraft] = useState("");
-  const [destinations, setDestinations] = useState([]);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
-
-  useEffect(() => {
-    let active = true;
-    fetchDestinations()
-      .then((items) => { if (active) setDestinations(items); })
-      .catch(() => { /* Server validation still prevents unsupported submissions. */ });
-    return () => { active = false; };
-  }, []);
 
   // Runs after the alert renders, so a request-level error is announced and focusable.
   useEffect(() => {
@@ -320,7 +323,7 @@ export default function TravelForm({ monthInputSupported }) {
     goToStep(editing ? REVIEW : 2);
   }
 
-  // Skipping means "nothing to add": discard any typed draft before showing review.
+  // Skipping means "nothing to add": discard any typed text before showing review.
   function skipDescription() {
     setDescriptionDraft("");
     goToStep(REVIEW);
@@ -379,7 +382,7 @@ export default function TravelForm({ monthInputSupported }) {
       navigate("/results");
     } catch (error) {
       const serverErrors = placeErrors(error.status === 422
-        ? serverFieldErrors(error.body)
+        ? hideDestinationErrors(serverFieldErrors(error.body))
         : { form: "Could not send the request." });
       if (!Object.keys(serverErrors).length) serverErrors.form = "The request is invalid.";
       setErrors(serverErrors);
@@ -410,7 +413,7 @@ export default function TravelForm({ monthInputSupported }) {
   const travelers = values.travelerCount ? `${values.travelerCount} ${values.travelerCount === "1" ? "traveler" : "travelers"}` : "";
   const review = [
     ["Leaving from", values.departureLocation?.trim(), 0, "departure"],
-    ["Going to", values.destination?.trim() || "Not sure yet", 1, "destination"],
+    ["Going to", values.destination?.trim() || NO_DESTINATION, 1, "destination"],
     ["When", when, 2, "dates"],
     ["Travelers", travelers, 3, "travelers"],
     ["Budget", budget, 4, "budget"],
@@ -442,16 +445,10 @@ export default function TravelForm({ monthInputSupported }) {
       </>)}
 
       {question(1, "destination", <label htmlFor="destination">Where do you want to go?</label>, <>
-        <input id="destination" name="destination" list="supported-destinations" placeholder="Choose a supported destination" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
-        <datalist id="supported-destinations">
-          {destinations.map((item) => {
-            const label = item.city || item.city_name || item.name || item.id;
-            return label ? <option key={item.id || label} value={label} /> : null;
-          })}
-        </datalist>
+        <input id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
         <StepError name="destination" error={errors.destination} />
         <button type="button" className="request-link" onClick={skipDestination}>Not sure yet</button>
-      </>, "Optional. Skip it and we will suggest places.")}
+      </>, DESTINATION_HINT)}
 
       {question(2, "calendar", "When are you going?", <>
         <div className="request-segmented" role="radiogroup" aria-label="Trip timing">
@@ -509,9 +506,9 @@ export default function TravelForm({ monthInputSupported }) {
       </>, "In VND. Slide, or type an exact amount.")}
 
       {question(DESCRIBE, "describe", <label htmlFor="tripDescription">Is there anything else you’d like to describe?</label>, <>
-        {/* Deliberately unnamed: the draft is never part of the TravelRequest payload. */}
-        <textarea id="tripDescription" className="request-describe" rows="7" value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus aria-describedby={`request-step-${DESCRIBE}-hint${hasDraft ? " request-draft-note" : ""}`} />
-        {hasDraft && <p className="request-draft-note" id="request-draft-note">{DESCRIPTION_DRAFT_NOTE}</p>}
+        <textarea id="tripDescription" name="additionalRequirements" className="request-describe" rows="7" maxLength={ADDITIONAL_REQUIREMENTS_MAX} value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus {...described("additionalRequirements", `request-step-${DESCRIBE}-hint request-describe-count`, "request-describe")} />
+        <p className="request-char-count" id="request-describe-count">{descriptionDraft.length}/{ADDITIONAL_REQUIREMENTS_MAX}</p>
+        <StepError name="additionalRequirements" error={errors.additionalRequirements} />
         <button type="button" className="request-link" onClick={skipDescription}>Skip for now</button>
       </>, "Optional. Food, transport, interests, your group or travel limits.")}
 
@@ -533,7 +530,6 @@ export default function TravelForm({ monthInputSupported }) {
               <button type="button" className="request-edit" aria-label="Edit description" onClick={() => goToStep(DESCRIBE, { edit: true })}>Edit</button>
             </div>
           </dl>
-          {hasDraft && <p className="request-draft-note" id="request-review-draft-note">{DESCRIPTION_DRAFT_NOTE}</p>}
         </div>
       </section>
 

@@ -211,6 +211,7 @@ It does not generate itineraries.
 | preferences.interests | Interest categories and priorities |
 | preferences.dining | Dining preferences |
 | travelers.characteristics | Traveler group characteristics |
+| additionalRequirements | Optional free-text extra requirements, at most 500 characters after trimming. Empty or whitespace-only values are omitted. This is a search preference, not a mandatory constraint. Form-selected fields take precedence when the text conflicts with them. M3 should treat it as user preferences in the prompt and must not use it to override structured fields. |
 
 The exact nested field constraints are defined by the canonical shared schemas.
 
@@ -240,7 +241,8 @@ The exact nested field constraints are defined by the canonical shared schemas.
         "priority": 1
       }
     ]
-  }
+  },
+  "additionalRequirements": "We prefer taxis and short walks, and would rather avoid spicy food."
 }
 ```
 
@@ -275,7 +277,8 @@ The exact nested field constraints are defined by the canonical shared schemas.
         }
       ],
       "dining": null
-    }
+    },
+    "additionalRequirements": "We prefer taxis and short walks, and would rather avoid spicy food."
   }
 }
 ```

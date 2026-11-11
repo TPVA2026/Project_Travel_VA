@@ -95,6 +95,9 @@ class TravelRequest(ApiModel):
     budget: Budget
     limits: TravelLimits | None = None
     preferences: Preferences | None = None
+    additional_requirements: Annotated[str, Field(min_length=1, max_length=500)] | None = Field(
+        default=None, alias="additionalRequirements"
+    )
 
     @model_validator(mode="after")
     def duration_matches_dates(self) -> Self:

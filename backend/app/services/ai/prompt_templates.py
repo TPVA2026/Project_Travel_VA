@@ -17,8 +17,44 @@ RULES:
 - Output JSON only, matching the schema."""
 
 
-def build_prompt(request: dict, dataset: dict) -> str:
-    return (
+
+def build_prompt(
+    request: dict,
+    dataset: dict,
+    previous_plans: list[dict] | None = None,
+) -> str:
+    prompt = (
         f"TRAVEL_REQUEST:\n{json.dumps(request, ensure_ascii=False)}\n\n"
         f"DATASET:\n{json.dumps(dataset, ensure_ascii=False)}"
     )
+
+    if previous_plans:
+        previous_routes = [
+            [
+                {
+                    "dayNumber": day["dayNumber"],
+                    "placeIds": [
+                        activity["placeId"]
+                        for activity in sorted(
+                            day["activities"],
+                            key=lambda a: a["startTime"],
+                        )
+                    ],
+                }
+                for day in plan["days"]
+            ]
+            for plan in previous_plans
+        ]
+
+        prompt += (
+            "\n\nPREVIOUS_CANDIDATE_ROUTES:\n"
+            + json.dumps(previous_routes, ensure_ascii=False)
+            + "\nGenerate a DIFFERENT itinerary from these routes. "
+            "Change the selection or order of places meaningfully. "
+            "Do not merely change activity times, titles, or IDs. "
+            "Use only supported places from DATASET. "
+            "Never invent prices, durations, or travel times. "
+            "Follow all schema and system rules."
+        )
+
+    return prompt
