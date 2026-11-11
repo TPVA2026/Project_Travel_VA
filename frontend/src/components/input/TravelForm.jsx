@@ -28,6 +28,8 @@ const FIELD_STEP = {
   budgetAmount: 4, budgetScope: 4,
   additionalRequirements: DESCRIBE,
 };
+// Shown on review when the destination is skipped; suggestions come after review.
+export const NO_DESTINATION = "Not chosen yet. We'll suggest some.";
 const CONTROL_NAME = { interests: "interest" };
 
 const EMPTY_VALUES = { periodMode: "dates" };
@@ -409,7 +411,7 @@ export default function TravelForm({ monthInputSupported }) {
   const travelers = values.travelerCount ? `${values.travelerCount} ${values.travelerCount === "1" ? "traveler" : "travelers"}` : "";
   const review = [
     ["Leaving from", values.departureLocation?.trim(), 0, "departure"],
-    ["Going to", values.destination?.trim() || "Not sure yet", 1, "destination"],
+    ["Going to", values.destination?.trim() || NO_DESTINATION, 1, "destination"],
     ["When", when, 2, "dates"],
     ["Travelers", travelers, 3, "travelers"],
     ["Budget", budget, 4, "budget"],
@@ -450,7 +452,7 @@ export default function TravelForm({ monthInputSupported }) {
         </datalist>
         <StepError name="destination" error={errors.destination} />
         <button type="button" className="request-link" onClick={skipDestination}>Not sure yet</button>
-      </>, "Optional. Skip it and we will suggest places.")}
+      </>, "Optional. Skip it and we'll suggest destinations that fit your trip after you review.")}
 
       {question(2, "calendar", "When are you going?", <>
         <div className="request-segmented" role="radiogroup" aria-label="Trip timing">

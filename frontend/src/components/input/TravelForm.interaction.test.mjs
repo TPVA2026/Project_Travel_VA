@@ -85,6 +85,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.deepEqual([...doc.querySelectorAll("#supported-destinations option")].map(node => node.value), ["Da Nang", "Hue"]);
 
     // Destination is optional and can be skipped on purpose.
+    assert.equal(doc.getElementById("request-step-1-hint").textContent, "Optional. Skip it and we'll suggest destinations that fit your trip after you review.");
+    assert.doesNotMatch(form.textContent, /we will suggest places/i, "Old destination copy is gone");
     await fill("destination", "Somewhere");
     await click("Not sure yet");
     assertStep(2);
@@ -274,7 +276,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     const rows = () => Object.fromEntries([...doc.querySelectorAll(".request-review > div")].map(row => [row.querySelector("dt").textContent, row.querySelector("dd").textContent]));
     assert.deepEqual(rows(), {
       "Leaving from": "Hue",
-      "Going to": "Not sure yet",
+      "Going to": "Not chosen yet. We'll suggest some.",
       When: "February 2035 · 5 days",
       Travelers: "7 travelers",
       Budget: "7,654,321 VND · per person",
@@ -437,6 +439,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assertStep(6);
     const custom = buildPayload(new FormData(clean));
     assert.deepEqual(custom, { travelPeriod: { month: "2030-07" }, durationDays: 3, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
+    assert.equal(custom.preferences?.destination, undefined, "Skipped destination is omitted, never filled in");
     assert.equal(field("budgetSlider").value, "70123456");
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {
