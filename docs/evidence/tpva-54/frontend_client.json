@@ -1,0 +1,677 @@
+{
+  "ranAt": "2026-11-11T15:16:05.953Z",
+  "base": "http://localhost:3101",
+  "node": "v24.22.1",
+  "steps": [
+    {
+      "name": "validateTravelRequest(valid 3-day Huế)",
+      "ok": true,
+      "result": {
+        "valid": true,
+        "data": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2,
+            "characteristics": []
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "limits": null,
+          "preferences": {
+            "destination": "Huế",
+            "transportation": [],
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ],
+            "dining": null
+          },
+          "additionalRequirements": null
+        }
+      }
+    },
+    {
+      "name": "runItineraryPipeline(valid 3-day Huế) - Results page path",
+      "ok": false,
+      "status": 500,
+      "message": "GEMINI_API_KEY is not set on the server",
+      "body": {
+        "error": "CONFIG",
+        "message": "GEMINI_API_KEY is not set on the server",
+        "details": null
+      }
+    },
+    {
+      "name": "evaluateItinerary(fixture plan)",
+      "ok": true,
+      "result": {
+        "status": "UNVERIFIED",
+        "checks": [
+          {
+            "status": "UNVERIFIED",
+            "code": "BUDGET",
+            "path": "costs",
+            "message": "Required costs are missing or invalid: transport, accommodation, dining"
+          },
+          {
+            "status": "FEASIBLE",
+            "code": "DAY_SCHEDULE",
+            "path": "days.0",
+            "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.0",
+            "message": "Thời gian giữa d1a và d1b."
+          },
+          {
+            "status": "FEASIBLE",
+            "code": "DAY_SCHEDULE",
+            "path": "days.1",
+            "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.1",
+            "message": "Thời gian giữa d2a và d2b."
+          },
+          {
+            "status": "FEASIBLE",
+            "code": "DAY_SCHEDULE",
+            "path": "days.2",
+            "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.2",
+            "message": "Thời gian giữa d3a và d3b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.1.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.2.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+          }
+        ],
+        "reasons": [
+          {
+            "status": "UNVERIFIED",
+            "code": "BUDGET",
+            "path": "costs",
+            "message": "Required costs are missing or invalid: transport, accommodation, dining"
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.0",
+            "message": "Thời gian giữa d1a và d1b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.1",
+            "message": "Thời gian giữa d2a và d2b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.2",
+            "message": "Thời gian giữa d3a và d3b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.1.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.2.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+          }
+        ],
+        "planId": "hue-3d-valid",
+        "components": {
+          "cost": {
+            "status": "UNVERIFIED",
+            "budget": 3000000,
+            "known_total": 750000,
+            "total_cost": null,
+            "remaining_budget": null,
+            "breakdown": {
+              "transport": null,
+              "accommodation": null,
+              "dining": null,
+              "activities": 750000
+            },
+            "missing_costs": [
+              "transport",
+              "accommodation",
+              "dining"
+            ],
+            "reasons": [
+              "Required costs are missing or invalid: transport, accommodation, dining"
+            ]
+          },
+          "schedule": {
+            "status": "UNVERIFIED",
+            "checks": [
+              {
+                "status": "FEASIBLE",
+                "code": "DAY_SCHEDULE",
+                "path": "days.0",
+                "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.0",
+                "message": "Thời gian giữa d1a và d1b."
+              },
+              {
+                "status": "FEASIBLE",
+                "code": "DAY_SCHEDULE",
+                "path": "days.1",
+                "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.1",
+                "message": "Thời gian giữa d2a và d2b."
+              },
+              {
+                "status": "FEASIBLE",
+                "code": "DAY_SCHEDULE",
+                "path": "days.2",
+                "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.2",
+                "message": "Thời gian giữa d3a và d3b."
+              }
+            ],
+            "reasons": [
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.0",
+                "message": "Thời gian giữa d1a và d1b."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.1",
+                "message": "Thời gian giữa d2a và d2b."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.2",
+                "message": "Thời gian giữa d3a và d3b."
+              }
+            ]
+          },
+          "travel": {
+            "status": "UNVERIFIED",
+            "checks": [
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.0.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.0.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.0.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.1.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.1.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.1.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.2.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.2.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.2.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+              }
+            ],
+            "reasons": [
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.0.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.0.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.0.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.1.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.1.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.1.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.2.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.2.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.2.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+              }
+            ],
+            "dailyTotals": [
+              {
+                "dayNumber": 1,
+                "durationMin": null,
+                "known_durationMin": 0,
+                "distanceKm": null,
+                "known_distanceKm": 0
+              },
+              {
+                "dayNumber": 2,
+                "durationMin": null,
+                "known_durationMin": 0,
+                "distanceKm": null,
+                "known_distanceKm": 0
+              },
+              {
+                "dayNumber": 3,
+                "durationMin": null,
+                "known_durationMin": 0,
+                "distanceKm": null,
+                "known_distanceKm": 0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "rankItineraries(fixture plan)",
+      "ok": true,
+      "result": {
+        "ranked": [],
+        "unscored": [],
+        "excluded": [
+          {
+            "planId": "hue-3d-valid",
+            "status": "UNVERIFIED",
+            "reasons": [
+              {
+                "status": "UNVERIFIED",
+                "code": "BUDGET",
+                "path": "costs",
+                "message": "Required costs are missing or invalid: transport, accommodation, dining"
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.0",
+                "message": "Thời gian giữa d1a và d1b."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.1",
+                "message": "Thời gian giữa d2a và d2b."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRANSFER_GAP",
+                "path": "days.2",
+                "message": "Thời gian giữa d3a và d3b."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.0.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.0.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.0.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.1.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.1.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.1.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "UNSUPPORTED_LEG",
+                "path": "days.2.travelLegs",
+                "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.2.travelLegs",
+                "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+              },
+              {
+                "status": "UNVERIFIED",
+                "code": "TRAVEL_DATA",
+                "path": "days.2.travelLegs",
+                "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+              }
+            ]
+          }
+        ],
+        "totalRanked": 0,
+        "limit": 3
+      }
+    },
+    {
+      "name": "getCandidatePresentation (what the Results page shows)",
+      "ok": true,
+      "result": {
+        "status": "UNVERIFIED",
+        "reasons": [
+          {
+            "status": "UNVERIFIED",
+            "code": "BUDGET",
+            "path": "costs",
+            "message": "Required costs are missing or invalid: transport, accommodation, dining"
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.0",
+            "message": "Thời gian giữa d1a và d1b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.1",
+            "message": "Thời gian giữa d2a và d2b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.2",
+            "message": "Thời gian giữa d3a và d3b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.1.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.2.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+          }
+        ],
+        "recommended": false
+      }
+    },
+    {
+      "name": "validateTravelRequest(no destination)",
+      "ok": true,
+      "result": {
+        "valid": true,
+        "data": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2,
+            "characteristics": []
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "limits": null,
+          "preferences": {
+            "destination": null,
+            "transportation": [],
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ],
+            "dining": null
+          },
+          "additionalRequirements": null
+        }
+      }
+    },
+    {
+      "name": "runItineraryPipeline(no destination)",
+      "ok": false,
+      "status": 422,
+      "message": "The selected destination is not supported by the current dataset.",
+      "body": {
+        "error": "NO_DATA",
+        "message": "The selected destination is not supported by the current dataset.",
+        "details": null
+      }
+    }
+  ]
+}
