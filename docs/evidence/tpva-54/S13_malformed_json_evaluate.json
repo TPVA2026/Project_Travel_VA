@@ -1,0 +1,35 @@
+{
+  "id": "S13_malformed_json_evaluate",
+  "title": "Malformed JSON body to /itineraries/evaluate",
+  "endpoint": "/itineraries/evaluate",
+  "server": "default",
+  "owner": "M6",
+  "expected": {
+    "http": 422,
+    "detailList": true
+  },
+  "rule": "FastAPI default {detail:[...]} 422; no 500, no stack trace.",
+  "requestRaw": "{\"request\": {\"durationDays\": 3,, \"plan\": }",
+  "httpStatus": 422,
+  "response": {
+    "detail": [
+      {
+        "type": "json_invalid",
+        "loc": [
+          "body",
+          31
+        ],
+        "msg": "JSON decode error",
+        "input": {},
+        "ctx": {
+          "error": "Expecting property name enclosed in double quotes"
+        }
+      }
+    ]
+  },
+  "verdict": "PASS",
+  "notes": [],
+  "actualStatus": null,
+  "actualError": null,
+  "checkCodes": []
+}

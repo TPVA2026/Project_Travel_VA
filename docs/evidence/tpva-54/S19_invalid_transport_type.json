@@ -1,0 +1,69 @@
+{
+  "id": "S19_invalid_transport_type",
+  "title": "transportation contains a number instead of a string",
+  "endpoint": "/api/v1/requests/validate",
+  "server": "default",
+  "owner": "M1/M6",
+  "expected": {
+    "http": 422
+  },
+  "rule": "Schema: transportation is a list of non-empty strings.",
+  "request": {
+    "travelPeriod": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-03"
+    },
+    "durationDays": 3,
+    "departureLocation": "Huế",
+    "travelers": {
+      "count": 2
+    },
+    "budget": {
+      "amount": 3000000,
+      "currency": "VND",
+      "scope": "group"
+    },
+    "preferences": {
+      "destination": "Huế",
+      "transportation": [
+        42
+      ]
+    }
+  },
+  "httpStatus": 200,
+  "response": {
+    "valid": true,
+    "data": {
+      "travelPeriod": {
+        "startDate": "2026-12-01",
+        "endDate": "2026-12-03"
+      },
+      "durationDays": 3,
+      "departureLocation": "Huế",
+      "travelers": {
+        "count": 2,
+        "characteristics": []
+      },
+      "budget": {
+        "amount": 3000000,
+        "currency": "VND",
+        "scope": "group"
+      },
+      "limits": null,
+      "preferences": {
+        "destination": "Huế",
+        "transportation": [],
+        "interests": [],
+        "dining": null
+      },
+      "additionalRequirements": null
+    }
+  },
+  "verdict": "FAIL",
+  "notes": [
+    "HTTP 200, expected 422"
+  ],
+  "actualStatus": null,
+  "actualError": null,
+  "checkCodes": []
+}
