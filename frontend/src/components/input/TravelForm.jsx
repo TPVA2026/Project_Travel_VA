@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
+import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
 import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
 
@@ -462,12 +463,12 @@ export default function TravelForm({ monthInputSupported }) {
       </div>
 
       {question(0, "departure", <label htmlFor="departureLocation">Where are you leaving from?</label>, <>
-        <input id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" autoComplete="address-level2" required data-step-focus {...described("departureLocation", null, "request-tile-input")} />
+        <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required data-step-focus onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
         <StepError name="departureLocation" error={errors.departureLocation} />
       </>)}
 
       {question(1, "destination", <label htmlFor="destination">Where do you want to go?</label>, <>
-        <input id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
+        <ProvinceInput id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} data-step-focus onPick={value => setControl("destination", value)} {...described("destination", "request-step-1-hint", "request-tile-input")} />
         <StepError name="destination" error={errors.destination} />
         <button type="button" className="request-link" onClick={skipDestination}>Not sure yet</button>
       </>, DESTINATION_HINT)}

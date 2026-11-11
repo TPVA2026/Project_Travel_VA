@@ -6403,3 +6403,10 @@ body.intro-flying .entry-choice-actions {
     animation: none;
   }
 }
+
+/* M1 province suggestions: list under the departure and destination inputs. */
+.question-form .request-combobox { position: relative; width: 100%; }
+.question-form .request-suggestions { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0; max-height: 280px; margin: 0; padding: 6px; overflow-y: auto; list-style: none; border: 1px solid var(--rv-line-strong); border-radius: 14px; background: #fff; box-shadow: var(--rv-shadow-md); text-align: left; }
+.question-form .request-suggestions li { padding: 10px 14px; border-radius: 10px; color: var(--rv-ink); font-size: 15px; cursor: pointer; }
+.question-form .request-suggestions li:hover,
+.question-form .request-suggestions li.active { background: var(--rv-terra-soft); color: var(--rv-terra-dark); }
