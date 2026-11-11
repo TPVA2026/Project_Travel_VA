@@ -1,16 +1,22 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import {
+  collectPlaceIds,
+  createNameResolver,
   fetchDestinationRecommendations,
-  runItineraryPipeline,
+  fetchPlaceCatalog,
+  formatReason,
   getSelectedPlanId,
+  groupEvaluationReasons,
+  indexPlaces,
+  resolveDestinationName,
+  runItineraryPipeline,
   selectPlan,
   clearSelectedPlan,
 } from '../services/api.js'
 import {
   getCandidatePresentation,
   getTopFeasiblePlans,
-  groupEvaluationReasons,
 } from '../services/recommendations.js'
 import PlanComparison from '../components/comparison/PlanComparison.jsx'
 import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
@@ -95,11 +101,23 @@ function RequestSummary({ request }) {
   )
 }
 
-function CandidatePlanView({ status, plan, evaluation, ranking, selected, onSelect }) {
+function CandidatePlanView({
+  status,
+  plan,
+  evaluation,
+  ranking,
+  selected,
+  onSelect,
+  placesById,
+  placeCatalogError,
+  generator,
+}) {
   const presentation = getCandidatePresentation(status, evaluation, ranking, plan.planId)
   const groups = groupEvaluationReasons(evaluation, ranking, plan.planId)
   status = presentation.status
   const costEvaluation = evaluation?.components?.cost
+  const resolveName = createNameResolver(plan, placesById)
+  const destination = resolveDestinationName(plan.destinationId, placesById)
 
   return (
     <article className="ai-plan">
@@ -107,51 +125,72 @@ function CandidatePlanView({ status, plan, evaluation, ranking, selected, onSele
         <div>
           <p className="page-eyebrow">Assistant draft</p>
           <h2>{plan.title}</h2>
-          <p className="muted">Destination: {plan.destinationId}</p>
+          <p className="muted">Điểm đến: {destination}</p>
         </div>
         <span className={`badge badge-${status || 'UNVERIFIED'}`}>{status || 'UNVERIFIED'}</span>
         {presentation.recommended && <span className="badge">Ranked recommendation</span>}
       </header>
+
+      {generator === 'demo' && (
+        <p className="ai-plan-note ai-plan-note--warn">
+          <Icon name="info" size={16} />
+          AI đang không khả dụng. Đây là bản nháp demo dựng từ dữ liệu Huế, không phải kết quả AI và vẫn cần kiểm tra.
+        </p>
+      )}
+
+      {placeCatalogError && (
+        <p className="ai-plan-note ai-plan-note--warn">
+          <Icon name="alert" size={16} />
+          {placeCatalogError}. Đang hiển thị ID gốc cho các địa điểm này, không tự đoán tên.
+        </p>
+      )}
 
       <EvaluationChecks evaluation={evaluation} />
 
       <div className="ai-plan-days">
         <div className="schedule-header">
           <div>
-            <h3 className="itinerary-heading">Day-by-day schedule</h3>
+            <h3 className="itinerary-heading">Lịch trình từng ngày</h3>
             <p className="muted small">
-              Times, stops, and travel legs between activities.
+              Ngày, giờ hoạt động, giờ mở cửa, giá và chặng di chuyển giữa các điểm.
             </p>
           </div>
         </div>
-        <ItineraryTimeline days={plan.days} />
+        <ItineraryTimeline days={plan.days} placesById={placesById} />
       </div>
 
-      <CostSummary plan={plan} costEvaluation={costEvaluation} />
+      <CostSummary plan={plan} costEvaluation={costEvaluation} resolveName={resolveName} />
 
       {plan.missingData?.length > 0 && (
         <p className="ai-plan-note">
           <Icon name="alert" size={16} />
-          Missing data: {plan.missingData.join(' ')}
+          Dữ liệu còn thiếu: {plan.missingData.map((item) => formatReason(item, { resolveName })).join(' ')}
         </p>
       )}
       {plan.assumptions?.length > 0 && (
         <p className="ai-plan-note">
           <Icon name="info" size={16} />
-          Assumptions: {plan.assumptions.join(' ')}
+          Giả định: {plan.assumptions.map((item) => formatReason(item, { resolveName })).join(' ')}
         </p>
       )}
       {groups.length > 0 && (
         <div className={`plan-alert-box alert-${String(status).toLowerCase()}`}>
           <Icon name="info" size={16} />
           <div className="plan-alert-groups">
-            <strong>{status === 'INFEASIBLE' ? 'Why this plan does not fit' : 'Information still needed'}</strong>
+            <strong>{status === 'INFEASIBLE' ? 'Vì sao lịch trình chưa phù hợp' : 'Thông tin còn cần kiểm tra'}</strong>
             {groups.map((group) => (
               <div key={group.key} className="plan-alert-group">
                 <span className="plan-alert-group-label">{group.label}</span>
                 <ul>
                   {group.reasons.map((reason, index) => (
-                    <li key={`${reason.code || 'reason'}-${index}`}>{reason.message || reason.code}</li>
+                    <li key={`${reason.code || 'reason'}-${index}`}>
+                      <span>{formatReason(reason, { resolveName })}</span>
+                      {reason.code && (
+                        <code className="reason-code" title="Backend check code">
+                          {reason.code}
+                        </code>
+                      )}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -166,7 +205,7 @@ function CandidatePlanView({ status, plan, evaluation, ranking, selected, onSele
           disabled={status === 'INFEASIBLE'}
           onClick={onSelect}
         >
-          {selected ? 'Saved as your trip' : 'Choose this plan'}
+          {selected ? 'Đã lưu vào chuyến đi' : 'Chọn lịch trình này'}
         </button>
       </div>
     </article>
@@ -185,8 +224,11 @@ export default function ResultsPage() {
   const [aiStatus, setAiStatus] = useState(null)
   const [aiEvaluation, setAiEvaluation] = useState(null)
   const [aiRanking, setAiRanking] = useState(null)
+  const [aiGenerator, setAiGenerator] = useState(null)
   const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
   const [aiError, setAiError] = useState(null)
+  const [placesById, setPlacesById] = useState(() => new Map())
+  const [placeCatalogError, setPlaceCatalogError] = useState(null)
 
   const loadAiPlan = useCallback(async () => {
     if (!pendingRequest) return
@@ -198,11 +240,13 @@ export default function ResultsPage() {
       sessionStorage.setItem(PLAN_KEY, JSON.stringify({
         requestKey, status: body.status, plan: body.plan,
         evaluation: body.evaluation, ranking: body.ranking,
+        generator: body.generator,
       }))
       setAiStatus(body.status)
       setAiPlan(body.plan)
       setAiEvaluation(body.evaluation)
       setAiRanking(body.ranking)
+      setAiGenerator(body.generator || 'ai')
     } catch (err) {
       setAiError(err?.message || 'The assistant could not build an itinerary.')
       setAiPlan(null)
@@ -235,6 +279,34 @@ export default function ResultsPage() {
   }, [loadRecommendations, pendingRequest])
 
   useEffect(() => {
+    if (!aiPlan) return undefined
+    let cancelled = false
+    const ids = collectPlaceIds(aiPlan)
+    if (ids.length === 0) return undefined
+    setPlaceCatalogError(null)
+    fetchPlaceCatalog({ ids })
+      .then((places) => {
+        if (cancelled) return
+        const byId = indexPlaces(places)
+        const missing = ids.filter((id) => !byId.has(String(id)))
+        setPlacesById(byId)
+        setPlaceCatalogError(
+          missing.length > 0
+            ? `Không tìm thấy tên cho: ${missing.join(', ')}`
+            : null
+        )
+      })
+      .catch(() => {
+        if (cancelled) return
+        setPlacesById(new Map())
+        setPlaceCatalogError('Không đọc được danh mục tên địa điểm.')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [aiPlan])
+
+  useEffect(() => {
     if (!pendingRequest) return
     const requestKey = JSON.stringify(pendingRequest)
     try {
@@ -244,6 +316,7 @@ export default function ResultsPage() {
         setAiPlan(saved.plan)
         setAiEvaluation(saved.evaluation || null)
         setAiRanking(saved.ranking || null)
+        setAiGenerator(saved.generator || 'ai')
         setAiLoading(false)
         return
       }
@@ -287,7 +360,7 @@ export default function ResultsPage() {
           <p className="page-eyebrow">Step 2 of 3 · Results</p>
           <h1 className="results-title">Choose the itinerary that fits your trip</h1>
           <p className="results-subtitle muted">
-            Compare verified plans side by side. Open one to see the day-by-day schedule, or save it as your trip.
+            Review the assistant draft and the backend checks behind it. Statuses are shown exactly as returned, never upgraded to verified.
           </p>
         </div>
 
@@ -394,13 +467,16 @@ export default function ResultsPage() {
           evaluation={aiEvaluation}
           ranking={aiRanking}
           selected={selectedPlanId === aiPlan.planId}
+          placesById={placesById}
+          placeCatalogError={placeCatalogError}
+          generator={aiGenerator}
           onSelect={async () => {
             const savedPlan = {
               ...aiPlan,
               status: aiStatus || 'UNVERIFIED',
               evaluation: aiEvaluation,
               request: pendingRequest,
-              destination: aiPlan.destinationId,
+              destination: resolveDestinationName(aiPlan.destinationId, placesById) || aiPlan.destinationId,
               missing: aiEvaluation?.reasons?.map((reason) => reason.message || reason.code) || [],
               fit: [],
             }

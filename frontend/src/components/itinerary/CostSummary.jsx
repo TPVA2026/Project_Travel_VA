@@ -1,6 +1,24 @@
 import { fmtMoney, knownTotal } from '../../services/mockData.js'
 import Icon from '../common/Icon.jsx'
 
+const CATEGORY_LABEL = {
+  transport: 'Di chuyển',
+  accommodation: 'Lưu trú',
+  dining: 'Ăn uống',
+  activities: 'Hoạt động',
+}
+
+function categoryLabel(category) {
+  return CATEGORY_LABEL[category] || category
+}
+
+function missingLabel(item, resolveName) {
+  if (CATEGORY_LABEL[item]) return CATEGORY_LABEL[item]
+  const indexed = String(item).match(/^([a-zA-Z]+)\[(\d+)\]$/)
+  if (indexed) return `${categoryLabel(indexed[1])} #${Number(indexed[2]) + 1}`
+  return resolveName ? resolveName(item) : item
+}
+
 function hasCostEvaluation(costEvaluation) {
   return Boolean(
     costEvaluation &&
@@ -10,7 +28,7 @@ function hasCostEvaluation(costEvaluation) {
   )
 }
 
-export default function CostSummary({ plan, costEvaluation }) {
+export default function CostSummary({ plan, costEvaluation, resolveName }) {
   const evaluation = hasCostEvaluation(costEvaluation) ? costEvaluation : null
   if (!plan && !evaluation) return null
 
@@ -27,14 +45,14 @@ export default function CostSummary({ plan, costEvaluation }) {
   return (
     <section className="cost-summary" aria-labelledby="cost-summary-title">
       <h3 id="cost-summary-title" className="cost-summary-title">
-        Estimated cost
+        Chi phí dự kiến
       </h3>
 
       <div className="total-box">
-        <span className="cost-total-label">{complete ? 'Total' : 'Known total'}</span>
+        <span className="cost-total-label">{complete ? 'Tổng' : 'Tổng đã biết'}</span>
         <strong className="cost-total-value">
           {total == null ? (
-            'Unverified'
+            'Chưa xác minh'
           ) : (
             <>
               {Number(total).toLocaleString('en-US')} <small>VND</small>
@@ -46,13 +64,13 @@ export default function CostSummary({ plan, costEvaluation }) {
       {budget != null && (
         <div className="cost-breakdown">
           <div className="cost-row">
-            <span className="cost-category">Your budget</span>
+            <span className="cost-category">Ngân sách của bạn</span>
             <span>{fmtMoney(budget)}</span>
           </div>
           {remaining != null && (
             <div className="cost-row">
               <span className="cost-category">
-                {remaining >= 0 ? 'Remaining after known costs' : 'Over budget by'}
+                {remaining >= 0 ? 'Còn lại sau chi phí đã biết' : 'Vượt ngân sách'}
               </span>
               <span className={remaining < 0 ? 'unverified' : ''}>
                 {fmtMoney(Math.abs(remaining))}
@@ -66,7 +84,7 @@ export default function CostSummary({ plan, costEvaluation }) {
         <p className="cost-warning">
           <Icon name="alert" size={15} />
           <span>
-            Known costs only. Unverified: {missing.join(', ')} (not counted as 0).
+            Chỉ hiển thị chi phí đã biết. Chưa xác minh: {missing.map((item) => missingLabel(item, resolveName)).join(', ')} (không tính là 0).
           </span>
         </p>
       )}
@@ -75,7 +93,7 @@ export default function CostSummary({ plan, costEvaluation }) {
         <div className="cost-breakdown">
           {Object.entries(breakdown).map(([category, amount]) => (
             <div key={category} className="cost-row">
-              <span className="cost-category">{category}</span>
+              <span className="cost-category">{categoryLabel(category)}</span>
               <span className={amount == null ? 'unverified' : ''}>{fmtMoney(amount)}</span>
             </div>
           ))}
