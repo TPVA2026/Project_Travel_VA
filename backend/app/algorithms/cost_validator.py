@@ -227,8 +227,11 @@ def trusted_supplemental_costs(request, plan, dataset):
     if len(matching) != 1:
         return {}
     result = {}
+    quote_costs = matching[0].get("costs")
+    if not isinstance(quote_costs, dict):
+        return {}
     for category in ("transport", "accommodation"):
-        record = matching[0].get("costs", {}).get(category)
+        record = quote_costs.get(category)
         if (isinstance(record, dict) and record.get("evidenceStatus") == "VERIFIED"
                 and record.get("currency") == "VND" and record.get("scope") == "group"
                 and isinstance(record.get("source"), str) and record["source"].strip()

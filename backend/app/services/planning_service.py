@@ -251,10 +251,10 @@ def rank_candidate_plans(request: dict, plans: list[dict], limit: int = 3) -> di
                 "INVALID_PLAN", f"Candidate plan at index {index} failed grounding checks.", errors
             )
     try:
+        supplements = {plan["planId"]: quote for plan in validated_plans
+                       if (quote := trusted_supplemental_costs(normalized_request, plan, dataset))}
         result = rank_candidates(normalized_request, validated_plans, dataset=dataset,
-                                 supplemental_costs_by_plan={
-                                     plan["planId"]: trusted_supplemental_costs(normalized_request, plan, dataset)
-                                     for plan in validated_plans})
+                                 **({"supplemental_costs_by_plan": supplements} if supplements else {}))
     except (ValidationError, ValueError, TypeError) as exc:
         raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.") from None
     result["totalRanked"] = len(result["ranked"])
