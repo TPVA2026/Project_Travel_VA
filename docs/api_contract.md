@@ -339,6 +339,80 @@ A structurally valid travel request is not automatically a feasible trip.
 
 Budget, travel time, distance, availability, and scheduling feasibility are checked separately in the deterministic validation pipeline.
 
+### 4.10 Input rules verified on `main` (TPVA-53)
+
+These are today's rules, covered by `backend/tests/test_travel_input_contract.py`
+and `backend/tests/fixtures/travelInputCases.json`. They change nothing in the schema.
+
+| Field | Current rule | Result when wrong |
+| --- | --- | --- |
+| `budget.scope` | `group` or `perPerson` only. Surrounding spaces are trimmed. `/validate` never multiplies the amount; M4 multiplies a `perPerson` budget by `travelers.count`. | 422. `missing: ["budget.scope"]` when absent. |
+| `budget.amount` / `currency` | Integer ≥ 0, `VND` (upper-cased). | 422 |
+| `travelers.count` | Integer ≥ 1. | 422 (`missing: ["travelers"]` when absent) |
+| `travelPeriod` | `{startDate, endDate?}` or `{month}`, not both. | 422 with conflict "Choose travel dates or a month, not both." |
+| `durationDays` | Integer ≥ 1. With `endDate` it must equal the inclusive day span. | 422 with a conflict message |
+| `preferences.transportation` | List of non-empty strings ≤ 80 chars. Blank strings are dropped. A non-string item is rejected (TPVA-53; it used to be dropped silently). Values are free text with no enum. | 422 for a non-list or non-string item |
+| `preferences.destination` | Optional. Sent as typed. Blank means "not chosen" and the key is removed. Nothing fills it in, including `additionalRequirements` text. | `/validate` returns 422 for an unsupported destination (M6). |
+| Unknown keys (e.g. `transportCost`) | `extra="forbid"` everywhere. | 422. The proposed fields below are **not accepted** until the schema changes. |
+
+Generation with no destination currently stops before Gemini with 422 `NO_DATA`. No city is picked automatically.
+
+### 4.11 PROPOSED — trip cost input for transport and lodging (needs ZT/Sand sign-off)
+
+> **Status: PROPOSED, not implemented.** The Pydantic model, `travelRequest.schema.json`
+> and the M4 adapter stay unchanged until ZT and Sand approve this section. Tests for it
+> are skipped in `test_travel_input_contract.py` with this reason.
+
+Why: M4 keeps the budget `UNVERIFIED` whenever transport or accommodation costs are
+missing (`Required costs are missing or invalid: transport, accommodation, dining`).
+Today the request cannot carry them, so the backend would have to guess.
+
+Proposed optional top-level field. The name does not clash with `budget` or `preferences.transportation`:
+
+```json
+"tripCosts": {
+  "transport": {
+    "status": "known",
+    "amountVnd": 1200000,
+    "scope": "group",
+    "period": "entireTrip",
+    "mode": "car",
+    "source": "user"
+  },
+  "accommodation": {
+    "status": "unknown",
+    "amountVnd": null,
+    "scope": null,
+    "period": null,
+    "source": null
+  }
+}
+```
+
+| Field | Values | Rule |
+| --- | --- | --- |
+| `status` | `known`, `estimated`, `unknown` | `unknown` ⇒ `amountVnd: null`. Never 0. |
+| `amountVnd` | integer ≥ 0 or null | Required when `known` or `estimated`. `0` only when the user states it is free. |
+| `scope` | `perPerson`, `group` | Same words as `budget.scope`. Required with an amount. |
+| `period` | `entireTrip`, `perNight` (accommodation), `perDay` | Required with an amount. |
+| `mode` | transport only; one of `preferences.transportation` | Optional |
+| `source` | `user`, `dataset`, or `provider:<name>`, ≤ 200 chars | `user` for form input. |
+
+Conversion to the M4 group/whole-trip VND total (M4 owns this; listed so the contract is unambiguous):
+`perPerson` × `travelers.count`, `perNight` × (`durationDays` − 1), `perDay` × `durationDays`.
+Missing `tripCosts`, or `status: unknown`, keeps today's behavior: the cost is unknown and the budget stays `UNVERIFIED`.
+
+### 4.12 Destination confirmation — open decision
+
+TPVA-53 asks that the user confirms the destination before `/itineraries/generate`.
+On `main` (after PR #50) this step does not exist:
+
+- The form sends the destination as typed, or omits it. There is no suggestion screen or confirmation step (product decision).
+- PR #50 added `suggest_destinations()` (M3) and TPVA-39 added `filter_feasible_destinations()` (M4). Neither is called by any endpoint.
+- A skipped destination ends in 422 `NO_DATA` from `/itineraries/generate`.
+
+A confirmation step needs either a new UI step and a suggestion endpoint (contract change, M6/M3), or showing the AI-suggested `destinationId` on the result for the user to accept. M1 has not built either; the user and ZT/Sand must choose.
+
 ## 5. POST `/itineraries/generate`
 
 ### 5.1 Description

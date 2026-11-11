@@ -7,8 +7,15 @@ import {
   selectPlan,
   clearSelectedPlan,
 } from '../services/api.js'
-import { getCandidatePresentation, getTopFeasiblePlans } from '../services/recommendations.js'
+import {
+  getCandidatePresentation,
+  getTopFeasiblePlans,
+  groupEvaluationReasons,
+} from '../services/recommendations.js'
 import PlanComparison from '../components/comparison/PlanComparison.jsx'
+import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
+import CostSummary from '../components/itinerary/CostSummary.jsx'
+import EvaluationChecks from '../components/itinerary/EvaluationChecks.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
@@ -90,8 +97,10 @@ function RequestSummary({ request }) {
 
 function CandidatePlanView({ status, plan, evaluation, ranking, selected, onSelect }) {
   const presentation = getCandidatePresentation(status, evaluation, ranking, plan.planId)
-  const { reasons, recommended } = presentation
+  const groups = groupEvaluationReasons(evaluation, ranking, plan.planId)
   status = presentation.status
+  const costEvaluation = evaluation?.components?.cost
+
   return (
     <article className="ai-plan">
       <header className="ai-plan-head">
@@ -101,52 +110,52 @@ function CandidatePlanView({ status, plan, evaluation, ranking, selected, onSele
           <p className="muted">Destination: {plan.destinationId}</p>
         </div>
         <span className={`badge badge-${status || 'UNVERIFIED'}`}>{status || 'UNVERIFIED'}</span>
-        {recommended && <span className="badge">Ranked recommendation</span>}
+        {presentation.recommended && <span className="badge">Ranked recommendation</span>}
       </header>
 
+      <EvaluationChecks evaluation={evaluation} />
+
       <div className="ai-plan-days">
-        {plan.days.map((day) => (
-          <section key={day.dayNumber} className="ai-day">
-            <h3>
-              <span className="ai-day-number">Day {day.dayNumber}</span>
-              <span className="ai-day-date">{day.date}</span>
-            </h3>
-            <ul className="ai-activity-list">
-              {day.activities.map((activity) => (
-                <li key={activity.activityId} className="ai-activity">
-                  <span className="ai-activity-time">
-                    {activity.startTime}–{activity.endTime}
-                  </span>
-                  <div className="ai-activity-body">
-                    <strong>{activity.placeId}</strong>
-                    <span className="muted small">
-                      {activity.type} · {money(activity.estimatedCostVnd)}
-                    </span>
-                    {activity.reason && <p>{activity.reason}</p>}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+        <div className="schedule-header">
+          <div>
+            <h3 className="itinerary-heading">Day-by-day schedule</h3>
+            <p className="muted small">
+              Times, stops, and travel legs between activities.
+            </p>
+          </div>
+        </div>
+        <ItineraryTimeline days={plan.days} />
       </div>
 
+      <CostSummary plan={plan} costEvaluation={costEvaluation} />
+
+      {plan.missingData?.length > 0 && (
+        <p className="ai-plan-note">
+          <Icon name="alert" size={16} />
+          Missing data: {plan.missingData.join(' ')}
+        </p>
+      )}
       {plan.assumptions?.length > 0 && (
         <p className="ai-plan-note">
           <Icon name="info" size={16} />
           Assumptions: {plan.assumptions.join(' ')}
         </p>
       )}
-      {reasons.length > 0 && (
+      {groups.length > 0 && (
         <div className={`plan-alert-box alert-${String(status).toLowerCase()}`}>
           <Icon name="info" size={16} />
-          <div>
+          <div className="plan-alert-groups">
             <strong>{status === 'INFEASIBLE' ? 'Why this plan does not fit' : 'Information still needed'}</strong>
-            <ul>
-              {reasons.map((reason, index) => (
-                <li key={`${reason.code || 'reason'}-${index}`}>{reason.message || reason.code}</li>
-              ))}
-            </ul>
+            {groups.map((group) => (
+              <div key={group.key} className="plan-alert-group">
+                <span className="plan-alert-group-label">{group.label}</span>
+                <ul>
+                  {group.reasons.map((reason, index) => (
+                    <li key={`${reason.code || 'reason'}-${index}`}>{reason.message || reason.code}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       )}

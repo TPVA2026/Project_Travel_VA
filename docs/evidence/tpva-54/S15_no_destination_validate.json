@@ -1,0 +1,75 @@
+{
+  "id": "S15_no_destination_validate",
+  "title": "No destination: input validation keeps destination empty",
+  "endpoint": "/api/v1/requests/validate",
+  "server": "default",
+  "owner": "M1/M6",
+  "expected": {
+    "http": 200,
+    "noDestinationInData": true
+  },
+  "rule": "Form/validator never auto-pick a city.",
+  "request": {
+    "travelPeriod": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-03"
+    },
+    "durationDays": 3,
+    "departureLocation": "Huế",
+    "travelers": {
+      "count": 2
+    },
+    "budget": {
+      "amount": 3000000,
+      "currency": "VND",
+      "scope": "group"
+    },
+    "preferences": {
+      "interests": [
+        {
+          "type": "culture",
+          "priority": 1
+        }
+      ]
+    }
+  },
+  "httpStatus": 200,
+  "response": {
+    "valid": true,
+    "data": {
+      "travelPeriod": {
+        "startDate": "2026-12-01",
+        "endDate": "2026-12-03"
+      },
+      "durationDays": 3,
+      "departureLocation": "Huế",
+      "travelers": {
+        "count": 2,
+        "characteristics": []
+      },
+      "budget": {
+        "amount": 3000000,
+        "currency": "VND",
+        "scope": "group"
+      },
+      "limits": null,
+      "preferences": {
+        "destination": null,
+        "transportation": [],
+        "interests": [
+          {
+            "type": "culture",
+            "priority": 1
+          }
+        ],
+        "dining": null
+      },
+      "additionalRequirements": null
+    }
+  },
+  "verdict": "PASS",
+  "notes": [],
+  "actualStatus": null,
+  "actualError": null,
+  "checkCodes": []
+}
