@@ -1,0 +1,55 @@
+{
+  "id": "S17_unsupported_destination_validate",
+  "title": "Unsupported destination 'Atlantis' is rejected with 422",
+  "endpoint": "/api/v1/requests/validate",
+  "server": "default",
+  "owner": "M6",
+  "expected": {
+    "http": 422
+  },
+  "rule": "Unsupported destination is not silently replaced by another city.",
+  "request": {
+    "travelPeriod": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-03"
+    },
+    "durationDays": 3,
+    "departureLocation": "Huế",
+    "travelers": {
+      "count": 2
+    },
+    "budget": {
+      "amount": 3000000,
+      "currency": "VND",
+      "scope": "group"
+    },
+    "preferences": {
+      "destination": "Atlantis"
+    }
+  },
+  "httpStatus": 422,
+  "response": {
+    "detail": {
+      "errors": [
+        {
+          "loc": [
+            "preferences",
+            "destination"
+          ],
+          "msg": "Destination is not supported by the current dataset. Choose one of: Huế, Nha Trang, Thành phố Hồ Chí Minh, Hà Nội, Cao Bằng, Tuyên Quang, Điện Biên, Lai Châu, Sơn La, Lào Cai, Thái Nguyên, Lạng Sơn, Quảng Ninh, Bắc Ninh, Phú Thọ, Hải Phòng, Hưng Yên, Ninh Bình, Thanh Hoá, Nghệ An, Hà Tĩnh, Quảng Trị, Đà Nẵng, Quảng Ngãi, Gia Lai, Khánh Hoà, Đắk Lắk, Lâm Đồng, Đồng Nai, Tây Ninh, Đồng Tháp, Vĩnh Long, An Giang, Cần Thơ, Cà Mau.",
+          "type": "value_error.destination_not_supported"
+        }
+      ],
+      "missing": [],
+      "conflicts": [],
+      "messages": [
+        "Destination is not supported by the current dataset. Choose one of: Huế, Nha Trang, Thành phố Hồ Chí Minh, Hà Nội, Cao Bằng, Tuyên Quang, Điện Biên, Lai Châu, Sơn La, Lào Cai, Thái Nguyên, Lạng Sơn, Quảng Ninh, Bắc Ninh, Phú Thọ, Hải Phòng, Hưng Yên, Ninh Bình, Thanh Hoá, Nghệ An, Hà Tĩnh, Quảng Trị, Đà Nẵng, Quảng Ngãi, Gia Lai, Khánh Hoà, Đắk Lắk, Lâm Đồng, Đồng Nai, Tây Ninh, Đồng Tháp, Vĩnh Long, An Giang, Cần Thơ, Cà Mau."
+      ]
+    }
+  },
+  "verdict": "PASS",
+  "notes": [],
+  "actualStatus": null,
+  "actualError": null,
+  "checkCodes": []
+}
