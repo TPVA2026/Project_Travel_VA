@@ -232,6 +232,7 @@ export default function TravelForm({ monthInputSupported }) {
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionError, setSuggestionError] = useState("");
   const [chosenCity, setChosenCity] = useState("");
+  const [suggestionRequest, setSuggestionRequest] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -331,6 +332,7 @@ export default function TravelForm({ monthInputSupported }) {
   }
 
   async function showSuggestions(payload) {
+    setSuggestionRequest(payload);
     setChosenCity("");
     setSuggestionError("");
     let found = [];
@@ -350,6 +352,12 @@ export default function TravelForm({ monthInputSupported }) {
     setErrors(serverErrors);
     setBad(serverErrors);
     routeErrors(serverErrors);
+  }
+
+  async function retrySuggestions() {
+    if (sending || !suggestionRequest) return;
+    setSending(true);
+    try { await showSuggestions(suggestionRequest); } finally { setSending(false); }
   }
 
   // The chosen city becomes preferences.destination and the whole request is validated again.
@@ -419,6 +427,7 @@ export default function TravelForm({ monthInputSupported }) {
     setSuggestions([]);
     setSuggestionError("");
     setChosenCity("");
+    setSuggestionRequest(null);
   }
 
   async function onSubmit(event) {
@@ -615,6 +624,7 @@ export default function TravelForm({ monthInputSupported }) {
             <p className="error" role="alert" id="destination-suggestion-error">{suggestionError || SUGGESTION_ERROR}</p>
           )}
           <StepError name="suggestion" error={errors.suggestion} />
+          {!suggestions.length && <button type="button" className="request-link" onClick={retrySuggestions} disabled={sending}>{sending ? "Trying again…" : "Try again"}</button>}
           <button type="button" className="request-link" onClick={chooseOwnDestination}>Choose a destination myself</button>
         </div>
       </section>
