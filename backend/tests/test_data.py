@@ -56,3 +56,25 @@ def test_adapter_is_conservative_and_does_not_mutate_input():
     assert normalized["dining"][0]["destinationId"] == "H"
     assert normalized["travel_matrix"][0]["durationMin"] is None
     assert raw == before
+
+
+def test_adapter_canonicalizes_flat_matrix_without_mutating_input():
+    raw = {
+        "destinations": [],
+        "travel_matrix": [{
+            "from": "a1",
+            "to": "a2",
+            "distanceKm": 8.6,
+        }],
+    }
+    before = deepcopy(raw)
+
+    normalized = normalize_dataset(raw)
+
+    assert normalized["travel_matrix"] == [{
+        "from": "a1",
+        "to": "a2",
+        "distanceKm": 8.6,
+        "durationMin": None,
+    }]
+    assert raw == before

@@ -96,7 +96,21 @@ def _normalize_place(raw: dict, destination_ids: dict[str, str], dining: bool) -
 
 def _flatten_matrix(raw: object) -> list[dict]:
     if isinstance(raw, list):
-        return deepcopy(raw)
+        flattened: list[dict] = []
+        for leg in raw:
+            if not isinstance(leg, dict):
+                continue
+            item = deepcopy(leg)
+            item["from"] = item.get("from", item.get("from_id"))
+            item["to"] = item.get("to", item.get("to_id"))
+            item["durationMin"] = item.get(
+                "durationMin", item.get("duration_minutes")
+            )
+            item["distanceKm"] = item.get(
+                "distanceKm", item.get("distance_km")
+            )
+            flattened.append(item)
+        return flattened
     if not isinstance(raw, dict) or not isinstance(raw.get("destinations"), dict):
         return []
     flattened: list[dict] = []
