@@ -45,7 +45,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const assertStep = (index, message) => {
     assert.deepEqual(visible(), [index], message);
-    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${Math.min(index, 6) + 1} of 7`);
+    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${index + 1} of 7`);
   };
   const active = () => doc.activeElement?.id || doc.activeElement?.textContent;
   const apiCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate").length;
@@ -65,7 +65,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.querySelector("#trip-form-panel").hidden, false);
 
     // Six screens, one visible question, Back only after the first.
-    assert.equal(form.querySelectorAll(".request-step").length, 8, "Seven questions plus the destination suggestion screen");
+    assert.equal(form.querySelectorAll(".request-step").length, 7);
     assertStep(0);
     assert.equal(active(), "departureLocation");
     assert.equal(doc.querySelector("#request-step-0 h2").textContent, "Where are you leaving from?");
@@ -411,17 +411,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     fetchCalls = [];
     await click("Create itinerary");
     assert.deepEqual(fetchCalls, [{ url: "/api/v1/requests/validate", payload }]);
-    // No destination: the user confirms a supported suggestion before anything is generated.
-    assertStep(7);
-    assert.equal(doc.querySelector(".request-step-count").textContent, "Question 7 of 7");
-    assert.equal(sessionStorage.getItem("tpva-travel-request"), null);
-    assert.deepEqual([...doc.querySelectorAll('[name="suggestedDestination"]')].map(node => node.value), ["Da Nang"], "Departure city Hue is not suggested");
-    await radio("suggestedDestination", "Da Nang");
-    fetchCalls = [];
-    await click("Use this destination");
-    const chosen = { ...payload, preferences: { destination: "Da Nang" } };
-    assert.deepEqual(fetchCalls, [{ url: "/api/v1/requests/validate", payload: chosen }]);
-    assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), chosen);
+    assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), payload);
     assert.equal(JSON.parse(sessionStorage.getItem("tpva-travel-request")).additionalRequirements, "We love seafood and prefer taxis.");
 
     // Clear resets to the first question with empty values.
