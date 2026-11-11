@@ -9,6 +9,7 @@ import React, { act } from "react";
 
 // DOM-level integration for TPVA-41/42/43: the destination is sent as typed or left out;
 // the form never shows a suggestion screen or the backend's supported-city list.
+// (The static province suggestions are covered in TravelForm.provinces.test.mjs.)
 test("M1 destination: plain input, skipped destination goes straight to results, one short message for a destination 422", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
@@ -95,8 +96,8 @@ test("M1 destination: plain input, skipped destination goes straight to results,
     await click("Next");
     assert.deepEqual(visible(), [1]);
     assert.equal(field("destination").placeholder, "e.g. Da Nang, Da Lat");
-    assert.equal(field("destination").hasAttribute("list"), false);
-    assert.equal(doc.querySelector("datalist"), null);
+    assert.equal(field("destination").getAttribute("role"), "combobox", "Province suggestions, not a required pick");
+    assert.equal(field("destination").hasAttribute("required"), false);
     assert.equal(doc.getElementById("request-step-1-hint").textContent, "Optional. Skip it and we'll suggest destinations based on your trip.");
     assert.equal(fetchCalls.some(call => call.url === "/api/v1/destinations"), false, "The form does not load the supported-city list");
 
