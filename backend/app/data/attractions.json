@@ -23,47 +23,164 @@
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 11,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 33,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 10,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 9.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 9.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 28,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 7.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 24,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 7.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 22,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 11,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 33,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 9.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 28,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 8.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 26,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "ticketPriceNotes": "Vé lẻ theo người/lượt. priceVnd dùng giá người lớn; nhóm trẻ em trong bảng là từ 7–12 tuổi. Cung An Định miễn phí cho nhóm này. Các ưu đãi khác theo quy định.",
@@ -153,47 +270,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 8.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 26,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 4.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 2.9,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 2.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 2.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 5.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 6.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 2.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "ticketPriceNotes": "Theo bài Vinpearl: 25.000 VND/vé người lớn, trẻ em miễn phí. Bài không nêu điều kiện tuổi trẻ em; không tự áp nhóm 7–12 tuổi từ nguồn khác.",
@@ -278,47 +512,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 10,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 4.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 2.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 4.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 2.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 6.2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 4.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 2.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 4.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "ticketPriceNotes": "Vé lẻ theo người/lượt. priceVnd dùng giá người lớn; nhóm trẻ em trong bảng là từ 7–12 tuổi. Cung An Định miễn phí cho nhóm này. Các ưu đãi khác theo quy định.",
@@ -407,47 +758,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 10,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 3.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 12,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 2.4,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 5.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 2.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 7.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 23,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 6.9,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 1.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 2.9,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "sources": [
@@ -511,47 +979,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 9.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 29,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 2.2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 2.2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 4.9,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 1.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 6.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 5.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 0.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 2,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 2.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "sources": [
@@ -617,47 +1202,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 6.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 4.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 5.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 3.2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 10,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 2.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 4.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "sources": [
@@ -739,47 +1441,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 7.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 24,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 2.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 2.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 3.2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 10,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 5.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 4.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 1.4,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 2.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "sources": [
@@ -840,47 +1659,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 6.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 6.4,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 7.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 22,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 6.9,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 4.9,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 4.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 6.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 5.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "sources": [
@@ -946,47 +1882,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 11,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 33,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 6.9,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 5.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 17,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 2.8,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 4.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 4.7,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_10",
         "distanceKm": 5.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 6.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "sources": [
@@ -1049,47 +2102,164 @@
       {
         "toAttractionId": "ATTR_H_01",
         "distanceKm": 9.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 28,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_03",
         "distanceKm": 2.2,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_04",
         "distanceKm": 1.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_05",
         "distanceKm": 0.75,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 3,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_06",
         "distanceKm": 4.6,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_07",
         "distanceKm": 1.4,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_08",
         "distanceKm": 6.5,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_09",
         "distanceKm": 5.3,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       },
       {
         "toAttractionId": "ATTR_H_02",
         "distanceKm": 2.1,
-        "verificationStatus": "unverified"
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
       }
     ],
     "sources": [
