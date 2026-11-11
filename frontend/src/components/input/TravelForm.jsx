@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import { fetchDestinations, saveTripForResults, validateTravelRequest } from "../../services/api";
+import { suggestDestinations } from "./destinationSuggestions";
 import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
 
 // The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
@@ -11,6 +12,9 @@ const QUICK_TRAVELERS = [1, 2, 3, 4];
 const DESCRIBE = 5;
 const REVIEW = 6;
 const STEP_COUNT = 7;
+// Shown after review only when the destination was skipped; it is part of the last question.
+const SUGGEST = 7;
+const SUGGESTION_ERROR = "We couldn't suggest destinations for this trip. Please choose one yourself.";
 const DESCRIPTION_PLACEHOLDER = [
   "For example:",
   "We love seafood but would rather avoid spicy food.",
@@ -225,6 +229,9 @@ export default function TravelForm({ monthInputSupported }) {
   const [destinations, setDestinations] = useState([]);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionError, setSuggestionError] = useState("");
+  const [chosenCity, setChosenCity] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -316,6 +323,58 @@ export default function TravelForm({ monthInputSupported }) {
     goToStep(Math.max(0, step - 1));
   }
 
+  // From the suggestion screen the user can pick their own destination instead.
+  function chooseOwnDestination() {
+    setErrors({});
+    setBad({});
+    goToStep(1, { edit: true, name: "destination" });
+  }
+
+  async function showSuggestions(payload) {
+    setChosenCity("");
+    setSuggestionError("");
+    let found = [];
+    try {
+      found = await suggestDestinations(payload, destinations);
+    } catch { /* Handled below as "no suggestions". */ }
+    setSuggestions(found);
+    if (!found.length) setSuggestionError(SUGGESTION_ERROR);
+    goToStep(SUGGEST);
+  }
+
+  function rejectRequest(error) {
+    const serverErrors = placeErrors(error.status === 422
+      ? serverFieldErrors(error.body)
+      : { form: "Could not send the request." });
+    if (!Object.keys(serverErrors).length) serverErrors.form = "The request is invalid.";
+    setErrors(serverErrors);
+    setBad(serverErrors);
+    routeErrors(serverErrors);
+  }
+
+  // The chosen city becomes preferences.destination and the whole request is validated again.
+  async function confirmSuggestion() {
+    if (!chosenCity) {
+      setErrors({ suggestion: "Choose one of the suggested destinations." });
+      focusStep(SUGGEST, "suggestedDestination");
+      return;
+    }
+    setSending(true);
+    try {
+      setControl("destination", chosenCity);
+      const payload = buildPayload(new FormData(formRef.current));
+      await validateTravelRequest(payload);
+      saveTripForResults(payload);
+      setErrors({});
+      setBad({});
+      navigate("/results");
+    } catch (error) {
+      rejectRequest(error);
+    } finally {
+      setSending(false);
+    }
+  }
+
   function skipDestination() {
     setControl("destination", "");
     goToStep(editing ? REVIEW : 2);
@@ -357,12 +416,16 @@ export default function TravelForm({ monthInputSupported }) {
     setSubmitted(false);
     setProgress(0);
     setDescriptionDraft("");
+    setSuggestions([]);
+    setSuggestionError("");
+    setChosenCity("");
   }
 
   async function onSubmit(event) {
     event.preventDefault();
-    if (step !== REVIEW) { next(); return; }
     if (sending) return;
+    if (step === SUGGEST) { if (suggestions.length) await confirmSuggestion(); return; }
+    if (step !== REVIEW) { next(); return; }
     const data = new FormData(event.currentTarget);
     const found = placeErrors(clientErrors(data));
     setSubmitted(true);
@@ -374,18 +437,14 @@ export default function TravelForm({ monthInputSupported }) {
     try {
       const payload = buildPayload(data);
       await validateTravelRequest(payload);
-      saveTripForResults(payload);
       setErrors({});
       setBad({});
+      // Generating without a destination fails (NO_DATA), so the user confirms one first.
+      if (!payload.preferences?.destination) { await showSuggestions(payload); return; }
+      saveTripForResults(payload);
       navigate("/results");
     } catch (error) {
-      const serverErrors = placeErrors(error.status === 422
-        ? serverFieldErrors(error.body)
-        : { form: "Could not send the request." });
-      if (!Object.keys(serverErrors).length) serverErrors.form = "The request is invalid.";
-      setErrors(serverErrors);
-      setBad(serverErrors);
-      routeErrors(serverErrors);
+      rejectRequest(error);
     } finally {
       setSending(false);
     }
@@ -434,7 +493,7 @@ export default function TravelForm({ monthInputSupported }) {
         {step > 0
           ? <button className="request-back" type="button" onClick={back}><span aria-hidden="true">‹</span> Back</button>
           : <span />}
-        <p className="request-step-count">Question {step + 1} of {STEP_COUNT}</p>
+        <p className="request-step-count">Question {Math.min(step, REVIEW) + 1} of {STEP_COUNT}</p>
       </div>
 
       {question(0, "departure", <label htmlFor="departureLocation">Where are you leaving from?</label>, <>
@@ -537,9 +596,34 @@ export default function TravelForm({ monthInputSupported }) {
         </div>
       </section>
 
+      <section id={`request-step-${SUGGEST}`} data-step={SUGGEST} className="request-step request-question" hidden={step !== SUGGEST} aria-labelledby={`request-step-${SUGGEST}-title`}>
+        <StepArt name="destination" />
+        <h2 id={`request-step-${SUGGEST}-title`} className="request-question-title" tabIndex={-1} data-step-focus>Pick a destination for your trip.</h2>
+        {suggestions.length > 0 && <p className="request-question-hint" id={`request-step-${SUGGEST}-hint`}>Suggested from your trip details. Pick one, or choose your own.</p>}
+        <div className="request-question-body">
+          {suggestions.length > 0 ? (
+            <div className="request-choices request-suggestions" role="radiogroup" aria-label="Suggested destinations" aria-describedby={errors.suggestion ? "suggestion-error" : undefined}>
+              {suggestions.map(({ city, reason }) => (
+                <label key={city} className="request-choice request-suggestion">
+                  <input type="radio" name="suggestedDestination" value={city} checked={chosenCity === city} onChange={() => { setChosenCity(city); setErrors({}); }} />
+                  <strong>{city}</strong>
+                  {reason && <span className="request-suggestion-reason">{reason}</span>}
+                </label>
+              ))}
+            </div>
+          ) : (
+            <p className="error" role="alert" id="destination-suggestion-error">{suggestionError || SUGGESTION_ERROR}</p>
+          )}
+          <StepError name="suggestion" error={errors.suggestion} />
+          <button type="button" className="request-link" onClick={chooseOwnDestination}>Choose a destination myself</button>
+        </div>
+      </section>
+
       <div className="actions request-actions">
         {errors.form && <p className="error" role="alert" id="request-form-error" tabIndex={-1}>{errors.form}</p>}
-        <button className="primary request-next" type="submit" disabled={sending}>{step === REVIEW ? (sending ? "Checking…" : "Create itinerary") : nextLabel}</button>
+        {!(step === SUGGEST && !suggestions.length) && (
+          <button className="primary request-next" type="submit" disabled={sending}>{step === SUGGEST ? (sending ? "Checking…" : "Use this destination") : step === REVIEW ? (sending ? "Checking…" : "Create itinerary") : nextLabel}</button>
+        )}
         <BusIllustration progress={progress} />
         <div className="request-footer">
           <button className="request-link" type="button" onClick={clearForm}>Clear form</button>
