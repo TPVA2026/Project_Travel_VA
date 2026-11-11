@@ -8,6 +8,7 @@ from copy import deepcopy
 from pydantic import ValidationError
 
 from app.algorithms.feasibility import evaluate_feasibility
+from app.algorithms.cost_validator import trusted_supplemental_costs
 from app.algorithms.ranking import rank_candidates
 from app.algorithms.validation_common import result_from_checks
 from app.schemas.candidate_plan import CandidatePlan
@@ -92,7 +93,9 @@ def evaluate_plan(request: dict, plan: dict, *,
     evaluation_dataset, routes = enrich_routes(
         normalized_request, validated_plan, dataset, service
     )
-    result = evaluate_feasibility(normalized_request, validated_plan, evaluation_dataset)
+    supplements = trusted_supplemental_costs(normalized_request, validated_plan, dataset)
+    result = evaluate_feasibility(normalized_request, validated_plan, evaluation_dataset,
+                                  **({"supplemental_costs": supplements} if supplements else {}))
     if service.config.enabled:
         result.setdefault("components", {})["routing"] = {
             "enabled": True,
@@ -248,7 +251,10 @@ def rank_candidate_plans(request: dict, plans: list[dict], limit: int = 3) -> di
                 "INVALID_PLAN", f"Candidate plan at index {index} failed grounding checks.", errors
             )
     try:
-        result = rank_candidates(normalized_request, validated_plans, dataset=dataset)
+        result = rank_candidates(normalized_request, validated_plans, dataset=dataset,
+                                 supplemental_costs_by_plan={
+                                     plan["planId"]: trusted_supplemental_costs(normalized_request, plan, dataset)
+                                     for plan in validated_plans})
     except (ValidationError, ValueError, TypeError) as exc:
         raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.") from None
     result["totalRanked"] = len(result["ranked"])
