@@ -164,3 +164,24 @@ assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12",
   const both = serverFieldErrors({ detail: { errors: [{ loc: ["preferences", "destination"], msg: long }], messages: [long, "Dates conflict."] } });
   assert.deepEqual(both, { destination: long, form: "Dates conflict." });
 }
+
+// TPVA-53: the form sends what the user chose and never invents destination, scope or costs.
+{
+  const perPerson = buildPayload(form({ ...valid, budgetScope: "perPerson" }));
+  assert.deepEqual(perPerson.budget, { amount: 8000000, currency: "VND", scope: "perPerson" });
+  assert.equal(perPerson.travelers.count, 2);
+
+  const skipped = buildPayload(form({ ...valid, destination: "   " }));
+  assert.equal(skipped.preferences?.destination, undefined, "A blank destination is omitted, not filled in");
+
+  const typed = buildPayload(form({ ...valid, destination: " hue " }));
+  assert.equal(typed.preferences.destination, "hue", "The destination is sent as typed, only trimmed");
+
+  const described = buildPayload(form({ ...valid, additionalRequirements: "Take us to Da Nang by taxi" }));
+  assert.equal(described.preferences?.destination, undefined, "Free text never fills the destination");
+  assert.equal(described.preferences?.transportation, undefined, "Free text never fills transportation");
+
+  for (const key of ["tripCosts", "transportCost", "accommodationCost"]) {
+    assert.equal(Object.hasOwn(perPerson, key), false, `${key} is not sent until the contract is agreed`);
+  }
+}
