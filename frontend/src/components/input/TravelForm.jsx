@@ -511,7 +511,7 @@ export default function TravelForm({ monthInputSupported }) {
       </>)}
 
       {question(1, "destination", <label htmlFor="destination">Where do you want to go?</label>, <>
-        <input id="destination" name="destination" list="supported-destinations" placeholder="e.g. Da Nang" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
+        <input id="destination" name="destination" list="supported-destinations" placeholder="Choose a supported destination" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
         <datalist id="supported-destinations">
           {destinations.map((item) => {
             const label = item.city || item.city_name || item.name || item.id;
