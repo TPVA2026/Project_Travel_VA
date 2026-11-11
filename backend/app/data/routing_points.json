@@ -1,0 +1,25 @@
+{
+  "reviewedAt": "2026-11-11",
+  "points": [
+    {
+      "placeId": "OTM_H_N669249200",
+      "latitude": 16.4533953,
+      "longitude": 107.5454175,
+      "reviewed": true,
+      "profile": "driving",
+      "source": "OpenStreetMap way 205794937; manually reviewed access road",
+      "sourceUrl": "https://www.openstreetmap.org/way/205794937",
+      "note": "Road access beside Chua Thien Mu; OSRM demo snap distance 0 m on 2026-11-11."
+    },
+    {
+      "placeId": "OTM_H_W161714451",
+      "latitude": 16.4717202,
+      "longitude": 107.5881927,
+      "reviewed": true,
+      "profile": "driving",
+      "source": "OpenStreetMap way 771244229; manually reviewed service road",
+      "sourceUrl": "https://www.openstreetmap.org/way/771244229",
+      "note": "Service-road access beside Cho Dong Ba; OSRM demo snap distance 0 m on 2026-11-11."
+    }
+  ]
+}

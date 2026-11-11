@@ -96,7 +96,21 @@ def _normalize_place(raw: dict, destination_ids: dict[str, str], dining: bool) -
 
 def _flatten_matrix(raw: object) -> list[dict]:
     if isinstance(raw, list):
-        return deepcopy(raw)
+        flattened: list[dict] = []
+        for leg in raw:
+            if not isinstance(leg, dict):
+                continue
+            item = deepcopy(leg)
+            item["from"] = item.get("from", item.get("from_id"))
+            item["to"] = item.get("to", item.get("to_id"))
+            item["durationMin"] = item.get(
+                "durationMin", item.get("duration_minutes")
+            )
+            item["distanceKm"] = item.get(
+                "distanceKm", item.get("distance_km")
+            )
+            flattened.append(item)
+        return flattened
     if not isinstance(raw, dict) or not isinstance(raw.get("destinations"), dict):
         return []
     flattened: list[dict] = []
@@ -137,6 +151,32 @@ def normalize_dataset(raw: dict) -> dict:
     }
 
 
+def _apply_routing_points(dataset: dict, raw: object) -> dict:
+    """Attach reviewed routing points to the normalized copy, never snapshots."""
+    if not isinstance(raw, dict) or not isinstance(raw.get("points"), list):
+        raise ValueError("Invalid reviewed routing point overlay")
+    points: dict[str, dict] = {}
+    for item in raw["points"]:
+        if (not isinstance(item, dict) or not isinstance(item.get("placeId"), str)
+                or item.get("reviewed") is not True):
+            raise ValueError("Invalid reviewed routing point")
+        place_id = item["placeId"]
+        if place_id in points:
+            raise ValueError("Duplicate reviewed routing point")
+        points[place_id] = {
+            key: deepcopy(value) for key, value in item.items() if key != "placeId"
+        }
+    found: set[str] = set()
+    for collection in ("attractions", "dining"):
+        for place in dataset.get(collection, []):
+            if isinstance(place, dict) and place.get("id") in points:
+                place["routingPoint"] = deepcopy(points[place["id"]])
+                found.add(place["id"])
+    if found != set(points):
+        raise ValueError("Reviewed routing point references an unknown place")
+    return dataset
+
+
 def load_dataset() -> dict:
     raw = {
         "destinations": _load("destinations.json"),
@@ -171,7 +211,12 @@ def load_dataset() -> dict:
             item for item in nationwide["attractions"]
             if isinstance(item, dict) and item.get("id") not in attraction_ids
         )
-    return normalize_dataset(raw)
+    normalized = normalize_dataset(raw)
+    routing_points = DATA_DIR / "routing_points.json"
+    if routing_points.exists():
+        with routing_points.open(encoding="utf-8") as file:
+            normalized = _apply_routing_points(normalized, json.load(file))
+    return normalized
 
 
 def get_destinations() -> list[dict]:
