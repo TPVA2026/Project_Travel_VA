@@ -3,9 +3,10 @@ import Icon from "../common/Icon.jsx";
 import { allProvincesSorted, foldText, matchProvinces, POPULAR_PROVINCES, provinceHint } from "./provinces";
 
 // Accessible combobox (ARIA 1.2 list autocomplete) over Vietnam's 34 provinces.
-// An empty focused field opens a browse panel (popular, then all A–Z). The text
-// is never replaced unless the user picks an option; Enter without a highlighted
-// option keeps its normal meaning (go to the next question).
+// The browse panel opens on a user click, on typing, or on ArrowDown / Alt+ArrowDown —
+// not on programmatic or step autofocus. The text is never replaced unless the user
+// picks an option; Enter without a highlighted option keeps its normal meaning
+// (go to the next question).
 export default function ProvinceInput({ id, onPick, className, "aria-describedby": describedBy, ...inputProps }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -29,12 +30,18 @@ export default function ProvinceInput({ id, onPick, className, "aria-describedby
     setActive(-1);
   }
 
+  function openPanel() {
+    setOpen(true);
+  }
+
   function onKeyDown(event) {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    const arrowDown = event.key === "ArrowDown";
+    const arrowUp = event.key === "ArrowUp";
+    if (arrowDown || (arrowUp && shown)) {
       if (exact) return;
       if (!browsing && !matches.length) return;
       event.preventDefault();
-      const step = event.key === "ArrowDown" ? 1 : -1;
+      const step = arrowDown ? 1 : -1;
       setOpen(true);
       setActive(current => {
         if (!shown) return step > 0 ? 0 : options.length - 1;
@@ -89,9 +96,10 @@ export default function ProvinceInput({ id, onPick, className, "aria-describedby
         aria-controls={listId}
         aria-activedescendant={shown && active >= 0 && active < options.length ? `${listId}-${active}` : undefined}
         aria-describedby={describedBy}
-        onInput={event => { setQuery(event.currentTarget.value); setOpen(true); setActive(-1); }}
-        onFocus={event => { setQuery(event.currentTarget.value); setOpen(true); }}
-        onClick={() => setOpen(true)}
+        onInput={event => { setQuery(event.currentTarget.value); openPanel(); setActive(-1); }}
+        onFocus={event => { setQuery(event.currentTarget.value); }}
+        onPointerDown={openPanel}
+        onClick={openPanel}
         onKeyDown={onKeyDown}
         onBlur={() => { setOpen(false); setActive(-1); }}
       />
