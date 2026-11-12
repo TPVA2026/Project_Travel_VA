@@ -22,8 +22,8 @@ def pipeline(m4_case, monkeypatch):
     request["preferences"] = {"destination": "HUE"}
     for place in dataset["attractions"] + dataset["dining"]:
         place["destinationId"] = "HUE"
-    monkeypatch.setattr(generator, "load_dataset", lambda: dataset)
-    monkeypatch.setattr(planning, "load_dataset", lambda: dataset)
+    monkeypatch.setattr(generator, "load_dataset", lambda **kwargs: dataset)
+    monkeypatch.setattr(planning, "load_dataset", lambda **kwargs: dataset)
     text = Mock(side_effect=lambda *args, **kwargs: json.dumps(plan))
     monkeypatch.setattr(generator, "request_text", text)
     prompt = Mock(wraps=generator.build_prompt)

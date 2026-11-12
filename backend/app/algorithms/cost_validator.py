@@ -6,6 +6,8 @@ evaluate_candidate_costs: chuyển TravelRequest/CandidatePlan sang các nhóm �
 
 from math import isfinite
 
+from app.services.price_evidence import price_evidence_status
+
 
 
 REQUIRED_COSTS = ("transport", "accommodation", "dining", "activities")
@@ -124,9 +126,7 @@ def _verified_activity_cost(activity: dict, place: dict, travelers: int):
     if activity["costStatus"] != "KNOWN":
         return None
     # 'in' kiểm tra chuỗi con; lower() chuyển chữ thường để so sánh ổn định.
-    if "unverified" in str(place.get("source", "")).lower():
-        return None
-    if place.get("priceStatus", "KNOWN") not in ("KNOWN", "VERIFIED"):
+    if price_evidence_status(place, dining=place.get("priceVnd") is None) != "KNOWN":
         return None
     if place.get("priceVnd") is not None:
         price = _amount(place["priceVnd"])

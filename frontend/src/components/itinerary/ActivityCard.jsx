@@ -49,7 +49,7 @@ export default function ActivityCard({ activity, place, travelLeg }) {
 
   const startTime = activity.start || activity.startTime || '--:--'
   const endTime = activity.end || activity.endTime || '--:--'
-  const name = place?.name || activity.name || activity.placeId || 'Hoạt động chưa xác định'
+  const name = place?.name || activity.name || 'Địa điểm chưa có tên'
   const openingHours = place?.openingHours || null
   const referencePrice = place?.priceDisplay || null
   const formattedCost =

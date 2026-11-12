@@ -4,7 +4,8 @@
     "city": "Huế",
     "description": "Trực thuộc tỉnh Thừa Thiên Huế, từng là kinh đô dưới thời Tây Sơn (1788-1801) và triều Nguyễn (1802 - 1945). Đây là thành phố nằm ở trên trục Bắc – Nam của các tuyến đường bộ, được sắt, đường biển và đường hàng không. Huế được coi là một trong những thành phố có bề dày lịch sử, văn hóa lâu đời nhất ở nước ta.",
     "best_time_to_visit": "Khoảng thời gian đầu năm từ tháng 1 đến tháng 4 được xem là mùa đẹp nhất để du lịch Cố đô. Ngoài ra, nếu muốn trải nghiệm nhịp sống dịu dàng đặc trưng, giai đoạn tháng 8 đến tháng 9.",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "Hue"
   },
   {
     "id": "NT",
@@ -28,199 +29,232 @@
       "city": "Khánh Hoà",
       "source": "Vietnamese Provinces Database"
     },
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "NhaTrang"
   },
   {
     "id": "HCM",
     "city": "Thành phố Hồ Chí Minh",
     "description": "Là một trong những đô thị lớn và sầm uất bậc nhất miền Nam. Không chỉ ghi dấu ấn bởi bề dày lịch sử phong phú và vị thế trung tâm kinh tế sôi động, nơi đây còn là điểm đến du lịch đầy cuốn hút - nơi giao thoa tuyệt vời giữa nét đẹp hoài cổ và hơi thở hiện đại, hứa hẹn mang đến những trải nghiệm đa sắc màu cho du khách.",
     "best_time_to_visit": "Ghé thăm vào mùa khô (Tháng 12 - 4) để có thể có những trải nghiệm thoải mái hơn so với mùa mưa ẩm ướt.",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "HoChiMinh"
   },
   {
     "id": "VN_01",
     "city": "Hà Nội",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "HaNoi"
   },
   {
     "id": "VN_04",
     "city": "Cao Bằng",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "CaoBang"
   },
   {
     "id": "VN_08",
     "city": "Tuyên Quang",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "TuyenQuang"
   },
   {
     "id": "VN_11",
     "city": "Điện Biên",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "DienBien"
   },
   {
     "id": "VN_12",
     "city": "Lai Châu",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "LaiChau"
   },
   {
     "id": "VN_14",
     "city": "Sơn La",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "SonLa"
   },
   {
     "id": "VN_15",
     "city": "Lào Cai",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "LaoCai"
   },
   {
     "id": "VN_19",
     "city": "Thái Nguyên",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "ThaiNguyen"
   },
   {
     "id": "VN_20",
     "city": "Lạng Sơn",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "LangSon"
   },
   {
     "id": "VN_22",
     "city": "Quảng Ninh",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "QuangNinh"
   },
   {
     "id": "VN_24",
     "city": "Bắc Ninh",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "BacNinh"
   },
   {
     "id": "VN_25",
     "city": "Phú Thọ",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "PhuTho"
   },
   {
     "id": "VN_31",
     "city": "Hải Phòng",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "HaiPhong"
   },
   {
     "id": "VN_33",
     "city": "Hưng Yên",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "HungYen"
   },
   {
     "id": "VN_37",
     "city": "Ninh Bình",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "NinhBinh"
   },
   {
     "id": "VN_38",
     "city": "Thanh Hoá",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "ThanhHoa"
   },
   {
     "id": "VN_40",
     "city": "Nghệ An",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "NgheAn"
   },
   {
     "id": "VN_42",
     "city": "Hà Tĩnh",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "HaTinh"
   },
   {
     "id": "VN_44",
     "city": "Quảng Trị",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "QuangTri"
   },
   {
     "id": "VN_48",
     "city": "Đà Nẵng",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "DaNang"
   },
   {
     "id": "VN_51",
     "city": "Quảng Ngãi",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "QuangNgai"
   },
   {
     "id": "VN_52",
     "city": "Gia Lai",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "GiaLai"
   },
   {
     "id": "VN_66",
     "city": "Đắk Lắk",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "DakLak"
   },
   {
     "id": "VN_68",
     "city": "Lâm Đồng",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "LamDong"
   },
   {
     "id": "VN_75",
     "city": "Đồng Nai",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "DongNai"
   },
   {
     "id": "VN_80",
     "city": "Tây Ninh",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "TayNinh"
   },
   {
     "id": "VN_82",
     "city": "Đồng Tháp",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "DongThap"
   },
   {
     "id": "VN_86",
     "city": "Vĩnh Long",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "VinhLong"
   },
   {
     "id": "VN_91",
     "city": "An Giang",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "AnGiang"
   },
   {
     "id": "VN_92",
     "city": "Cần Thơ",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "CanTho"
   },
   {
     "id": "VN_96",
     "city": "Cà Mau",
     "source": "Vietnamese Provinces Database",
-    "administrativeLevel": "province"
+    "administrativeLevel": "province",
+    "dataFolder": "CaMau"
   }
 ]

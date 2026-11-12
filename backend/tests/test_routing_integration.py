@@ -179,7 +179,7 @@ def test_hue_evaluate_workflow_consumes_verified_route_without_gemini(monkeypatc
     request, plan, dataset = small_case(reviewed=True)
     before = deepcopy((request, plan, dataset))
     service = router(lambda request: httpx.Response(200, json=osrm_payload()))
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
 
     result = evaluate_plan(request, plan, routing_service=service)
 
@@ -199,7 +199,7 @@ def _reason_codes(result):
 def test_evaluate_and_rank_share_verified_route_policy(monkeypatch):
     request, plan, dataset = small_case(reviewed=True)
     before = deepcopy((request, plan, dataset))
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
 
     evaluated = evaluate_plan(
         request, plan,
@@ -226,7 +226,7 @@ def test_evaluate_and_rank_share_verified_route_policy(monkeypatch):
 
 def test_evaluate_and_rank_share_missing_route_policy(monkeypatch):
     request, plan, dataset = small_case(reviewed=False)
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     make_router = lambda: router(
         lambda request: httpx.Response(200, json=osrm_payload())
     )
@@ -241,7 +241,7 @@ def test_evaluate_and_rank_share_missing_route_policy(monkeypatch):
 
 def test_evaluate_and_rank_are_safe_during_osrm_outage(monkeypatch):
     request, plan, dataset = small_case(reviewed=True)
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     make_router = lambda: router(lambda request: httpx.Response(503))
 
     evaluated = evaluate_plan(request, plan, routing_service=make_router())
@@ -369,7 +369,7 @@ def test_rank_multiple_candidates_keeps_route_evidence_by_plan(monkeypatch):
             {"location": [second_lon, second_lat]},
         ]})
 
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     service = router(respond, ids=tuple(coordinates))
     result = rank_candidate_plans(
         request, plans, routing_service=service,

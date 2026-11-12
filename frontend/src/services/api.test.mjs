@@ -307,17 +307,38 @@ test('fetchDestinations returns the backend-supported destination list', async (
 })
 
 
-test('fetchPlaceCatalog resolves curated place metadata and never guesses unknown ids', async () => {
+test('fetchPlaceCatalog loads canonical names from backend including imported places', async (t) => {
+  const originalFetch = globalThis.fetch
+  t.after(() => { globalThis.fetch = originalFetch })
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(url, 'http://localhost')
+    assert.equal(parsed.pathname, '/api/v1/places')
+    assert.deepEqual(parsed.searchParams.getAll('ids'), ['ATTR_H_03', 'REST_H_05', 'OTM_VN_48_X', 'ATTR_UNKNOWN'])
+    return Response.json({ places: [
+      { id: 'ATTR_H_03', name: 'Đại Nội', openingHours: '07:00 - 17:30' },
+      { id: 'REST_H_05', name: 'Bún bò mệ Kéo', openingHours: '06:00 - 10:00' },
+      { id: 'OTM_VN_48_X', name: 'Địa điểm Đà Nẵng' },
+    ] })
+  }
   const places = await fetchPlaceCatalog({
-    ids: ['ATTR_H_03', 'REST_H_05', 'ATTR_UNKNOWN'],
+    ids: ['ATTR_H_03', 'REST_H_05', 'OTM_VN_48_X', 'ATTR_UNKNOWN'],
   })
 
-  assert.deepEqual(places.map((place) => place.name), ['Đại Nội', 'Bún bò mệ Kéo'])
+  assert.deepEqual(places.map((place) => place.name), ['Đại Nội', 'Bún bò mệ Kéo', 'Địa điểm Đà Nẵng'])
   assert.equal(places[0].openingHours, '07:00 - 17:30')
-  assert.equal(places[0].priceVnd, 200000)
   assert.equal(places[1].openingHours, '06:00 - 10:00')
-  assert.equal(places[1].priceDisplay, '20.000 - 30.000 VND')
-  assert.equal(places[1].costStatus, 'NO_DATA')
+})
+
+test('place lookup sends the selected destination to avoid loading other folders', async (t) => {
+  const originalFetch = globalThis.fetch
+  t.after(() => { globalThis.fetch = originalFetch })
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(url, 'http://localhost')
+    assert.equal(parsed.searchParams.get('destination'), 'H')
+    assert.deepEqual(parsed.searchParams.getAll('ids'), ['ATTR_H_03'])
+    return Response.json({ places: [{ id: 'ATTR_H_03', name: 'Đại Nội' }] })
+  }
+  assert.equal((await fetchPlaceCatalog({ ids: ['ATTR_H_03'], destination: 'H' }))[0].name, 'Đại Nội')
 })
 
 
@@ -376,7 +397,7 @@ test('Evaluation checks use Vietnamese labels and never invent a status', () => 
   assert.equal(getCheckStatus(null, 'cost'), null)
 })
 
-async function renderCandidateComparison(candidates, ranking) {
+async function renderCandidateComparison(candidates, ranking, selectedPlan = null) {
   const { JSDOM, VirtualConsole } = await import('jsdom')
   const { build } = await import('esbuild')
   const { mkdtemp, rm } = await import('node:fs/promises')
@@ -391,6 +412,17 @@ async function renderCandidateComparison(candidates, ranking) {
     navigator: dom.window.navigator,
     HTMLElement: dom.window.HTMLElement,
     IS_REACT_ACT_ENVIRONMENT: true,
+  }
+  if (selectedPlan) {
+    dom.window.localStorage.setItem('tpva_selected_plan_id', selectedPlan.planId)
+    dom.window.localStorage.setItem('tpva_selected_plan_data', JSON.stringify(selectedPlan))
+    replacements.fetch = async (url) => {
+      assert.match(String(url), /\/api\/v1\/places\?/)
+      assert.equal(new URL(url, 'http://localhost').searchParams.get('destination'), selectedPlan.destinationId)
+      return Response.json({ places: [
+        { id: 'OTM_VN_48_X', name: 'Địa điểm Đà Nẵng', city: 'Đà Nẵng', destinationId: 'VN_48' },
+      ] })
+    }
   }
   const originals = new Map(Object.keys(replacements).map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]))
   for (const [key, value] of Object.entries(replacements)) {
@@ -410,7 +442,7 @@ async function renderCandidateComparison(candidates, ranking) {
 
   try {
     await build({
-      entryPoints: [fileURLToPath(new URL('../components/comparison/CandidateComparison.jsx', import.meta.url))],
+      entryPoints: [fileURLToPath(new URL(selectedPlan ? '../pages/SelectedPlanPage.jsx' : '../components/comparison/CandidateComparison.jsx', import.meta.url))],
       outfile: output,
       bundle: true,
       format: 'esm',
@@ -460,6 +492,19 @@ async function renderCandidateComparison(candidates, ranking) {
     throw error
   }
 }
+
+test('SelectedPlanPage resolves saved place IDs from the backend after reopening', async () => {
+  const selected = { ...candidatePlan('saved-plan', 'OTM_VN_48_X'), destinationId: 'VN_48', status: 'UNVERIFIED', missing: [] }
+  const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
+  try {
+    const { act } = await import('react')
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 20)) })
+    assert.equal(dom.window.document.querySelector('.activity-name')?.textContent, 'Địa điểm Đà Nẵng')
+    assert.equal(dom.window.document.querySelector('.activity-card')?.getAttribute('data-place-id'), 'OTM_VN_48_X')
+  } finally {
+    await cleanup()
+  }
+})
 
 test('CandidateComparison shows estimated lodging without promoting candidate status', async () => {
   const result = evaluation('hotel-demo')

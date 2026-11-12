@@ -225,7 +225,7 @@ def test_invalid_http_response_json():
 @pytest.mark.parametrize("failure", ["schema", "grounding", "model_feasibility", "wrong_itinerary_shape"])
 def test_public_generation_route_keeps_schema_and_grounding(monkeypatch, sample, failure):
     request, plan, dataset = sample
-    monkeypatch.setattr(generator, "load_dataset", lambda: dataset)
+    monkeypatch.setattr(generator, "load_dataset", lambda **kwargs: dataset)
     if failure == "schema":
         del plan["days"][0]["activities"][0]["startTime"]
     elif failure == "grounding":
@@ -252,7 +252,7 @@ def test_public_generation_route_keeps_schema_and_grounding(monkeypatch, sample,
 
 def test_public_generation_success_preserves_unverified_contract(monkeypatch, sample):
     request, plan, dataset = sample
-    monkeypatch.setattr(generator, "load_dataset", lambda: dataset)
+    monkeypatch.setattr(generator, "load_dataset", lambda **kwargs: dataset)
     with transport(lambda _: httpx.Response(200, json=response(json.dumps(plan)))) as client:
         monkeypatch.setattr(generator, "request_text", lambda *args, **kwargs: request_text(*args, api_key=SECRET, client=client, **kwargs))
         result = TestClient(app).post("/itineraries/generate", json=request)

@@ -253,7 +253,8 @@ export default function ResultsPage() {
     const ids = [...new Set(aiCandidates.flatMap((candidate) => collectPlaceIds(candidate.plan)))]
     if (ids.length === 0) return undefined
     setPlaceCatalogError(null)
-    fetchPlaceCatalog({ ids })
+    const destinations = [...new Set(aiCandidates.map((candidate) => candidate.plan?.destinationId).filter(Boolean))]
+    fetchPlaceCatalog({ ids, destination: destinations.length === 1 ? destinations[0] : undefined })
       .then((places) => {
         if (cancelled) return
         const byId = indexPlaces(places)

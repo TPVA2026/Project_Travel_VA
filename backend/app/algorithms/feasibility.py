@@ -79,7 +79,7 @@ def evaluate_feasibility(request: dict, plan: dict, dataset: dict | None = None,
     request, plan = inputs
     if dataset is None:
         from app.services.data_service import load_dataset
-        dataset = load_dataset()
+        dataset = load_dataset(request=request)
 
     destinations = dataset.get("destinations", [])
     destination_ids = {item["id"] for item in destinations

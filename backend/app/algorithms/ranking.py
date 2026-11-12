@@ -378,7 +378,7 @@ def rank_candidates(request: dict, plans: list, dataset: dict | None = None,
         raise ValueError("planId values must be unique")
     if dataset is None:
         from app.services.data_service import load_dataset
-        dataset = load_dataset()
+        dataset = load_dataset(request=request)
     supplemental_costs_by_plan = supplemental_costs_by_plan or {}
     if not isinstance(supplemental_costs_by_plan, dict):
         raise ValueError("supplemental_costs_by_plan must be a dictionary")

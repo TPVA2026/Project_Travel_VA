@@ -113,8 +113,21 @@ export function getPlaceCatalog(ids) {
 }
 
 
-export async function fetchPlaceCatalog({ ids } = {}) {
-  return getPlaceCatalog(ids);
+export async function fetchPlaceCatalog({ ids, destination } = {}) {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const uniqueIds = [...new Set(ids.map(String))];
+  const places = [];
+  for (let offset = 0; offset < uniqueIds.length; offset += 100) {
+    const query = new URLSearchParams();
+    if (destination) query.set('destination', destination);
+    uniqueIds.slice(offset, offset + 100).forEach((id) => query.append('ids', id));
+    const response = await fetch(apiUrl(`/api/v1/places?${query}`));
+    if (!response.ok) throw new Error('Không đọc được danh mục tên địa điểm.');
+    const body = await response.json();
+    if (!Array.isArray(body.places)) throw new Error('Danh mục địa điểm không hợp lệ.');
+    places.push(...body.places);
+  }
+  return places;
 }
 
 const VALID_STATUSES = new Set(['FEASIBLE', 'INFEASIBLE', 'UNVERIFIED'])

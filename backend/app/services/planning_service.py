@@ -37,10 +37,10 @@ class PlanningError(Exception):
         self.status_code = status_code
 
 
-def _load_planning_dataset() -> dict:
+def _load_planning_dataset(request: dict) -> dict:
     """Load and validate dataset containers without exposing internal errors."""
     try:
-        dataset = load_dataset()
+        dataset = load_dataset(request=request)
     except Exception:
         raise PlanningError(
             "DATASET_ERROR", "Unable to load planning data.", status_code=500
@@ -83,7 +83,7 @@ def _prepare_evaluation_inputs(
                 exc.errors(include_input=False, include_context=False, include_url=False),
             ) from None
 
-    dataset = _load_planning_dataset()
+    dataset = _load_planning_dataset(normalized_request)
     context = build_context(normalized_request, dataset, limit_places=False)
     if not valid_destination_ids(context):
         message = (
@@ -134,7 +134,7 @@ def evaluate_plan(request: dict, plan: dict, *,
                   routing_service: RoutingService | None = None) -> dict:
     """Evaluate a submitted pair without AI, inferred data, or ranking.
 
-    The full dataset is passed to M4 to retain opening hours, price scopes and
+    The destination dataset is passed to M4 to retain opening hours, price scopes and
     departure routes. The filtered context is used for the existing M3 gate.
     Transport/accommodation costs remain unknown until a trusted source exists.
     """
@@ -207,7 +207,7 @@ def revalidate_plan(request: dict, revised_plan: dict, *, dataset: dict | None =
     if not isinstance(supplemental_costs_by_plan, dict):
         raise ValueError("supplemental_costs_by_plan must be a dictionary")
     pool = _replace_candidate(candidate_plans, plan)
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=updated_request) if dataset is None else dataset
     evaluation = evaluate_feasibility(
         updated_request, plan, dataset, supplemental_costs_by_plan.get(plan["planId"]),
     )
@@ -330,7 +330,7 @@ def run_itinerary_pipeline(
             request_problems(request, exc),
         ) from None
 
-    dataset = _load_planning_dataset()
+    dataset = _load_planning_dataset(normalized_request)
     plans = []
     seen = set()
     warnings = []

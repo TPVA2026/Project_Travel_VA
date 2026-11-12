@@ -16,6 +16,7 @@ from app.services.ai.gemini_client import GeminiError, request_text
 from app.services.ai.opening_hours import check_activity_hours
 from app.services.ai.prompt_templates import build_prompt
 from app.services.data_service import load_dataset
+from app.services.price_evidence import price_evidence_status
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schemas" / "candidate_plan.schema.json"
 with open(SCHEMA_PATH, encoding="utf-8") as _f:
@@ -93,8 +94,9 @@ def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> l
                     errs.append(f"{a['activityId']}: cost {a['estimatedCostVnd']} != dataset price {price} for {a['placeId']}")
                 if price is None and (a["estimatedCostVnd"] is not None or a["costStatus"] != "NO_DATA"):
                     errs.append(f"{a['activityId']}: dataset has no price for {a['placeId']}; must be null/NO_DATA")
-                if price is not None and a["costStatus"] == "KNOWN" and re.search("UNVERIFIED", pl.get("source") or "", re.I):
-                    errs.append(f"{a['activityId']}: source of {a['placeId']} is unverified; status must be UNVERIFIED")
+                expected_status = price_evidence_status(pl, dining=kind[a["placeId"]] == "dining")
+                if a["costStatus"] == "KNOWN" and expected_status == "UNVERIFIED":
+                    errs.append(f"{a['activityId']}: price evidence for {a['placeId']} is unverified; status must be UNVERIFIED")
         errs.extend(_check_travel_legs(d, places, matrix))
     return errs
 
@@ -128,7 +130,7 @@ def generate_candidate(
     `dataset` defaults to the M2 repository. `client_kwargs` go to gemini_client.request_text
     (api_key, model, timeout_s, max_retries, client, sleep) - `client` is used by tests.
     """
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
     context = build_context(request, dataset)
     if not valid_destination_ids(context):
         raise GeminiError(
@@ -195,7 +197,7 @@ def generate_candidates(
     if not isinstance(count, int) or isinstance(count, bool) or count < 1:
         raise ValueError("count must be a positive integer")
 
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
 
     candidates = []
     seen = set()
@@ -247,7 +249,7 @@ def generate_repaired_candidate(
     if not feedback:
         raise ValueError("feedback must not be empty")
 
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
     context = build_context(request, dataset)
 
     if not valid_destination_ids(context) or not supported_place_ids(context):
@@ -299,7 +301,7 @@ def generate_revised_candidate(
     **client_kwargs,
 ) -> dict:
     """Revise an existing itinerary using Gemini; result remains UNVERIFIED."""
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
     context = build_context(request, dataset)
 
     if not valid_destination_ids(context) or not supported_place_ids(context):
