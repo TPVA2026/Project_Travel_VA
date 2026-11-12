@@ -1,6 +1,32 @@
 """System/user prompt templates for candidate itinerary generation (M3)."""
 import json
 
+# Fields the model must copy. Bulky evidence stays in grounding context, not in this prompt.
+_PROMPT_DEST_KEYS = ("id", "city", "name")
+_PROMPT_PLACE_KEYS = (
+    "id", "name", "city", "destinationId", "category", "durationMin",
+    "openingHours", "source", "priceVnd", "avgPricePerPersonVnd",
+)
+_PROMPT_LEG_KEYS = ("from", "to", "durationMin", "distanceKm")
+
+
+def _keep(record, keys):
+    if not isinstance(record, dict):
+        return record
+    return {key: record[key] for key in keys if key in record}
+
+
+def _prompt_dataset(dataset: dict) -> dict:
+    """Drop notes, coordinates and cross-place distance lists the model must not copy."""
+    legs = dataset.get("travelMatrix", dataset.get("travel_matrix")) or []
+    return {
+        "destinations": [_keep(item, _PROMPT_DEST_KEYS) for item in dataset.get("destinations") or []],
+        "attractions": [_keep(item, _PROMPT_PLACE_KEYS) for item in dataset.get("attractions") or []],
+        "dining": [_keep(item, _PROMPT_PLACE_KEYS) for item in dataset.get("dining") or []],
+        "travelMatrix": [_keep(item, _PROMPT_LEG_KEYS) for item in legs],
+    }
+
+
 SYSTEM_PROMPT = """You are an itinerary generator for a Vietnam travel prototype.
 RULES:
 - Use ONLY places listed in DATASET (reference them by id). Never invent places, prices, hours or travel times.
@@ -48,7 +74,7 @@ def build_prompt(
 
     prompt = (
         f"TRAVEL_REQUEST:\n{json.dumps(request, ensure_ascii=False)}\n\n"
-        f"DATASET:\n{json.dumps(dataset, ensure_ascii=False)}"
+        f"DATASET:\n{json.dumps(_prompt_dataset(dataset) if isinstance(dataset, dict) else dataset, ensure_ascii=False)}"
     )
 
     if previous_plans:

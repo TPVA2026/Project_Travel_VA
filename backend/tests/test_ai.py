@@ -675,6 +675,26 @@ def test_m3_ranks_matching_dining_preferences_first():
     )
 
 
+def test_prompt_omits_bulky_place_evidence():
+    from app.services.ai.prompt_templates import build_prompt
+
+    prompt = build_prompt({"durationDays": 1}, {
+        "attractions": [{
+            "id": "ATTR_H_01",
+            "name": "Đại Nội",
+            "priceVnd": 200000,
+            "distancesToAttractions": [{"id": "ATTR_H_02", "km": 1}],
+            "mapDirectionsUrl": "https://maps.example/long",
+            "sources": [{"url": "https://example.test/source"}],
+        }],
+    })
+    dataset = prompt.partition("DATASET:\n")[2]
+    assert "ATTR_H_01" in dataset and "200000" in dataset
+    assert "distancesToAttractions" not in dataset
+    assert "mapDirectionsUrl" not in dataset
+    assert "https://example.test/source" not in dataset
+
+
 def test_m3_additional_requirements_cannot_override_structured_fields():
     from app.services.ai.prompt_templates import build_prompt
 
