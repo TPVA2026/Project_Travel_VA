@@ -289,3 +289,64 @@ def generate_repaired_candidate(
         )
 
     return plan
+
+
+def generate_revised_candidate(
+    request: dict,
+    previous_plan: dict,
+    revision_change: dict,
+    dataset: dict | None = None,
+    **client_kwargs,
+) -> dict:
+    """Revise an existing itinerary using Gemini; result remains UNVERIFIED."""
+    dataset = load_dataset() if dataset is None else dataset
+    context = build_context(request, dataset)
+
+    if not valid_destination_ids(context) or not supported_place_ids(context):
+        raise GeminiError(
+            "NO_DATA", "No supported planning data for revision", 422
+        )
+
+    try:
+        original = CandidatePlan.model_validate(previous_plan).model_dump()
+    except ValidationError as exc:
+        raise GeminiError(
+            "INVALID_PLAN", "Original plan failed schema checks",
+            422, _format_errors(exc),
+        ) from None
+
+    text = request_text(
+        build_prompt(
+            request,
+            context,
+            revision_plan=original,
+            revision_change=revision_change,
+        ),
+        CANDIDATE_PLAN_SCHEMA,
+        **client_kwargs,
+    )
+
+    try:
+        raw = json.loads(text)
+    except ValueError:
+        raise GeminiError(
+            "MALFORMED", "Revision output is not valid JSON"
+        ) from None
+
+    try:
+        plan = CandidatePlan.model_validate(raw).model_dump()
+    except ValidationError as exc:
+        raise GeminiError(
+            "INVALID_PLAN", "Revised plan failed schema checks",
+            422, _format_errors(exc),
+        ) from None
+
+    errors = check_grounding(plan, context)
+
+    if errors:
+        raise GeminiError(
+            "INVALID_PLAN", "Revised plan failed grounding checks",
+            422, errors,
+        )
+
+    return plan

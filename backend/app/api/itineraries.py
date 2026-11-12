@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from app.services.ai.gemini_client import GeminiError
 from app.services.ai.itinerary_generator import generate_candidate
 from app.services.ai.repair_service import generate_with_repair
+from app.services.ai.revision_service import revise_with_gemini
 from app.services.input_service import request_problems, validate_travel_request
 
 from app.services.planning_service import (
@@ -189,17 +190,39 @@ class ReviseBody(BaseModel):
     request: dict
     plan: dict
     revision: dict
+    autoRegenerate: bool = False
 
 
 @router.post("/revise")
 def revise(body: ReviseBody):
     try:
+        if body.autoRegenerate:
+            return revise_with_gemini(body.request, body.plan, body.revision)
         return revise_and_evaluate(body.request, body.plan, body.revision)
     except PlanningError as exc:
         return JSONResponse(
             {"error": exc.code, "message": exc.message, "details": exc.details},
             status_code=exc.status_code,
         )
+    except GeminiError as exc:
+        if exc.code == "TIMEOUT":
+            http = 504
+        elif exc.code == "CONFIG":
+            http = 500
+        elif exc.status == 422:
+            http = 422
+        else:
+            http = 502
+
+        return JSONResponse(
+            {
+                "error": exc.code,
+                "message": exc.message,
+                "details": exc.details,
+            },
+            status_code=http,
+        )
+
     except Exception:
         return JSONResponse({"error": "INTERNAL"}, status_code=500)
 
