@@ -84,6 +84,7 @@ def request_text(
     prompt: str, schema: dict, *, api_key: str | None = None,
     model: str | None = None, timeout_s: float | None = None,
     max_retries: int | None = None, client=None,
+    base_url: str | None = None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> str:
     api_key = os.getenv("FREEMODEL_API_KEY") if api_key is None else api_key
@@ -91,7 +92,7 @@ def request_text(
         raise GeminiError("CONFIG", "FREEMODEL_API_KEY is not set on the server")
     model = model or os.getenv("FREEMODEL_MODEL") or DEFAULT_MODEL
     timeout_s, max_retries = _settings(timeout_s, max_retries)
-    base_url = (os.getenv("FREEMODEL_BASE_URL") or BASE_URL).rstrip("/")
+    base_url = (base_url or os.getenv("FREEMODEL_BASE_URL") or BASE_URL).rstrip("/")
     parameters = copy.deepcopy(schema)
     for key in ("$schema", "title", "description"):
         parameters.pop(key, None)
