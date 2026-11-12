@@ -121,7 +121,7 @@ def generate_candidate(
         dataset: dict | None = None,
         *,
         previous_plans: list[dict] | None = None,
-        **client_kwargs,
+        check_hours: bool = True, **client_kwargs,
     ) -> dict:
     """Return a schema-valid, dataset-grounded candidate plan (still UNVERIFIED).
 
@@ -152,7 +152,7 @@ def generate_candidate(
     except ValidationError as e:
         raise GeminiError("INVALID_PLAN", "Plan failed schema/grounding checks", 422, _format_errors(e)) from None
 
-    errors = check_grounding(plan, context)  # grounding needs a schema-valid plan
+    errors = check_grounding(plan, context, check_hours=check_hours)  # M4 checks opening hours
     if errors:
         raise GeminiError("INVALID_PLAN", "Plan failed schema/grounding checks", 422, errors)
     return plan
@@ -186,9 +186,11 @@ def generate_candidates(
     request: dict,
     dataset: dict | None = None,
     count: int = 3,
+    *,
+    warnings: list[str] | None = None,
     **client_kwargs,
 ) -> list[dict]:
-    """Generate distinct, validated candidate itineraries."""
+    """Generate up to count distinct candidates with bounded attempts."""
 
     if not isinstance(count, int) or isinstance(count, bool) or count < 1:
         raise ValueError("count must be a positive integer")
@@ -199,17 +201,23 @@ def generate_candidates(
     seen = set()
     max_attempts = count * 3
 
-    for i in range(max_attempts):
+    for _ in range(max_attempts):
         if len(candidates) == count:
             break
 
-
-        plan = generate_candidate(
-            request,
-            dataset,
-            previous_plans=candidates.copy(),
-            **client_kwargs,
-        )
+        try:
+            plan = generate_candidate(
+                request,
+                dataset,
+                previous_plans=candidates.copy(),
+                **client_kwargs,
+            )
+        except GeminiError as exc:
+            if candidates and exc.code in ("MALFORMED", "INVALID_PLAN", "EMPTY"):
+                if warnings is not None:
+                    warnings.append(f"Candidate generation stopped: {exc.code}")
+                break
+            raise
 
         signature = _candidate_signature(plan)
 
@@ -219,11 +227,65 @@ def generate_candidates(
         seen.add(signature)
         candidates.append(plan)
 
-    if len(candidates) < count:
-        raise GeminiError(
-            "INSUFFICIENT_CANDIDATES",
-            f"Only {len(candidates)} distinct candidates generated; expected {count}",
-            422,
+    if len(candidates) < count and warnings is not None:
+        warnings.append(
+            f"Only {len(candidates)} distinct candidates generated; "
+            f"requested {count}"
         )
 
     return candidates
+
+
+def generate_repaired_candidate(
+    request: dict,
+    previous_plan: dict,
+    feedback: list[dict],
+    dataset: dict | None = None,
+    **client_kwargs,
+) -> dict:
+    """Generate one corrected candidate from M4 feedback, still UNVERIFIED."""
+    if not feedback:
+        raise ValueError("feedback must not be empty")
+
+    dataset = load_dataset() if dataset is None else dataset
+    context = build_context(request, dataset)
+
+    if not valid_destination_ids(context) or not supported_place_ids(context):
+        raise GeminiError("NO_DATA", "No supported planning data for repair", 422)
+
+    text = request_text(
+        build_prompt(
+            request,
+            context,
+            repair_plan=previous_plan,
+            repair_feedback=feedback,
+        ),
+        CANDIDATE_PLAN_SCHEMA,
+        **client_kwargs,
+    )
+
+    try:
+        raw = json.loads(text)
+    except ValueError:
+        raise GeminiError("MALFORMED", "Repair output is not valid JSON") from None
+
+    try:
+        plan = CandidatePlan.model_validate(raw).model_dump()
+    except ValidationError as exc:
+        raise GeminiError(
+            "INVALID_PLAN",
+            "Repaired plan failed schema checks",
+            422,
+            _format_errors(exc),
+        ) from None
+
+    errors = check_grounding(plan, context, check_hours=False)
+    if errors:
+        raise GeminiError(
+            "INVALID_PLAN",
+            "Repaired plan failed grounding checks",
+            422,
+            errors,
+        )
+
+    return plan
