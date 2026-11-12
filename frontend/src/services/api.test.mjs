@@ -449,6 +449,7 @@ async function renderCandidateComparison(candidates, ranking, selectedPlan = nul
       platform: 'node',
       jsx: 'automatic',
       packages: 'external',
+      loader: { '.jpg': 'empty', '.png': 'empty' },
       define: { 'import.meta.env.VITE_API_BASE': 'undefined' },
     })
     const React = (await import('react')).default

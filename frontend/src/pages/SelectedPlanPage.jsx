@@ -20,6 +20,10 @@ import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
 import Fireworks from '../components/common/Fireworks.jsx'
+import {
+  getDestinationImage,
+  getDestinationLabel,
+} from '../services/destinationImages.js'
 
 const STATUS_LABEL = {
   FEASIBLE: 'Fits your trip',
@@ -41,7 +45,6 @@ export default function SelectedPlanPage() {
   const [isChosen, setIsChosen] = useState(false)
   const [celebrate, setCelebrate] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState(false)
-  const [shouldSimulateError, setShouldSimulateError] = useState(false)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
 
@@ -59,7 +62,7 @@ export default function SelectedPlanPage() {
     return () => { cancelled = true }
   }, [plan])
 
-  const loadPlan = useCallback(async (opts = {}) => {
+  const loadPlan = useCallback(async () => {
     if (!activePlanId) {
       setLoading(false)
       setPlan(null)
@@ -69,10 +72,7 @@ export default function SelectedPlanPage() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetchPlanById(activePlanId, {
-        delay: opts.delay ?? 300,
-        shouldFail: opts.shouldFail ?? shouldSimulateError,
-      })
+      const response = await fetchPlanById(activePlanId)
       setPlan(response.data)
       // Check if this plan is the user's chosen plan
       const currentSelected = getSelectedPlanId()
@@ -83,7 +83,7 @@ export default function SelectedPlanPage() {
     } finally {
       setLoading(false)
     }
-  }, [activePlanId, shouldSimulateError])
+  }, [activePlanId])
 
   useEffect(() => {
     loadPlan()
@@ -110,7 +110,7 @@ export default function SelectedPlanPage() {
     if (!plan) return
     const { total } = knownTotal(plan)
     const summaryText = [
-      `Travel Plan: ${plan.destination} (${plan.title})`,
+      `Travel Plan: ${destinationLabel || plan.destination} (${plan.title})`,
       `Status: ${plan.status}`,
       `Duration: ${plan.days?.length || 0} days`,
       `Estimated Known Cost: ${fmtMoney(total)}`,
@@ -152,8 +152,8 @@ export default function SelectedPlanPage() {
             Explore recommended plans
             <Icon name="arrowRight" size={16} />
           </Link>
-          <Link to="/selected?id=p1" className="btn btn-outline">
-            Preview a sample itinerary
+          <Link to="/" className="btn btn-outline">
+            Create a new trip
           </Link>
         </div>
       </div>
@@ -161,6 +161,16 @@ export default function SelectedPlanPage() {
   }
 
   const statusLabel = plan ? STATUS_LABEL[plan.status] || plan.status : null
+  const destinationLabel = plan
+    ? getDestinationLabel(plan.destinationId, plan.destination, plan.title) ||
+      plan.destination ||
+      ''
+    : ''
+  const planImage = plan
+    ? plan.image ||
+      getDestinationImage(plan.destinationId, plan.destination, plan.title) ||
+      null
+    : null
   const dayCount = plan?.days?.length || 0
   const activityCount =
     plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
@@ -178,7 +188,7 @@ export default function SelectedPlanPage() {
           <span className="chosen-toast-copy">
             <strong>Trip chosen</strong>
             <span className="chosen-toast-meta">
-              {plan.destination} · {dayCount} days
+              {destinationLabel} · {dayCount} days
             </span>
           </span>
         </div>
@@ -193,7 +203,7 @@ export default function SelectedPlanPage() {
       <header className="selected-page-intro">
         <div className="results-intro-copy">
           <p className="page-eyebrow">Step 3 of 3 · Review</p>
-          <h1>{plan?.destination || 'Review your itinerary'}</h1>
+          <h1>{destinationLabel || 'Review your itinerary'}</h1>
           <p className="selected-lead muted">
             {plan?.title || 'Loading your itinerary details…'}
           </p>
@@ -236,38 +246,6 @@ export default function SelectedPlanPage() {
         )}
       </header>
 
-      {/* Demo / reviewer controls, kept out of the main reading flow */}
-      <details className="dev-panel selected-dev-panel no-print">
-        <summary>
-          <Icon name="refresh" size={15} />
-          Demo controls
-        </summary>
-        <div className="dev-panel-body">
-          <span className="demo-controls-label">Test states</span>
-          <button
-            type="button"
-            className="btn btn-sm btn-outline demo-btn"
-            onClick={() => {
-              setShouldSimulateError(false)
-              loadPlan({ shouldFail: false, delay: 400 })
-            }}
-          >
-            Reload timeline
-          </button>
-          <button
-            type="button"
-            className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
-            onClick={() => {
-              const next = !shouldSimulateError
-              setShouldSimulateError(next)
-              loadPlan({ shouldFail: next, delay: 200 })
-            }}
-          >
-            {shouldSimulateError ? 'Error simulated' : 'Simulate error'}
-          </button>
-        </div>
-      </details>
-
       {loading && (
         <Loading message="Loading daily activity timeline, attractions, and dining..." />
       )}
@@ -279,10 +257,7 @@ export default function SelectedPlanPage() {
             message={error}
             actionLink="/results"
             actionText="Back to results"
-            onRetry={() => {
-              setShouldSimulateError(false)
-              loadPlan({ shouldFail: false, delay: 300 })
-            }}
+            onRetry={loadPlan}
           />
         </div>
       )}
@@ -298,7 +273,7 @@ export default function SelectedPlanPage() {
                 </span>
                 <div>
                   <strong className="chosen-header-title">
-                    You&rsquo;re going to {plan.destination}
+                    You&rsquo;re going to {destinationLabel}
                   </strong>
                   <p className="chosen-header-sub">
                     This itinerary is saved to your trip. Revise it below, print the schedule, or switch plans.
@@ -337,13 +312,15 @@ export default function SelectedPlanPage() {
             {/* Left Column: Overview, Fit Criteria, Selection Actions */}
             <aside className="selected-left" aria-label="Trip overview">
               <div className="img-wrap selected-img-wrap">
-                <img
-                  src={plan.image}
-                  alt={`${plan.destination} landscape`}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                  }}
-                />
+                {planImage && (
+                  <img
+                    src={planImage}
+                    alt={`${destinationLabel} landscape`}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                )}
                 {isChosen && (
                   <div className="card-selected-ribbon">
                     <Icon name="check" size={14} />

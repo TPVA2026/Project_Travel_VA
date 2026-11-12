@@ -1,12 +1,7 @@
 // TODO(M6): API client for the backend. The browser must never hold third-party API credentials.
 export const API_BASE = import.meta.env?.VITE_API_BASE ?? "/api";
 
-export {
-  fetchDestinationRecommendations,
-  MOCK_PLANS,
-  knownTotal,
-  fmtMoney,
-} from "./mockData.js";
+export { knownTotal, fmtMoney } from "./mockData.js";
 
 export {
   getSelectedPlanId,
@@ -16,7 +11,6 @@ export {
   isPlanSelected,
 } from "./planSelection.js";
 
-import { fetchPlanById as fetchPlanByIdMock, revisePlanMock } from "./mockData.js";
 import { getSelectedPlan, setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
 
 function apiUrl(path) {
@@ -36,12 +30,9 @@ export async function selectPlan(planOrId) {
 
 /**
  * Submit an itinerary revision request (TPVA-31 M5).
- * Uses mock simulation only when an explicit demo plan has no original request.
+ * Requires the original backend request and candidate plan.
  */
 export async function revisePlan(planId, revisionPayload, opts = {}) {
-  if (opts.forceMock) {
-    return revisePlanMock(planId, revisionPayload, opts);
-  }
   if (!opts.request || !opts.plan) {
     throw new Error("The original request and candidate plan are required for re-evaluation.");
   }
@@ -57,11 +48,15 @@ export async function revisePlan(planId, revisionPayload, opts = {}) {
   });
 }
 
-export async function fetchPlanById(id, opts = {}) {
+export async function fetchPlanById(id) {
   const selected = getSelectedPlan();
   const selectedId = selected?.id || selected?.planId;
   if (selected && String(selectedId) === String(id)) return { data: selected };
-  return fetchPlanByIdMock(id, opts); // Explicit sample/demo route only.
+  const error = new Error(
+    "This itinerary was not generated in this session. Create a new trip to see a backend-generated plan."
+  );
+  error.status = 404;
+  throw error;
 }
 
 export function saveTripForResults(payload) {
