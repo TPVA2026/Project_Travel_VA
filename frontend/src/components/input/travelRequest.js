@@ -7,6 +7,85 @@ export const INTERESTS = [
 
 export const ADDITIONAL_REQUIREMENTS_MAX = 500;
 
+// Inclusive trip length the form allows. Backend schema only requires durationDays >= 1;
+// the MVP target is 1–3 days and is not yet enforced server-side.
+export const MAX_TRIP_DAYS = 3;
+export const TRIP_TIME_ZONE = "Asia/Bangkok";
+export const MAX_START_AHEAD_YEARS = 1;
+export const MAX_MONTHS_AHEAD = 12;
+
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
+
+export function formatIsoDate(year, month, day) {
+  return `${year}-${pad2(month)}-${pad2(day)}`;
+}
+
+// Today's calendar date in Asia/Bangkok, as YYYY-MM-DD.
+export function localTodayIso(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TRIP_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const get = (type) => parts.find((part) => part.type === type).value;
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+export function localYearMonth(now = new Date()) {
+  return localTodayIso(now).slice(0, 7);
+}
+
+export function addDaysIso(iso, days) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso ?? ""));
+  if (!match) return "";
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) + Number(days)));
+  return formatIsoDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+}
+
+export function addYearsIso(iso, years) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso ?? ""));
+  if (!match) return "";
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year + Number(years), month - 1, day));
+  return formatIsoDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+}
+
+export function addMonthsYm(yearMonth, months) {
+  const match = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(String(yearMonth ?? ""));
+  if (!match) return "";
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1 + Number(months), 1));
+  return `${date.getUTCFullYear()}-${pad2(date.getUTCMonth() + 1)}`;
+}
+
+export function startDateBounds(now = new Date()) {
+  const today = localTodayIso(now);
+  return { min: today, max: addYearsIso(today, MAX_START_AHEAD_YEARS) };
+}
+
+// End date is inclusive: start through start + (MAX_TRIP_DAYS - 1).
+// A range may cross a month or year boundary.
+export function endDateBounds(start, now = new Date()) {
+  const today = localTodayIso(now);
+  if (!isIsoDate(start)) {
+    return { min: today, max: addDaysIso(today, MAX_TRIP_DAYS - 1) };
+  }
+  return { min: start, max: addDaysIso(start, MAX_TRIP_DAYS - 1) };
+}
+
+export function monthBounds(now = new Date()) {
+  const current = localYearMonth(now);
+  return { min: current, max: addMonthsYm(current, MAX_MONTHS_AHEAD) };
+}
+
+export function tripLimitHint() {
+  return `Up to ${MAX_TRIP_DAYS} days`;
+}
+
 const LOC_FIELD = {
   startDate: "startDate",
   endDate: "endDate",
@@ -76,17 +155,34 @@ export function valueErrors(data) {
   const errors = {};
   const start = data.get("startDate");
   const end = data.get("endDate");
+  const today = localTodayIso();
+  const { min: startMin, max: startMax } = startDateBounds();
+  const { min: monthMin, max: monthMax } = monthBounds();
   if (data.get("periodMode") !== "month") {
     if (start && !isIsoDate(start)) errors.startDate = "Use a full date (YYYY-MM-DD).";
+    else if (start && start < startMin) errors.startDate = "Start date can't be in the past.";
+    else if (start && start > startMax) errors.startDate = "Start date must be within 1 year from today.";
     if (end && !isIsoDate(end)) errors.endDate = "Use a full date (YYYY-MM-DD).";
+    else if (end && !errors.endDate && isIsoDate(start) && end < start) {
+      errors.endDate = "End date must be on or after the start date.";
+    } else if (end && !errors.endDate && isIsoDate(start)) {
+      const span = inclusiveDays(start, end);
+      if (span == null || span > MAX_TRIP_DAYS) {
+        errors.endDate = `Choose an end date within ${MAX_TRIP_DAYS} days of the start date.`;
+      }
+    } else if (end && !errors.endDate && end < today) {
+      errors.endDate = "End date can't be in the past.";
+    }
   }
   const month = data.get("month");
   if (data.get("periodMode") === "month" && month && !ISO_MONTH.test(month)) errors.month = "Use a month and year (YYYY-MM).";
-  if (data.get("periodMode") !== "month" && start && end && !errors.startDate && !errors.endDate && end < start) {
-    errors.endDate = "End date must be on or after the start date.";
+  else if (data.get("periodMode") === "month" && month && ISO_MONTH.test(month) && month < monthMin) {
+    errors.month = "Choose this month or a later month.";
+  } else if (data.get("periodMode") === "month" && month && ISO_MONTH.test(month) && month > monthMax) {
+    errors.month = "Choose a month within the next 12 months.";
   }
-  if (data.get("periodMode") === "month" && filledWrong(data.get("durationDays"), (n) => n < 1 || !Number.isInteger(n))) {
-    errors.durationDays = "Number of days must be at least 1.";
+  if (data.get("periodMode") === "month" && filledWrong(data.get("durationDays"), (n) => n < 1 || n > MAX_TRIP_DAYS || !Number.isInteger(n))) {
+    errors.durationDays = `Choose 1 to ${MAX_TRIP_DAYS} days.`;
   }
   const departure = String(data.get("departureLocation") ?? "");
   if (departure !== "" && !departure.trim()) errors.departureLocation = REQUIRED;

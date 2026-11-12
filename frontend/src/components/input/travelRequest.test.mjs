@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors, localTodayIso, localYearMonth, addDaysIso, addYearsIso, addMonthsYm, startDateBounds, endDateBounds, monthBounds, tripLimitHint } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -10,10 +10,14 @@ function form(entries) {
   return data;
 }
 
+const today = localTodayIso();
+const validEnd = addDaysIso(today, MAX_TRIP_DAYS - 1);
+const currentMonth = localYearMonth();
+const nextMonth = addMonthsYm(currentMonth, 1);
 const valid = {
   periodMode: "dates",
-  startDate: "2026-11-12",
-  endDate: "2026-11-14",
+  startDate: today,
+  endDate: validEnd,
   departureLocation: "Ho Chi Minh City",
   travelerCount: "2",
   budgetAmount: "8000000",
@@ -29,16 +33,16 @@ withLists.append("diningPreferred", "hải sản");
 const payload = buildPayload(withLists);
 assert.deepEqual(payload.preferences.transportation, ["taxi", "walking"]);
 assert.deepEqual(payload.preferences.dining.preferred, ["hải sản"]);
-assert.equal(payload.travelPeriod.startDate, "2026-11-12");
-assert.equal(payload.durationDays, 3);
+assert.equal(payload.travelPeriod.startDate, today);
+assert.equal(payload.durationDays, MAX_TRIP_DAYS);
 assert.equal(payload.budget.currency, "VND");
 assert.deepEqual(payload.preferences.interests, [{ type: "sightseeing", priority: 1 }]);
 assert.equal(clientErrors(form(valid)).durationDays, undefined);
 
-const month = buildPayload(form({ ...valid, periodMode: "month", month: "2026-12", durationDays: "4" }));
-assert.deepEqual(month.travelPeriod, { month: "2026-12" });
-assert.equal(month.durationDays, 4);
-assert.equal(clientErrors(form({ ...valid, periodMode: "month", month: "2026-12" })).durationDays, "This field is required.");
+const month = buildPayload(form({ ...valid, periodMode: "month", month: nextMonth, durationDays: String(MAX_TRIP_DAYS) }));
+assert.deepEqual(month.travelPeriod, { month: nextMonth });
+assert.equal(month.durationDays, MAX_TRIP_DAYS);
+assert.equal(clientErrors(form({ ...valid, periodMode: "month", month: nextMonth })).durationDays, "This field is required.");
 
 assert.equal(
   valueErrors(form({ ...valid, maxTravelTimeMinutes: "0", appliesTo: "daily" })).maxTravelTimeMinutes,
@@ -55,7 +59,7 @@ const noPreferences = buildPayload(form({ ...valid, interest: [], sightseeingPri
 assert.equal(noPreferences.preferences, undefined);
 assert.equal(buildPayload(form({ ...valid, destination: " Da Nang " })).preferences.destination, "Da Nang");
 
-const bad = clientErrors(form({ ...valid, endDate: "2026-11-01", departureLocation: "  " }));
+const bad = clientErrors(form({ ...valid, endDate: addDaysIso(today, -1), departureLocation: "  " }));
 assert.equal(bad.endDate, "End date must be on or after the start date.");
 assert.equal(bad.departureLocation, "This field is required.");
 
@@ -75,8 +79,8 @@ assert.equal(clientErrors(simple).budgetScope, "This field is required.");
 assert.equal(progressOf(form({})), 0);
 assert.equal(progressOf(form({ departureLocation: "Da Nang", travelerCount: "2", budgetAmount: "0" })), 50);
 assert.equal(progressOf(form(valid)), 100);
-assert.equal(progressOf(form({ periodMode: "month", startDate: "2026-11-12", endDate: "2026-11-14" })), 0);
-assert.equal(progressOf(form({ ...valid, periodMode: "month", month: "2026-12", durationDays: "4" })), 100);
+assert.equal(progressOf(form({ periodMode: "month", startDate: today, endDate: validEnd })), 0);
+assert.equal(progressOf(form({ ...valid, periodMode: "month", month: nextMonth, durationDays: String(MAX_TRIP_DAYS) })), 100);
 assert.equal(progressOf(form({ destination: "Hoi An", interest: ["nature"] })), 0);
 
 assert.equal(formatBudgetInput("5000000"), "5,000,000");
@@ -121,13 +125,65 @@ assert.equal(inclusiveDays("2026-12-15", "2026-12-12"), null);
 assert.equal(inclusiveDays("2026-02-30", "2026-03-01"), null);
 assert.equal(valueErrors(form({ ...valid, startDate: "2026-02-30" })).startDate, "Use a full date (YYYY-MM-DD).");
 assert.equal(valueErrors(form({ ...valid, startDate: "12/11/2026" })).startDate, "Use a full date (YYYY-MM-DD).");
-assert.equal(valueErrors(form({ ...valid, startDate: "2099-01-01", endDate: "2099-01-31" })).startDate, undefined);
-assert.equal(buildPayload(form({ ...valid, startDate: "2099-01-01", endDate: "2099-01-31" })).durationDays, 31);
+assert.equal(valueErrors(form({ ...valid, startDate: "2099-01-01", endDate: "2099-01-31" })).startDate, "Start date must be within 1 year from today.");
+assert.equal(clientErrors(form({ ...valid, startDate: "2099-01-01", endDate: "2099-01-31" })).startDate, "Start date must be within 1 year from today.");
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "2026-13", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
-assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "2040-01", durationDays: "2" })).month, undefined);
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "2040-01", durationDays: "2" })).month, "Choose a month within the next 12 months.");
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "0000-01", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
 assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "incomplete:-03", durationDays: "2" })).month, "Use a month and year (YYYY-MM).");
-assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12", durationDays: "2" })).month, undefined);
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12", durationDays: "2" })).month, "Choose a month within the next 12 months.");
+
+// Supported trip length and date window (inclusive days, no past dates, start within 1 year).
+assert.equal(MAX_TRIP_DAYS, 3);
+assert.equal(tripLimitHint(), "Up to 3 days");
+assert.deepEqual(startDateBounds(), { min: today, max: addYearsIso(today, 1) });
+assert.deepEqual(endDateBounds(today), { min: today, max: addDaysIso(today, MAX_TRIP_DAYS - 1) });
+assert.deepEqual(monthBounds(), { min: currentMonth, max: addMonthsYm(currentMonth, 12) });
+
+assert.equal(valueErrors(form({ ...valid, startDate: addDaysIso(today, -1), endDate: today })).startDate, "Start date can't be in the past.");
+assert.equal(valueErrors(form({ ...valid, startDate: addDaysIso(addYearsIso(today, 1), 1), endDate: addDaysIso(addYearsIso(today, 1), 2) })).startDate, "Start date must be within 1 year from today.");
+assert.equal(valueErrors(form({ ...valid, startDate: today, endDate: addDaysIso(today, MAX_TRIP_DAYS) })).endDate, `Choose an end date within ${MAX_TRIP_DAYS} days of the start date.`);
+assert.equal(valueErrors(form({ ...valid, startDate: today, endDate: addDaysIso(today, MAX_TRIP_DAYS - 1) })).endDate, undefined);
+assert.equal(clientErrors(form(valid)).startDate, undefined);
+assert.equal(clientErrors(form(valid)).endDate, undefined);
+
+// Crossing a month boundary is allowed for both date and month modes.
+{
+  const startCross = (() => {
+    const lastThis = addDaysIso(`${addMonthsYm(currentMonth, 1)}-01`, -1);
+    return lastThis >= today ? lastThis : addDaysIso(`${addMonthsYm(currentMonth, 2)}-01`, -1);
+  })();
+  const endCross = addDaysIso(startCross, MAX_TRIP_DAYS - 1);
+  assert.ok(startCross.slice(0, 7) !== endCross.slice(0, 7), "fixture crosses a month");
+  const cross = form({ ...valid, startDate: startCross, endDate: endCross });
+  assert.deepEqual(clientErrors(cross), {});
+  const crossed = buildPayload(cross);
+  assert.equal(crossed.durationDays, MAX_TRIP_DAYS);
+  assert.deepEqual(crossed.travelPeriod, { startDate: startCross, endDate: endCross });
+  assert.ok(crossed.durationDays <= MAX_TRIP_DAYS);
+  assert.ok(crossed.travelPeriod.startDate >= today);
+}
+{
+  // The chosen month is the start month only; a 3-day trip may run into the next month.
+  const lateMonth = form({ ...valid, periodMode: "month", month: currentMonth, durationDays: String(MAX_TRIP_DAYS) });
+  assert.deepEqual(clientErrors(lateMonth), {});
+  const payload = buildPayload(lateMonth);
+  assert.deepEqual(payload.travelPeriod, { month: currentMonth });
+  assert.equal(payload.durationDays, MAX_TRIP_DAYS);
+}
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: addMonthsYm(currentMonth, -1), durationDays: "2" })).month, "Choose this month or a later month.");
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: addMonthsYm(currentMonth, 13), durationDays: "2" })).month, "Choose a month within the next 12 months.");
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: nextMonth, durationDays: "0" })).durationDays, `Choose 1 to ${MAX_TRIP_DAYS} days.`);
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: nextMonth, durationDays: "4" })).durationDays, `Choose 1 to ${MAX_TRIP_DAYS} days.`);
+assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: addMonthsYm(currentMonth, 12), durationDays: "1" })).month, undefined);
+
+// Forms that pass client checks never yield a payload longer than maxDays or a past start.
+{
+  const safe = buildPayload(form(valid));
+  assert.ok(safe.durationDays >= 1 && safe.durationDays <= MAX_TRIP_DAYS);
+  assert.ok(safe.travelPeriod.startDate >= today);
+  assert.ok(safe.travelPeriod.endDate <= addDaysIso(safe.travelPeriod.startDate, MAX_TRIP_DAYS - 1));
+}
 
 // Optional additionalRequirements: trim, omit when blank, enforce the 500-character limit.
 {
