@@ -669,7 +669,7 @@ export async function runItineraryPipeline(payload, opts = {}) {
     const result = await requestJson(
       "/itineraries/pipeline",
       { request: payload, count: requested },
-      { timeoutMs: opts.timeoutMs || 300000 }
+      { timeoutMs: opts.timeoutMs || 600000 }
     )
     const legacyCandidate = result?.plan
       ? [{
