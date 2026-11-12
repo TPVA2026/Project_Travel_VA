@@ -85,14 +85,76 @@ def _check_dates(request, days, checks):
             add_check(checks, "INFEASIBLE", "TRAVEL_DATE", f"days.{index}.date", "Ngày đi không khớp hoặc không liên tiếp.")
 
 
-def _check_place(activity, places, checks, path):
+def _calendar_windows(value, visit_date):
+    """Resolve explicit date overrides, holidays and ISO weekday windows.
+
+    Calendar format: {weekly: {"1": [[open, close]], ...},
+    dates: {"YYYY-MM-DD": []}, holidays: ["YYYY-MM-DD"],
+    holidayHours: [[open, close]]}. [] explicitly means closed.
+    Missing weekdays/holiday windows remain unknown. Overnight spill belongs
+    to the previous calendar day, including its overrides.
+    """
+    if not isinstance(value, dict) or "weekly" not in value:
+        return _window(value)
+
+    def raw(day):
+        overrides = value.get("dates", {})
+        weekly = value.get("weekly", {})
+        if not isinstance(overrides, dict) or not isinstance(weekly, dict):
+            return None
+        key = day.isoformat()
+        if key in overrides:
+            return overrides[key]
+        if key in value.get("holidays", []):
+            return value.get("holidayHours")
+        return weekly.get(str(day.isoweekday()))
+
+    def portions(data, spill):
+        if data == []:
+            return []
+        if data == "24/7":
+            return [] if spill else [(0, 1440)]
+        if not isinstance(data, list):
+            return None
+        result = []
+        for pair in data:
+            if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+                return None
+            start, end = _minutes(pair[0]), _minutes(pair[1])
+            if start is None or end is None or start == end or start == 1440:
+                return None
+            if start > end:
+                result.append((0, end) if spill else (start, 1440))
+            elif not spill:
+                result.append((start, end))
+        return result
+
+    day = date.fromisoformat(visit_date)
+    current = portions(raw(day), False)
+    if current is None:
+        return None
+    # A closure/date override applies to the entire specified date.
+    if raw(day) == []:
+        return []
+    try:
+        previous = portions(raw(day - timedelta(days=1)), True)
+    except OverflowError:
+        previous = []
+    if previous is None:
+        # Unknown prior hours can affect visits before today's first window.
+        # Keep a partial known window but don't claim closure outside it.
+        return current if current and current[0][0] == 0 else None
+    return sorted(current + previous)
+
+
+def _check_place(activity, places, checks, path, visit_date):
     """Kiểm tra địa điểm, ca mở cửa và thời lượng tối thiểu đã được cung cấp."""
     place = places.get((activity["type"], activity["placeId"]))
     if place is None:
         status = "INFEASIBLE" if places else "UNVERIFIED"
         add_check(checks, status, "PLACE_DATA", path, "Không tìm thấy địa điểm đúng loại trong dataset.")
         return
-    windows = _window(place.get("openingHours", place.get("opening_hours")))
+    windows = _calendar_windows(place.get("openingHours", place.get("opening_hours")), visit_date)
     start = time_to_minutes(activity["startTime"])
     end = time_to_minutes(activity["endTime"])
     if "unverified" in str(place.get("source", "")).lower():
@@ -136,7 +198,7 @@ def validate_schedule(request: dict, plan: dict, dataset: dict | None = None) ->
         if starts != sorted(starts):
             add_check(checks, "INFEASIBLE", "ACTIVITY_ORDER", path, "Hoạt động phải được liệt kê theo giờ bắt đầu.")
         for position, activity in enumerate(activities):
-            _check_place(activity, places, checks, f"{path}.activities.{position}")
+            _check_place(activity, places, checks, f"{path}.activities.{position}", day["date"])
         for previous, following in zip(activities, activities[1:]):
             # zip ghép từng cặp liền nhau; không tự tìm đường đi vòng qua điểm khác.
             reference = route_reference(dataset, previous["placeId"], following["placeId"])
