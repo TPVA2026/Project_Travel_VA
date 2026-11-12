@@ -208,7 +208,7 @@ def test_rank_service_limits_ranked_only_to_three(monkeypatch, m4_case):
         plans.append(candidate)
     monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
 
-    def fake_rank(_request, candidates, dataset=None):
+    def fake_rank(_request, candidates, dataset=None, **_kwargs):
         return {
             "ranked": [{"planId": item["planId"], "score": 1} for item in candidates],
             "unscored": [{"planId": "kept-unscored"}],

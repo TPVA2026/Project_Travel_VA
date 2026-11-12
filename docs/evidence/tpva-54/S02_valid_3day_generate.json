@@ -1,0 +1,50 @@
+{
+  "id": "S02_valid_3day_generate",
+  "title": "Valid 3-day Huế request generates a candidate (Gemini)",
+  "endpoint": "/itineraries/generate",
+  "server": "default",
+  "owner": "M3",
+  "expected": {
+    "http": 200,
+    "status": "UNVERIFIED"
+  },
+  "rule": "Generation returns a CandidatePlan with status UNVERIFIED; never FEASIBLE.",
+  "request": {
+    "travelPeriod": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-03"
+    },
+    "durationDays": 3,
+    "departureLocation": "Huế",
+    "travelers": {
+      "count": 2
+    },
+    "budget": {
+      "amount": 3000000,
+      "currency": "VND",
+      "scope": "group"
+    },
+    "preferences": {
+      "destination": "Huế",
+      "interests": [
+        {
+          "type": "culture",
+          "priority": 1
+        }
+      ]
+    }
+  },
+  "httpStatus": 500,
+  "response": {
+    "error": "CONFIG",
+    "message": "GEMINI_API_KEY is not set on the server",
+    "details": null
+  },
+  "verdict": "BLOCKED",
+  "notes": [
+    "GEMINI_API_KEY is not configured on this server; Gemini was not called."
+  ],
+  "actualStatus": null,
+  "actualError": "CONFIG",
+  "checkCodes": []
+}

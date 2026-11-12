@@ -9,9 +9,11 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from app.algorithms.validation_common import route_reference
 from app.schemas.candidate_plan import CandidatePlan
 from app.services.ai.context_builder import build_context, supported_place_ids, valid_destination_ids
 from app.services.ai.gemini_client import GeminiError, request_text
+from app.services.ai.opening_hours import check_activity_hours
 from app.services.ai.prompt_templates import build_prompt
 from app.services.data_service import load_dataset
 
@@ -36,11 +38,11 @@ def validate_schema(plan) -> list[str]:
     return []
 
 
-def check_grounding(plan: dict, dataset: dict) -> list[str]:
+def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> list[str]:
     """Every placeId must exist in the dataset, times must not overlap, and cost
     value + status must agree with the curated dataset (not with the model's opinion).
 
-    Opening hours / durations / budget are feasibility rules and stay with M4."""
+    M3 checks known dataset opening-hour boundaries. Full duration, budget and real-world feasibility remain with M4."""
     dest_ids = valid_destination_ids(dataset)
     if not dest_ids:
         return ["No valid destination IDs available for grounding"]
@@ -48,7 +50,13 @@ def check_grounding(plan: dict, dataset: dict) -> list[str]:
         return [f"unknown destinationId {plan['destinationId']}"]
     places = {p["id"]: p for p in [*dataset.get("attractions", []), *dataset.get("dining", [])]}
     kind = {**{p["id"]: "dining" for p in dataset.get("dining", [])}, **{p["id"]: "sightseeing" for p in dataset.get("attractions", [])}}
-    matrix = {(l["from"], l["to"]): l for l in dataset.get("travelMatrix", dataset.get("travel_matrix", []))}
+    matrix = {}
+    for leg in dataset.get("travelMatrix", dataset.get("travel_matrix", [])):
+        pair = (leg.get("from"), leg.get("to"))
+        reference = route_reference(dataset, *pair)
+        matrix[pair] = reference or {
+            "durationMin": None, "distanceKm": None,
+        }
     errs: list[str] = []
     # Explicit dataset relationships are authoritative; absent mappings are not guessed.
     for day in plan["days"]:
@@ -74,6 +82,10 @@ def check_grounding(plan: dict, dataset: dict) -> list[str]:
                 errs.append(f"{a['activityId']}: null cost marked KNOWN")
             pl = places.get(a["placeId"])
             if pl:
+                if check_hours:
+                    hours_error = check_activity_hours(a, pl)
+                    if hours_error:
+                        errs.append(hours_error)
                 if kind[a["placeId"]] != a["type"]:
                     errs.append(f"{a['activityId']}: type {a['type']} does not match place {a['placeId']} ({kind[a['placeId']]})")
                 price = pl.get("priceVnd", pl.get("avgPricePerPersonVnd"))
