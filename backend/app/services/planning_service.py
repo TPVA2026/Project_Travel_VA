@@ -91,17 +91,37 @@ def _prepare_evaluation_inputs(
         )
         raise PlanningError("NO_DATA", message)
     if not supported_place_ids(context):
-        raise PlanningError("NO_DATA", "No supported places in the curated dataset for this request")
-    errors = check_grounding(validated_plan, context)
-    if errors:
-        raise PlanningError("INVALID_PLAN", "Plan failed schema/grounding checks", errors)
-    service = routing_service or get_default_routing_service()
-    evaluation_dataset, routes = enrich_routes(
-        normalized_request, validated_plan, dataset, service
-    )
-    supplements = trusted_supplemental_costs(normalized_request, validated_plan, dataset)
-    result = evaluate_feasibility(normalized_request, validated_plan, evaluation_dataset,
-                                  **({"supplemental_costs": supplements} if supplements else {}))
+        message = (
+            "No supported places in the curated dataset for this request"
+            if single else "No supported planning data is available for this request."
+        )
+        raise PlanningError("NO_DATA", message)
+    for index, plan in enumerate(validated_plans):
+        errors = check_grounding(plan, context, check_hours=False)
+        if errors:
+            message = (
+                "Plan failed schema/grounding checks" if single
+                else f"Candidate plan at index {index} failed grounding checks."
+            )
+            raise PlanningError("INVALID_PLAN", message, errors)
+    return normalized_request, validated_plans, dataset
+
+
+def _evaluate_candidate(
+    request: dict, plan: dict, dataset: dict, service: RoutingService,
+    supplemental_costs: dict | None = None,
+) -> dict:
+    """Apply trusted routing plus explicit or server-owned cost evidence."""
+    evaluation_dataset, routes = enrich_routes(request, plan, dataset, service)
+    if supplemental_costs is None:
+        supplemental_costs = trusted_supplemental_costs(request, plan, dataset)
+    if supplemental_costs:
+        result = evaluate_feasibility(
+            request, plan, evaluation_dataset,
+            supplemental_costs=supplemental_costs,
+        )
+    else:
+        result = evaluate_feasibility(request, plan, evaluation_dataset)
     if service.config.enabled:
         result.setdefault("components", {})["routing"] = {
             "enabled": True,
@@ -259,18 +279,27 @@ def rank_candidate_plans(
     if not isinstance(supplemental_costs_by_plan, dict):
         raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.")
     service = routing_service or get_default_routing_service()
+    effective_supplements = {
+        plan["planId"]: supplemental_costs_by_plan.get(plan["planId"])
+        or trusted_supplemental_costs(normalized_request, plan, dataset)
+        for plan in validated_plans
+    }
+    effective_supplements = {
+        plan_id: costs for plan_id, costs in effective_supplements.items() if costs
+    }
     evaluations_by_plan_id = {
         plan["planId"]: _evaluate_candidate(
             normalized_request, plan, dataset, service,
-            supplemental_costs_by_plan.get(plan["planId"]),
+            effective_supplements.get(plan["planId"]),
         )
         for plan in validated_plans
     }
     try:
-        supplements = {plan["planId"]: quote for plan in validated_plans
-                       if (quote := trusted_supplemental_costs(normalized_request, plan, dataset))}
-        result = rank_candidates(normalized_request, validated_plans, dataset=dataset,
-                                 **({"supplemental_costs_by_plan": supplements} if supplements else {}))
+        result = rank_candidates(
+            normalized_request, validated_plans, dataset=dataset,
+            supplemental_costs_by_plan=effective_supplements,
+            evaluations_by_plan_id=evaluations_by_plan_id,
+        )
     except (ValidationError, ValueError, TypeError) as exc:
         raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.") from None
     result["totalRanked"] = len(result["ranked"])
