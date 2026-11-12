@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   collectPlaceIds,
-  fetchDestinationRecommendations,
   fetchPlaceCatalog,
   getSelectedPlanId,
   indexPlaces,
@@ -13,10 +12,10 @@ import {
   PIPELINE_MAX_CANDIDATES,
 } from '../services/api.js'
 import {
-  getTopFeasiblePlans,
-} from '../services/recommendations.js'
+  getDestinationImage,
+  getDestinationLabel,
+} from '../services/destinationImages.js'
 import CandidateComparison from '../components/comparison/CandidateComparison.jsx'
-import PlanComparison from '../components/comparison/PlanComparison.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
@@ -220,12 +219,7 @@ function migrateCachedPipeline(saved) {
 }
 
 export default function ResultsPage() {
-  const [plans, setPlans] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [selectedPlanId, setSelectedPlanId] = useState(() => getSelectedPlanId())
-  const [shouldSimulateError, setShouldSimulateError] = useState(false)
-  const [shouldSimulateEmpty, setShouldSimulateEmpty] = useState(false)
   const [pendingRequest] = useState(readPendingRequest)
   const [pipeline, setPipeline] = useState(null)
   const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
@@ -250,29 +244,6 @@ export default function ResultsPage() {
       setAiLoading(false)
     }
   }, [pendingRequest])
-
-  const loadRecommendations = useCallback(async (opts = {}) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await fetchDestinationRecommendations({
-        delay: opts.delay ?? 350,
-        shouldFail: opts.shouldFail ?? shouldSimulateError,
-        empty: opts.empty ?? shouldSimulateEmpty,
-      })
-      setPlans(response.data || [])
-    } catch (err) {
-      setError(err?.message || 'Failed to load destination recommendations.')
-      setPlans([])
-    } finally {
-      setLoading(false)
-    }
-  }, [shouldSimulateError, shouldSimulateEmpty])
-
-  useEffect(() => {
-    if (pendingRequest) return
-    loadRecommendations()
-  }, [loadRecommendations, pendingRequest])
 
   const aiCandidates = pipeline?.candidates || []
 
@@ -334,16 +305,6 @@ export default function ResultsPage() {
     return () => window.removeEventListener('tpva-plan-selected', handler)
   }, [])
 
-  const handleSelectPlan = async (plan) => {
-    if (selectedPlanId === plan.id || selectedPlanId === plan.planId) {
-      clearSelectedPlan()
-      setSelectedPlanId(null)
-    } else {
-      await selectPlan(plan)
-      setSelectedPlanId(plan.id || plan.planId)
-    }
-  }
-
   const handleSelectCandidate = async (candidate) => {
     const id = candidate.planId || candidate.plan?.planId
     if (selectedPlanId === id) {
@@ -352,8 +313,11 @@ export default function ResultsPage() {
       return
     }
     const plan = candidate.plan || {}
+    const resolvedDestination = resolveDestinationName(plan.destinationId, placesById)
     const destination =
-      resolveDestinationName(plan.destinationId, placesById) || plan.destinationId
+      getDestinationLabel(plan.destinationId, resolvedDestination, plan.title) ||
+      resolvedDestination ||
+      plan.destinationId
     const savedPlan = {
       ...plan,
       id: plan.planId,
@@ -361,6 +325,10 @@ export default function ResultsPage() {
       evaluation: candidate.evaluation,
       request: pendingRequest,
       destination,
+      image:
+        plan.image ||
+        getDestinationImage(plan.destinationId, destination, plan.title) ||
+        null,
       missing: (candidate.evaluation?.reasons || []).map(
         (reason) => reason.message || reason.code
       ),
@@ -370,12 +338,6 @@ export default function ResultsPage() {
     setSelectedPlanId(id)
   }
 
-  const feasiblePlans = getTopFeasiblePlans(plans)
-  const selectedPlanObj = plans.find(
-    (p) =>
-      p.status === 'FEASIBLE' &&
-      (p.id === selectedPlanId || p.planId === selectedPlanId)
-  )
   const selectedCandidate = aiCandidates.find(
     (candidate) =>
       (candidate.planId || candidate.plan?.planId) === selectedPlanId &&
@@ -394,88 +356,9 @@ export default function ResultsPage() {
           </p>
         </div>
 
-        {!pendingRequest && (
-          <details className="dev-panel">
-            <summary>
-              <Icon name="refresh" size={15} />
-              Demo controls
-            </summary>
-            <div className="dev-panel-body" title="M5 Acceptance criteria testing controls">
-              <span className="demo-controls-label">Test states</span>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline demo-btn"
-                onClick={() => {
-                  setShouldSimulateError(false)
-                  setShouldSimulateEmpty(false)
-                  loadRecommendations({ shouldFail: false, empty: false, delay: 500 })
-                }}
-              >
-                Reload
-              </button>
-              <button
-                type="button"
-                className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
-                onClick={() => {
-                  const next = !shouldSimulateError
-                  setShouldSimulateError(next)
-                  setShouldSimulateEmpty(false)
-                  loadRecommendations({ shouldFail: next, delay: 200 })
-                }}
-              >
-                {shouldSimulateError ? 'Error simulated' : 'Simulate error'}
-              </button>
-              <button
-                type="button"
-                className={`btn btn-sm demo-btn ${shouldSimulateEmpty ? 'btn-danger-active' : 'btn-outline'}`}
-                onClick={() => {
-                  const next = !shouldSimulateEmpty
-                  setShouldSimulateEmpty(next)
-                  setShouldSimulateError(false)
-                  loadRecommendations({ empty: next, delay: 200 })
-                }}
-              >
-                {shouldSimulateEmpty ? 'Empty simulated' : 'Simulate empty'}
-              </button>
-            </div>
-          </details>
-        )}
       </header>
 
       <RequestSummary request={pendingRequest} />
-
-      {!pendingRequest && selectedPlanObj && (
-        <div className="chosen-plan-banner" role="status">
-          <div className="chosen-banner-info">
-            <span className="chosen-star-icon" aria-hidden="true">
-              <Icon name="star" size={20} />
-            </span>
-            <div>
-              <strong>Saved to your trip</strong>
-              <span className="chosen-banner-destination">
-                {selectedPlanObj.destination} <span aria-hidden="true">·</span> {selectedPlanObj.title}
-              </span>
-              <div className="muted small">
-                {selectedPlanObj.days?.length} days · Status:{' '}
-                <span className={`badge badge-${selectedPlanObj.status}`}>{selectedPlanObj.status}</span>
-              </div>
-            </div>
-          </div>
-          <div className="chosen-banner-actions">
-            <Link to={`/selected?id=${selectedPlanObj.id}`} className="btn btn-sm btn-primary">
-              Open chosen plan
-              <Icon name="arrowRight" size={15} />
-            </Link>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline"
-              onClick={() => handleSelectPlan(selectedPlanObj)}
-            >
-              Clear
-            </button>
-          </div>
-        </div>
-      )}
 
       {pendingRequest && aiLoading && (
         <Loading message="Waiting for the assistant to build your itineraries..." />
@@ -527,79 +410,21 @@ export default function ResultsPage() {
         </>
       )}
 
-      {!pendingRequest && loading && (
-        <Loading message="Analyzing travel requirements and loading destination recommendations..." />
-      )}
-
-      {!pendingRequest && !loading && error && (
-        <ErrorMessage
-          title="Unable to load recommendations"
-          message={error}
-          onRetry={() => {
-            setShouldSimulateError(false)
-            loadRecommendations({ shouldFail: false, delay: 350 })
-          }}
-        />
-      )}
-
-      {!pendingRequest && !loading && !error && plans.length === 0 && (
+      {!pendingRequest && (
         <div className="empty-results-box">
           <span className="empty-icon" aria-hidden="true">
             <Icon name="compass" size={26} />
           </span>
-          <h2>No matching destination plans found</h2>
-          <p className="muted">Try adjusting your travel dates, budget, or preferences.</p>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => {
-              setShouldSimulateEmpty(false)
-              loadRecommendations({ empty: false, delay: 350 })
-            }}
-          >
-            Reset recommendations
-          </button>
-        </div>
-      )}
-
-      {!pendingRequest && !loading && !error && plans.length > 0 && feasiblePlans.length === 0 && (
-        <div className="empty-results-box">
-          <span className="empty-icon" aria-hidden="true">
-            <Icon name="alert" size={26} />
-          </span>
-          <h2>No verified feasible itineraries found</h2>
+          <h2>Start with your trip details</h2>
           <p className="muted">
-            Plans that are unverified or violate constraints are not shown as feasible.
+            Lịch trình chỉ được tạo từ yêu cầu chuyến đi và backend AI, không dùng dữ liệu mẫu.
+            Hãy nhập ngày đi, ngân sách và điểm đến để xem các lịch trình thật.
           </p>
           <Link to="/" className="btn btn-primary">
-            Adjust your trip
+            Create your itinerary
+            <Icon name="arrowRight" size={15} />
           </Link>
         </div>
-      )}
-
-      {!pendingRequest && !loading && !error && feasiblePlans.length > 0 && (
-        <section className="results-list" aria-labelledby="results-heading">
-          <div className="section-head">
-            <div>
-              <h2 id="results-heading">
-                {feasiblePlans.length} {feasiblePlans.length === 1 ? 'itinerary' : 'itineraries'} to explore
-              </h2>
-              <p className="muted">
-                Look for the <span className="suggested-inline">Suggested</span> tag to see the closest match to your preferences.
-              </p>
-            </div>
-            <span className="count-pill">
-              <Icon name="route" size={15} />
-              {feasiblePlans.length} plans
-            </span>
-          </div>
-          <PlanComparison
-            plans={feasiblePlans}
-            selectedPlanId={selectedPlanId}
-            suggestedPlanId={feasiblePlans[0].id || feasiblePlans[0].planId}
-            onSelectPlan={handleSelectPlan}
-          />
-        </section>
       )}
     </section>
   )

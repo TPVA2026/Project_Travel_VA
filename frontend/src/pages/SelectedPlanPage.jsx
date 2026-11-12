@@ -15,6 +15,10 @@ import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
 import Fireworks from '../components/common/Fireworks.jsx'
+import {
+  getDestinationImage,
+  getDestinationLabel,
+} from '../services/destinationImages.js'
 
 const STATUS_LABEL = {
   FEASIBLE: 'Fits your trip',
@@ -89,7 +93,7 @@ export default function SelectedPlanPage() {
     if (!plan) return
     const { total } = knownTotal(plan)
     const summaryText = [
-      `Travel Plan: ${plan.destination} (${plan.title})`,
+      `Travel Plan: ${destinationLabel || plan.destination} (${plan.title})`,
       `Status: ${plan.status}`,
       `Duration: ${plan.days?.length || 0} days`,
       `Estimated Known Cost: ${fmtMoney(total)}`,
@@ -140,6 +144,16 @@ export default function SelectedPlanPage() {
   }
 
   const statusLabel = plan ? STATUS_LABEL[plan.status] || plan.status : null
+  const destinationLabel = plan
+    ? getDestinationLabel(plan.destinationId, plan.destination, plan.title) ||
+      plan.destination ||
+      ''
+    : ''
+  const planImage = plan
+    ? plan.image ||
+      getDestinationImage(plan.destinationId, plan.destination, plan.title) ||
+      null
+    : null
   const dayCount = plan?.days?.length || 0
   const activityCount =
     plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
@@ -156,7 +170,7 @@ export default function SelectedPlanPage() {
           <span className="chosen-toast-copy">
             <strong>Trip chosen</strong>
             <span className="chosen-toast-meta">
-              {plan.destination} · {dayCount} days
+              {destinationLabel} · {dayCount} days
             </span>
           </span>
         </div>
@@ -171,7 +185,7 @@ export default function SelectedPlanPage() {
       <header className="selected-page-intro">
         <div className="results-intro-copy">
           <p className="page-eyebrow">Step 3 of 3 · Review</p>
-          <h1>{plan?.destination || 'Review your itinerary'}</h1>
+          <h1>{destinationLabel || 'Review your itinerary'}</h1>
           <p className="selected-lead muted">
             {plan?.title || 'Loading your itinerary details…'}
           </p>
@@ -276,7 +290,7 @@ export default function SelectedPlanPage() {
                 </span>
                 <div>
                   <strong className="chosen-header-title">
-                    You&rsquo;re going to {plan.destination}
+                    You&rsquo;re going to {destinationLabel}
                   </strong>
                   <p className="chosen-header-sub">
                     This itinerary is saved to your trip. Revise it below, print the schedule, or switch plans.
@@ -315,13 +329,15 @@ export default function SelectedPlanPage() {
             {/* Left Column: Overview, Fit Criteria, Selection Actions */}
             <aside className="selected-left" aria-label="Trip overview">
               <div className="img-wrap selected-img-wrap">
-                <img
-                  src={plan.image}
-                  alt={`${plan.destination} landscape`}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                  }}
-                />
+                {planImage && (
+                  <img
+                    src={planImage}
+                    alt={`${destinationLabel} landscape`}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                )}
                 {isChosen && (
                   <div className="card-selected-ribbon">
                     <Icon name="check" size={14} />
