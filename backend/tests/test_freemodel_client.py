@@ -107,15 +107,15 @@ def test_server_environment_and_provider_dispatch(monkeypatch):
         assert json.loads(gemini_client.request_text("prompt", {}, client=client)) == {}
 
 
-def test_codex_provider_defaults_to_ccpro_and_gpt_6_luna(monkeypatch):
+def test_codex_provider_defaults_to_ccpro_and_gpt_5_6_sol(monkeypatch):
     monkeypatch.setenv("AI_PROVIDER", "codex")
     monkeypatch.setenv("CODEX_API_KEY", "codex-secret")
-    monkeypatch.setenv("CODEX_MODEL", "gpt-6-luna")
+    monkeypatch.delenv("CODEX_MODEL", raising=False)
     monkeypatch.delenv("CODEX_BASE_URL", raising=False)
     def handler(request):
         assert str(request.url) == "https://api.ccpro.cn/v1/chat/completions"
         assert request.headers["authorization"] == "Bearer codex-secret"
-        assert json.loads(request.content)["model"] == "gpt-6-luna"
+        assert json.loads(request.content)["model"] == "gpt-5.6-sol"
         return httpx.Response(200, json=response('{}'))
     with transport(handler) as client:
         assert json.loads(gemini_client.request_text("prompt", {}, client=client)) == {}

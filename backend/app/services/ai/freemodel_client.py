@@ -85,6 +85,7 @@ def request_text(
     model: str | None = None, timeout_s: float | None = None,
     max_retries: int | None = None, client=None,
     base_url: str | None = None,
+    provider_name: str = "FreeModel",
     sleep: Callable[[float], None] = time.sleep,
 ) -> str:
     api_key = os.getenv("FREEMODEL_API_KEY") if api_key is None else api_key
@@ -122,18 +123,18 @@ def request_text(
                 )
             except httpx.TimeoutException as exc:
                 # An upstream POST may still be running/billed. Never repeat it.
-                raise GeminiError("TIMEOUT", "FreeModel request timed out; it was not retried", details={
+                raise GeminiError("TIMEOUT", f"{provider_name} request timed out; it was not retried", details={
                     "phase": type(exc).__name__, "timeout_seconds": timeout_s,
                 }) from None
             except httpx.HTTPError:
-                raise GeminiError("NETWORK", "FreeModel request failed; it was not retried") from None
+                raise GeminiError("NETWORK", f"{provider_name} request failed; it was not retried") from None
             if response.is_success:
                 try:
                     body = response.json()
                 except ValueError:
-                    raise GeminiError("MALFORMED", "FreeModel returned an invalid JSON response", details={"reason": "invalid_response_json"}) from None
+                    raise GeminiError("MALFORMED", f"{provider_name} returned an invalid JSON response", details={"reason": "invalid_response_json"}) from None
                 return _parse_arguments(body)
-            failure = GeminiError("API_ERROR", f"FreeModel returned HTTP {response.status_code}", response.status_code)
+            failure = GeminiError("API_ERROR", f"{provider_name} returned HTTP {response.status_code}", response.status_code)
             # Never echo raw response bodies/headers; they may contain credentials.
             if response.status_code not in RETRY_STATUS or attempt >= max_retries:
                 raise failure

@@ -75,9 +75,10 @@ def request_text(
                 raise GeminiError("CONFIG", "CODEX_API_KEY is not set on the server")
         return freemodel_request(
             prompt, schema, api_key=api_key,
-            model=model or (os.getenv("CODEX_MODEL") or "gpt-6-luna") if codex else model,
+            model=model or (os.getenv("CODEX_MODEL") or "gpt-5.6-sol") if codex else model,
             timeout_s=timeout_s, max_retries=max_retries, client=client, sleep=sleep,
             base_url=(os.getenv("CODEX_BASE_URL") or "https://api.ccpro.cn/v1") if codex else None,
+            provider_name="Codex" if codex else "FreeModel",
         )
     if provider != "gemini":
         raise GeminiError("CONFIG", "AI_PROVIDER must be gemini, freemodel, or codex")
