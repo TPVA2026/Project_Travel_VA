@@ -126,6 +126,8 @@ def _verified_activity_cost(activity: dict, place: dict, travelers: int):
     # 'in' kiểm tra chuỗi con; lower() chuyển chữ thường để so sánh ổn định.
     if "unverified" in str(place.get("source", "")).lower():
         return None
+    if place.get("priceStatus", "KNOWN") not in ("KNOWN", "VERIFIED"):
+        return None
     if place.get("priceVnd") is not None:
         price = _amount(place["priceVnd"])
         scope = place.get("priceScope")
@@ -175,6 +177,7 @@ def evaluate_candidate_costs(request: dict, plan: dict, dataset: dict,
             if isinstance(place, dict) and isinstance(place.get("id"), str):
                 places[(kind, place["id"])] = place
 
+    estimates, evidence = [], []
     for day in candidate["days"]:
         for activity in day["activities"]:
             category = "dining" if activity["type"] == "dining" else "activities"
@@ -183,9 +186,57 @@ def evaluate_candidate_costs(request: dict, plan: dict, dataset: dict,
                 "name": activity["activityId"],
                 "amount": _verified_activity_cost(activity, place, travelers),
             })
+            evidence.append({"activityId": activity["activityId"],
+                             "category": category, "currency": "VND",
+                             "scope": place.get("priceScope", "perPerson" if "avgPricePerPersonVnd" in place else None),
+                             "source": place.get("source"),
+                             "knownGroupAmountVnd": costs[category][-1]["amount"]})
+            price_range = place.get("priceRangeVnd")
+            if isinstance(price_range, dict):
+                low, high = _amount(price_range.get("min")), _amount(price_range.get("max"))
+                scope = price_range.get("scope", place.get("priceScope"))
+                source = price_range.get("source", place.get("source"))
+                if low is not None and (high is None or high >= low) and isinstance(source, str) and source.strip():
+                    factor = travelers if scope == "perPerson" else 1
+                    estimates.append({"activityId": activity["activityId"], "category": category,
+                                      "minVnd": low * factor, "maxVnd": high * factor if high is not None else None,
+                                      "scope": "group" if scope in ("perPerson", "group") else scope,
+                                      "originalScope": scope, "source": source, "currency": "VND"})
 
     # Không có hoạt động của một nhóm không chứng minh cả chuyến không tốn tiền.
     for category in ("dining", "activities"):
         if not costs[category]:
             costs[category] = None
-    return validate_cost_budget({"budget": budget}, {"costs": costs})
+    result = validate_cost_budget({"budget": budget}, {"costs": costs})
+    result["estimatedRanges"] = estimates
+    result["costEvidence"] = evidence
+    return result
+
+
+def trusted_supplemental_costs(request, plan, dataset):
+    """Resolve server quotes bound to this exact request and plan revision.
+
+    Only transport/accommodation group totals in VND are accepted. Client/AI
+    fields are not read. Legacy direct internal function arguments stay valid.
+    """
+    records = dataset.get("supplementalCostQuotes", [])
+    if not isinstance(records, list):
+        return {}
+    matching = [row for row in records if isinstance(row, dict)
+                and row.get("request") == request and row.get("plan") == plan]
+    if len(matching) != 1:
+        return {}
+    result = {}
+    quote_costs = matching[0].get("costs")
+    if not isinstance(quote_costs, dict):
+        return {}
+    for category in ("transport", "accommodation"):
+        record = quote_costs.get(category)
+        if (isinstance(record, dict) and record.get("evidenceStatus") == "VERIFIED"
+                and record.get("currency") == "VND" and record.get("scope") == "group"
+                and isinstance(record.get("source"), str) and record["source"].strip()
+                and "unverified" not in record["source"].casefold()):
+            amount = _amount(record.get("amount"))
+            if amount is not None:
+                result[category] = amount
+    return result

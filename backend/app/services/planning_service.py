@@ -8,6 +8,7 @@ from copy import deepcopy
 from pydantic import ValidationError
 
 from app.algorithms.feasibility import evaluate_feasibility
+from app.algorithms.cost_validator import trusted_supplemental_costs
 from app.algorithms.ranking import rank_candidates
 from app.algorithms.validation_common import result_from_checks
 from app.schemas.candidate_plan import CandidatePlan
@@ -111,14 +112,17 @@ def _evaluate_candidate(
     request: dict, plan: dict, dataset: dict, service: RoutingService,
     supplemental_costs: dict | None = None,
 ) -> dict:
-    """Apply the shared trusted-routing and deterministic M4 policy."""
+    """Apply trusted routing plus explicit or server-owned cost evidence."""
     evaluation_dataset, routes = enrich_routes(request, plan, dataset, service)
     if supplemental_costs is None:
-        result = evaluate_feasibility(request, plan, evaluation_dataset)
-    else:
+        supplemental_costs = trusted_supplemental_costs(request, plan, dataset)
+    if supplemental_costs:
         result = evaluate_feasibility(
-            request, plan, evaluation_dataset, supplemental_costs
+            request, plan, evaluation_dataset,
+            supplemental_costs=supplemental_costs,
         )
+    else:
+        result = evaluate_feasibility(request, plan, evaluation_dataset)
     if service.config.enabled:
         result.setdefault("components", {})["routing"] = {
             "enabled": True,
@@ -276,17 +280,25 @@ def rank_candidate_plans(
     if not isinstance(supplemental_costs_by_plan, dict):
         raise PlanningError("RANKING_ERROR", "Candidates could not be ranked.")
     service = routing_service or get_default_routing_service()
+    effective_supplements = {
+        plan["planId"]: supplemental_costs_by_plan.get(plan["planId"])
+        or trusted_supplemental_costs(normalized_request, plan, dataset)
+        for plan in validated_plans
+    }
+    effective_supplements = {
+        plan_id: costs for plan_id, costs in effective_supplements.items() if costs
+    }
     evaluations_by_plan_id = {
         plan["planId"]: _evaluate_candidate(
             normalized_request, plan, dataset, service,
-            supplemental_costs_by_plan.get(plan["planId"]),
+            effective_supplements.get(plan["planId"]),
         )
         for plan in validated_plans
     }
     try:
         result = rank_candidates(
             normalized_request, validated_plans, dataset=dataset,
-            supplemental_costs_by_plan=supplemental_costs_by_plan,
+            supplemental_costs_by_plan=effective_supplements,
             evaluations_by_plan_id=evaluations_by_plan_id,
         )
     except (ValidationError, ValueError, TypeError) as exc:

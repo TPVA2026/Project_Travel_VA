@@ -36,6 +36,8 @@ def _exact_number(text: object, unit: str) -> int | float | None:
     if not isinstance(text, str):
         return None
     normalized = text.strip().casefold()
+    if unit == "vnd" and re.search(r"\b(from|tu|khoang|uoc tinh)\b", _key(normalized) or ""):
+        return None
     if unit == "vnd" and normalized in {"mien phi", "miễn phí", "free"}:
         return 0
     if "-" in normalized or "–" in normalized:
@@ -91,6 +93,8 @@ def _normalize_place(raw: dict, destination_ids: dict[str, str], dining: bool) -
     )
     price_field = "avgPricePerPersonVnd" if dining else "priceVnd"
     item[price_field] = _exact_number(item.get(price_field, item.get("cost")), "vnd")
+    if dining and item.get("priceScope", "perPerson") != "perPerson":
+        item["avgPricePerPersonVnd"] = None
     return item
 
 
