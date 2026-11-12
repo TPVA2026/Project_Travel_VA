@@ -66,14 +66,21 @@ def request_text(
     `client` is an SDK-like object (`client.models.generate_content(...)`); tests inject a fake.
     """
     provider = os.getenv("AI_PROVIDER", "gemini").strip().casefold()
-    if provider == "freemodel":
+    if provider in ("freemodel", "codex"):
         from app.services.ai.freemodel_client import request_text as freemodel_request
+        codex = provider == "codex"
+        if codex and api_key is None:
+            api_key = os.getenv("CODEX_API_KEY")
+            if not isinstance(api_key, str) or not api_key.strip():
+                raise GeminiError("CONFIG", "CODEX_API_KEY is not set on the server")
         return freemodel_request(
-            prompt, schema, api_key=api_key, model=model, timeout_s=timeout_s,
-            max_retries=max_retries, client=client, sleep=sleep,
+            prompt, schema, api_key=api_key,
+            model=model or (os.getenv("CODEX_MODEL") or "gpt-6-luna") if codex else model,
+            timeout_s=timeout_s, max_retries=max_retries, client=client, sleep=sleep,
+            base_url=(os.getenv("CODEX_BASE_URL") or "https://api.openai.com/v1") if codex else None,
         )
     if provider != "gemini":
-        raise GeminiError("CONFIG", "AI_PROVIDER must be gemini or freemodel")
+        raise GeminiError("CONFIG", "AI_PROVIDER must be gemini, freemodel, or codex")
     api_key = os.getenv("GEMINI_API_KEY") if api_key is None else api_key
     model = model or os.getenv("GEMINI_MODEL") or DEFAULT_MODEL
     if timeout_s is None:
