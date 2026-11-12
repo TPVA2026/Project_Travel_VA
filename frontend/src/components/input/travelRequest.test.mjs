@@ -82,8 +82,12 @@ assert.equal(progressOf(form({ ...valid })), 100);
 assert.equal(progressOf(form({ destination: "Hoi An", interest: ["nature"] })), 0);
 
 assert.equal(formatBudgetInput("5000000"), "5,000,000");
+assert.equal(formatBudgetInput("3987654"), "3,987,000");
+assert.equal(formatBudgetInput("500"), "500");
 assert.equal(normalizeBudgetInput("5,000,000"), "5000000");
 assert.equal(buildPayload(form({ ...valid, budgetAmount: "5,000,000" })).budget.amount, 5000000);
+assert.equal(buildPayload(form({ ...valid, budgetAmount: "3987654" })).budget.amount, 3987000);
+assert.equal(clientErrors(form({ ...valid, budgetAmount: "500" })).budgetAmount, "Enter at least 1,000 VND.");
 assert.deepEqual(clientErrors(form({ ...valid, budgetAmount: "5,000,000" })), {});
 assert.equal(formatBudgetInput("0"), "0");
 for (const invalid of ["5,00,000", "-1", "1.5", "abc"]) {
