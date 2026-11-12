@@ -8,9 +8,9 @@ import { fileURLToPath } from "node:url";
 import React, { act } from "react";
 import { allProvincesSorted, POPULAR_PROVINCES } from "./provinces.js";
 
-// DOM-level integration: departure and destination open a city picker on empty
-// focus, suggest the 34 provinces as you type, and never require a list value.
-test("M1 city picker: empty-focus panel, accent-insensitive matches, no wards, free text sent as typed", async () => {
+// DOM-level integration: departure and destination open a city picker on click
+// (not autofocus), suggest the 34 provinces as you type, and never require a list value.
+test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; free text sent as typed", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
@@ -44,6 +44,7 @@ test("M1 city picker: empty-focus panel, accent-insensitive matches, no wards, f
   const actOn = async callback => { await act(async () => { callback(); await tick(); }); };
   const field = name => doc.getElementById(name) ?? doc.querySelector(`[name="${name}"]`);
   const fill = async (name, value) => actOn(() => { const control = field(name); assert.ok(control, name); Object.getOwnPropertyDescriptor(Object.getPrototypeOf(control), "value").set.call(control, value); control.dispatchEvent(new dom.window.Event("input", { bubbles: true })); });
+  const clickField = async name => actOn(() => { const control = field(name); assert.ok(control, name); control.dispatchEvent(new dom.window.Event("pointerdown", { bubbles: true })); control.click(); });
   const button = label => [...doc.querySelectorAll("button")].find(node => node.getAttribute("aria-label") === label || node.textContent.replace("‹", "").trim() === label);
   const click = async label => actOn(() => { assert.ok(button(label), label); button(label).click(); });
   const radio = async (name, value) => actOn(() => doc.querySelector(`[name="${name}"][value="${value}"]`).click());
@@ -79,8 +80,14 @@ test("M1 city picker: empty-focus panel, accent-insensitive matches, no wards, f
     assert.equal(departure.getAttribute("aria-expanded"), "false");
     assert.equal(listShown("departureLocation"), false);
 
-    // Empty focus opens the browse panel: popular (5) then all 34, A–Z.
+    // Step render and programmatic/autofocus must not open the panel.
     await actOn(() => departure.focus());
+    assert.equal(doc.activeElement, departure, "Input can still receive autofocus");
+    assert.equal(listShown("departureLocation"), false, "Autofocus does not open the panel");
+    assert.equal(departure.getAttribute("aria-expanded"), "false");
+
+    // A user click opens the browse panel: popular (5) then all 34, A–Z.
+    await clickField("departureLocation");
     assert.equal(departure.getAttribute("aria-expanded"), "true");
     assert.equal(listShown("departureLocation"), true);
     assert.equal(heading("departureLocation", "popular"), "Popular destinations");
@@ -93,10 +100,29 @@ test("M1 city picker: empty-focus panel, accent-insensitive matches, no wards, f
       ?.querySelector(".request-city-hint")?.textContent;
     assert.equal(lamDongHint, "Da Lat · Vietnam");
 
-    // Escape closes the panel without changing the text.
+    // Escape closes the panel without changing the text; clicking again reopens it.
     await key("departureLocation", "Escape");
     assert.equal(listShown("departureLocation"), false);
     assert.equal(departure.value, "");
+    await clickField("departureLocation");
+    assert.equal(listShown("departureLocation"), true);
+    await key("departureLocation", "Escape");
+    assert.equal(listShown("departureLocation"), false);
+
+    // ArrowDown (and Alt+ArrowDown) opens the panel from a focused, closed field.
+    await actOn(() => departure.focus());
+    assert.equal(listShown("departureLocation"), false);
+    await key("departureLocation", "ArrowDown");
+    assert.equal(listShown("departureLocation"), true);
+    await key("departureLocation", "Escape");
+    assert.equal(listShown("departureLocation"), false);
+    await actOn(() => {
+      departure.focus();
+      departure.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "ArrowDown", altKey: true, bubbles: true, cancelable: true }));
+    });
+    assert.equal(listShown("departureLocation"), true);
+    await key("departureLocation", "Escape");
+    assert.equal(listShown("departureLocation"), false);
 
     // "h": provinces including Huế, no wards, nothing is filled in.
     await fill("departureLocation", "h");
@@ -134,10 +160,12 @@ test("M1 city picker: empty-focus panel, accent-insensitive matches, no wards, f
     await click("Next");
     assert.deepEqual(visible(), [1]);
 
-    // Destination: empty focus uses the same panel; mouse pick and aliases work.
+    // Destination: arriving at the step (autofocus) does not open the panel; a click does.
     const destination = field("destination");
     assert.equal(destination.placeholder, "e.g. Da Nang, Da Lat");
     await actOn(() => destination.focus());
+    assert.equal(listShown("destination"), false, "Step autofocus does not open the destination panel");
+    await clickField("destination");
     assert.equal(listShown("destination"), true);
     assert.deepEqual(sectionNames("destination", "popular"), [...POPULAR_PROVINCES]);
     assert.equal(sectionNames("destination", "all").length, 34);
