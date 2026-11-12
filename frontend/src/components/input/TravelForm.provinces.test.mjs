@@ -8,8 +8,8 @@ import { fileURLToPath } from "node:url";
 import React, { act } from "react";
 
 // DOM-level integration: departure and destination suggest Vietnam's 34 provinces as you type,
-// without ever filling in or requiring a value.
-test("M1 province suggestions: accent-insensitive combobox, keyboard and mouse pick, free text sent as typed", async () => {
+// and wards after two characters, without ever filling in or requiring a value.
+test("M1 province and ward suggestions: accent-insensitive combobox, keyboard and mouse pick, free text sent as typed", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
@@ -39,7 +39,7 @@ test("M1 province suggestions: accent-insensitive combobox, keyboard and mouse p
     loader: { ".png": "dataurl", ".jpg": "dataurl", ".svg": "dataurl" }, define: { "import.meta.env.VITE_API_BASE": "undefined" },
   });
   let root;
-  const tick = () => new Promise(resolve => setTimeout(resolve, 10));
+  const tick = () => new Promise(resolve => setTimeout(resolve, 20));
   const actOn = async callback => { await act(async () => { callback(); await tick(); }); };
   const field = name => doc.getElementById(name) ?? doc.querySelector(`[name="${name}"]`);
   const fill = async (name, value) => actOn(() => { const control = field(name); assert.ok(control, name); Object.getOwnPropertyDescriptor(Object.getPrototypeOf(control), "value").set.call(control, value); control.dispatchEvent(new dom.window.Event("input", { bubbles: true })); });
@@ -77,14 +77,17 @@ test("M1 province suggestions: accent-insensitive combobox, keyboard and mouse p
     assert.equal(departure.getAttribute("aria-expanded"), "false");
     assert.equal(listShown("departureLocation"), false);
 
-    // "h": prefix matches first, alphabetical, accents ignored; nothing is filled in.
+    // "h": provinces only (one character), accents ignored; nothing is filled in.
     await fill("departureLocation", "h");
     assert.equal(departure.getAttribute("aria-expanded"), "true");
-    assert.deepEqual(options("departureLocation"), ["Ha Noi", "Ha Tinh", "Hai Phong", "Ho Chi Minh City", "Hue", "Hung Yen", "Khanh Hoa", "Thanh Hoa"]);
+    assert.deepEqual(options("departureLocation"), ["Hà Nội", "Hà Tĩnh", "Hải Phòng", "Hồ Chí Minh", "Huế", "Hưng Yên", "Khánh Hoà", "Thanh Hoá"]);
     assert.equal(departure.value, "h", "Never auto-filled");
     assert.equal(departure.hasAttribute("aria-activedescendant"), false, "Nothing preselected");
     await fill("departureLocation", "HÀ");
-    assert.deepEqual(options("departureLocation"), ["Ha Noi", "Ha Tinh", "Hai Phong"]);
+    const haOptions = options("departureLocation");
+    assert.deepEqual(haOptions.slice(0, 3), ["Hà Nội", "Hà Tĩnh", "Hải Phòng"]);
+    assert.equal(haOptions.length, 8, "Two characters add wards after provinces, still capped at eight");
+    assert.ok(haOptions.slice(3).every(label => label.includes(",")), "Remaining suggestions are wards");
 
     // Keyboard: ArrowDown highlights, Enter picks the highlighted option and stays on the question.
     await key("departureLocation", "ArrowDown");
@@ -92,13 +95,14 @@ test("M1 province suggestions: accent-insensitive combobox, keyboard and mouse p
     assert.equal(departure.getAttribute("aria-activedescendant"), "departureLocation-suggestions-1");
     assert.equal(doc.getElementById("departureLocation-suggestions-1").getAttribute("aria-selected"), "true");
     await key("departureLocation", "Enter");
-    assert.equal(departure.value, "Ha Tinh");
+    assert.equal(departure.value, "Hà Tĩnh");
     assert.deepEqual(visible(), [0], "Picking does not submit the step");
     assert.equal(listShown("departureLocation"), false);
 
     // Escape closes the list without changing the text.
     await fill("departureLocation", "da");
-    assert.deepEqual(options("departureLocation"), ["Da Nang", "Dak Lak"]);
+    const daOptions = options("departureLocation");
+    assert.deepEqual(daOptions.slice(0, 2), ["Đà Nẵng", "Đắk Lắk"]);
     await key("departureLocation", "Escape");
     assert.equal(listShown("departureLocation"), false);
     assert.equal(departure.value, "da");
@@ -113,10 +117,21 @@ test("M1 province suggestions: accent-insensitive combobox, keyboard and mouse p
     const destination = field("destination");
     assert.equal(destination.placeholder, "e.g. Da Nang, Da Lat");
     await fill("destination", "hu");
-    assert.deepEqual(options("destination"), ["Hue", "Hung Yen"]);
+    const huOptions = options("destination");
+    assert.deepEqual(huOptions.slice(0, 2), ["Huế", "Hưng Yên"]);
+    assert.ok(huOptions.slice(2).every(label => label.includes(",")), "Wards follow provinces");
     await actOn(() => doc.getElementById("destination-suggestions-0").click());
-    assert.equal(destination.value, "Hue");
-    await fill("destination", "Da Lat");
+    assert.equal(destination.value, "Huế");
+
+    // Two characters: wards appear after provinces; picking fills the ward display text.
+    await fill("destination", "thu");
+    const thuOptions = options("destination");
+    assert.ok(thuOptions.includes("Phường Thuận Hoá, Huế"));
+    const thuIndex = thuOptions.indexOf("Phường Thuận Hoá, Huế");
+    await actOn(() => doc.getElementById(`destination-suggestions-${thuIndex}`).click());
+    assert.equal(destination.value, "Phường Thuận Hoá, Huế");
+
+    await fill("destination", "Da Lat town");
     assert.equal(listShown("destination"), false, "No match: no list and no error");
     assert.equal(doc.getElementById("destination-error"), null);
     await click("Next");
@@ -133,8 +148,34 @@ test("M1 province suggestions: accent-insensitive combobox, keyboard and mouse p
     await click("Create itinerary");
     const sent = validateCalls().at(-1).payload;
     assert.equal(sent.departureLocation, "Sa Pa town", "Free text is sent as typed");
-    assert.equal(sent.preferences.destination, "Da Lat", "A place outside the list is sent as typed");
-    assert.equal(fetchCalls.some(call => call.url === "/api/v1/destinations"), false, "Static list, no fetch");
+    assert.equal(sent.preferences.destination, "Da Lat town", "A place outside the list is sent as typed");
+    assert.equal(fetchCalls.some(call => call.url === "/api/v1/destinations"), false, "Static list, no destination API");
+
+    // A selected ward is also sent as the display text, unchanged contract.
+    await mount();
+    await fill("departureLocation", "hanoi");
+    assert.deepEqual(options("departureLocation"), ["Hà Nội"]);
+    await actOn(() => doc.getElementById("departureLocation-suggestions-0").click());
+    await click("Next");
+    await fill("destination", "thu");
+    const retryThu = options("destination").indexOf("Phường Thuận Hoá, Huế");
+    assert.ok(retryThu >= 0);
+    await actOn(() => doc.getElementById(`destination-suggestions-${retryThu}`).click());
+    await click("Next");
+    await fill("startDate", "2031-03-02");
+    await fill("endDate", "2031-03-04");
+    await click("Next");
+    await click("2 travelers");
+    await click("Next");
+    await fill("budgetAmount", "9000000");
+    await radio("budgetScope", "group");
+    await click("Next");
+    await click("Skip for now");
+    await click("Create itinerary");
+    const selected = validateCalls().at(-1).payload;
+    assert.equal(selected.departureLocation, "Hà Nội");
+    assert.equal(selected.preferences.destination, "Phường Thuận Hoá, Huế");
+    assert.equal(fetchCalls.some(call => call.url === "/api/v1/destinations"), false, "Static list, no destination API");
     assert.deepEqual(runtimeErrors, []);
   } finally {
     if (root) await act(async () => root.unmount());
