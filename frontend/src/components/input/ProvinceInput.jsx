@@ -1,25 +1,26 @@
 import { useState } from "react";
-import { foldText, loadLocations, matchProvinces, VIETNAM_PROVINCE_LOCATIONS } from "./provinces";
+import Icon from "../common/Icon.jsx";
+import { allProvincesSorted, foldText, matchProvinces, POPULAR_PROVINCES, provinceHint } from "./provinces";
 
-// Accessible combobox (ARIA 1.2 list autocomplete) over Vietnam's provinces and,
-// after two or more typed characters, their wards/communes. The text is never
-// replaced unless the user picks an option; Enter without a highlighted option
-// keeps its normal meaning (go to the next question).
+// Accessible combobox (ARIA 1.2 list autocomplete) over Vietnam's 34 provinces.
+// An empty focused field opens a browse panel (popular, then all A–Z). The text
+// is never replaced unless the user picks an option; Enter without a highlighted
+// option keeps its normal meaning (go to the next question).
 export default function ProvinceInput({ id, onPick, className, "aria-describedby": describedBy, ...inputProps }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
-  const [locations, setLocations] = useState(VIETNAM_PROVINCE_LOCATIONS);
   const listId = `${id}-suggestions`;
-  const matches = matchProvinces(query, { locations });
-  const exact = matches.length === 1 && foldText(matches[0]) === foldText(query);
-  const shown = open && matches.length > 0 && !exact;
-
-  function ensureLocations() {
-    loadLocations().then(data => {
-      if (data) setLocations(data);
-    }).catch(() => {});
-  }
+  const browsing = !foldText(query);
+  const matches = browsing ? [] : matchProvinces(query);
+  const exact = !browsing && matches.length === 1 && foldText(matches[0]) === foldText(query);
+  const options = browsing
+    ? [
+        ...POPULAR_PROVINCES.map(name => ({ name, group: "popular", hint: provinceHint(name) })),
+        ...allProvincesSorted().map(name => ({ name, group: "all", hint: provinceHint(name) })),
+      ]
+    : matches.map(name => ({ name, group: "match", hint: provinceHint(name) }));
+  const shown = open && options.length > 0 && !exact;
 
   function pick(name) {
     onPick(name);
@@ -30,24 +31,49 @@ export default function ProvinceInput({ id, onPick, className, "aria-describedby
 
   function onKeyDown(event) {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      if (!matches.length || exact) return;
+      if (exact) return;
+      if (!browsing && !matches.length) return;
       event.preventDefault();
       const step = event.key === "ArrowDown" ? 1 : -1;
       setOpen(true);
       setActive(current => {
-        if (!shown) return step > 0 ? 0 : matches.length - 1;
+        if (!shown) return step > 0 ? 0 : options.length - 1;
         const next = current + step;
-        return next >= matches.length ? 0 : next < 0 ? matches.length - 1 : next;
+        return next >= options.length ? 0 : next < 0 ? options.length - 1 : next;
       });
-    } else if (event.key === "Enter" && shown && active >= 0 && active < matches.length) {
+    } else if (event.key === "Enter" && shown && active >= 0 && active < options.length) {
       event.preventDefault();
-      pick(matches[active]);
+      pick(options[active].name);
     } else if (event.key === "Escape" && shown) {
       event.preventDefault();
       setOpen(false);
       setActive(-1);
     }
   }
+
+  function renderOption(option, index) {
+    return (
+      <li
+        key={`${option.group}-${option.name}`}
+        id={`${listId}-${index}`}
+        role="option"
+        data-group={option.group}
+        aria-selected={index === active}
+        className={`request-city-option${index === active ? " active" : ""}`}
+        onMouseDown={event => event.preventDefault()}
+        onClick={() => pick(option.name)}
+      >
+        <Icon name="mapPin" size={18} className="request-city-pin" />
+        <span className="request-city-text">
+          <span className="request-city-name">{option.name}</span>
+          <span className="request-city-hint">{option.hint}</span>
+        </span>
+      </li>
+    );
+  }
+
+  const popular = options.map((option, index) => ({ option, index })).filter(item => item.option.group === "popular");
+  const all = options.map((option, index) => ({ option, index })).filter(item => item.option.group === "all");
 
   return (
     <div className="request-combobox">
@@ -61,26 +87,30 @@ export default function ProvinceInput({ id, onPick, className, "aria-describedby
         aria-autocomplete="list"
         aria-expanded={shown}
         aria-controls={listId}
-        aria-activedescendant={shown && active >= 0 && active < matches.length ? `${listId}-${active}` : undefined}
+        aria-activedescendant={shown && active >= 0 && active < options.length ? `${listId}-${active}` : undefined}
         aria-describedby={describedBy}
-        onInput={event => { setQuery(event.currentTarget.value); setOpen(true); setActive(-1); ensureLocations(); }}
-        onFocus={event => { setQuery(event.currentTarget.value); ensureLocations(); }}
+        onInput={event => { setQuery(event.currentTarget.value); setOpen(true); setActive(-1); }}
+        onFocus={event => { setQuery(event.currentTarget.value); setOpen(true); }}
+        onClick={() => setOpen(true)}
         onKeyDown={onKeyDown}
         onBlur={() => { setOpen(false); setActive(-1); }}
       />
-      <ul id={listId} role="listbox" className="request-suggestions" aria-label="Location suggestions" hidden={!shown}>
-        {shown && matches.map((name, index) => (
-          <li
-            key={name}
-            id={`${listId}-${index}`}
-            role="option"
-            aria-selected={index === active}
-            className={index === active ? "active" : undefined}
-            onMouseDown={event => event.preventDefault()}
-            onClick={() => pick(name)}
-          >{name}</li>
-        ))}
-      </ul>
+      <div id={listId} className="request-city-panel" role="listbox" aria-label="Province suggestions" hidden={!shown}>
+        {browsing && shown ? (
+          <>
+            <div className="request-city-group" role="group" aria-labelledby={`${listId}-popular`} data-section="popular">
+              <h3 id={`${listId}-popular`} className="request-city-heading">Popular destinations</h3>
+              <ul className="request-city-list">{popular.map(({ option, index }) => renderOption(option, index))}</ul>
+            </div>
+            <div className="request-city-group" role="group" aria-labelledby={`${listId}-all`} data-section="all">
+              <h3 id={`${listId}-all`} className="request-city-heading">All provinces &amp; cities</h3>
+              <ul className="request-city-list">{all.map(({ option, index }) => renderOption(option, index))}</ul>
+            </div>
+          </>
+        ) : (
+          shown && <ul className="request-city-list">{options.map((option, index) => renderOption(option, index))}</ul>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
-Vietnam administrative location data in this directory is a trimmed copy of
-the Vietnamese Provinces Database:
+Vietnam provincial names in this directory are a trimmed copy of the
+Vietnamese Provinces Database:
 
   https://github.com/thanglequoc/vietnamese-provinces-database
 
@@ -7,11 +7,10 @@ Dataset version: v5.2.0
 Latest decree in this snapshot: 388/NQ-UBTVQH16
 Source file: json/simplified_json_generated_data_vn_units_minified.json
 
-Only suggestion fields are kept (province code, name, nameEn, fullName;
-ward name and fullName). GIS, postal codes, and other fields are omitted.
+Only province suggestion fields are kept (code, name, nameEn, fullName).
+Ward/commune data, GIS, and postal codes are omitted.
 
-vietnam-locations.json is the full lazy-loaded list.
-vietnam-provinces-fallback.js is the 34-province subset shown immediately, before the full file loads.
+vietnam-provinces.js is the 34-province list used by the city picker.
 
 Copyright (c) 2021 Thang Le Quoc
 Licensed under the MIT License. See LICENSE in this directory.
