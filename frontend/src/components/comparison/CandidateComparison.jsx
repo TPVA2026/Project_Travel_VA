@@ -11,6 +11,10 @@ import {
   normalizeCandidateStatus,
   resolveDestinationName,
 } from '../../services/api.js'
+import {
+  getDestinationImage,
+  getDestinationLabel,
+} from '../../services/destinationImages.js'
 import { fmtMoney } from '../../services/mockData.js'
 import ItineraryTimeline from '../itinerary/ItineraryTimeline.jsx'
 import CostSummary from '../itinerary/CostSummary.jsx'
@@ -115,7 +119,14 @@ function CandidateCard({
   const warnings = getCandidateWarnings(candidate, ranking)
   const rank = getCandidateRanking(ranking, candidate.planId || plan.planId)
   const resolveName = createNameResolver(plan, placesById)
-  const destination = resolveDestinationName(plan.destinationId, placesById)
+  const resolvedDestination = resolveDestinationName(plan.destinationId, placesById)
+  const destination =
+    getDestinationLabel(plan.destinationId, resolvedDestination, plan.title) ||
+    resolvedDestination ||
+    plan.destinationId
+  const image =
+    plan.image ||
+    getDestinationImage(plan.destinationId, destination, plan.title)
   const isInfeasible = status === 'INFEASIBLE'
   const isRecommended = status === 'FEASIBLE' && rank.kind === 'ranked'
   const activityCount =
@@ -123,7 +134,17 @@ function CandidateCard({
 
   return (
     <article className={`card plan-card ${selected ? 'plan-card--selected' : ''}`}>
-      <div className="card-body">
+      <div className="img-wrap candidate-img-wrap">
+        {image && (
+          <img
+            src={image}
+            alt={`${destination} landscape`}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+        )}
         <div className="card-badges">
           <span className={statusClass(status)} data-testid={`candidate-status-${candidate.planId}`}>
             {candidateStatusLabel(status)}
@@ -141,7 +162,15 @@ function CandidateCard({
             </span>
           )}
         </div>
+        {selected && (
+          <div className="card-selected-ribbon">
+            <Icon name="check" size={14} />
+            Đã chọn
+          </div>
+        )}
+      </div>
 
+      <div className="card-body">
         <span className="card-index-label">{plan.planId}</span>
         <h3 className="card-destination">{destination || plan.destinationId}</h3>
         {plan.title && <p className="card-title">{plan.title}</p>}

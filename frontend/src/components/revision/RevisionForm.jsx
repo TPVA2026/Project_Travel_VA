@@ -14,7 +14,6 @@ export default function RevisionForm({ plan, onPlanRevised }) {
   const [clientErrors, setClientErrors] = useState({})
   const [serverError, setServerError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  const [shouldSimulateError, setShouldSimulateError] = useState(false)
 
   // Current plan statistics for reference
   const { total: knownCost } = knownTotal(plan)
@@ -161,9 +160,6 @@ export default function RevisionForm({ plan, onPlanRevised }) {
     setSubmitting(true)
     try {
       const res = await revisePlan(plan.id || plan.planId, payload, {
-        delay: 450,
-        shouldFail: shouldSimulateError,
-        forceMock: !plan.request,
         request: plan.request,
         plan,
       })
@@ -192,18 +188,6 @@ export default function RevisionForm({ plan, onPlanRevised }) {
 
   return (
     <div className="revision-container">
-      {/* Test / Reviewer controls bar */}
-      <div className="demo-controls-bar revision-demo-bar">
-        <span className="demo-controls-label">Test Revision States:</span>
-        <button
-          type="button"
-          className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
-          onClick={() => setShouldSimulateError((prev) => !prev)}
-        >
-          {shouldSimulateError ? '✓ Error simulated on submit' : 'Simulate revision error'}
-        </button>
-      </div>
-
       <div className="revision-intro">
         <h3 className="revision-heading">Request Itinerary Changes</h3>
         <p className="muted small">
