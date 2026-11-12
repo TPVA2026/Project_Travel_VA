@@ -1,6 +1,8 @@
 """System/user prompt templates for candidate itinerary generation (M3)."""
 import json
 
+from app.services.price_evidence import price_evidence_status
+
 # Fields the model must copy. Bulky evidence stays in grounding context, not in this prompt.
 _PROMPT_DEST_KEYS = ("id", "city", "name")
 _PROMPT_PLACE_KEYS = (
@@ -16,13 +18,20 @@ def _keep(record, keys):
     return {key: record[key] for key in keys if key in record}
 
 
+def _place_for_prompt(item, *, dining: bool):
+    kept = _keep(item, _PROMPT_PLACE_KEYS)
+    if isinstance(item, dict):
+        kept["costStatus"] = price_evidence_status(item, dining=dining)
+    return kept
+
+
 def _prompt_dataset(dataset: dict) -> dict:
     """Drop notes, coordinates and cross-place distance lists the model must not copy."""
     legs = dataset.get("travelMatrix", dataset.get("travel_matrix")) or []
     return {
         "destinations": [_keep(item, _PROMPT_DEST_KEYS) for item in dataset.get("destinations") or []],
-        "attractions": [_keep(item, _PROMPT_PLACE_KEYS) for item in dataset.get("attractions") or []],
-        "dining": [_keep(item, _PROMPT_PLACE_KEYS) for item in dataset.get("dining") or []],
+        "attractions": [_place_for_prompt(item, dining=False) for item in dataset.get("attractions") or []],
+        "dining": [_place_for_prompt(item, dining=True) for item in dataset.get("dining") or []],
         "travelMatrix": [_keep(item, _PROMPT_LEG_KEYS) for item in legs],
     }
 
@@ -30,11 +39,7 @@ def _prompt_dataset(dataset: dict) -> dict:
 SYSTEM_PROMPT = """You are an itinerary generator for a Vietnam travel prototype.
 RULES:
 - Use ONLY places listed in DATASET (reference them by id). Never invent places, prices, hours or travel times.
-- costStatus rules, per place price in DATASET (priceVnd for attractions, avgPricePerPersonVnd for dining):
-  * price is null -> estimatedCostVnd null and costStatus "NO_DATA" (never 0 for unknown);
-  * price present with priceStatus "ESTIMATED" or "UNVERIFIED", or with priceVnd, avgPricePerPersonVnd or priceScope in unverifiedFields, or source containing "UNVERIFIED" -> costStatus "UNVERIFIED";
-  * otherwise a present price -> costStatus "KNOWN".
-- estimatedCostVnd is the DATASET price copied EXACTLY (no rounding, no estimating, not multiplied by group size or days).
+- Copy costStatus from that place in DATASET. estimatedCostVnd is priceVnd or avgPricePerPersonVnd copied exactly, or null when costStatus is "NO_DATA" (never 0 for an unknown price, and never multiplied by group size or days).
 - activity type is "sightseeing" for attractions and "dining" for dining places; destinationId is a DATASET destination id.
 - Add NO fields that are not in the schema (no scores, ranks, totals, "verified"/"feasible" flags): every plan stays UNVERIFIED until the server checks it.
 - If a travel time or distance is unknown, output null.
