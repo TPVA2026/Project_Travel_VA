@@ -1,17 +1,25 @@
 import { useState } from "react";
-import { foldText, matchProvinces } from "./provinces";
+import { foldText, loadLocations, matchProvinces, VIETNAM_PROVINCE_LOCATIONS } from "./provinces";
 
-// Accessible combobox (ARIA 1.2 list autocomplete) over the 34 provinces.
-// The text is never replaced unless the user picks an option; Enter without a highlighted
-// option keeps its normal meaning (go to the next question).
+// Accessible combobox (ARIA 1.2 list autocomplete) over Vietnam's provinces and,
+// after two or more typed characters, their wards/communes. The text is never
+// replaced unless the user picks an option; Enter without a highlighted option
+// keeps its normal meaning (go to the next question).
 export default function ProvinceInput({ id, onPick, className, "aria-describedby": describedBy, ...inputProps }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const [locations, setLocations] = useState(VIETNAM_PROVINCE_LOCATIONS);
   const listId = `${id}-suggestions`;
-  const matches = matchProvinces(query);
+  const matches = matchProvinces(query, { locations });
   const exact = matches.length === 1 && foldText(matches[0]) === foldText(query);
   const shown = open && matches.length > 0 && !exact;
+
+  function ensureLocations() {
+    loadLocations().then(data => {
+      if (data) setLocations(data);
+    }).catch(() => {});
+  }
 
   function pick(name) {
     onPick(name);
@@ -55,12 +63,12 @@ export default function ProvinceInput({ id, onPick, className, "aria-describedby
         aria-controls={listId}
         aria-activedescendant={shown && active >= 0 && active < matches.length ? `${listId}-${active}` : undefined}
         aria-describedby={describedBy}
-        onInput={event => { setQuery(event.currentTarget.value); setOpen(true); setActive(-1); }}
-        onFocus={event => setQuery(event.currentTarget.value)}
+        onInput={event => { setQuery(event.currentTarget.value); setOpen(true); setActive(-1); ensureLocations(); }}
+        onFocus={event => { setQuery(event.currentTarget.value); ensureLocations(); }}
         onKeyDown={onKeyDown}
         onBlur={() => { setOpen(false); setActive(-1); }}
       />
-      <ul id={listId} role="listbox" className="request-suggestions" aria-label="Province suggestions" hidden={!shown}>
+      <ul id={listId} role="listbox" className="request-suggestions" aria-label="Location suggestions" hidden={!shown}>
         {shown && matches.map((name, index) => (
           <li
             key={name}
