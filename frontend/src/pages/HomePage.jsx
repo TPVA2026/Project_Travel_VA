@@ -3,32 +3,17 @@ import Icon from '../components/common/Icon.jsx'
 import { TravelSkyIllustration } from '../components/common/Illustrations.jsx'
 import FlightIntro from '../components/intro/FlightIntro.jsx'
 import { INTRO_STORAGE_KEY } from '../components/intro/introAssets.js'
-import DescribeChat from '../components/input/DescribeChat.jsx'
 import TravelForm from '../components/input/TravelForm.jsx'
 
-function SwitchMode({ label, onClick }) {
-  return (
-    <div className="mode-switch">
-      <p>Change your mind?</p>
-      <button type="button" onClick={onClick}>{label}</button>
-    </div>
-  )
-}
-
 export default function HomePage() {
-  const [mode, setMode] = useState('choose')
   const [showIntro, setShowIntro] = useState(false)
   const formPanelRef = useRef(null)
-  const describePanelRef = useRef(null)
 
   useEffect(() => {
-    const panel = mode === 'form' ? formPanelRef.current : mode === 'describe' ? describePanelRef.current : null
-    if (!panel) return
-    const first = mode === 'form'
-      ? panel.querySelector('.request-step:not([hidden]) [data-step-focus]:not([disabled])')
-      : panel.querySelector('input:not([type="hidden"]), select, textarea, button')
+    if (showIntro) return
+    const first = formPanelRef.current?.querySelector('.request-step:not([hidden]) [data-step-focus]:not([disabled])')
     first?.focus({ preventScroll: true })
-  }, [mode])
+  }, [showIntro])
 
   useEffect(() => {
     let shouldPlay = false
@@ -85,44 +70,8 @@ export default function HomePage() {
 
       <div className="plan-layout">
         <div className="plan-workspace">
-          <div className="entry-choice" hidden={mode !== 'choose'}>
-            <div className="entry-choice-head">
-              <h2>How would you like to start?</h2>
-              <p>Use the form for exact details, or describe the trip in your own words.</p>
-            </div>
-            <div className="entry-choice-actions">
-              <button type="button" className="entry-choice-card" onClick={() => setMode('form')}>
-                <span className="entry-choice-icon">
-                  <Icon name="edit" size={20} />
-                </span>
-                <strong>Fill in the form</strong>
-                <span>Set departure, dates, travelers, and budget.</span>
-                <span className="entry-choice-meta">
-                  Best for exact dates and costs
-                  <Icon name="arrowRight" size={15} />
-                </span>
-              </button>
-              <button type="button" className="entry-choice-card" onClick={() => setMode('describe')}>
-                <span className="entry-choice-icon">
-                  <Icon name="sparkle" size={20} />
-                </span>
-                <strong>Describe the trip</strong>
-                <span>Answer four short questions in your own words.</span>
-                <span className="entry-choice-meta">
-                  Best when you are still deciding
-                  <Icon name="arrowRight" size={15} />
-                </span>
-              </button>
-            </div>
-          </div>
-
-          <div id="trip-form-panel" className="input-panel plan-panel" hidden={mode !== 'form'} ref={formPanelRef}>
+          <div id="trip-form-panel" className="input-panel plan-panel" ref={formPanelRef}>
             <TravelForm />
-            <SwitchMode label="Switch to describing" onClick={() => setMode('describe')} />
-          </div>
-          <div id="trip-describe-panel" className="input-panel plan-panel" hidden={mode !== 'describe'} ref={describePanelRef}>
-            <DescribeChat />
-            <SwitchMode label="Switch to the form" onClick={() => setMode('form')} />
           </div>
         </div>
 
