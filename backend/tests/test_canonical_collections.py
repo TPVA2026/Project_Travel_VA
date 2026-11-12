@@ -95,3 +95,35 @@ def test_hue_generation_context_uses_curated_places_only():
     assert len(context["attractions"]) == 10
     assert len(context["dining"]) == 10
     assert all(place["id"].startswith("ATTR_H_") for place in context["attractions"])
+
+
+@pytest.mark.parametrize("selection,destination_id,folder", [
+    ("Huế", "H", "Hue"), ("  HUE  ", "H", "Hue"),
+    ("Nha Trang", "NT", "NhaTrang"), ("Khánh Hòa", "NT", "NhaTrang"),
+    ("Đà Nẵng", "VN_48", "DaNang"), ("Da Nang", "VN_48", "DaNang"),
+    ("Dien Bien", "VN_11", "DienBien"), ("Dak Lak", "VN_66", "DakLak"),
+    ("Lam Dong", "VN_68", "LamDong"), ("Dong Nai", "VN_75", "DongNai"),
+    ("Dong Thap", "VN_82", "DongThap"),
+])
+def test_destination_input_selects_places_from_the_correct_folder(selection, destination_id, folder):
+    context = build_context({"preferences": {"destination": selection}}, load_dataset())
+    assert [d["id"] for d in context["destinations"]] == [destination_id]
+    assert context["destinations"][0]["dataFolder"] == folder
+    for key, filename in (("attractions", "attractions.json"), ("dining", "restaurants.json")):
+        stored = json.loads((DATA_DIR / folder / filename).read_text(encoding="utf-8"))
+        stored_ids = {place["id"] for place in stored}
+        assert all(place["destinationId"] == destination_id and place["id"] in stored_ids
+                   for place in context[key])
+    if destination_id == "H":
+        assert len(context["attractions"]) == len(context["dining"]) == 10
+
+
+def test_planning_context_does_not_leak_legacy_route_estimates():
+    dataset = load_dataset()
+    source = next(p for p in dataset["attractions"] if p["id"] == "ATTR_H_03")
+    assert source["distancesToAttractions"]
+    context = build_context({"preferences": {"destination": "H"}}, dataset)
+    for place in context["attractions"] + context["dining"]:
+        assert not {"distancesToAttractions", "distancesToRestaurants", "distanceFromCenter", "distanceKm"} & place.keys()
+    assert all(leg["durationMin"] is None and leg["distanceKm"] is None for leg in context["travelMatrix"])
+    assert source["distancesToAttractions"]  # Source evidence remains intact.

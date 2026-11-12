@@ -299,7 +299,7 @@ def test_default_dataset_is_loaded_once(m4_case, monkeypatch):
     request, original, dataset, costs = m4_case
     calls = []
 
-    def load():
+    def load(**kwargs):
         """Thay nguồn file bằng dataset cố định cho bài kiểm tra."""
         calls.append(True)
         return dataset

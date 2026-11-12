@@ -12,6 +12,8 @@ RULES:
 - activity type is "sightseeing" for attractions and "dining" for dining places; destinationId is a DATASET destination id.
 - Add NO fields that are not in the schema (no scores, ranks, totals, "verified"/"feasible" flags): every plan stays UNVERIFIED until the server checks it.
 - If a travel time or distance is unknown, output null.
+- travelMatrix is the ONLY source of travelLegs durationMin/distanceKm. If the directed pair is absent or its value is null, copy null; do not calculate or estimate it.
+- Include ALL required fields, including missingData and assumptions; use [] when there are no entries.
 - Activities in one day must not overlap.
 - Use DATASET openingHours as the scheduling reference.
 - For DAILY openingHours, every activity must start at or after open and end at or before close.

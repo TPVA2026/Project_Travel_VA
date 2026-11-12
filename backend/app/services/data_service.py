@@ -11,6 +11,8 @@ import json
 import re
 import unicodedata
 
+from app.services.destination_resolution import request_destination, resolve_destination_id
+
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
@@ -155,16 +157,19 @@ def normalize_dataset(raw: dict) -> dict:
     }
 
 
-def _apply_routing_points(dataset: dict, raw: object) -> dict:
+def _apply_routing_points(dataset: dict, raw: object, *, scoped: bool = False) -> dict:
     """Attach reviewed routing points to the normalized copy, never snapshots."""
     if not isinstance(raw, dict) or not isinstance(raw.get("points"), list):
         raise ValueError("Invalid reviewed routing point overlay")
     points: dict[str, dict] = {}
+    loaded_ids = {p["id"] for key in ("attractions", "dining") for p in dataset.get(key, [])}
     for item in raw["points"]:
         if (not isinstance(item, dict) or not isinstance(item.get("placeId"), str)
                 or item.get("reviewed") is not True):
             raise ValueError("Invalid reviewed routing point")
         place_id = item["placeId"]
+        if scoped and place_id not in loaded_ids:
+            continue
         if place_id in points:
             raise ValueError("Duplicate reviewed routing point")
         points[place_id] = {
@@ -209,15 +214,22 @@ def _load_destination_collections(destinations: list[dict]) -> dict:
     return collections
 
 
-def load_dataset() -> dict:
-    """Read destination folders and shared route evidence.
+def load_dataset(destination: str | None = None, *, request: dict | None = None) -> dict:
+    """Read only the selected folder when a destination or request is supplied.
 
     Archived OpenTripMap snapshots are provenance, not runtime inputs. Internal
     dining/hotels keys stay compatible with existing planning consumers.
+    No arguments explicitly loads all folders for nationwide discovery/audits.
+    A request with no unambiguous destination loads no place files.
     """
-    destinations = _load("destinations.json")
-    if not isinstance(destinations, list) or any(not isinstance(d, dict) for d in destinations):
-        raise ValueError("Invalid destinations collection")
+    destinations = get_destinations()
+    scoped = request is not None or destination is not None
+    if scoped:
+        selection = request_destination(request) if request is not None else destination
+        destination_id = resolve_destination_id(selection, destinations)
+        destinations = [d for d in destinations if d["id"] == destination_id]
+        if not destinations:
+            return {"destinations": [], "attractions": [], "dining": [], "hotels": [], "travel_matrix": []}
     collections = _load_destination_collections(destinations)
     raw = {
         "destinations": destinations,
@@ -232,12 +244,15 @@ def load_dataset() -> dict:
     routing_points = DATA_DIR / "routing_points.json"
     if routing_points.exists():
         with routing_points.open(encoding="utf-8") as file:
-            normalized = _apply_routing_points(normalized, json.load(file))
+            normalized = _apply_routing_points(normalized, json.load(file), scoped=scoped)
     return normalized
 
 
 def get_destinations() -> list[dict]:
-    destinations = load_dataset()["destinations"]
-    if not all(isinstance(item, dict) for item in destinations):
-        raise ValueError("Each destination must be an object")
+    destinations = _load("destinations.json")
+    if not isinstance(destinations, list) or any(not isinstance(d, dict) for d in destinations):
+        raise ValueError("Invalid destinations collection")
+    ids = [d.get("id") for d in destinations]
+    if any(not isinstance(i, str) or not i for i in ids) or len(ids) != len(set(ids)):
+        raise ValueError("Invalid or duplicate destination ID")
     return destinations

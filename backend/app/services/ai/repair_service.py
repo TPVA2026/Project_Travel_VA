@@ -119,7 +119,7 @@ def generate_candidates_with_repair(
     if isinstance(max_repairs, bool) or not isinstance(max_repairs, int) or max_repairs < 0:
         raise ValueError("max_repairs must be a non-negative integer")
 
-    dataset = load_dataset()
+    dataset = load_dataset(request=request)
     results = []
     seen = set()
     previous_plans = []

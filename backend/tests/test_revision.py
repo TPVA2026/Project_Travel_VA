@@ -47,7 +47,7 @@ def test_revision_api_recalculates_feasibility(monkeypatch, m4_case):
     request, plan, dataset, _ = m4_case
     dataset["attractions"][0]["destinationId"] = "HUE"
     dataset["dining"][0]["destinationId"] = "HUE"
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     response = TestClient(app).post("/itineraries/revise", json={
         "request": request,
         "plan": plan,

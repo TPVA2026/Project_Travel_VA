@@ -130,7 +130,7 @@ def generate_candidate(
     `dataset` defaults to the M2 repository. `client_kwargs` go to gemini_client.request_text
     (api_key, model, timeout_s, max_retries, client, sleep) - `client` is used by tests.
     """
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
     context = build_context(request, dataset)
     if not valid_destination_ids(context):
         raise GeminiError(
@@ -197,7 +197,7 @@ def generate_candidates(
     if not isinstance(count, int) or isinstance(count, bool) or count < 1:
         raise ValueError("count must be a positive integer")
 
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
 
     candidates = []
     seen = set()
@@ -249,7 +249,7 @@ def generate_repaired_candidate(
     if not feedback:
         raise ValueError("feedback must not be empty")
 
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
     context = build_context(request, dataset)
 
     if not valid_destination_ids(context) or not supported_place_ids(context):
@@ -301,7 +301,7 @@ def generate_revised_candidate(
     **client_kwargs,
 ) -> dict:
     """Revise an existing itinerary using Gemini; result remains UNVERIFIED."""
-    dataset = load_dataset() if dataset is None else dataset
+    dataset = load_dataset(request=request) if dataset is None else dataset
     context = build_context(request, dataset)
 
     if not valid_destination_ids(context) or not supported_place_ids(context):

@@ -42,7 +42,8 @@ def test_valid_plan_reaches_evaluator_normalized_once(case, monkeypatch):
     assert plan_arg == body["plan"]
     assert data_arg is dataset
     assert data_arg["attractions"][0]["opening_hours"] == "7:00 - 17:30"
-    loader.assert_called_once_with()
+    loader.assert_called_once()
+    assert loader.call_args.kwargs["request"]["preferences"]["destination"] == body["request"]["preferences"]["destination"]
     assert (body, dataset) == before
     itinerary_generator.request_text.assert_not_called()
 
@@ -57,7 +58,8 @@ def test_evaluator_results_are_200_unchanged(case, monkeypatch, status):
     assert response.status_code == 200
     assert response.json() == result
     evaluator.assert_called_once()
-    loader.assert_called_once_with()
+    loader.assert_called_once()
+    assert loader.call_args.kwargs["request"]["preferences"]["destination"] == body["request"]["preferences"]["destination"]
 
 
 @pytest.mark.parametrize("failure", [
@@ -113,7 +115,8 @@ def test_real_m4_missing_supplements_is_unverified_without_mutation(case):
     assert result["components"]["travel"]["status"] == "FEASIBLE"
     assert result["components"]["cost"]["missing_costs"] == ["transport", "accommodation"]
     assert (body, dataset) == before
-    loader.assert_called_once_with()
+    loader.assert_called_once()
+    assert loader.call_args.kwargs["request"]["preferences"]["destination"] == body["request"]["preferences"]["destination"]
 
 
 def test_real_m4_known_budget_excess_is_infeasible(case):
@@ -187,7 +190,8 @@ def test_malformed_dataset_is_distinct_from_context_bug(case, monkeypatch, malfo
     assert "test-secret" not in response.text
     context.assert_not_called()
     evaluator.assert_not_called()
-    loader.assert_called_once_with()
+    loader.assert_called_once()
+    assert loader.call_args.kwargs["request"]["preferences"]["destination"] == body["request"]["preferences"]["destination"]
 
 
 @pytest.mark.parametrize("exception", [RuntimeError, ValueError, TypeError])
@@ -200,7 +204,8 @@ def test_unexpected_context_bug_is_safe_internal_error(case, monkeypatch, except
     assert response.status_code == 500
     assert response.json() == {"error": "INTERNAL"}
     evaluator.assert_not_called()
-    loader.assert_called_once_with()
+    loader.assert_called_once()
+    assert loader.call_args.kwargs["request"]["preferences"]["destination"] == body["request"]["preferences"]["destination"]
 
 
 def test_departure_route_and_metadata_reach_m4(case):

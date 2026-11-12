@@ -119,7 +119,7 @@ def test_rank_candidates_excludes_infeasible_plan(m4_case):
 
 def test_service_rejects_client_status_and_score(monkeypatch, m4_case):
     request, plan, dataset, _ = _rank_case(m4_case)
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     untrusted = deepcopy(plan)
     untrusted.update(status="FEASIBLE", score=100)
     try:
@@ -132,7 +132,7 @@ def test_service_rejects_client_status_and_score(monkeypatch, m4_case):
 
 def test_rank_api_re_evaluates_and_separates_unverified(monkeypatch, m4_case):
     request, plan, dataset, _ = _rank_case(m4_case)
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     response = TestClient(app).post(
         "/itineraries/rank", json={"request": request, "plans": [plan]}
     )
@@ -153,7 +153,7 @@ def test_rank_api_rejects_empty_candidates(m4_case):
 
 def test_rank_api_rejects_candidate_schema(monkeypatch, m4_case):
     request, plan, dataset, _ = _rank_case(m4_case)
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     plan["score"] = 1
     response = TestClient(app).post(
         "/itineraries/rank", json={"request": request, "plans": [plan]}
@@ -164,7 +164,7 @@ def test_rank_api_rejects_candidate_schema(monkeypatch, m4_case):
 
 def test_rank_api_rejects_unknown_place(monkeypatch, m4_case):
     request, plan, dataset, _ = _rank_case(m4_case)
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     plan["days"][0]["activities"][0]["placeId"] = "unknown"
     response = TestClient(app).post(
         "/itineraries/rank", json={"request": request, "plans": [plan]}
@@ -176,7 +176,7 @@ def test_rank_api_rejects_unknown_place(monkeypatch, m4_case):
 def test_rank_api_excludes_infeasible_candidate(monkeypatch, m4_case):
     request, plan, dataset, _ = _rank_case(m4_case)
     request["budget"]["amount"] = 1
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
     response = TestClient(app).post(
         "/itineraries/rank", json={"request": request, "plans": [plan]}
     )
@@ -206,7 +206,7 @@ def test_rank_service_limits_ranked_only_to_three(monkeypatch, m4_case):
         candidate = deepcopy(plan)
         candidate["planId"] = f"p{index}"
         plans.append(candidate)
-    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda: dataset)
+    monkeypatch.setattr("app.services.planning_service.load_dataset", lambda **kwargs: dataset)
 
     def fake_rank(_request, candidates, dataset=None, **_kwargs):
         return {

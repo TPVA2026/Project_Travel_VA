@@ -51,7 +51,7 @@ export default function SelectedPlanPage() {
     setPlaceCatalogError(null)
     const ids = collectPlaceIds(plan)
     if (!ids.length) return undefined
-    fetchPlaceCatalog({ ids }).then((places) => {
+    fetchPlaceCatalog({ ids, destination: plan.destinationId }).then((places) => {
       if (!cancelled) setPlacesById(indexPlaces(places))
     }).catch(() => {
       if (!cancelled) setPlaceCatalogError('Không tải được tên địa điểm. Hãy tải lại trang để thử lại.')

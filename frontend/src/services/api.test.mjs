@@ -329,6 +329,18 @@ test('fetchPlaceCatalog loads canonical names from backend including imported pl
   assert.equal(places[1].openingHours, '06:00 - 10:00')
 })
 
+test('place lookup sends the selected destination to avoid loading other folders', async (t) => {
+  const originalFetch = globalThis.fetch
+  t.after(() => { globalThis.fetch = originalFetch })
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(url, 'http://localhost')
+    assert.equal(parsed.searchParams.get('destination'), 'H')
+    assert.deepEqual(parsed.searchParams.getAll('ids'), ['ATTR_H_03'])
+    return Response.json({ places: [{ id: 'ATTR_H_03', name: 'Đại Nội' }] })
+  }
+  assert.equal((await fetchPlaceCatalog({ ids: ['ATTR_H_03'], destination: 'H' }))[0].name, 'Đại Nội')
+})
+
 
 test('Results helpers group backend reasons into Vietnamese topics', () => {
   const evaluation = {
@@ -406,6 +418,7 @@ async function renderCandidateComparison(candidates, ranking, selectedPlan = nul
     dom.window.localStorage.setItem('tpva_selected_plan_data', JSON.stringify(selectedPlan))
     replacements.fetch = async (url) => {
       assert.match(String(url), /\/api\/v1\/places\?/)
+      assert.equal(new URL(url, 'http://localhost').searchParams.get('destination'), selectedPlan.destinationId)
       return Response.json({ places: [
         { id: 'OTM_VN_48_X', name: 'Địa điểm Đà Nẵng', city: 'Đà Nẵng', destinationId: 'VN_48' },
       ] })
@@ -480,7 +493,7 @@ async function renderCandidateComparison(candidates, ranking, selectedPlan = nul
 }
 
 test('SelectedPlanPage resolves saved place IDs from the backend after reopening', async () => {
-  const selected = { ...candidatePlan('saved-plan', 'OTM_VN_48_X'), status: 'UNVERIFIED', missing: [] }
+  const selected = { ...candidatePlan('saved-plan', 'OTM_VN_48_X'), destinationId: 'VN_48', status: 'UNVERIFIED', missing: [] }
   const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
   try {
     const { act } = await import('react')

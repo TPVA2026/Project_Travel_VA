@@ -189,7 +189,7 @@ def test_endpoint_returns_unverified_plan(monkeypatch):
 
 def test_endpoint_without_server_key_is_500_config(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-    monkeypatch.setattr(generator, "load_dataset", lambda: dataset)  # real curated JSON is still empty
+    monkeypatch.setattr(generator, "load_dataset", lambda **kwargs: dataset)  # real curated JSON is still empty
     res = client.post("/itineraries/generate", json=endpoint_request)
     assert res.status_code == 500
     assert res.json()["error"] == "CONFIG"
@@ -382,7 +382,7 @@ def test_no_supported_places_never_calls_gemini():
 
 
 def test_endpoint_no_data_is_422(monkeypatch):
-    monkeypatch.setattr(generator, "load_dataset", lambda: {"destinations": [], "attractions": [], "dining": [], "travel_matrix": []})
+    monkeypatch.setattr(generator, "load_dataset", lambda **kwargs: {"destinations": [], "attractions": [], "dining": [], "travel_matrix": []})
     monkeypatch.setenv("GEMINI_API_KEY", "k")
     res = client.post("/itineraries/generate", json=endpoint_request)
     assert res.status_code == 422 and res.json()["error"] == "NO_DATA"

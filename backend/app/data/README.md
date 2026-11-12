@@ -15,6 +15,16 @@ unaccented PascalCase. The lodging filename is intentionally `accomodation.json`
 The loader validates folder names, unique IDs and each record's `destinationId`;
 all three files are required. The former root collection files are removed.
 
+Planning resolves the request destination through `destinations.json` before
+opening place files. For example, `Huế`/`Hue`/`H` reads only
+`Hue/attractions.json`, `Hue/restaurants.json` and `Hue/accomodation.json`, plus
+shared route evidence. Generate, Evaluate, Rank and revision use this scoped
+loader. The destination list and input validation read only the manifest.
+Place-name requests from the UI include the destination to use the same scope.
+`load_dataset()` without arguments remains available for nationwide discovery;
+`load_dataset(request=...)` with a missing/unknown/ambiguous destination returns
+an empty dataset rather than opening every folder.
+
 Every place references destinations.json through destinationId. Place IDs were
 preserved. Province IDs H (Hue), HCM and NT are legacy IDs kept for compatibility;
 NT now labels Khanh Hoa, retains Nha Trang as name/legacyCity and VN_56 as an

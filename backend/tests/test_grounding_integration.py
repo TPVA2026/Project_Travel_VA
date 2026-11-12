@@ -131,7 +131,7 @@ def test_api_runs_schema_and_grounding(data, plan, monkeypatch, failure):
         plan["days"][0]["travelLegs"][0]["durationMin"] = 1
     text = Mock(return_value=json.dumps(plan))
     monkeypatch.setattr(generator, "request_text", text)
-    monkeypatch.setattr(generator, "load_dataset", lambda: data)
+    monkeypatch.setattr(generator, "load_dataset", lambda **kwargs: data)
     before = copy.deepcopy(data)
     response = TestClient(app).post("/itineraries/generate", json=request)
     text.assert_called_once()

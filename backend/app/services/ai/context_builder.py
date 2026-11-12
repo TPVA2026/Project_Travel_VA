@@ -20,13 +20,13 @@ Rules (so the LLM can only reference real, supported data):
 import logging
 import math
 import re
-import unicodedata
 from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator, model_validator
 
 from app.algorithms.validation_common import route_reference
 from app.services.ai.opening_hours import normalize_opening_hours
+from app.services.destination_resolution import request_destination, resolve_destination_id
 
 log = logging.getLogger(__name__)
 
@@ -150,22 +150,6 @@ def _empty() -> dict:
     return {"destinations": [], "attractions": [], "dining": [], "travelMatrix": []}
 
 
-def _name_key(value: object) -> str | None:
-    if not isinstance(value, str) or not value.strip():
-        return None
-    folded = unicodedata.normalize("NFKD", value.strip()).casefold()
-    plain = "".join(char for char in folded if not unicodedata.combining(char))
-    words = re.sub(r"[^a-z0-9]+", " ", plain).split()
-    if words[:2] == ["thanh", "pho"]:
-        words = words[2:]
-    elif words[:1] == ["tp"]:
-        words = words[1:]
-    if words[-1:] == ["city"]:
-        words = words[:-1]
-    return " ".join(words) or None
-
-
-
 def _rank_places(places: list, request: dict) -> list:
     """Rank supported places by preference match, evidence and data completeness."""
     preferences = request.get("preferences") or {}
@@ -209,12 +193,19 @@ def _rank_places(places: list, request: dict) -> list:
 
     return sorted(places, key=score)
 
+def _planning_place(place) -> dict:
+    data = place.model_dump(by_alias=True)
+    data["openingHours"] = normalize_opening_hours(data)
+    # Legacy place-level route estimates are not accepted routing evidence.
+    # The travel matrix is the sole source of inter-place measurements.
+    for key in ("distancesToAttractions", "distancesToRestaurants", "distanceFromCenter",
+                "distanceKm", "distance_from_center"):
+        data.pop(key, None)
+    return data
+
+
 def build_context(request: dict, dataset: dict, *, limit_places: bool = True) -> dict:
-    preferences = request.get("preferences") if isinstance(request, dict) else None
-    if isinstance(preferences, dict) and "destination" in preferences:
-        wanted = preferences["destination"]
-    else:
-        wanted = request.get("preferredDestination") if isinstance(request, dict) else None
+    wanted = request_destination(request) if isinstance(request, dict) else None
 
     destinations = _unique(_parse(_Destination, dataset.get("destinations"), "destination"), set(), "destination")
     if not destinations:
@@ -225,20 +216,9 @@ def build_context(request: dict, dataset: dict, *, limit_places: bool = True) ->
     if wanted is not None:
         if not isinstance(wanted, str) or not wanted.strip():
             return _empty()
-        wanted = wanted.strip()
-        wanted_key = _name_key(wanted)
-        matches = {d.id for d in destinations if wanted_key == _name_key(d.id)}
-        if not matches:
-            matches = {
-                d.id for d in destinations
-                if any(wanted_key == _name_key((d.model_extra or {}).get(key))
-                       for key in ("name", "city", "city_name"))
-                or any(isinstance(alias, str) and wanted_key == _name_key(alias)
-                       for alias in ((d.model_extra or {}).get("aliases") or []))
-            }
-        if len(matches) != 1:
+        wanted = resolve_destination_id(wanted, [d.model_dump() for d in destinations])
+        if wanted is None:
             return _empty()  # never guess a destination or broaden the search
-        wanted = matches.pop()
         destinations = [d for d in destinations if d.id == wanted]
 
     seen: set[str] = set()  # place ids must be unique across attractions AND dining
@@ -283,16 +263,8 @@ def build_context(request: dict, dataset: dict, *, limit_places: bool = True) ->
 
     return {
         "destinations": [d.model_dump(by_alias=True) for d in destinations],
-        "attractions": [
-            {**p.model_dump(by_alias=True),
-             "openingHours": normalize_opening_hours(p.model_dump(by_alias=True))}
-            for p in attractions
-        ],
-        "dining": [
-            {**p.model_dump(by_alias=True),
-             "openingHours": normalize_opening_hours(p.model_dump(by_alias=True))}
-            for p in dining
-        ],
+        "attractions": [_planning_place(p) for p in attractions],
+        "dining": [_planning_place(p) for p in dining],
         "travelMatrix": [leg.model_dump(by_alias=True) for leg in legs],
     }
 

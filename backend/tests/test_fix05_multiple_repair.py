@@ -29,7 +29,7 @@ def test_multiple_repair_distinct_candidates(monkeypatch):
     monkeypatch.setattr(repair_service, "evaluate_plan", evaluate)
     monkeypatch.setattr(
         "app.services.ai.itinerary_generator.load_dataset",
-        lambda: {},
+        lambda **kwargs: {},
     )
 
     result = repair_service.generate_candidates_with_repair({}, count=3)
@@ -62,7 +62,7 @@ def test_multiple_repair_stops_after_two_repairs(monkeypatch):
     monkeypatch.setattr(repair_service, "evaluate_plan", evaluate)
     monkeypatch.setattr(
         "app.services.ai.itinerary_generator.load_dataset",
-        lambda: {},
+        lambda **kwargs: {},
     )
 
     result = repair_service.generate_candidates_with_repair({}, count=1)
@@ -105,7 +105,7 @@ def test_multiple_repair_skips_duplicate_after_repair(monkeypatch):
     monkeypatch.setattr(repair_service, "evaluate_plan", evaluate)
     monkeypatch.setattr(
         "app.services.ai.itinerary_generator.load_dataset",
-        lambda: {},
+        lambda **kwargs: {},
     )
 
     result = repair_service.generate_candidates_with_repair({}, count=2)
