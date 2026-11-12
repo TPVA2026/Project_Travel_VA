@@ -31,7 +31,7 @@ completions client against the CCPro gateway:
 ```dotenv
 AI_PROVIDER=codex
 CODEX_BASE_URL=https://api.ccpro.cn/v1
-CODEX_MODEL=gpt-6-luna
+CODEX_MODEL=gpt-5.6-sol
 CODEX_API_KEY=
 ```
 
