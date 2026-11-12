@@ -12,6 +12,7 @@ from app.services.planning_service import (
     evaluate_plan,
     rank_candidate_plans,
     revise_and_evaluate,
+    run_itinerary_pipeline,
 )
 
 router = APIRouter()
@@ -53,18 +54,25 @@ def generate(body: dict):
             plan = generate_candidate(normalized_body)
 
     except GeminiError as exc:
-        if exc.code == "TIMEOUT":
+        if exc.status == 429:
+            http = 429
+            code = "RATE_LIMIT"
+        elif exc.code == "TIMEOUT":
             http = 504
+            code = exc.code
         elif exc.code == "CONFIG":
             http = 500
+            code = exc.code
         elif exc.status == 422:
             http = 422
+            code = exc.code
         else:
             http = 502
+            code = exc.code
 
         return JSONResponse(
             {
-                "error": exc.code,
+                "error": code,
                 "message": exc.message,
                 "details": exc.details,
             },
@@ -124,6 +132,49 @@ class RankBody(BaseModel):
 def rank(body: RankBody):
     try:
         return rank_candidate_plans(body.request, body.plans)
+    except PlanningError as exc:
+        return JSONResponse(
+            {"error": exc.code, "message": exc.message, "details": exc.details},
+            status_code=exc.status_code,
+        )
+    except Exception:
+        return JSONResponse({"error": "INTERNAL"}, status_code=500)
+
+
+class PipelineBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    request: dict
+    count: int = Field(default=3, ge=1, le=3, strict=True)
+
+
+@router.post("/pipeline")
+def pipeline(body: PipelineBody):
+    try:
+        return run_itinerary_pipeline(body.request, body.count)
+    except GeminiError as exc:
+        if exc.status == 429:
+            http = 429
+            code = "RATE_LIMIT"
+        elif exc.code == "TIMEOUT":
+            http = 504
+            code = exc.code
+        elif exc.code == "CONFIG":
+            http = 500
+            code = exc.code
+        elif exc.code == "NO_DATA" or exc.status == 422:
+            http = 422
+            code = exc.code
+        else:
+            http = 502
+            code = (
+                "NO_CANDIDATES"
+                if exc.code in {"EMPTY", "INSUFFICIENT_CANDIDATES"}
+                else exc.code
+            )
+        return JSONResponse(
+            {"error": code, "message": exc.message, "details": exc.details},
+            status_code=http,
+        )
     except PlanningError as exc:
         return JSONResponse(
             {"error": exc.code, "message": exc.message, "details": exc.details},

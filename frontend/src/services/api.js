@@ -18,7 +18,6 @@ export {
 
 import { fetchPlanById as fetchPlanByIdMock, revisePlanMock } from "./mockData.js";
 import { getSelectedPlan, setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
-import { buildDemoPipeline, supportsDemoDestination } from "./demoPlan.js";
 
 function apiUrl(path) {
   if (!API_BASE || API_BASE === "/api") return path;
@@ -404,12 +403,31 @@ export function formatReason(reason, context = {}) {
   }
 }
 
-async function requestJson(path, payload) {
-  const res = await fetch(apiUrl(path), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+async function requestJson(path, payload, opts = {}) {
+  const timeoutMs = Number(opts.timeoutMs) || 0
+  const controller = timeoutMs > 0 ? new AbortController() : null
+  const timer = controller
+    ? setTimeout(() => controller.abort(), timeoutMs)
+    : null
+  let res
+  try {
+    res = await fetch(apiUrl(path), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller?.signal,
+    })
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      const timeout = new Error("The AI service took too long to respond.")
+      timeout.status = 504
+      timeout.code = "TIMEOUT"
+      throw timeout
+    }
+    throw error
+  } finally {
+    if (timer) clearTimeout(timer)
+  }
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
     const validationMessages = body.detail?.messages
@@ -427,14 +445,15 @@ async function requestJson(path, payload) {
       "The assistant could not complete the request."
     );
     error.status = res.status;
+    error.code = body.error;
     error.body = body;
     throw error;
   }
   return body;
 }
 
-export async function generateItinerary(payload) {
-  return requestJson("/itineraries/generate", payload)
+export async function generateItinerary(payload, opts = {}) {
+  return requestJson("/itineraries/generate", payload, opts)
 }
 
 export async function evaluateItinerary(request, plan) {
@@ -445,38 +464,250 @@ export async function rankItineraries(request, plans) {
   return requestJson("/itineraries/rank", { request, plans })
 }
 
-/**
- * The AI step is "unavailable" when the server has no working Gemini access
- * (missing key CONFIG, quota/API error 502, timeout 504). Validation errors
- * (422) are real user-input problems and are always surfaced instead.
- */
-function isAiUnavailable(error) {
-  const status = error?.status
-  const code = error?.body?.error
-  return (status === 500 && code === 'CONFIG') || status === 502 || status === 504
+export const PIPELINE_MAX_CANDIDATES = 3
+
+function pipelineError(code, message, extra = {}) {
+  const error = new Error(message)
+  error.code = code
+  Object.assign(error, extra)
+  return error
 }
 
-export async function runItineraryPipeline(payload) {
-  let usedRequest = payload
-  let generated
-  let generator = 'ai'
-  try {
-    generated = await generateItinerary(payload)
-  } catch (error) {
-    if (!isAiUnavailable(error) || !supportsDemoDestination(payload)) throw error
-    const demo = buildDemoPipeline(payload)
-    usedRequest = demo.request
-    generated = { status: 'UNVERIFIED', plan: demo.plan }
-    generator = 'demo'
+/**
+ * Convert a fetch/request error into a stable pipeline code so the UI can tell
+ * no-candidates, timeout and an unavailable AI apart. This never replaces a
+ * real failure with mock data on the AI flow.
+ */
+export function normalizePipelineError(error, stage = "pipeline") {
+  if (error?.code) return error
+  const status = error?.status
+  const serverCode = error?.body?.error
+  let code = "PIPELINE_ERROR"
+  if (
+    serverCode === "NO_CANDIDATES" ||
+    serverCode === "INSUFFICIENT_CANDIDATES"
+  ) code = "NO_CANDIDATES"
+  else if (status === 504 || serverCode === "TIMEOUT") code = "TIMEOUT"
+  else if (status === 429 || serverCode === "RATE_LIMIT") code = "RATE_LIMIT"
+  else if (status === 503) code = "AI_BUSY"
+  else if (status === 502 || (status === 500 && serverCode === "CONFIG")) code = "AI_UNAVAILABLE"
+  else if (status === 422) code = "INVALID_REQUEST"
+  else if (!status) code = "AI_UNAVAILABLE"
+  const wrapped = new Error(error?.message || "The assistant could not complete the request.")
+  wrapped.code = code
+  wrapped.status = status
+  wrapped.body = error?.body
+  wrapped.stage = stage
+  return wrapped
+}
+
+function clampCandidateCount(value) {
+  const numeric = Number(value)
+  if (!Number.isFinite(numeric)) return PIPELINE_MAX_CANDIDATES
+  return Math.max(1, Math.min(PIPELINE_MAX_CANDIDATES, Math.trunc(numeric)))
+}
+
+/**
+ * Identity of a candidate by its ordered place visits per day. Times may vary
+ * between otherwise-identical Gemini answers, so they are not part of the
+ * identity used to avoid showing the same itinerary twice.
+ */
+export function planSignature(plan) {
+  const days = Array.isArray(plan?.days) ? [...plan.days] : []
+  return JSON.stringify(
+    days
+      .sort((a, b) => (a?.dayNumber || 0) - (b?.dayNumber || 0))
+      .map((day) => [
+        day?.dayNumber || 0,
+        (Array.isArray(day?.activities) ? [...day.activities] : [])
+          .sort((a, b) => String(a?.startTime || "").localeCompare(String(b?.startTime || "")))
+          .map((activity) => activity?.placeId || null),
+      ])
+  )
+}
+
+export function normalizeCandidateStatus(status) {
+  return VALID_STATUSES.has(status) ? status : "UNVERIFIED"
+}
+
+export const CANDIDATE_STATUS_LABEL = {
+  FEASIBLE: "Đủ điều kiện",
+  UNVERIFIED: "Chưa xác minh",
+  INFEASIBLE: "Không khả thi",
+}
+
+export const CANDIDATE_STATUS_HINT = {
+  FEASIBLE: "Đã vượt qua kiểm tra chi phí, lịch trình và di chuyển.",
+  UNVERIFIED: "Còn dữ liệu chưa xác minh; chưa phải đề xuất đã xác minh và không tính phần thiếu là 0.",
+  INFEASIBLE: "Vi phạm ràng buộc đã kiểm tra; không thể chọn.",
+}
+
+export function candidateStatusLabel(status) {
+  return CANDIDATE_STATUS_LABEL[normalizeCandidateStatus(status)]
+}
+
+/**
+ * Known vs unknown costs for one candidate. `complete` is false whenever any
+ * required cost is missing, so the UI can never present a partial total as the
+ * full trip cost (missing costs are never counted as 0).
+ */
+export function getCandidateCost(candidate) {
+  const cost = candidate?.evaluation?.components?.cost
+  if (!cost || typeof cost !== "object") {
+    return { knownTotal: null, missing: [], complete: false, budget: null, remaining: null }
   }
-  const evaluation = await evaluateItinerary(usedRequest, generated.plan)
-  const ranking = await rankItineraries(usedRequest, [generated.plan])
   return {
-    status: evaluation.status,
-    plan: generated.plan,
-    evaluation,
-    ranking,
-    generator,
+    knownTotal: cost.known_total ?? null,
+    missing: Array.isArray(cost.missing_costs) ? cost.missing_costs : [],
+    complete: cost.total_cost != null,
+    budget: cost.budget ?? null,
+    remaining: cost.remaining_budget ?? null,
+  }
+}
+
+/**
+ * Routing evidence summarises how many legs carry verified provenance. An
+ * absent routing component means "not verified here", never "no travel".
+ */
+export function getRoutingEvidence(candidate) {
+  const routes = candidate?.evaluation?.components?.routing?.routes
+  if (!Array.isArray(routes)) {
+    return { available: false, total: 0, verified: 0, unverified: 0, routes: [] }
+  }
+  const verified = routes.filter(
+    (route) =>
+      route?.status === "ROUTE_AVAILABLE" && route?.evidenceStatus === "VERIFIED"
+  )
+  return {
+    available: true,
+    total: routes.length,
+    verified: verified.length,
+    unverified: routes.length - verified.length,
+    routes,
+  }
+}
+
+/**
+ * Locate a candidate in ranking: ranked (with score/position), unscored
+ * (feasible but missing score inputs) or excluded (not ranked).
+ */
+export function getCandidateRanking(ranking, planId) {
+  const ranked = Array.isArray(ranking?.ranked) ? ranking.ranked : []
+  const index = ranked.findIndex((item) => item?.planId === planId)
+  if (index !== -1) {
+    const entry = ranked[index]
+    return {
+      kind: "ranked",
+      position: index + 1,
+      score: entry?.score ?? null,
+      score100: entry?.score100 ?? (entry?.score != null ? entry.score * 100 : null),
+      entry,
+    }
+  }
+  const unscored = Array.isArray(ranking?.unscored) ? ranking.unscored : []
+  const unscoredEntry = unscored.find((item) => item?.planId === planId)
+  if (unscoredEntry) {
+    return { kind: "unscored", position: null, score: null, score100: null, entry: unscoredEntry }
+  }
+  const excluded = Array.isArray(ranking?.excluded) ? ranking.excluded : []
+  const excludedEntry = excluded.find((item) => item?.planId === planId)
+  if (excludedEntry) {
+    return { kind: "excluded", position: null, score: null, score100: null, entry: excludedEntry }
+  }
+  return { kind: null, position: null, score: null, score100: null, entry: null }
+}
+
+/**
+ * Suitability / quality warnings for a candidate: every non-passing evaluation
+ * reason plus the ranking exclusion reasons, de-duplicated by code + path.
+ */
+export function getCandidateWarnings(candidate, ranking) {
+  const reasons = [
+    ...(Array.isArray(candidate?.evaluation?.reasons) ? candidate.evaluation.reasons : []),
+  ]
+  const source = ranking || candidate?.ranking
+  const excluded = Array.isArray(source?.excluded) ? source.excluded : []
+  const own = excluded.find((item) => item?.planId === candidate?.planId)
+  reasons.push(...(Array.isArray(own?.reasons) ? own.reasons : []))
+
+  const seen = new Set()
+  const warnings = []
+  for (const raw of reasons) {
+    const reason = typeof raw === "string" ? { message: raw } : raw
+    if (!reason || reason.status === "FEASIBLE") continue
+    if (!reason.message && !reason.code) continue
+    const identity = `${reason.code || ""}\u0000${reason.path || ""}\u0000${reason.message || ""}`
+    if (seen.has(identity)) continue
+    seen.add(identity)
+    warnings.push(reason)
+  }
+  return warnings
+}
+
+/**
+ * Run the multi-candidate AI pipeline through the backend generate/evaluate/
+ * rank endpoints (TPVA-34 contract, orchestrated from the client because the
+ * generation endpoint returns one candidate per call).
+ *
+ * Returns `{ pipelineStatus, candidates, ranking, warnings }` plus the legacy
+ * single-plan fields (`status`, `plan`, `evaluation`). The AI flow never falls
+ * back to mock recommendations: no candidates, timeout and partial failures
+ * surface as typed errors or an explicit PARTIAL result.
+ */
+export async function runItineraryPipeline(payload, opts = {}) {
+  const requested = clampCandidateCount(opts.count)
+  try {
+    const result = await requestJson(
+      "/itineraries/pipeline",
+      { request: payload, count: requested },
+      { timeoutMs: opts.timeoutMs || 300000 }
+    )
+    const legacyCandidate = result?.plan
+      ? [{
+          planId: result.plan.planId,
+          plan: result.plan,
+          status: result.status || result.evaluation?.status || "UNVERIFIED",
+          evaluation: result.evaluation || null,
+        }]
+      : []
+    const candidates = Array.isArray(result?.candidates)
+      ? result.candidates
+      : legacyCandidate
+    if (candidates.length === 0) {
+      throw pipelineError(
+        "NO_CANDIDATES",
+        "The assistant did not return any usable candidate."
+      )
+    }
+
+    const normalizedCandidates = candidates.map((candidate) => ({
+      ...candidate,
+      planId: candidate.planId || candidate.plan?.planId,
+      status: normalizeCandidateStatus(
+        candidate.status || candidate.evaluation?.status
+      ),
+      evaluation: candidate.evaluation || null,
+    }))
+    const primary = normalizedCandidates[0]
+    return {
+      ...result,
+      pipelineStatus:
+        result?.pipelineStatus ||
+        (Array.isArray(result?.warnings) && result.warnings.length > 0
+          ? "PARTIAL"
+          : "COMPLETE"),
+      generator: result?.generator || "ai",
+      candidates: normalizedCandidates,
+      ranking: result?.ranking || { ranked: [], unscored: [], excluded: [] },
+      warnings: Array.isArray(result?.warnings) ? result.warnings : [],
+      request: result?.request || payload,
+      // Preserve the single-candidate fields for older consumers.
+      status: result?.status || primary.status,
+      plan: result?.plan || primary.plan,
+      evaluation: result?.evaluation || primary.evaluation,
+    }
+  } catch (error) {
+    throw normalizePipelineError(error)
   }
 }
 
