@@ -6,11 +6,9 @@ import {
   INTRO_CLOUD,
   INTRO_STORAGE_KEY,
 } from '../components/intro/introAssets.js'
-import { MOCK_PLANS, fmtMoney, knownTotal } from '../services/mockData.js'
+import { getDestinationImage } from '../services/destinationImages.js'
 
-const sample = MOCK_PLANS[0]
-const sampleCost = knownTotal(sample).total
-const sampleStatus = sample.status === 'FEASIBLE' ? 'Feasible' : 'Review needed'
+const previewImage = getDestinationImage('H')
 
 export default function WelcomePage() {
   useEffect(() => {
@@ -31,9 +29,6 @@ export default function WelcomePage() {
       sessionStorage.setItem(INTRO_STORAGE_KEY, '1')
     } catch {}
   }
-
-  const previewDays = sample.days.slice(0, 2)
-  const remainingDays = sample.days.length - previewDays.length
 
   return (
     <div className="welcome-page">
@@ -57,8 +52,8 @@ export default function WelcomePage() {
               Start planning
               <Icon name="arrowRight" size={17} />
             </Link>
-            <Link to={`/selected?id=${sample.id}`} className="welcome-link">
-              See a finished plan
+            <Link to="/results" className="welcome-link">
+              View your results
               <Icon name="arrowRight" size={15} />
             </Link>
           </div>
@@ -99,55 +94,52 @@ export default function WelcomePage() {
         </div>
 
         <div className="welcome-stage">
-          <Link to={`/selected?id=${sample.id}`} className="welcome-plan-card">
+          <Link to="/" className="welcome-plan-card" onClick={handleStartPlanning}>
             <div className="welcome-plan-media">
-              <img src={sample.image} alt={`${sample.destination} landscape`} />
+              <img src={previewImage} alt="Huế landscape" />
               <span className="welcome-plan-badge">
                 <Icon name="check" size={13} />
-                Fits your trip
+                Backend checked
               </span>
               <span className="welcome-plan-location">
-                <span>Destination</span>
-                <strong>{sample.destination}</strong>
+                <span>Example destination</span>
+                <strong>Huế</strong>
               </span>
             </div>
             <div className="welcome-plan-body">
               <div className="welcome-plan-head">
-                <p className="welcome-plan-kicker">{sample.days.length}-day itinerary</p>
-                <h2>{sample.title}</h2>
+                <p className="welcome-plan-kicker">Day-by-day itinerary</p>
+                <h2>Built from your real trip details</h2>
               </div>
               <dl className="welcome-plan-stats">
                 <div>
                   <dt>Known cost</dt>
-                  <dd>{fmtMoney(sampleCost)}</dd>
+                  <dd>Verified places</dd>
                 </div>
                 <div>
                   <dt>Days</dt>
-                  <dd>{sample.days.length}</dd>
+                  <dd>Your dates</dd>
                 </div>
                 <div>
                   <dt>Status</dt>
-                  <dd className="is-good">{sampleStatus}</dd>
+                  <dd className="is-good">Checked</dd>
                 </div>
               </dl>
               <ol className="welcome-plan-days">
-                {previewDays.map((day) => (
-                  <li key={day.dayNumber}>
-                    <span className="welcome-plan-day">Day {day.dayNumber}</span>
-                    <span className="welcome-plan-activity">
-                      {day.activities?.[0]?.name ?? 'Open day'}
-                    </span>
-                    <span className="welcome-plan-time">
-                      {day.activities?.[0]?.start}–{day.activities?.[0]?.end}
-                    </span>
-                  </li>
-                ))}
+                <li>
+                  <span className="welcome-plan-day">Day 1</span>
+                  <span className="welcome-plan-activity">Arrival and neighbourhood walk</span>
+                  <span className="welcome-plan-time">Your pace</span>
+                </li>
+                <li>
+                  <span className="welcome-plan-day">Day 2</span>
+                  <span className="welcome-plan-activity">Sights, food, and local transport</span>
+                  <span className="welcome-plan-time">Your budget</span>
+                </li>
               </ol>
-              {remainingDays > 0 && (
-                <p className="welcome-plan-more">+ {remainingDays} more days in the full plan</p>
-              )}
+              <p className="welcome-plan-more">The final route is generated from your request.</p>
               <span className="welcome-plan-link">
-                Open this plan
+                Start planning
                 <Icon name="arrowRight" size={15} />
               </span>
             </div>

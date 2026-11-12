@@ -40,9 +40,8 @@ export default function SelectedPlanPage() {
   const [isChosen, setIsChosen] = useState(false)
   const [celebrate, setCelebrate] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState(false)
-  const [shouldSimulateError, setShouldSimulateError] = useState(false)
 
-  const loadPlan = useCallback(async (opts = {}) => {
+  const loadPlan = useCallback(async () => {
     if (!activePlanId) {
       setLoading(false)
       setPlan(null)
@@ -52,10 +51,7 @@ export default function SelectedPlanPage() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetchPlanById(activePlanId, {
-        delay: opts.delay ?? 300,
-        shouldFail: opts.shouldFail ?? shouldSimulateError,
-      })
+      const response = await fetchPlanById(activePlanId)
       setPlan(response.data)
       // Check if this plan is the user's chosen plan
       const currentSelected = getSelectedPlanId()
@@ -66,7 +62,7 @@ export default function SelectedPlanPage() {
     } finally {
       setLoading(false)
     }
-  }, [activePlanId, shouldSimulateError])
+  }, [activePlanId])
 
   useEffect(() => {
     loadPlan()
@@ -135,8 +131,8 @@ export default function SelectedPlanPage() {
             Explore recommended plans
             <Icon name="arrowRight" size={16} />
           </Link>
-          <Link to="/selected?id=p1" className="btn btn-outline">
-            Preview a sample itinerary
+          <Link to="/" className="btn btn-outline">
+            Create a new trip
           </Link>
         </div>
       </div>
@@ -228,38 +224,6 @@ export default function SelectedPlanPage() {
         )}
       </header>
 
-      {/* Demo / reviewer controls, kept out of the main reading flow */}
-      <details className="dev-panel selected-dev-panel no-print">
-        <summary>
-          <Icon name="refresh" size={15} />
-          Demo controls
-        </summary>
-        <div className="dev-panel-body">
-          <span className="demo-controls-label">Test states</span>
-          <button
-            type="button"
-            className="btn btn-sm btn-outline demo-btn"
-            onClick={() => {
-              setShouldSimulateError(false)
-              loadPlan({ shouldFail: false, delay: 400 })
-            }}
-          >
-            Reload timeline
-          </button>
-          <button
-            type="button"
-            className={`btn btn-sm demo-btn ${shouldSimulateError ? 'btn-danger-active' : 'btn-outline'}`}
-            onClick={() => {
-              const next = !shouldSimulateError
-              setShouldSimulateError(next)
-              loadPlan({ shouldFail: next, delay: 200 })
-            }}
-          >
-            {shouldSimulateError ? 'Error simulated' : 'Simulate error'}
-          </button>
-        </div>
-      </details>
-
       {loading && (
         <Loading message="Loading daily activity timeline, attractions, and dining..." />
       )}
@@ -271,10 +235,7 @@ export default function SelectedPlanPage() {
             message={error}
             actionLink="/results"
             actionText="Back to results"
-            onRetry={() => {
-              setShouldSimulateError(false)
-              loadPlan({ shouldFail: false, delay: 300 })
-            }}
+            onRetry={loadPlan}
           />
         </div>
       )}
