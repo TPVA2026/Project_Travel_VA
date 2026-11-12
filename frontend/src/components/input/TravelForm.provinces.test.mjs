@@ -6,7 +6,12 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import React, { act } from "react";
+import { localTodayIso, addDaysIso, MAX_TRIP_DAYS } from "./travelRequest.js";
 import { allProvincesSorted, POPULAR_PROVINCES } from "./provinces.js";
+
+const today = localTodayIso();
+const startSoon = today;
+const endSoon = addDaysIso(today, MAX_TRIP_DAYS - 1);
 
 // DOM-level integration: departure and destination open a city picker on click
 // (not autofocus), suggest the 34 provinces as you type, and never require a list value.
@@ -192,8 +197,8 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.equal(doc.getElementById("destination-error"), null);
     await click("Next");
     assert.deepEqual(visible(), [2]);
-    await fill("startDate", "2031-03-02");
-    await fill("endDate", "2031-03-04");
+    await fill("startDate", startSoon);
+    await fill("endDate", endSoon);
     await click("Next");
     await click("2 travelers");
     await click("Next");
@@ -217,8 +222,8 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.deepEqual(optionNames("destination"), ["Lâm Đồng"]);
     await actOn(() => doc.getElementById("destination-suggestions-0").click());
     await click("Next");
-    await fill("startDate", "2031-03-02");
-    await fill("endDate", "2031-03-04");
+    await fill("startDate", startSoon);
+    await fill("endDate", endSoon);
     await click("Next");
     await click("2 travelers");
     await click("Next");

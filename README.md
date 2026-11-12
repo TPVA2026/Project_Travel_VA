@@ -23,10 +23,14 @@ itineraries for selected areas of Vietnam with an LLM, then verifies cost/time/d
 │   │   │   ├── itineraries.py
 │   │   │   └── requests.py
 │   │   ├── data/                     # Curated dataset & distance matrix
-│   │   │   ├── attractions.json
 │   │   │   ├── destinations.json
-│   │   │   ├── restaurants.json
-│   │   │   ├── accommodations.json             # Lodging room/rate options
+│   │   │   ├── Hue/                  # One folder per destination (34 total)
+│   │   │   │   ├── attractions.json
+│   │   │   │   ├── restaurants.json
+│   │   │   │   └── accomodation.json
+│   │   │   ├── NhaTrang/              # Same three files, including empty []
+│   │   │   ├── DaNang/
+│   │   │   ├── routing_points.json
 │   │   │   └── travel_matrix.json
 │   │   ├── schemas/                  # Pydantic schemas & JSON validation schemas
 │   │   │   ├── candidate_plan.py
@@ -119,9 +123,9 @@ itineraries for selected areas of Vietnam with an LLM, then verifies cost/time/d
 
 ## Setup
 
-Place data is managed in four canonical collections: provinces in
-`destinations.json`, dining in `restaurants.json`, sightseeing in
-`attractions.json`, and lodging in `accommodations.json`. See
+Place data is grouped by destination. `destinations.json` maps each destination
+ID to a readable `dataFolder` such as `Hue`, `NhaTrang` or `DaNang`. Each folder
+contains `attractions.json`, `restaurants.json` and `accomodation.json`. See
 [dataset management](backend/app/data/README.md). Former OpenTripMap/Hue
 snapshots are archived for provenance and are not loaded separately.
 

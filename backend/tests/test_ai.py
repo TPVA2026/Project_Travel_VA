@@ -72,6 +72,17 @@ def test_grounding_enforces_cost_status_against_dataset():
     assert any("must be UNVERIFIED" in e for e in errs)
 
 
+def test_estimated_dining_price_cannot_be_marked_known():
+    estimated = copy.deepcopy(dataset)
+    candidate = copy.deepcopy(plan)
+    activity = next(a for day in candidate["days"] for a in day["activities"] if a["type"] == "dining")
+    place = next(p for p in estimated["dining"] if p["id"] == activity["placeId"])
+    place["avgPricePerPersonVnd"] = 50000
+    place["priceStatus"] = "ESTIMATED"
+    activity.update(estimatedCostVnd=50000, costStatus="KNOWN")
+    assert any("must be UNVERIFIED" in error for error in check_grounding(candidate, estimated))
+
+
 def test_key_stays_server_side_and_structured_output_is_requested(monkeypatch):
     made = {}
     fake = FakeClient(lambda call: httpx.Response(200, json=wrap(plan)))

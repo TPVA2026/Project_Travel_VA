@@ -1,11 +1,13 @@
 # OpenTripMap attraction import
 
-The runtime dataset is consolidated into four canonical files; see
+The runtime dataset is grouped into destination folders; see
 [data/README.md](../app/data/README.md). OpenTripMap import commands now write
 review-only staging snapshots under `app/data/archive/imports/`. The backend
 does not merge these snapshots automatically. Review IDs, destination mappings,
 classification and duplicates before copying accepted records into
-`attractions.json` or `restaurants.json`. Refreshing the source requires an API
+the matching destination folder's `attractions.json` or `restaurants.json`.
+Use `dataFolder` in `destinations.json` and retain each record's `destinationId`.
+Refreshing the source requires an API
 key, but serving the saved canonical dataset does not.
 
 1. Register for a key at https://dev.opentripmap.org/.

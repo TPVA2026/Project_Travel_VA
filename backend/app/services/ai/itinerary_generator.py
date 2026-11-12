@@ -16,6 +16,7 @@ from app.services.ai.gemini_client import GeminiError, request_text
 from app.services.ai.opening_hours import check_activity_hours
 from app.services.ai.prompt_templates import build_prompt
 from app.services.data_service import load_dataset
+from app.services.price_evidence import price_evidence_status
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schemas" / "candidate_plan.schema.json"
 with open(SCHEMA_PATH, encoding="utf-8") as _f:
@@ -93,8 +94,9 @@ def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> l
                     errs.append(f"{a['activityId']}: cost {a['estimatedCostVnd']} != dataset price {price} for {a['placeId']}")
                 if price is None and (a["estimatedCostVnd"] is not None or a["costStatus"] != "NO_DATA"):
                     errs.append(f"{a['activityId']}: dataset has no price for {a['placeId']}; must be null/NO_DATA")
-                if price is not None and a["costStatus"] == "KNOWN" and re.search("UNVERIFIED", pl.get("source") or "", re.I):
-                    errs.append(f"{a['activityId']}: source of {a['placeId']} is unverified; status must be UNVERIFIED")
+                expected_status = price_evidence_status(pl, dining=kind[a["placeId"]] == "dining")
+                if a["costStatus"] == "KNOWN" and expected_status == "UNVERIFIED":
+                    errs.append(f"{a['activityId']}: price evidence for {a['placeId']} is unverified; status must be UNVERIFIED")
         errs.extend(_check_travel_legs(d, places, matrix))
     return errs
 

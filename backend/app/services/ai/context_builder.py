@@ -260,7 +260,9 @@ def build_context(request: dict, dataset: dict, *, limit_places: bool = True) ->
         curated = _rank_places(curated, request)
         imported = _rank_places(imported, request)
 
-        imported_limit = max(0, 30 - len(curated))
+        # A destination with curated places has planning evidence already.
+        # Imported POIs remain available for discovery, not automatic plans.
+        imported_limit = 0 if curated else 30
         attractions = curated + imported[:imported_limit]
 
     dining = _rank_places(dining, request)

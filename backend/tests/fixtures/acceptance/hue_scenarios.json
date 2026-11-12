@@ -127,7 +127,7 @@
                   "startTime": "08:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 200000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -137,7 +137,7 @@
                   "startTime": "11:30",
                   "endTime": "12:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -161,7 +161,7 @@
                   "startTime": "08:00",
                   "endTime": "10:00",
                   "estimatedCostVnd": 150000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -171,7 +171,7 @@
                   "startTime": "10:30",
                   "endTime": "12:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -205,7 +205,7 @@
                   "startTime": "10:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -282,7 +282,7 @@
                     "startTime": "08:00",
                     "endTime": "11:00",
                     "estimatedCostVnd": 200000,
-                    "costStatus": "KNOWN",
+                    "costStatus": "UNVERIFIED",
                     "reason": "acceptance fixture"
                   },
                   {
@@ -292,7 +292,7 @@
                     "startTime": "11:30",
                     "endTime": "12:30",
                     "estimatedCostVnd": 0,
-                    "costStatus": "KNOWN",
+                    "costStatus": "UNVERIFIED",
                     "reason": "acceptance fixture"
                   }
                 ],
@@ -316,7 +316,7 @@
                     "startTime": "08:00",
                     "endTime": "10:00",
                     "estimatedCostVnd": 150000,
-                    "costStatus": "KNOWN",
+                    "costStatus": "UNVERIFIED",
                     "reason": "acceptance fixture"
                   },
                   {
@@ -326,7 +326,7 @@
                     "startTime": "10:30",
                     "endTime": "12:00",
                     "estimatedCostVnd": 0,
-                    "costStatus": "KNOWN",
+                    "costStatus": "UNVERIFIED",
                     "reason": "acceptance fixture"
                   }
                 ],
@@ -360,7 +360,7 @@
                     "startTime": "10:00",
                     "endTime": "11:00",
                     "estimatedCostVnd": 0,
-                    "costStatus": "KNOWN",
+                    "costStatus": "UNVERIFIED",
                     "reason": "acceptance fixture"
                   }
                 ],
@@ -435,7 +435,7 @@
                   "startTime": "08:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 200000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -445,7 +445,7 @@
                   "startTime": "11:30",
                   "endTime": "12:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -469,7 +469,7 @@
                   "startTime": "07:00",
                   "endTime": "08:00",
                   "estimatedCostVnd": 150000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -479,7 +479,7 @@
                   "startTime": "08:30",
                   "endTime": "09:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -513,7 +513,7 @@
                   "startTime": "10:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -587,7 +587,7 @@
                   "startTime": "08:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 200000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -597,7 +597,7 @@
                   "startTime": "11:30",
                   "endTime": "12:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -614,7 +614,7 @@
                   "startTime": "08:00",
                   "endTime": "10:00",
                   "estimatedCostVnd": 150000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -624,7 +624,7 @@
                   "startTime": "10:30",
                   "endTime": "12:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -651,7 +651,7 @@
                   "startTime": "10:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -673,7 +673,7 @@
     },
     {
       "id": "S07_over_budget_group",
-      "title": "Known ticket costs exceed a 300,000 VND group budget",
+      "title": "Low budget with ticket prices lacking full verification",
       "endpoint": "/itineraries/evaluate",
       "body": {
         "request": {
@@ -719,7 +719,7 @@
                   "startTime": "08:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 200000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -729,7 +729,7 @@
                   "startTime": "11:30",
                   "endTime": "12:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -753,7 +753,7 @@
                   "startTime": "08:00",
                   "endTime": "10:00",
                   "estimatedCostVnd": 150000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -763,7 +763,7 @@
                   "startTime": "10:30",
                   "endTime": "12:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -797,7 +797,7 @@
                   "startTime": "10:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -815,17 +815,17 @@
       },
       "expected": {
         "http": 200,
-        "status": "INFEASIBLE",
+        "status": "UNVERIFIED",
         "codes": [
           "BUDGET"
         ]
       },
       "owner": "M4",
-      "rule": "Known costs (375,000/person x 2 = 750,000) already prove the violation even with unknown transport/lodging."
+      "rule": "Unverified price evidence cannot establish that the trip exceeds budget."
     },
     {
       "id": "S08_over_budget_per_person",
-      "title": "perPerson budget 300,000 x 2 travellers vs 750,000 known costs",
+      "title": "Low budget with ticket prices lacking full verification",
       "endpoint": "/itineraries/evaluate",
       "body": {
         "request": {
@@ -871,7 +871,7 @@
                   "startTime": "08:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 200000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -881,7 +881,7 @@
                   "startTime": "11:30",
                   "endTime": "12:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -905,7 +905,7 @@
                   "startTime": "08:00",
                   "endTime": "10:00",
                   "estimatedCostVnd": 150000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -915,7 +915,7 @@
                   "startTime": "10:30",
                   "endTime": "12:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -949,7 +949,7 @@
                   "startTime": "10:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -967,13 +967,13 @@
       },
       "expected": {
         "http": 200,
-        "status": "INFEASIBLE",
+        "status": "UNVERIFIED",
         "codes": [
           "BUDGET"
         ]
       },
       "owner": "M4",
-      "rule": "perPerson budget is multiplied by travelers.count (600,000 < 750,000)."
+      "rule": "Unverified price evidence cannot establish that the trip exceeds budget."
     },
     {
       "id": "S09_missing_food_price",
@@ -1023,7 +1023,7 @@
                   "startTime": "08:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 200000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -1033,7 +1033,7 @@
                   "startTime": "11:30",
                   "endTime": "12:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -1073,7 +1073,7 @@
                   "startTime": "08:00",
                   "endTime": "10:00",
                   "estimatedCostVnd": 150000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -1083,7 +1083,7 @@
                   "startTime": "10:30",
                   "endTime": "12:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -1117,7 +1117,7 @@
                   "startTime": "10:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -1349,7 +1349,7 @@
                   "startTime": "08:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 200000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -1359,7 +1359,7 @@
                   "startTime": "11:30",
                   "endTime": "12:30",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -1383,7 +1383,7 @@
                   "startTime": "08:00",
                   "endTime": "10:00",
                   "estimatedCostVnd": 150000,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 },
                 {
@@ -1393,7 +1393,7 @@
                   "startTime": "10:30",
                   "endTime": "12:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],
@@ -1427,7 +1427,7 @@
                   "startTime": "10:00",
                   "endTime": "11:00",
                   "estimatedCostVnd": 0,
-                  "costStatus": "KNOWN",
+                  "costStatus": "UNVERIFIED",
                   "reason": "acceptance fixture"
                 }
               ],

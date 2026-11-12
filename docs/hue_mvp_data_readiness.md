@@ -5,8 +5,10 @@ which contains the cost-evidence consumer. It is not merged or pushed.
 
 ## Data location after consolidation
 
-The supplemental fields are now written directly into `attractions.json` and
-`restaurants.json`. Lodging options are in `accommodations.json`. There is no
+The supplemental fields are now written directly into `Hue/attractions.json` and
+`Hue/restaurants.json`. Lodging options are in `Hue/accomodation.json`, under
+`backend/app/data/`. Other destinations have equivalent folders declared by
+`dataFolder` in `destinations.json`. There is no
 runtime Hue overlay and no profile environment variable is required. Original
 snapshots are retained in `backend/app/data/archive/legacy-20261112/`.
 
@@ -77,12 +79,6 @@ Additional research:
 - https://lofita.vn/vi/quan-che-cung-dinh-hue.html
 - https://www.emmhotels.com/en/emm-hotel-hue/
 - https://rosaleenhotel.com/en/product/deluxe-family-suite-with-window/
-
-Run the read-only audit from `backend`:
-
-```powershell
-..\.venv\Scripts\python.exe -m scripts.audit_hue_mvp
-```
 
 ## Research sources
 

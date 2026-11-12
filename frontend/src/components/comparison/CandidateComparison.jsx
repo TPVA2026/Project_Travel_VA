@@ -59,7 +59,7 @@ function RankingLine({ ranking }) {
   return null
 }
 
-function CostLine({ cost }) {
+function CostLine({ cost, resolveName }) {
   return (
     <>
       <div className="card-cost-row">
@@ -70,7 +70,7 @@ function CostLine({ cost }) {
         <p className="plan-note plan-note--warn">
           <Icon name="alert" size={15} />
           <span>
-            Chưa xác minh {cost.missing.length} mục (không tính là 0): {cost.missing.join(', ')}
+            Chưa xác minh {cost.missing.length} mục (không tính là 0): {cost.missing.map(resolveName).join(', ')}
           </span>
         </p>
       )}
@@ -159,7 +159,7 @@ function CandidateCard({
 
         <div className="card-details">
           <RankingLine ranking={rank} />
-          <CostLine cost={cost} />
+          <CostLine cost={cost} resolveName={resolveName} />
           <RoutingLine evidence={routing} />
 
           {warnings.length > 0 && (

@@ -1,5 +1,6 @@
 import json
-from app.services.data_service import DATA_DIR, load_dataset
+import pytest
+from app.services.data_service import DATA_DIR, load_dataset, _load_destination_collections
 from app.services.ai.context_builder import build_context
 
 
@@ -14,6 +15,45 @@ def test_four_collections_have_unique_ids_and_valid_relationships():
             assert place["destinationId"] in destinations
             assert place["id"] not in seen
             seen.add(place["id"])
+
+
+def test_destination_folders_are_complete_and_correctly_partitioned():
+    destinations = json.loads((DATA_DIR / "destinations.json").read_text(encoding="utf-8"))
+    folders = {d["id"]: d["dataFolder"] for d in destinations}
+    assert folders["H"] == "Hue"
+    assert folders["NT"] == "NhaTrang"
+    assert folders["VN_48"] == "DaNang"
+    assert len(set(folders.values())) == 34
+    for destination in destinations:
+        folder = DATA_DIR / destination["dataFolder"]
+        assert {f.name for f in folder.iterdir()} == {"attractions.json", "restaurants.json", "accomodation.json"}
+        for file in folder.iterdir():
+            rows = json.loads(file.read_text(encoding="utf-8"))
+            assert isinstance(rows, list)
+            assert all(p["destinationId"] == destination["id"] for p in rows)
+    for old in ("attractions.json", "restaurants.json", "accommodations.json"):
+        assert not (DATA_DIR / old).exists()
+
+
+def test_matrix_source_references_resolve_to_destination_files():
+    for leg in load_dataset()["travel_matrix"]:
+        reference = leg.get("sourceReference")
+        if reference:
+            relative = reference["file"].removeprefix("backend/app/data/")
+            records = json.loads((DATA_DIR / relative).read_text(encoding="utf-8"))
+            assert any(p["id"] == reference["recordId"] for p in records)
+
+
+def test_loader_rejects_misplaced_records_and_unsafe_folder_names(tmp_path, monkeypatch):
+    from app.services import data_service
+    monkeypatch.setattr(data_service, "DATA_DIR", tmp_path)
+    folder = tmp_path / "Hue"
+    folder.mkdir()
+    (folder / "attractions.json").write_text(json.dumps([{"id": "a", "destinationId": "NT"}]))
+    with pytest.raises(ValueError, match="misplaced"):
+        _load_destination_collections([{"id": "H", "dataFolder": "Hue"}])
+    with pytest.raises(ValueError, match="folder"):
+        _load_destination_collections([{"id": "H", "dataFolder": "../archive"}])
 
 
 def test_every_imported_place_id_is_preserved():
@@ -48,3 +88,10 @@ def test_hue_supplemental_fields_are_in_canonical_collections():
     # Visiting advice must not become a fabricated hard opening constraint.
     assert places["ATTR_H_06"]["openingHours"] == "không cố định"
     assert places["ATTR_H_06"]["recommendedVisitWindow"] == "08:00 - 16:00"
+
+
+def test_hue_generation_context_uses_curated_places_only():
+    context = build_context({"preferences": {"destination": "H"}}, load_dataset())
+    assert len(context["attractions"]) == 10
+    assert len(context["dining"]) == 10
+    assert all(place["id"].startswith("ATTR_H_") for place in context["attractions"])

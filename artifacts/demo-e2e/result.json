@@ -1,0 +1,2170 @@
+{
+  "httpStatus": 200,
+  "elapsedSeconds": 36.81,
+  "request": {
+    "travelPeriod": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-01"
+    },
+    "durationDays": 1,
+    "departureLocation": "Huế",
+    "travelers": {
+      "count": 2
+    },
+    "budget": {
+      "amount": 3000000,
+      "currency": "VND",
+      "scope": "group"
+    },
+    "preferences": {
+      "destination": "Huế",
+      "interests": [
+        {
+          "type": "culture",
+          "priority": 1
+        }
+      ]
+    }
+  },
+  "response": {
+    "pipelineStatus": "COMPLETE",
+    "generator": "ai",
+    "candidates": [
+      {
+        "planId": "PLAN-H-20261201-CULTURE-01",
+        "status": "UNVERIFIED",
+        "plan": {
+          "planId": "PLAN-H-20261201-CULTURE-01",
+          "title": "Huế culture day (1 Dec 2026): Imperial City, Nguyễn tombs, Thiên Mụ pagoda and local food",
+          "destinationId": "H",
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "H-D1-A1",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "UNVERIFIED",
+                  "reason": "Top culture interest match: the Nguyễn imperial citadel (Đại Nội), tagged sightseeing/culture. Scheduled inside the dataset's winter window 07:00–17:30 (1 Dec falls in the 10-16→03-15 winter season). Price copied exactly from dataset (200,000 VND/person); priceScope is listed as unverified, so cost status is UNVERIFIED."
+                },
+                {
+                  "activityId": "H-D1-A2",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "11:30",
+                  "estimatedCostVnd": 50000,
+                  "costStatus": "KNOWN",
+                  "reason": "Culture-tagged Nguyễn royal palace (Cung An Định) close to the citadel, inside its reported daily hours 07:00–17:00. Price 50,000 VND/person taken as-is from the dataset; note the documented price conflict between sources (see missingData)."
+                },
+                {
+                  "activityId": "H-D1-A3",
+                  "placeId": "REST_H_04",
+                  "type": "dining",
+                  "startTime": "12:00",
+                  "endTime": "13:00",
+                  "estimatedCostVnd": 17500,
+                  "costStatus": "UNVERIFIED",
+                  "reason": "Lunch stop for Huế heritage food (hến/cơm hến), culture-tagged. Dataset reported hours 07:00–22:00 cover the slot. Per-person average copied exactly (17,500 VND); priceStatus is ESTIMATED, so UNVERIFIED."
+                },
+                {
+                  "activityId": "H-D1-A4",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "13:30",
+                  "endTime": "15:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "UNVERIFIED",
+                  "reason": "Culture highlight: lăng Khải Định, tagged sightseeing/culture. Scheduled inside the dataset winter hours 07:00–17:30 (ticket sales reported to 17:00). Price copied exactly from dataset (150,000 VND/person); priceScope is flagged unverified."
+                },
+                {
+                  "activityId": "H-D1-A5",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "15:30",
+                  "endTime": "16:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "UNVERIFIED",
+                  "reason": "Culture-tagged Thiên Mụ pagoda on the Hương river; dataset reports ALWAYS (24/7) hours, which is a dataset report only, not independently verified. Admission reported as 0 VND; priceScope is flagged unverified in the dataset."
+                },
+                {
+                  "activityId": "H-D1-A6",
+                  "placeId": "REST_H_09",
+                  "type": "dining",
+                  "startTime": "17:00",
+                  "endTime": "17:45",
+                  "estimatedCostVnd": 15000,
+                  "costStatus": "UNVERIFIED",
+                  "reason": "Late-afternoon Huế dessert stop (Chè Cầm), culture-tagged; slot starts after the dataset's reported opening at 16:00 and ends before 22:00. Per-person average copied exactly (15,000 VND); priceStatus is ESTIMATED."
+                },
+                {
+                  "activityId": "H-D1-A7",
+                  "placeId": "REST_H_06",
+                  "type": "dining",
+                  "startTime": "18:30",
+                  "endTime": "19:45",
+                  "estimatedCostVnd": 275000,
+                  "costStatus": "UNVERIFIED",
+                  "reason": "Dinner of Huế home-style rice dishes (Cơm niêu chạn), culture-tagged; inside dataset hours 08:00–22:00. Per-person average copied exactly (275,000 VND); priceStatus is ESTIMATED and priceScope is unspecified in the dataset."
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_02",
+                  "durationMin": null,
+                  "distanceKm": null
+                },
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "REST_H_04",
+                  "durationMin": null,
+                  "distanceKm": null
+                },
+                {
+                  "fromPlaceId": "REST_H_04",
+                  "toPlaceId": "ATTR_H_01",
+                  "durationMin": null,
+                  "distanceKm": null
+                },
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                },
+                {
+                  "fromPlaceId": "ATTR_H_09",
+                  "toPlaceId": "REST_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                },
+                {
+                  "fromPlaceId": "REST_H_09",
+                  "toPlaceId": "REST_H_06",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ],
+          "missingData": [
+            "Visit duration is not provided (durationMin is null) for every attraction and dining place used; all activity time blocks are planning placeholders to be confirmed.",
+            "The dataset travelMatrix gives null durationMin and null distanceKm for every origin/destination pair (marked 'routing evidence required'), so all travel legs are output as null; route feasibility and transfer times between the scheduled places are unverified.",
+            "Đại Nội (ATTR_H_03): openingHours is the winter frame only; the dataset notes ticket sales may end earlier (07:00–17:00 in openingHoursBySeason) than the 17:30 closing time.",
+            "Cung An Định (ATTR_H_02): price conflict in the dataset — 50,000 VND/person (Hue tourism portal) vs 25,000 VND (Vinpearl article quoted in link.txt); current price to be confirmed before buying tickets.",
+            "Cung An Định (ATTR_H_02): winter hours 07:00–17:00 are reported but the source does not state the seasonal switch dates.",
+            "lăng Khải Định (ATTR_H_01): distanceFromCenter.durationMin is flagged unverified; no verified travel time to/from other places.",
+            "Chùa Thiên Mụ (ATTR_H_09): 'ALWAYS / 24/7' is a single reported claim (Klook); it is not independently verified and ritual areas may have their own rules.",
+            "Quán hến Hoa Đông (REST_H_04): priceScope is unspecified and the address differs between sources (64 Ưng Bình vs 64 kiệt 7 Ưng Bình); per-person average vs the published 15,000–20,000 VND range needs confirming.",
+            "Chè Cầm (REST_H_09): reported hours 16:00–22:00 come from one article (iVIVU); not venue-verified. Price is 'from 15,000 VND/cup', so actual cost depends on the cup chosen.",
+            "Cơm niêu chạn (REST_H_06): priceScope is unspecified in the dataset (MIA.vn gives only a 50,000–250,000 VND reference range; the 275,000 VND per-person figure comes from a 4–5 dish meal published by VnExpress) — confirm menu and portions.",
+            "Opening hours for ATTR_H_01, ATTR_H_02, ATTR_H_03 are REPORTED/provisional dataset values, not confirmed real-world operating hours for 2026-12-01."
+          ],
+          "assumptions": [
+            "2026-12-01 falls inside the dataset's winter season for seasonal opening hours (10-16 to 03-15), so winter frames are used for Đại Nội, Cung An Định and lăng Khải Định.",
+            "Because no durationMin is published, each stop is given a planning time block with buffer between stops; the buffers stand in for the unknown transfer times from the travelMatrix.",
+            "estimatedCostVnd values are the dataset per-person prices copied exactly and are NOT multiplied by the 2 travellers or by any number of days.",
+            "Prices marked UNVERIFIED reflect dataset flags (priceStatus ESTIMATED or priceScope/unverified fields), not a recalculation.",
+            "Selection is driven by the priority-1 interest 'culture': curated attractions tagged sightseeing/culture plus culture-tagged local dining; no transportation mode was requested, so none is assumed.",
+            "All listed items are within the stated 3,000,000 VND group budget on the basis of the dataset prices, but no total is asserted here; the server remains responsible for verification."
+          ]
+        },
+        "evaluation": {
+          "status": "UNVERIFIED",
+          "checks": [
+            {
+              "status": "UNVERIFIED",
+              "code": "BUDGET",
+              "path": "costs",
+              "message": "Required costs are missing or invalid: transport, accommodation, H-D1-A3, H-D1-A6, H-D1-A7, H-D1-A1, H-D1-A4, H-D1-A5"
+            },
+            {
+              "status": "FEASIBLE",
+              "code": "DAY_SCHEDULE",
+              "path": "days.0",
+              "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+            }
+          ],
+          "reasons": [
+            {
+              "status": "UNVERIFIED",
+              "code": "BUDGET",
+              "path": "costs",
+              "message": "Required costs are missing or invalid: transport, accommodation, H-D1-A3, H-D1-A6, H-D1-A7, H-D1-A1, H-D1-A4, H-D1-A5"
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+            }
+          ],
+          "planId": "PLAN-H-20261201-CULTURE-01",
+          "components": {
+            "cost": {
+              "status": "UNVERIFIED",
+              "budget": 3000000.0,
+              "known_total": 100000.0,
+              "total_cost": null,
+              "remaining_budget": null,
+              "breakdown": {
+                "transport": null,
+                "accommodation": null,
+                "dining": null,
+                "activities": null
+              },
+              "missing_costs": [
+                "transport",
+                "accommodation",
+                "H-D1-A3",
+                "H-D1-A6",
+                "H-D1-A7",
+                "H-D1-A1",
+                "H-D1-A4",
+                "H-D1-A5"
+              ],
+              "reasons": [
+                "Required costs are missing or invalid: transport, accommodation, H-D1-A3, H-D1-A6, H-D1-A7, H-D1-A1, H-D1-A4, H-D1-A5"
+              ],
+              "estimatedRanges": [
+                {
+                  "activityId": "H-D1-A3",
+                  "category": "dining",
+                  "minVnd": 30000.0,
+                  "maxVnd": 40000.0,
+                  "scope": "group",
+                  "originalScope": "perPerson",
+                  "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+                  "currency": "VND"
+                },
+                {
+                  "activityId": "H-D1-A6",
+                  "category": "dining",
+                  "minVnd": 20000.0,
+                  "maxVnd": 40000.0,
+                  "scope": "group",
+                  "originalScope": "perPerson",
+                  "source": "https://lofita.vn/vi/quan-che-cung-dinh-hue.html",
+                  "currency": "VND"
+                },
+                {
+                  "activityId": "H-D1-A7",
+                  "category": "dining",
+                  "minVnd": 500000.0,
+                  "maxVnd": 600000.0,
+                  "scope": "group",
+                  "originalScope": "perPerson",
+                  "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+                  "currency": "VND"
+                }
+              ],
+              "costEvidence": [
+                {
+                  "activityId": "H-D1-A1",
+                  "category": "activities",
+                  "currency": "VND",
+                  "scope": "perPerson",
+                  "source": "https://vinpearl.com/vi/dai-noi-hue-huong-dan-tham-quan-tim-ve-dau-an-lich-su-co-do",
+                  "knownGroupAmountVnd": null
+                },
+                {
+                  "activityId": "H-D1-A2",
+                  "category": "activities",
+                  "currency": "VND",
+                  "scope": "perPerson",
+                  "source": "https://vinpearl.com/vi/cung-an-dinh-hue-diem-check-in-noi-tieng-hon-100-nam-tuoi-o-hue",
+                  "knownGroupAmountVnd": 100000.0
+                },
+                {
+                  "activityId": "H-D1-A3",
+                  "category": "dining",
+                  "currency": "VND",
+                  "scope": "perServing",
+                  "source": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377",
+                  "knownGroupAmountVnd": null
+                },
+                {
+                  "activityId": "H-D1-A4",
+                  "category": "activities",
+                  "currency": "VND",
+                  "scope": "perPerson",
+                  "source": "https://vinpearl.com/vi/lang-khai-dinh-hue-dinh-cao-kien-truc-lang-tam-thoi-nguyen",
+                  "knownGroupAmountVnd": null
+                },
+                {
+                  "activityId": "H-D1-A5",
+                  "category": "activities",
+                  "currency": "VND",
+                  "scope": "perPerson",
+                  "source": "https://www.klook.com/vi/blog/chua-thien-mu/",
+                  "knownGroupAmountVnd": null
+                },
+                {
+                  "activityId": "H-D1-A6",
+                  "category": "dining",
+                  "currency": "VND",
+                  "scope": "perServing",
+                  "source": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/",
+                  "knownGroupAmountVnd": null
+                },
+                {
+                  "activityId": "H-D1-A7",
+                  "category": "dining",
+                  "currency": "VND",
+                  "scope": "unspecified",
+                  "source": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391",
+                  "knownGroupAmountVnd": null
+                }
+              ],
+              "projection": {
+                "status": "ESTIMATED",
+                "currency": "VND",
+                "items": [
+                  {
+                    "category": "accommodation",
+                    "name": "ÊMM Hotel Hue — Deluxe",
+                    "amountVnd": 0,
+                    "rooms": 1,
+                    "nights": 0,
+                    "unitPriceVnd": 1190476,
+                    "sourceUrl": "https://www.emmhotels.com/en/emm-hotel-hue/",
+                    "status": "ESTIMATED",
+                    "note": "Published from-price per night, not a dated quote. Taxes, extra beds, child policy, blackout dates and availability need confirmation."
+                  },
+                  {
+                    "category": "dining",
+                    "activityId": "H-D1-A3",
+                    "name": "Quán hến Hoa Đông",
+                    "amountVnd": 35000.0,
+                    "perPersonVnd": 17500.0,
+                    "travelers": 2,
+                    "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+                    "status": "ESTIMATED",
+                    "note": "One bowl per person; article labels 64 Ung Binh, seed labels 64 kiet 7 Ung Binh. Demo name match, address should be reviewed."
+                  },
+                  {
+                    "category": "dining",
+                    "activityId": "H-D1-A6",
+                    "name": "Chè Cầm",
+                    "amountVnd": 30000.0,
+                    "perPersonVnd": 15000.0,
+                    "travelers": 2,
+                    "sourceUrl": "https://lofita.vn/vi/quan-che-cung-dinh-hue.html",
+                    "status": "ESTIMATED",
+                    "note": "Published range for Che Cam at 10 Nguyen Sinh Cung; assumes one cup per person, a snack rather than a complete meal."
+                  },
+                  {
+                    "category": "dining",
+                    "activityId": "H-D1-A7",
+                    "name": "Cơm niêu chạn",
+                    "amountVnd": 550000.0,
+                    "perPersonVnd": 275000.0,
+                    "travelers": 2,
+                    "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+                    "status": "ESTIMATED",
+                    "note": "Published per-person meal with 4–5 dishes. A different Traveloka meal estimate is 100000–200000/person; menu and portion mix differ."
+                  }
+                ],
+                "subtotalVnd": 715000.0,
+                "totalVnd": null,
+                "uncovered": [
+                  "transport",
+                  "H-D1-A1",
+                  "H-D1-A4",
+                  "H-D1-A5"
+                ],
+                "assumptions": [
+                  "Midpoint of published ranges is a demo estimate, not a measured mean.",
+                  "Only meals scheduled in this plan are counted; a snack may not be a full meal.",
+                  "Hotel nights = durationDays - 1; travelers share rooms as adults up to published capacity.",
+                  "Hotel from-price is not a dated booking; taxes, surcharges and availability remain unconfirmed.",
+                  "Transport from departure is not estimated here. Feasibility and verified totals are unchanged."
+                ]
+              }
+            },
+            "schedule": {
+              "status": "UNVERIFIED",
+              "checks": [
+                {
+                  "status": "FEASIBLE",
+                  "code": "DAY_SCHEDULE",
+                  "path": "days.0",
+                  "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+                }
+              ],
+              "reasons": [
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRANSFER_GAP",
+                  "path": "days.0",
+                  "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+                }
+              ]
+            },
+            "travel": {
+              "status": "UNVERIFIED",
+              "checks": [
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+                }
+              ],
+              "reasons": [
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "UNSUPPORTED_LEG",
+                  "path": "days.0.travelLegs",
+                  "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+                },
+                {
+                  "status": "UNVERIFIED",
+                  "code": "TRAVEL_DATA",
+                  "path": "days.0.travelLegs",
+                  "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+                }
+              ],
+              "dailyTotals": [
+                {
+                  "dayNumber": 1,
+                  "durationMin": null,
+                  "known_durationMin": 0,
+                  "distanceKm": null,
+                  "known_distanceKm": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "ranking": {
+      "ranked": [],
+      "unscored": [],
+      "excluded": [
+        {
+          "planId": "PLAN-H-20261201-CULTURE-01",
+          "status": "UNVERIFIED",
+          "reasons": [
+            {
+              "status": "UNVERIFIED",
+              "code": "BUDGET",
+              "path": "costs",
+              "message": "Required costs are missing or invalid: transport, accommodation, H-D1-A3, H-D1-A6, H-D1-A7, H-D1-A1, H-D1-A4, H-D1-A5"
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+            }
+          ]
+        }
+      ],
+      "quality_report": {
+        "PLAN-H-20261201-CULTURE-01": {
+          "warnings": [],
+          "metrics": {
+            "days": [
+              {
+                "dayNumber": 1,
+                "activityCount": 7,
+                "sightseeingCount": 4,
+                "periodCounts": {
+                  "morning": 2,
+                  "afternoon": 4,
+                  "evening": 1
+                },
+                "intentionalRest": false
+              }
+            ],
+            "repeatedPlaces": [],
+            "geographicClustering": null
+          },
+          "score": null
+        }
+      },
+      "totalRanked": 0,
+      "limit": 3
+    },
+    "warnings": [],
+    "request": {
+      "travelPeriod": {
+        "startDate": "2026-12-01",
+        "endDate": "2026-12-01"
+      },
+      "durationDays": 1,
+      "departureLocation": "Huế",
+      "travelers": {
+        "count": 2,
+        "characteristics": []
+      },
+      "budget": {
+        "amount": 3000000,
+        "currency": "VND",
+        "scope": "group"
+      },
+      "limits": null,
+      "preferences": {
+        "destination": "Huế",
+        "transportation": [],
+        "interests": [
+          {
+            "type": "culture",
+            "priority": 1
+          }
+        ],
+        "dining": null
+      },
+      "additionalRequirements": null
+    },
+    "status": "UNVERIFIED",
+    "plan": {
+      "planId": "PLAN-H-20261201-CULTURE-01",
+      "title": "Huế culture day (1 Dec 2026): Imperial City, Nguyễn tombs, Thiên Mụ pagoda and local food",
+      "destinationId": "H",
+      "days": [
+        {
+          "dayNumber": 1,
+          "date": "2026-12-01",
+          "activities": [
+            {
+              "activityId": "H-D1-A1",
+              "placeId": "ATTR_H_03",
+              "type": "sightseeing",
+              "startTime": "08:00",
+              "endTime": "10:00",
+              "estimatedCostVnd": 200000,
+              "costStatus": "UNVERIFIED",
+              "reason": "Top culture interest match: the Nguyễn imperial citadel (Đại Nội), tagged sightseeing/culture. Scheduled inside the dataset's winter window 07:00–17:30 (1 Dec falls in the 10-16→03-15 winter season). Price copied exactly from dataset (200,000 VND/person); priceScope is listed as unverified, so cost status is UNVERIFIED."
+            },
+            {
+              "activityId": "H-D1-A2",
+              "placeId": "ATTR_H_02",
+              "type": "sightseeing",
+              "startTime": "10:30",
+              "endTime": "11:30",
+              "estimatedCostVnd": 50000,
+              "costStatus": "KNOWN",
+              "reason": "Culture-tagged Nguyễn royal palace (Cung An Định) close to the citadel, inside its reported daily hours 07:00–17:00. Price 50,000 VND/person taken as-is from the dataset; note the documented price conflict between sources (see missingData)."
+            },
+            {
+              "activityId": "H-D1-A3",
+              "placeId": "REST_H_04",
+              "type": "dining",
+              "startTime": "12:00",
+              "endTime": "13:00",
+              "estimatedCostVnd": 17500,
+              "costStatus": "UNVERIFIED",
+              "reason": "Lunch stop for Huế heritage food (hến/cơm hến), culture-tagged. Dataset reported hours 07:00–22:00 cover the slot. Per-person average copied exactly (17,500 VND); priceStatus is ESTIMATED, so UNVERIFIED."
+            },
+            {
+              "activityId": "H-D1-A4",
+              "placeId": "ATTR_H_01",
+              "type": "sightseeing",
+              "startTime": "13:30",
+              "endTime": "15:00",
+              "estimatedCostVnd": 150000,
+              "costStatus": "UNVERIFIED",
+              "reason": "Culture highlight: lăng Khải Định, tagged sightseeing/culture. Scheduled inside the dataset winter hours 07:00–17:30 (ticket sales reported to 17:00). Price copied exactly from dataset (150,000 VND/person); priceScope is flagged unverified."
+            },
+            {
+              "activityId": "H-D1-A5",
+              "placeId": "ATTR_H_09",
+              "type": "sightseeing",
+              "startTime": "15:30",
+              "endTime": "16:30",
+              "estimatedCostVnd": 0,
+              "costStatus": "UNVERIFIED",
+              "reason": "Culture-tagged Thiên Mụ pagoda on the Hương river; dataset reports ALWAYS (24/7) hours, which is a dataset report only, not independently verified. Admission reported as 0 VND; priceScope is flagged unverified in the dataset."
+            },
+            {
+              "activityId": "H-D1-A6",
+              "placeId": "REST_H_09",
+              "type": "dining",
+              "startTime": "17:00",
+              "endTime": "17:45",
+              "estimatedCostVnd": 15000,
+              "costStatus": "UNVERIFIED",
+              "reason": "Late-afternoon Huế dessert stop (Chè Cầm), culture-tagged; slot starts after the dataset's reported opening at 16:00 and ends before 22:00. Per-person average copied exactly (15,000 VND); priceStatus is ESTIMATED."
+            },
+            {
+              "activityId": "H-D1-A7",
+              "placeId": "REST_H_06",
+              "type": "dining",
+              "startTime": "18:30",
+              "endTime": "19:45",
+              "estimatedCostVnd": 275000,
+              "costStatus": "UNVERIFIED",
+              "reason": "Dinner of Huế home-style rice dishes (Cơm niêu chạn), culture-tagged; inside dataset hours 08:00–22:00. Per-person average copied exactly (275,000 VND); priceStatus is ESTIMATED and priceScope is unspecified in the dataset."
+            }
+          ],
+          "travelLegs": [
+            {
+              "fromPlaceId": "ATTR_H_03",
+              "toPlaceId": "ATTR_H_02",
+              "durationMin": null,
+              "distanceKm": null
+            },
+            {
+              "fromPlaceId": "ATTR_H_02",
+              "toPlaceId": "REST_H_04",
+              "durationMin": null,
+              "distanceKm": null
+            },
+            {
+              "fromPlaceId": "REST_H_04",
+              "toPlaceId": "ATTR_H_01",
+              "durationMin": null,
+              "distanceKm": null
+            },
+            {
+              "fromPlaceId": "ATTR_H_01",
+              "toPlaceId": "ATTR_H_09",
+              "durationMin": null,
+              "distanceKm": null
+            },
+            {
+              "fromPlaceId": "ATTR_H_09",
+              "toPlaceId": "REST_H_09",
+              "durationMin": null,
+              "distanceKm": null
+            },
+            {
+              "fromPlaceId": "REST_H_09",
+              "toPlaceId": "REST_H_06",
+              "durationMin": null,
+              "distanceKm": null
+            }
+          ]
+        }
+      ],
+      "missingData": [
+        "Visit duration is not provided (durationMin is null) for every attraction and dining place used; all activity time blocks are planning placeholders to be confirmed.",
+        "The dataset travelMatrix gives null durationMin and null distanceKm for every origin/destination pair (marked 'routing evidence required'), so all travel legs are output as null; route feasibility and transfer times between the scheduled places are unverified.",
+        "Đại Nội (ATTR_H_03): openingHours is the winter frame only; the dataset notes ticket sales may end earlier (07:00–17:00 in openingHoursBySeason) than the 17:30 closing time.",
+        "Cung An Định (ATTR_H_02): price conflict in the dataset — 50,000 VND/person (Hue tourism portal) vs 25,000 VND (Vinpearl article quoted in link.txt); current price to be confirmed before buying tickets.",
+        "Cung An Định (ATTR_H_02): winter hours 07:00–17:00 are reported but the source does not state the seasonal switch dates.",
+        "lăng Khải Định (ATTR_H_01): distanceFromCenter.durationMin is flagged unverified; no verified travel time to/from other places.",
+        "Chùa Thiên Mụ (ATTR_H_09): 'ALWAYS / 24/7' is a single reported claim (Klook); it is not independently verified and ritual areas may have their own rules.",
+        "Quán hến Hoa Đông (REST_H_04): priceScope is unspecified and the address differs between sources (64 Ưng Bình vs 64 kiệt 7 Ưng Bình); per-person average vs the published 15,000–20,000 VND range needs confirming.",
+        "Chè Cầm (REST_H_09): reported hours 16:00–22:00 come from one article (iVIVU); not venue-verified. Price is 'from 15,000 VND/cup', so actual cost depends on the cup chosen.",
+        "Cơm niêu chạn (REST_H_06): priceScope is unspecified in the dataset (MIA.vn gives only a 50,000–250,000 VND reference range; the 275,000 VND per-person figure comes from a 4–5 dish meal published by VnExpress) — confirm menu and portions.",
+        "Opening hours for ATTR_H_01, ATTR_H_02, ATTR_H_03 are REPORTED/provisional dataset values, not confirmed real-world operating hours for 2026-12-01."
+      ],
+      "assumptions": [
+        "2026-12-01 falls inside the dataset's winter season for seasonal opening hours (10-16 to 03-15), so winter frames are used for Đại Nội, Cung An Định and lăng Khải Định.",
+        "Because no durationMin is published, each stop is given a planning time block with buffer between stops; the buffers stand in for the unknown transfer times from the travelMatrix.",
+        "estimatedCostVnd values are the dataset per-person prices copied exactly and are NOT multiplied by the 2 travellers or by any number of days.",
+        "Prices marked UNVERIFIED reflect dataset flags (priceStatus ESTIMATED or priceScope/unverified fields), not a recalculation.",
+        "Selection is driven by the priority-1 interest 'culture': curated attractions tagged sightseeing/culture plus culture-tagged local dining; no transportation mode was requested, so none is assumed.",
+        "All listed items are within the stated 3,000,000 VND group budget on the basis of the dataset prices, but no total is asserted here; the server remains responsible for verification."
+      ]
+    },
+    "evaluation": {
+      "status": "UNVERIFIED",
+      "checks": [
+        {
+          "status": "UNVERIFIED",
+          "code": "BUDGET",
+          "path": "costs",
+          "message": "Required costs are missing or invalid: transport, accommodation, H-D1-A3, H-D1-A6, H-D1-A7, H-D1-A1, H-D1-A4, H-D1-A5"
+        },
+        {
+          "status": "FEASIBLE",
+          "code": "DAY_SCHEDULE",
+          "path": "days.0",
+          "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+        }
+      ],
+      "reasons": [
+        {
+          "status": "UNVERIFIED",
+          "code": "BUDGET",
+          "path": "costs",
+          "message": "Required costs are missing or invalid: transport, accommodation, H-D1-A3, H-D1-A6, H-D1-A7, H-D1-A1, H-D1-A4, H-D1-A5"
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRANSFER_GAP",
+          "path": "days.0",
+          "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "UNSUPPORTED_LEG",
+          "path": "days.0.travelLegs",
+          "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+        },
+        {
+          "status": "UNVERIFIED",
+          "code": "TRAVEL_DATA",
+          "path": "days.0.travelLegs",
+          "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+        }
+      ],
+      "planId": "PLAN-H-20261201-CULTURE-01",
+      "components": {
+        "cost": {
+          "status": "UNVERIFIED",
+          "budget": 3000000.0,
+          "known_total": 100000.0,
+          "total_cost": null,
+          "remaining_budget": null,
+          "breakdown": {
+            "transport": null,
+            "accommodation": null,
+            "dining": null,
+            "activities": null
+          },
+          "missing_costs": [
+            "transport",
+            "accommodation",
+            "H-D1-A3",
+            "H-D1-A6",
+            "H-D1-A7",
+            "H-D1-A1",
+            "H-D1-A4",
+            "H-D1-A5"
+          ],
+          "reasons": [
+            "Required costs are missing or invalid: transport, accommodation, H-D1-A3, H-D1-A6, H-D1-A7, H-D1-A1, H-D1-A4, H-D1-A5"
+          ],
+          "estimatedRanges": [
+            {
+              "activityId": "H-D1-A3",
+              "category": "dining",
+              "minVnd": 30000.0,
+              "maxVnd": 40000.0,
+              "scope": "group",
+              "originalScope": "perPerson",
+              "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+              "currency": "VND"
+            },
+            {
+              "activityId": "H-D1-A6",
+              "category": "dining",
+              "minVnd": 20000.0,
+              "maxVnd": 40000.0,
+              "scope": "group",
+              "originalScope": "perPerson",
+              "source": "https://lofita.vn/vi/quan-che-cung-dinh-hue.html",
+              "currency": "VND"
+            },
+            {
+              "activityId": "H-D1-A7",
+              "category": "dining",
+              "minVnd": 500000.0,
+              "maxVnd": 600000.0,
+              "scope": "group",
+              "originalScope": "perPerson",
+              "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+              "currency": "VND"
+            }
+          ],
+          "costEvidence": [
+            {
+              "activityId": "H-D1-A1",
+              "category": "activities",
+              "currency": "VND",
+              "scope": "perPerson",
+              "source": "https://vinpearl.com/vi/dai-noi-hue-huong-dan-tham-quan-tim-ve-dau-an-lich-su-co-do",
+              "knownGroupAmountVnd": null
+            },
+            {
+              "activityId": "H-D1-A2",
+              "category": "activities",
+              "currency": "VND",
+              "scope": "perPerson",
+              "source": "https://vinpearl.com/vi/cung-an-dinh-hue-diem-check-in-noi-tieng-hon-100-nam-tuoi-o-hue",
+              "knownGroupAmountVnd": 100000.0
+            },
+            {
+              "activityId": "H-D1-A3",
+              "category": "dining",
+              "currency": "VND",
+              "scope": "perServing",
+              "source": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377",
+              "knownGroupAmountVnd": null
+            },
+            {
+              "activityId": "H-D1-A4",
+              "category": "activities",
+              "currency": "VND",
+              "scope": "perPerson",
+              "source": "https://vinpearl.com/vi/lang-khai-dinh-hue-dinh-cao-kien-truc-lang-tam-thoi-nguyen",
+              "knownGroupAmountVnd": null
+            },
+            {
+              "activityId": "H-D1-A5",
+              "category": "activities",
+              "currency": "VND",
+              "scope": "perPerson",
+              "source": "https://www.klook.com/vi/blog/chua-thien-mu/",
+              "knownGroupAmountVnd": null
+            },
+            {
+              "activityId": "H-D1-A6",
+              "category": "dining",
+              "currency": "VND",
+              "scope": "perServing",
+              "source": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/",
+              "knownGroupAmountVnd": null
+            },
+            {
+              "activityId": "H-D1-A7",
+              "category": "dining",
+              "currency": "VND",
+              "scope": "unspecified",
+              "source": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391",
+              "knownGroupAmountVnd": null
+            }
+          ],
+          "projection": {
+            "status": "ESTIMATED",
+            "currency": "VND",
+            "items": [
+              {
+                "category": "accommodation",
+                "name": "ÊMM Hotel Hue — Deluxe",
+                "amountVnd": 0,
+                "rooms": 1,
+                "nights": 0,
+                "unitPriceVnd": 1190476,
+                "sourceUrl": "https://www.emmhotels.com/en/emm-hotel-hue/",
+                "status": "ESTIMATED",
+                "note": "Published from-price per night, not a dated quote. Taxes, extra beds, child policy, blackout dates and availability need confirmation."
+              },
+              {
+                "category": "dining",
+                "activityId": "H-D1-A3",
+                "name": "Quán hến Hoa Đông",
+                "amountVnd": 35000.0,
+                "perPersonVnd": 17500.0,
+                "travelers": 2,
+                "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+                "status": "ESTIMATED",
+                "note": "One bowl per person; article labels 64 Ung Binh, seed labels 64 kiet 7 Ung Binh. Demo name match, address should be reviewed."
+              },
+              {
+                "category": "dining",
+                "activityId": "H-D1-A6",
+                "name": "Chè Cầm",
+                "amountVnd": 30000.0,
+                "perPersonVnd": 15000.0,
+                "travelers": 2,
+                "sourceUrl": "https://lofita.vn/vi/quan-che-cung-dinh-hue.html",
+                "status": "ESTIMATED",
+                "note": "Published range for Che Cam at 10 Nguyen Sinh Cung; assumes one cup per person, a snack rather than a complete meal."
+              },
+              {
+                "category": "dining",
+                "activityId": "H-D1-A7",
+                "name": "Cơm niêu chạn",
+                "amountVnd": 550000.0,
+                "perPersonVnd": 275000.0,
+                "travelers": 2,
+                "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+                "status": "ESTIMATED",
+                "note": "Published per-person meal with 4–5 dishes. A different Traveloka meal estimate is 100000–200000/person; menu and portion mix differ."
+              }
+            ],
+            "subtotalVnd": 715000.0,
+            "totalVnd": null,
+            "uncovered": [
+              "transport",
+              "H-D1-A1",
+              "H-D1-A4",
+              "H-D1-A5"
+            ],
+            "assumptions": [
+              "Midpoint of published ranges is a demo estimate, not a measured mean.",
+              "Only meals scheduled in this plan are counted; a snack may not be a full meal.",
+              "Hotel nights = durationDays - 1; travelers share rooms as adults up to published capacity.",
+              "Hotel from-price is not a dated booking; taxes, surcharges and availability remain unconfirmed.",
+              "Transport from departure is not estimated here. Feasibility and verified totals are unchanged."
+            ]
+          }
+        },
+        "schedule": {
+          "status": "UNVERIFIED",
+          "checks": [
+            {
+              "status": "FEASIBLE",
+              "code": "DAY_SCHEDULE",
+              "path": "days.0",
+              "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+            }
+          ],
+          "reasons": [
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A1 và H-D1-A2."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A2 và H-D1-A3."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A3 và H-D1-A4."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A4 và H-D1-A5."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A5 và H-D1-A6."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRANSFER_GAP",
+              "path": "days.0",
+              "message": "Thời gian giữa H-D1-A6 và H-D1-A7."
+            }
+          ]
+        },
+        "travel": {
+          "status": "UNVERIFIED",
+          "checks": [
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+            }
+          ],
+          "reasons": [
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_02."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_02 -> REST_H_04."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_04 -> ATTR_H_01."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho ATTR_H_09 -> REST_H_09."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "UNSUPPORTED_LEG",
+              "path": "days.0.travelLegs",
+              "message": "Chưa có chặng đã xác minh REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu durationMin cho REST_H_09 -> REST_H_06."
+            },
+            {
+              "status": "UNVERIFIED",
+              "code": "TRAVEL_DATA",
+              "path": "days.0.travelLegs",
+              "message": "Thiếu distanceKm cho REST_H_09 -> REST_H_06."
+            }
+          ],
+          "dailyTotals": [
+            {
+              "dayNumber": 1,
+              "durationMin": null,
+              "known_durationMin": 0,
+              "distanceKm": null,
+              "known_distanceKm": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -6,7 +6,25 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import React, { act } from "react";
-import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, buildPayload, clientErrors, localTodayIso, localYearMonth, addDaysIso, addMonthsYm, addYearsIso, tripLimitHint, formatReturnLabel } from "./travelRequest.js";
+
+const today = localTodayIso();
+const currentMonth = localYearMonth();
+const nextMonth = addMonthsYm(currentMonth, 1);
+const lastThisMonth = addDaysIso(`${nextMonth}-01`, -1);
+const startCross = lastThisMonth >= today ? lastThisMonth : addDaysIso(`${addMonthsYm(currentMonth, 2)}-01`, -1);
+const endCross = addDaysIso(startCross, MAX_TRIP_DAYS - 1);
+const startMax = addYearsIso(today, 1);
+function showDate(iso) {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" });
+}
+function showMonth(value) {
+  return new Date(`${value}-01T00:00:00Z`).toLocaleDateString("en-GB", { timeZone: "UTC", month: "long", year: "numeric" });
+}
+const monthWindowMax = addMonthsYm(currentMonth, 12);
+const pickMonth = addMonthsYm(currentMonth, 4) <= monthWindowMax ? addMonthsYm(currentMonth, 4) : monthWindowMax;
+const pickMonthPart = pickMonth.slice(5, 7);
+const pickYearPart = pickMonth.slice(0, 4);
 
 // DOM-level integration, not a browser visual or screen-reader test.
 test("M1 one-question request flow: steps, validation, budget, dates, review and submit", async () => {
@@ -103,60 +121,55 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     assertStep(2, "Blank destination is allowed");
 
-    // Desktop date controls are native pickers with ISO values and any valid year.
+    // Start date picker plus 1..maxDays length cards; the end date is computed.
     assert.equal(field("startDate").type, "date");
-    assert.equal(field("endDate").type, "date");
+    assert.equal(field("endDate").type, "hidden");
     assert.equal(doc.querySelector('label[for="startDate"]').textContent.replace("*", ""), "Start date");
-    assert.equal(doc.querySelector('label[for="endDate"]').textContent.replace("*", ""), "End date");
-    assert.equal(field("startDate").max, "", "Years are not capped");
+    assert.equal(doc.querySelector('[name="periodMode"]'), null, "The By month option is removed");
+    assert.equal(field("month"), null);
+    assert.equal(field("startDate").min, today);
+    assert.equal(field("startDate").max, startMax);
+    assert.equal(doc.getElementById("request-step-2-hint").textContent, tripLimitHint());
     assert.equal(active(), "startDate");
     let pickerCalls = 0;
     field("startDate").showPicker = () => { pickerCalls += 1; };
     await click("Open calendar for Start date");
     assert.equal(pickerCalls, 1);
     assert.equal(active(), "startDate");
-    await click("Open calendar for End date"); // jsdom has no showPicker: focus fallback.
-    assert.equal(active(), "endDate");
     await click("Next");
     assertStep(2);
     assert.equal(doc.getElementById("startDate-error").textContent, "This field is required.");
-    await fill("startDate", "2031-12-30");
-    await fill("endDate", "2031-12-29");
+    await fill("startDate", startCross);
     await click("Next");
-    assertStep(2);
-    assert.equal(doc.getElementById("endDate-error").textContent, "End date must be on or after the start date.");
-    await fill("endDate", "2032-01-02");
-    assert.match(doc.querySelector(".request-span").textContent, /^4 days/);
-    // Month branch: month + year with a day count; both branches keep their entries.
-    await radio("periodMode", "month");
-    assert.equal(field("month").type, "month");
-    assert.equal(field("durationDays").type, "number");
-    assert.equal(field("startDate").disabled, true);
-    assert.equal(field("startDate").value, "2031-12-30");
-    await fill("month", "2035-02");
-    await fill("durationDays", "5");
-    await radio("periodMode", "dates");
-    assert.equal(field("startDate").value, "2031-12-30");
-    assert.equal(field("endDate").value, "2032-01-02");
-    assert.equal(field("month").value, "2035-02");
-    assert.equal(field("durationDays").value, "5");
-    await radio("periodMode", "month");
-    assert.deepEqual(clientErrors(new FormData(form)).month, undefined);
-    assert.equal(new FormData(form).has("startDate"), false, "Inactive date branch is not submitted");
+    assertStep(2, "Trip length is required");
+    assert.equal(doc.getElementById("durationDays-error").textContent, "This field is required.");
+    const dayCards = [...doc.querySelectorAll("#request-step-2 .request-choice")];
+    assert.deepEqual(dayCards.map(node => node.textContent.replace(/\s+/g, " ").trim()), ["1 day", "2 days", "3 days"]);
+    await actOn(() => dayCards[MAX_TRIP_DAYS - 1].click());
+    assert.equal(field("durationDays").value, String(MAX_TRIP_DAYS));
+    assert.equal(field("endDate").value, endCross, "End date is start + (n-1) days");
+    assert.equal(doc.querySelector("#request-step-2 .request-question-hint.request-span").textContent, formatReturnLabel(endCross));
+    // Changing the start date keeps the chosen length and recomputes the end date.
+    const laterStart = addDaysIso(startCross, 1);
+    await fill("startDate", laterStart);
+    assert.equal(field("durationDays").value, String(MAX_TRIP_DAYS));
+    assert.equal(field("endDate").value, addDaysIso(laterStart, MAX_TRIP_DAYS - 1));
+    await fill("startDate", startCross);
+    assert.equal(field("endDate").value, endCross);
     await click("Next");
     assertStep(3);
 
     // Travelers: no default, quick picks and any other whole number.
     assert.equal(field("travelerCount").value, "");
-    assert.deepEqual([...doc.querySelectorAll(".request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.deepEqual([...doc.querySelectorAll("#request-step-3 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
     await click("Next");
     assertStep(3);
     assert.equal(active(), "travelerCount");
-    await actOn(() => [...doc.querySelectorAll(".request-choice")][1].click());
+    await actOn(() => [...doc.querySelectorAll("#request-step-3 .request-choice")][1].click());
     assert.equal(field("travelerCount").value, "2");
-    assert.equal([...doc.querySelectorAll(".request-choice")][1].getAttribute("aria-pressed"), "true");
+    assert.equal([...doc.querySelectorAll("#request-step-3 .request-choice")][1].getAttribute("aria-pressed"), "true");
     await fill("travelerCount", "7");
-    assert.deepEqual([...doc.querySelectorAll(".request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.deepEqual([...doc.querySelectorAll("#request-step-3 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
     await click("Next");
     assertStep(4);
     assert.equal(active(), "budgetAmount");
@@ -284,7 +297,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.deepEqual(rows(), {
       "Leaving from": "Hue",
       "Going to": "Not chosen. We'll suggest destinations based on your trip.",
-      When: "February 2035 · 5 days",
+      When: `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`,
       Travelers: "7 travelers",
       Budget: "7,654,321 VND · per person",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
@@ -307,9 +320,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Back to review");
     assertStep(6);
     await click("Edit dates");
-    await radio("periodMode", "dates");
     await click("Back to review");
-    assert.equal(rows().When, "30 Dec 2031 – 2 Jan 2032 · 4 days");
+    assert.equal(rows().When, `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`);
     // Back/Next keeps every earlier answer, including the draft.
     for (let index = 5; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
     assert.equal(field("departureLocation").value, "Hue");
@@ -386,8 +398,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Successful final submit sends the exact contract payload once.
     const payload = buildPayload(new FormData(form));
     assert.deepEqual(payload, {
-      travelPeriod: { startDate: "2031-12-30", endDate: "2032-01-02" },
-      durationDays: 4,
+      travelPeriod: { startDate: startCross, endDate: endCross },
+      durationDays: MAX_TRIP_DAYS,
       departureLocation: "Hue",
       travelers: { count: 7 },
       budget: { amount: 7654321, currency: "VND", scope: "perPerson" },
@@ -406,23 +418,22 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     const clean = doc.querySelector("form");
     assertStep(0);
     assert.equal(active(), "departureLocation");
-    for (const name of ["departureLocation", "destination", "startDate", "endDate", "month", "durationDays", "travelerCount", "budgetAmount", "tripDescription"]) assert.equal(field(name).value, "", name);
+    for (const name of ["departureLocation", "destination", "startDate", "endDate", "durationDays", "travelerCount", "budgetAmount", "tripDescription"]) assert.equal(field(name).value, "", name);
     assert.equal(field("budgetSlider").value, "0");
     assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
-    assert.equal(clean.querySelector('[name="periodMode"][value="dates"]').checked, true);
+    assert.equal(clean.querySelector('[name="periodMode"]'), null);
     assert.equal(clean.querySelector(".request-draft-note"), null);
     assert.equal(doc.getElementById("request-describe-count").textContent, `0/${ADDITIONAL_REQUIREMENTS_MAX}`);
     assert.equal(clean.querySelector(".completion-label").textContent, "0% finding");
     assert.equal(button("Back"), undefined);
 
-    // Group scope and a high custom amount in month mode.
+    // Group scope and a high custom amount on a dates trip.
     await fill("departureLocation", "Ha Noi");
     await click("Next");
     await click("Next");
-    await radio("periodMode", "month");
-    await fill("month", "2030-07");
-    await fill("durationDays", "3");
+    await fill("startDate", startCross);
+    await actOn(() => [...doc.querySelectorAll("#request-step-2 .request-choice")][MAX_TRIP_DAYS - 1].click());
     await click("Next");
     await fill("travelerCount", "6");
     await click("Next");
@@ -432,7 +443,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     assertStep(6);
     const custom = buildPayload(new FormData(clean));
-    assert.deepEqual(custom, { travelPeriod: { month: "2030-07" }, durationDays: 3, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
+    assert.deepEqual(custom, { travelPeriod: { startDate: startCross, endDate: endCross }, durationDays: MAX_TRIP_DAYS, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
     assert.equal(custom.preferences?.destination, undefined, "Skipped destination is omitted, never filled in");
     assert.equal(field("budgetSlider").value, "70123456");
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
@@ -444,147 +455,60 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   }
 });
 
-// Browsers without type="month" (desktop Firefox/Safari) get an explicit month select + year box.
-test("M1 month fallback: probe, labelled month/year controls, canonical field, validation and retention", async () => {
+test("Start planning goes straight to the first form question; old describe routes redirect", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
   const dom = new JSDOM('<div id="root"></div>', { url: "http://localhost/", virtualConsole });
   const doc = dom.window.document;
-  const fetchCalls = [];
   const replacements = {
     window: dom.window, document: doc, navigator: dom.window.navigator,
-    HTMLElement: dom.window.HTMLElement, FormData: dom.window.FormData,
+    HTMLElement: dom.window.HTMLElement, FormData: dom.window.FormData, Image: dom.window.Image,
     sessionStorage: dom.window.sessionStorage, localStorage: dom.window.localStorage,
+    matchMedia: query => ({ matches: /prefers-reduced-motion:\s*reduce/.test(query), media: query, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent: () => false }),
     requestAnimationFrame: callback => setTimeout(callback, 0),
     IS_REACT_ACT_ENVIRONMENT: true,
-    fetch: async (url, options) => {
-      fetchCalls.push({ url, payload: options?.body ? JSON.parse(options.body) : undefined });
-      return url === "/api/v1/destinations"
-        ? { ok: true, json: async () => ({ destinations: [] }) }
-        : { ok: true, json: async () => ({ valid: true }) };
-    },
+    fetch: async () => ({ ok: true, json: async () => ({ destinations: [] }) }),
   };
   const originals = new Map(Object.keys(replacements).map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
   for (const [key, value] of Object.entries(replacements)) Object.defineProperty(globalThis, key, { configurable: true, writable: true, value });
+  if (replacements.matchMedia) dom.window.matchMedia = replacements.matchMedia;
+  dom.window.scrollTo = () => {};
   const temp = await mkdtemp(fileURLToPath(new URL("../../../node_modules/.request-form-test-", import.meta.url)));
-  const output = join(temp, "TravelForm.mjs");
-  await build({ entryPoints: [fileURLToPath(new URL("./TravelForm.jsx", import.meta.url))], outfile: output, bundle: true, format: "esm", platform: "node", jsx: "automatic", packages: "external", loader: { ".png": "dataurl", ".jpg": "dataurl", ".svg": "dataurl" }, define: { "import.meta.env.VITE_API_BASE": "undefined" } });
+  const output = join(temp, "App.mjs");
+  await build({
+    entryPoints: [fileURLToPath(new URL("../../App.jsx", import.meta.url))],
+    outfile: output, bundle: true, format: "esm", platform: "node", jsx: "automatic", packages: "external",
+    loader: { ".png": "dataurl", ".jpg": "dataurl", ".svg": "dataurl" },
+    define: { "import.meta.env.VITE_API_BASE": "undefined" },
+  });
   let root;
   const tick = () => new Promise(resolve => setTimeout(resolve, 10));
   const actOn = async callback => { await act(async () => { callback(); await tick(); }); };
-  const field = name => doc.getElementById(name) ?? doc.querySelector(`[name="${name}"]`);
-  const fill = async (name, value) => actOn(() => { const control = field(name); assert.ok(control, name); Object.getOwnPropertyDescriptor(Object.getPrototypeOf(control), "value").set.call(control, value); control.dispatchEvent(new dom.window.Event("input", { bubbles: true })); control.dispatchEvent(new dom.window.Event("change", { bubbles: true })); });
-  const button = label => [...doc.querySelectorAll("button")].find(node => node.getAttribute("aria-label") === label || node.textContent.replace("‹", "").trim() === label);
-  const click = async label => actOn(() => { assert.ok(button(label), label); button(label).click(); });
-  const radio = async (name, value) => actOn(() => doc.querySelector(`[name="${name}"][value="${value}"]`).click());
-  const step = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   try {
-    const module = await import(output);
-    const { default: TravelForm, supportsMonthInput, monthFromParts, MONTH_FALLBACK_ERROR } = module;
-    // Capability probe uses document.createElement and the reflected input type.
-    assert.equal(supportsMonthInput(doc), true, "jsdom keeps type=month");
-    assert.equal(supportsMonthInput({ createElement: () => ({ type: "text", setAttribute() {} }) }), false);
-    assert.equal(monthFromParts("", ""), "");
-    assert.equal(monthFromParts("03", "2030"), "2030-03");
-    assert.equal(monthFromParts("03", "1"), "0001-03");
-    assert.equal(monthFromParts("12", "9999"), "9999-12");
-    for (const [month, year] of [["03", ""], ["", "2030"], ["03", "0"], ["03", "10000"], ["03", "20.5"]]) assert.match(monthFromParts(month, year), /^incomplete:/);
-
+    const { default: App } = await import(output);
     const { createRoot } = await import("react-dom/client");
     const { MemoryRouter } = await import("react-router-dom");
     root = createRoot(doc.querySelector("#root"));
-    await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(TravelForm, { monthInputSupported: false }))));
-    let form = doc.querySelector("form");
-    await fill("departureLocation", "Hue");
-    await click("Next");
-    await click("Next");
-    assert.deepEqual(step(), [2]);
-    // By dates stays native.
-    assert.equal(field("startDate").type, "date");
-    await radio("periodMode", "month");
-    assert.equal(doc.querySelector('input[type="month"]'), null);
-    assert.equal(field("month").tagName, "SELECT");
-    assert.equal(doc.querySelector('label[for="month"]').textContent, "Month");
-    assert.equal(doc.querySelector('label[for="monthYear"]').textContent, "Year");
-    assert.equal(doc.querySelector(".request-month-fallback legend").textContent.replace("*", ""), "Month and year");
-    assert.equal(field("month").value, "", "No default month");
-    assert.equal(field("monthYear").value, "", "No default year");
-    assert.equal(field("monthYear").type, "number");
-    assert.equal(field("monthYear").min, "1");
-    assert.equal(field("monthYear").max, "9999");
-    assert.equal(field("month").name, "");
-    assert.equal(field("monthYear").name, "");
-    assert.equal(form.querySelectorAll('[name="month"]').length, 1, "Single canonical month field");
-    assert.deepEqual(new FormData(form).getAll("month"), [""]);
-    assert.equal(new FormData(form).has("monthYear"), false);
 
-    // Empty, partial and out-of-range values block Next and focus the visible control.
-    await fill("durationDays", "4");
-    await click("Next");
-    assert.deepEqual(step(), [2]);
-    assert.equal(doc.getElementById("month-error").textContent, "This field is required.");
-    assert.equal(doc.activeElement.id, "month");
-    assert.equal(field("month").getAttribute("aria-invalid"), "true");
-    await fill("month", "03");
-    assert.match(new FormData(form).get("month"), /^incomplete:/, "FormData is fresh after the select changes");
-    await click("Next");
-    assert.deepEqual(step(), [2]);
-    assert.equal(doc.getElementById("month-error").textContent, MONTH_FALLBACK_ERROR);
-    assert.equal(doc.activeElement.id, "monthYear");
-    for (const year of ["0", "10000"]) {
-      await fill("monthYear", year);
-      await click("Next");
-      assert.deepEqual(step(), [2], `year ${year} is rejected`);
-      assert.equal(doc.activeElement.id, "monthYear");
+    await actOn(() => root.render(React.createElement(MemoryRouter, { initialEntries: ["/welcome"] }, React.createElement(App))));
+    const start = [...doc.querySelectorAll("a")].find(node => node.textContent.includes("Start planning"));
+    assert.ok(start, "Welcome has Start planning");
+    assert.equal(start.getAttribute("href"), "/");
+    await actOn(() => start.click());
+    assert.equal(doc.querySelector(".entry-choice"), null, "Chooser is not rendered after Start planning");
+    assert.equal(doc.querySelector("#trip-describe-panel"), null);
+    assert.ok(doc.getElementById("departureLocation"), "First form question is visible");
+    assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you leaving from?");
+    assert.equal(doc.activeElement?.id, "departureLocation");
+
+    for (const path of ["/describe", "/describe/anything"]) {
+      await actOn(() => root.render(React.createElement(MemoryRouter, { initialEntries: [path] }, React.createElement(App))));
+      assert.equal(doc.querySelector(".welcome-page"), null, `${path} does not 404 or stay on welcome`);
+      assert.equal(doc.querySelector(".entry-choice"), null, `${path} does not show the chooser`);
+      assert.ok(doc.getElementById("departureLocation"), `${path} redirects to the form`);
+      assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you leaving from?");
     }
-    await fill("monthYear", "9999");
-    assert.equal(new FormData(form).get("month"), "9999-03");
-    await fill("month", "");
-    await click("Next");
-    assert.equal(doc.activeElement.id, "month", "Missing month focuses the month select");
-    await fill("month", "03");
-
-    // Toggling to dates disables the canonical field but keeps the entries.
-    await radio("periodMode", "dates");
-    assert.equal(new FormData(form).has("month"), false);
-    await radio("periodMode", "month");
-    assert.equal(field("month").value, "03");
-    assert.equal(field("monthYear").value, "9999");
-    assert.equal(new FormData(form).get("month"), "9999-03");
-    await click("Next");
-    assert.deepEqual(step(), [3]);
-    await fill("travelerCount", "3");
-    await click("Next");
-    await fill("budgetAmount", "0");
-    await radio("budgetScope", "group");
-    await click("Next");
-    assert.deepEqual(step(), [5]);
-    await click("Next");
-    assert.deepEqual(step(), [6]);
-    const when = () => [...doc.querySelectorAll(".request-review > div")].find(row => row.querySelector("dt").textContent === "When").querySelector("dd").textContent;
-    assert.equal(when(), "March 9999 · 4 days");
-    // Edit, change the year, return: summary and payload follow the latest value.
-    await click("Edit dates");
-    assert.equal(doc.activeElement.id, "month");
-    await fill("monthYear", "2041");
-    await click("Back to review");
-    assert.equal(when(), "March 2041 · 4 days");
-    const payload = buildPayload(new FormData(form));
-    assert.deepEqual(payload, { travelPeriod: { month: "2041-03" }, durationDays: 4, departureLocation: "Hue", travelers: { count: 3 }, budget: { amount: 0, currency: "VND", scope: "group" } });
-    await click("Create itinerary");
-    assert.deepEqual(fetchCalls.filter(call => call.url === "/api/v1/requests/validate"), [{ url: "/api/v1/requests/validate", payload }]);
-
-    // Clear resets fallback parts and the canonical value.
-    await click("Clear form");
-    form = doc.querySelector("form");
-    await fill("departureLocation", "Hue");
-    await click("Next");
-    await click("Next");
-    await radio("periodMode", "month");
-    assert.equal(field("month").value, "");
-    assert.equal(field("monthYear").value, "");
-    assert.deepEqual(new FormData(form).getAll("month"), [""]);
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {
     if (root) await act(async () => root.unmount());

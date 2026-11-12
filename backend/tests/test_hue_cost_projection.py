@@ -3,6 +3,7 @@ from copy import deepcopy
 from app.services.hue_cost_projection import project_hue_costs
 from app.algorithms.cost_validator import evaluate_candidate_costs
 from app.services.data_service import load_dataset
+from app.services.price_evidence import price_evidence_status
 
 
 def projection_case():
@@ -68,7 +69,10 @@ def test_canonical_dataset_evaluate_api_returns_lodging_projection(monkeypatch):
         for activity in day["activities"]:
             place = places[activity["placeId"]]
             price = place.get("avgPricePerPersonVnd") if activity["type"] == "dining" else place.get("priceVnd")
-            activity.update(estimatedCostVnd=price, costStatus="KNOWN" if price is not None else "NO_DATA")
+            activity.update(
+                estimatedCostVnd=price,
+                costStatus=price_evidence_status(place, dining=activity["type"] == "dining"),
+            )
     response = TestClient(app).post("/itineraries/evaluate", json=body)
     assert response.status_code == 200, response.json()
     projection = response.json()["components"]["cost"]["projection"]

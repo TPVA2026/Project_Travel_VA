@@ -70,18 +70,21 @@ def test_fetch_tile_splits_when_api_repeats_offset_page():
 def test_nationwide_snapshot_is_available_to_planner(tmp_path, monkeypatch):
     monkeypatch.setattr(data_service, "DATA_DIR", tmp_path)
     for filename, value in {
-        "destinations.json": [{"id": "H", "city": "Huế"}, {"id": "VN_01", "city": "Hà Nội"}],
-        "attractions.json": [{"id": "OTM_VN_01_W1", "destinationId": "VN_01", "name": "Temple", "priceVnd": None}],
-        "restaurants.json": [], "travel_matrix.json": [],
+        "destinations.json": [{"id": "H", "city": "Huế", "dataFolder": "Hue"},
+                              {"id": "VN_01", "city": "Hà Nội", "dataFolder": "HaNoi"}],
+        "HaNoi/attractions.json": [{"id": "OTM_VN_01_W1", "destinationId": "VN_01", "name": "Temple", "priceVnd": None}],
+        "Hue/attractions.json": [], "Hue/restaurants.json": [], "Hue/accomodation.json": [],
+        "HaNoi/restaurants.json": [], "HaNoi/accomodation.json": [], "travel_matrix.json": [],
         "opentripmap_vietnam.json": {
             "destinations": [{"id": "VN_01", "city": "Hà Nội"}],
             "attractions": [{"id": "LEGACY_IGNORED", "destinationId": "VN_01",
                              "name": "Temple", "priceVnd": None}],
         },
     }.items():
+        (tmp_path / filename).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / filename).write_text(json.dumps(value), encoding="utf-8")
     dataset = data_service.load_dataset()
-    assert set(dataset) == {"destinations", "attractions", "dining", "travel_matrix"}
+    assert set(dataset) == {"destinations", "attractions", "dining", "travel_matrix", "hotels"}
     assert len(dataset["destinations"]) == 2
     assert all(p["id"] != "LEGACY_IGNORED" for p in dataset["attractions"])
     assert build_context({"preferences": {"destination": "Hà Nội"}}, dataset)[

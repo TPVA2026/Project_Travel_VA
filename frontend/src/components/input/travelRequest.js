@@ -7,6 +7,85 @@ export const INTERESTS = [
 
 export const ADDITIONAL_REQUIREMENTS_MAX = 500;
 
+// Inclusive trip length the form allows. Backend schema only requires durationDays >= 1;
+// the MVP target is 1–3 days and is not yet enforced server-side.
+export const MAX_TRIP_DAYS = 3;
+export const TRIP_TIME_ZONE = "Asia/Bangkok";
+export const MAX_START_AHEAD_YEARS = 1;
+export const MAX_MONTHS_AHEAD = 12;
+
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
+
+export function formatIsoDate(year, month, day) {
+  return `${year}-${pad2(month)}-${pad2(day)}`;
+}
+
+// Today's calendar date in Asia/Bangkok, as YYYY-MM-DD.
+export function localTodayIso(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TRIP_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const get = (type) => parts.find((part) => part.type === type).value;
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+export function localYearMonth(now = new Date()) {
+  return localTodayIso(now).slice(0, 7);
+}
+
+export function addDaysIso(iso, days) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso ?? ""));
+  if (!match) return "";
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) + Number(days)));
+  return formatIsoDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+}
+
+export function addYearsIso(iso, years) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso ?? ""));
+  if (!match) return "";
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year + Number(years), month - 1, day));
+  return formatIsoDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+}
+
+export function addMonthsYm(yearMonth, months) {
+  const match = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(String(yearMonth ?? ""));
+  if (!match) return "";
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1 + Number(months), 1));
+  return `${date.getUTCFullYear()}-${pad2(date.getUTCMonth() + 1)}`;
+}
+
+export function startDateBounds(now = new Date()) {
+  const today = localTodayIso(now);
+  return { min: today, max: addYearsIso(today, MAX_START_AHEAD_YEARS) };
+}
+
+// End date is inclusive: start through start + (MAX_TRIP_DAYS - 1).
+// A range may cross a month or year boundary.
+export function endDateBounds(start, now = new Date()) {
+  const today = localTodayIso(now);
+  if (!isIsoDate(start)) {
+    return { min: today, max: addDaysIso(today, MAX_TRIP_DAYS - 1) };
+  }
+  return { min: start, max: addDaysIso(start, MAX_TRIP_DAYS - 1) };
+}
+
+export function monthBounds(now = new Date()) {
+  const current = localYearMonth(now);
+  return { min: current, max: addMonthsYm(current, MAX_MONTHS_AHEAD) };
+}
+
+export function tripLimitHint() {
+  return `Up to ${MAX_TRIP_DAYS} days`;
+}
+
 const LOC_FIELD = {
   startDate: "startDate",
   endDate: "endDate",
@@ -46,24 +125,68 @@ function lines(value) {
 const ISO_MONTH = /^(?!0000)\d{4}-(0[1-9]|1[0-2])$/;
 
 // A real calendar date in YYYY-MM-DD form; any four-digit year is accepted.
-function isIsoDate(value) {
+export function isIsoDate(value) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value ?? ""));
   if (!match || Number(match[1]) < 1) return false;
   const [year, month, day] = match.slice(1).map(Number);
-  const date = new Date(0);
-  date.setUTCFullYear(year, month - 1, day);
+  const date = new Date(Date.UTC(year, month - 1, day));
   return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
 }
 
-function daySpan(start, end) {
-  return Math.round((Date.parse(end) - Date.parse(start)) / 86400000) + 1;
-}
-
-// Inclusive calendar-day count for two ISO dates, computed in UTC (no timezone shift).
+// Inclusive civil-day count for two YYYY-MM-DD calendar dates. Uses the date
+// parts only (not local midnights), so a Bangkok evening is not shifted back a day.
 export function inclusiveDays(start, end) {
   if (!isIsoDate(start) || !isIsoDate(end) || end < start) return null;
-  const count = daySpan(start, end);
+  const [ys, ms, ds] = start.split("-").map(Number);
+  const [ye, me, de] = end.split("-").map(Number);
+  const count = Math.round((Date.UTC(ye, me - 1, de) - Date.UTC(ys, ms - 1, ds)) / 86400000) + 1;
   return Number.isInteger(count) && count > 0 ? count : null;
+}
+
+export function isValidTripDays(value) {
+  const n = typeof value === "number" ? value : Number(value);
+  return Number.isInteger(n) && n >= 1 && n <= MAX_TRIP_DAYS;
+}
+
+export function endDateFromLength(start, days) {
+  if (!isIsoDate(start) || !isValidTripDays(days)) return "";
+  return addDaysIso(start, Number(days) - 1);
+}
+
+// Formats a calendar date in Asia/Bangkok, e.g. "Sat, 16 Nov".
+export function formatBangkokDate(iso, options = { weekday: "short", day: "numeric", month: "short" }) {
+  if (!isIsoDate(iso)) return "";
+  return new Date(`${iso}T12:00:00+07:00`).toLocaleDateString("en-GB", { timeZone: TRIP_TIME_ZONE, ...options });
+}
+
+export function formatReturnLabel(iso) {
+  if (!isIsoDate(iso)) return "";
+  const weekday = formatBangkokDate(iso, { weekday: "short" });
+  const rest = formatBangkokDate(iso, { day: "numeric", month: "short" });
+  return `Returns ${weekday}, ${rest}`;
+}
+
+// Resolves a safe dates-only trip period. Duration cards are the source of truth
+// when present; otherwise a start/end pair is used if it is 1..MAX_TRIP_DAYS.
+// Returns null for past starts, over-long ranges, or invalid values — buildPayload
+// must not send those.
+export function resolveTripPeriod(data, now = new Date()) {
+  const start = data.get("startDate");
+  const today = localTodayIso(now);
+  const { max: startMax } = startDateBounds(now);
+  if (!isIsoDate(start) || start < today || start > startMax) return null;
+
+  const rawDays = data.get("durationDays");
+  if (rawDays !== "" && rawDays != null) {
+    if (!isValidTripDays(rawDays)) return null;
+    const days = Number(rawDays);
+    return { startDate: start, endDate: endDateFromLength(start, days), durationDays: days };
+  }
+
+  const end = data.get("endDate");
+  const span = inclusiveDays(start, end);
+  if (!isValidTripDays(span)) return null;
+  return { startDate: start, endDate: end, durationDays: span };
 }
 
 export const REQUIRED = "This field is required.";
@@ -76,17 +199,25 @@ export function valueErrors(data) {
   const errors = {};
   const start = data.get("startDate");
   const end = data.get("endDate");
-  if (data.get("periodMode") !== "month") {
-    if (start && !isIsoDate(start)) errors.startDate = "Use a full date (YYYY-MM-DD).";
-    if (end && !isIsoDate(end)) errors.endDate = "Use a full date (YYYY-MM-DD).";
+  const today = localTodayIso();
+  const { min: startMin, max: startMax } = startDateBounds();
+  if (start && !isIsoDate(start)) errors.startDate = "Use a full date (YYYY-MM-DD).";
+  else if (start && start < startMin) errors.startDate = "Start date can't be in the past.";
+  else if (start && start > startMax) errors.startDate = "Start date must be within 1 year from today.";
+  const rawDays = data.get("durationDays");
+  if (rawDays !== "" && rawDays != null && !isValidTripDays(rawDays)) {
+    errors.durationDays = `Choose 1 to ${MAX_TRIP_DAYS} days.`;
   }
-  const month = data.get("month");
-  if (data.get("periodMode") === "month" && month && !ISO_MONTH.test(month)) errors.month = "Use a month and year (YYYY-MM).";
-  if (data.get("periodMode") !== "month" && start && end && !errors.startDate && !errors.endDate && end < start) {
+  if (end && !isIsoDate(end)) errors.endDate = "Use a full date (YYYY-MM-DD).";
+  else if (end && !errors.endDate && isIsoDate(start) && end < start) {
     errors.endDate = "End date must be on or after the start date.";
-  }
-  if (data.get("periodMode") === "month" && filledWrong(data.get("durationDays"), (n) => n < 1 || !Number.isInteger(n))) {
-    errors.durationDays = "Number of days must be at least 1.";
+  } else if (end && !errors.endDate && isIsoDate(start)) {
+    const span = inclusiveDays(start, end);
+    if (span == null || span > MAX_TRIP_DAYS) {
+      errors.endDate = `Choose an end date within ${MAX_TRIP_DAYS} days of the start date.`;
+    }
+  } else if (end && !errors.endDate && end < today) {
+    errors.endDate = "End date can't be in the past.";
   }
   const departure = String(data.get("departureLocation") ?? "");
   if (departure !== "" && !departure.trim()) errors.departureLocation = REQUIRED;
@@ -122,14 +253,10 @@ export function valueErrors(data) {
 
 export function clientErrors(data) {
   const errors = valueErrors(data);
-  const mode = data.get("periodMode");
-  if (mode === "month") {
-    if (!data.get("month")) errors.month = REQUIRED;
-    if (!data.get("durationDays")) errors.durationDays = REQUIRED;
-  } else {
-    if (!data.get("startDate")) errors.startDate = REQUIRED;
-    if (!data.get("endDate") && !errors.endDate) errors.endDate = REQUIRED;
-  }
+  if (!data.get("startDate")) errors.startDate = REQUIRED;
+  const hasLength = isValidTripDays(data.get("durationDays"));
+  const hasEnd = isIsoDate(data.get("endDate")) && !errors.endDate;
+  if (!hasLength && !hasEnd && !errors.durationDays) errors.durationDays = REQUIRED;
   if (!String(data.get("departureLocation") ?? "").trim()) {
     errors.departureLocation = REQUIRED;
   }
@@ -150,17 +277,14 @@ export function clientErrors(data) {
   return errors;
 }
 
-export function buildPayload(data) {
-  const mode = data.get("periodMode");
-  const travelPeriod = mode === "month"
-    ? { month: data.get("month") }
-    : { startDate: data.get("startDate"), endDate: data.get("endDate") };
-  const durationDays = mode === "month"
-    ? Number(data.get("durationDays"))
-    : daySpan(data.get("startDate"), data.get("endDate"));
+export function buildPayload(data, now = new Date()) {
+  const period = resolveTripPeriod(data, now);
+  if (!period) {
+    throw new Error("Trip dates must be today or later and at most 3 days.");
+  }
   const payload = {
-    travelPeriod,
-    durationDays,
+    travelPeriod: { startDate: period.startDate, endDate: period.endDate },
+    durationDays: period.durationDays,
     departureLocation: String(data.get("departureLocation")).trim(),
     travelers: { count: Number(data.get("travelerCount")) },
     budget: {
@@ -248,9 +372,7 @@ export function mapServerErrors(errors) {
 
 // UI completion only; this does not indicate API validation or trip feasibility.
 export function progressOf(data) {
-  const keys = data.get("periodMode") === "month"
-    ? ["month", "durationDays", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"]
-    : ["startDate", "endDate", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"];
+  const keys = ["startDate", "durationDays", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"];
   const filled = keys.filter(key => String(data.get(key) ?? "").trim()).length;
   return Math.round(filled / keys.length * 100);
 }

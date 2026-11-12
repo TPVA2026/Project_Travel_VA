@@ -7,6 +7,11 @@ import {
   clearSelectedPlan,
   knownTotal,
   fmtMoney,
+  collectPlaceIds,
+  fetchPlaceCatalog,
+  indexPlaces,
+  createNameResolver,
+  formatReason,
 } from '../services/api.js'
 import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
 import CostSummary from '../components/itinerary/CostSummary.jsx'
@@ -37,6 +42,22 @@ export default function SelectedPlanPage() {
   const [celebrate, setCelebrate] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState(false)
   const [shouldSimulateError, setShouldSimulateError] = useState(false)
+  const [placesById, setPlacesById] = useState(() => new Map())
+  const [placeCatalogError, setPlaceCatalogError] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setPlacesById(new Map())
+    setPlaceCatalogError(null)
+    const ids = collectPlaceIds(plan)
+    if (!ids.length) return undefined
+    fetchPlaceCatalog({ ids }).then((places) => {
+      if (!cancelled) setPlacesById(indexPlaces(places))
+    }).catch(() => {
+      if (!cancelled) setPlaceCatalogError('Không tải được tên địa điểm. Hãy tải lại trang để thử lại.')
+    })
+    return () => { cancelled = true }
+  }, [plan])
 
   const loadPlan = useCallback(async (opts = {}) => {
     if (!activePlanId) {
@@ -144,6 +165,7 @@ export default function SelectedPlanPage() {
   const activityCount =
     plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
   const totalCost = plan ? knownTotal(plan).total : 0
+  const resolveName = createNameResolver(plan, placesById)
 
   return (
     <div className={`selected-page-container${isChosen ? ' is-chosen' : ''}`}>
@@ -385,7 +407,7 @@ export default function SelectedPlanPage() {
                   <div className="plan-alert-box alert-unverified">
                     <Icon name="info" size={16} />
                     <span>
-                      <strong>Unverified items:</strong> {plan.missing?.join(', ')} (not counted as 0)
+                      <strong>Unverified items:</strong> {plan.missing?.map((reason) => formatReason(reason, { resolveName })).join(', ')} (not counted as 0)
                     </span>
                   </div>
                 )}
@@ -454,8 +476,9 @@ export default function SelectedPlanPage() {
                   </button>
                 </div>
 
-                <ItineraryTimeline days={plan.days} />
-                <CostSummary plan={plan} />
+                {placeCatalogError && <p role="status" className="muted small">{placeCatalogError}</p>}
+                <ItineraryTimeline days={plan.days} placesById={placesById} />
+                <CostSummary plan={plan} costEvaluation={plan.evaluation?.components?.cost} resolveName={resolveName} />
               </div>
             </div>
           </div>
