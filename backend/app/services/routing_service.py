@@ -8,10 +8,12 @@ provisional even when OSRM successfully returns distance and duration.
 from __future__ import annotations
 
 from collections import OrderedDict
+from copy import deepcopy
 from dataclasses import dataclass
 import math
 import os
 from typing import Any
+from urllib.parse import urlsplit
 
 import httpx
 
@@ -71,6 +73,14 @@ class RoutingConfig:
     @classmethod
     def from_env(cls) -> "RoutingConfig":
         base_url = os.getenv("OSRM_BASE_URL", "").strip().rstrip("/") or None
+        if base_url:
+            try:
+                parsed = urlsplit(base_url)
+            except ValueError:
+                base_url = None
+            else:
+                if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+                    base_url = None
         place_ids = frozenset(
             item.strip()
             for item in os.getenv("OSRM_MVP_PLACE_IDS", "").split(",")
@@ -128,13 +138,21 @@ def routing_point(place: dict | None, transport_mode: str | None = None) -> dict
             "longitude": reviewed.get("longitude"),
             "reviewed": True,
             "coordinateSource": reviewed.get("source", "reviewed_routing_point"),
+            "reviewReason": None,
         }
+    if not isinstance(reviewed, dict) or reviewed.get("reviewed") is not True:
+        review_reason = "REVIEWED_POINT_MISSING"
+    elif reviewed.get("profile") != profile:
+        review_reason = "REVIEWED_POINT_PROFILE_MISMATCH"
+    else:
+        review_reason = "REVIEWED_POINT_UNAVAILABLE"
     return {
         "placeId": place.get("id"),
         "latitude": place.get("latitude"),
         "longitude": place.get("longitude"),
         "reviewed": False,
         "coordinateSource": place.get("source", "source_poi_coordinate"),
+        "reviewReason": review_reason,
     }
 
 
@@ -155,7 +173,8 @@ class RoutingService:
         self._cache: OrderedDict[tuple, dict] = OrderedDict()
 
     def _result(self, status: str, origin: dict, destination: dict, mode: str,
-                profile: str | None, **values: Any) -> dict:
+                profile: str | None, reason_code: str, reason: str,
+                **values: Any) -> dict:
         result = {
             "status": status,
             "originPlaceId": origin.get("placeId"),
@@ -168,16 +187,17 @@ class RoutingService:
             "evidenceStatus": "NO_DATA",
             "originReviewed": origin.get("reviewed") is True,
             "destinationReviewed": destination.get("reviewed") is True,
+            "diagnostic": {"code": reason_code, "message": reason},
         }
         result.update(values)
         return result
 
     def _remember(self, key: tuple, value: dict) -> dict:
-        self._cache[key] = value.copy()
+        self._cache[key] = deepcopy(value)
         self._cache.move_to_end(key)
         while len(self._cache) > self.config.cache_size:
             self._cache.popitem(last=False)
-        return value.copy()
+        return deepcopy(value)
 
     def get_route(self, origin: dict, destination: dict, transport_mode: str) -> dict:
         """Get one directed route without leaking provider/network exceptions."""
@@ -186,12 +206,30 @@ class RoutingService:
         normalized_mode = transport_mode.strip().casefold() if isinstance(transport_mode, str) else ""
         profile = MODE_PROFILES.get(normalized_mode)
         if profile is None or profile not in self.config.enabled_profiles:
-            return self._result(UNSUPPORTED_MODE, origin, destination, normalized_mode, None)
+            return self._result(
+                UNSUPPORTED_MODE, origin, destination, normalized_mode, profile,
+                "UNSUPPORTED_PROFILE", "The requested transport profile is not enabled.",
+            )
+
+        if not self.config.enabled:
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "ROUTING_DISABLED", "OSRM routing is disabled.",
+            )
 
         origin_coordinates = _coordinates(origin)
         destination_coordinates = _coordinates(destination)
         if origin_coordinates is None or destination_coordinates is None:
-            return self._result(INVALID_COORDINATES, origin, destination, normalized_mode, profile)
+            invalid = []
+            if origin_coordinates is None:
+                invalid.append("origin")
+            if destination_coordinates is None:
+                invalid.append("destination")
+            return self._result(
+                INVALID_COORDINATES, origin, destination, normalized_mode, profile,
+                "INVALID_ENDPOINT_COORDINATES",
+                f"Invalid or missing coordinates for: {', '.join(invalid)}.",
+            )
 
         key = (
             profile, origin.get("placeId"), origin_coordinates, origin.get("reviewed") is True,
@@ -200,10 +238,13 @@ class RoutingService:
         )
         if key in self._cache:
             self._cache.move_to_end(key)
-            return self._cache[key].copy()
+            return deepcopy(self._cache[key])
 
         if not self.config.base_url:
-            return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "ROUTING_NOT_CONFIGURED", "No valid OSRM base URL is configured.",
+            )
 
         origin_text = f"{origin_coordinates[1]},{origin_coordinates[0]}"
         destination_text = f"{destination_coordinates[1]},{destination_coordinates[0]}"
@@ -216,43 +257,83 @@ class RoutingService:
                 timeout=self.config.timeout_seconds,
             )
             if response.status_code >= 400:
-                return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+                return self._result(
+                    ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                    "PROVIDER_UNAVAILABLE", "The routing provider is unavailable.",
+                )
             payload = response.json()
+        except httpx.TimeoutException:
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "PROVIDER_TIMEOUT", "The routing provider timed out.",
+            )
         except (httpx.HTTPError, ValueError, TypeError):
-            return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "PROVIDER_UNAVAILABLE", "The routing provider is unavailable.",
+            )
         finally:
             if self._client is None and "client" in locals():
                 client.close()
 
         if not isinstance(payload, dict):
-            return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "INVALID_PROVIDER_RESPONSE", "The routing provider returned an invalid response.",
+            )
         if payload.get("code") == "NoRoute":
             return self._remember(
-                key, self._result(NO_ROUTE, origin, destination, normalized_mode, profile)
+                key, self._result(
+                    NO_ROUTE, origin, destination, normalized_mode, profile,
+                    "NO_ROUTE_RETURNED", "The provider returned no route for this profile.",
+                )
             )
         if payload.get("code") != "Ok":
-            return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "INVALID_PROVIDER_RESPONSE", "The routing provider returned an invalid response.",
+            )
 
         routes = payload.get("routes")
         waypoints = payload.get("waypoints")
-        if not isinstance(routes, list) or not routes or not isinstance(routes[0], dict):
-            return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+        if isinstance(routes, list) and not routes:
+            return self._remember(key, self._result(
+                NO_ROUTE, origin, destination, normalized_mode, profile,
+                "NO_ROUTE_RETURNED", "The provider returned no route for this profile.",
+            ))
+        if not isinstance(routes, list) or not isinstance(routes[0], dict):
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "INVALID_PROVIDER_RESPONSE", "The routing provider returned an invalid response.",
+            )
         distance = _number(routes[0].get("distance"))
         duration = _number(routes[0].get("duration"))
         if distance is None or duration is None or distance < 0 or duration < 0:
-            return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "INVALID_PROVIDER_RESPONSE", "The routing provider returned an invalid response.",
+            )
         if not isinstance(waypoints, list) or len(waypoints) < 2:
-            return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+            return self._result(
+                ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                "INVALID_PROVIDER_RESPONSE", "The routing provider returned an invalid response.",
+            )
 
         snapped: list[tuple[float, float]] = []
         for waypoint in (waypoints[0], waypoints[-1]):
             location = waypoint.get("location") if isinstance(waypoint, dict) else None
             if (not isinstance(location, list) or len(location) != 2
                     or _number(location[0]) is None or _number(location[1]) is None):
-                return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+                return self._result(
+                    ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                    "INVALID_PROVIDER_RESPONSE", "The routing provider returned an invalid response.",
+                )
             coordinate = (_number(location[1]), _number(location[0]))
             if coordinate is None or not -90 <= coordinate[0] <= 90 or not -180 <= coordinate[1] <= 180:
-                return self._result(ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile)
+                return self._result(
+                    ROUTING_UNAVAILABLE, origin, destination, normalized_mode, profile,
+                    "INVALID_PROVIDER_RESPONSE", "The routing provider returned an invalid response.",
+                )
             snapped.append(coordinate)
 
         origin_snap = _haversine_meters(origin_coordinates, snapped[0])
@@ -262,8 +343,21 @@ class RoutingService:
         verified = reviewed and acceptable_snap
         status = ROUTE_AVAILABLE if verified else ROUTE_REVIEW_REQUIRED
         evidence = "VERIFIED" if verified else "PROVISIONAL"
+        if verified:
+            reason_code = "VERIFIED_ROUTE"
+            reason = "Both endpoints are reviewed and OSRM snap distances are acceptable."
+        elif not reviewed:
+            reasons = sorted({
+                point.get("reviewReason", "REVIEWED_POINT_MISSING")
+                for point in (origin, destination) if point.get("reviewed") is not True
+            })
+            reason_code = "ENDPOINT_REVIEW_REQUIRED"
+            reason = f"Endpoint review required ({', '.join(reasons)})."
+        else:
+            reason_code = "SNAP_DISTANCE_EXCEEDED"
+            reason = "At least one OSRM snap distance exceeds the configured threshold."
         return self._remember(key, self._result(
-            status, origin, destination, normalized_mode, profile,
+            status, origin, destination, normalized_mode, profile, reason_code, reason,
             distanceKm=distance / 1000,
             durationMin=duration / 60,
             evidenceStatus=evidence,

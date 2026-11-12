@@ -66,9 +66,8 @@ def test_generate_evaluate_rank_pipeline(pipeline, case):
     assert ranking["excluded"][0]["status"] == (
         "INFEASIBLE" if case == "budget" else "UNVERIFIED"
     )
-    # The evaluate route uses the service reference; ranking independently
-    # re-evaluates through the ranking module's imported validator.
-    evaluator.assert_called_once()
+    # Evaluate and rank use the same planning-service evaluation policy.
+    assert evaluator.call_count == 2
     assert (request, plan, dataset) == before
 
 

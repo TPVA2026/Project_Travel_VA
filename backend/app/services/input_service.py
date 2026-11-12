@@ -18,9 +18,18 @@ _PROMPTS = {
 
 
 def _clean_list(items):
+    """Trim strings and drop blank ones. Non-string items are kept so the schema
+    rejects them with a 422 instead of the value disappearing silently."""
     if not isinstance(items, list):
         return items
-    return [item.strip() for item in items if isinstance(item, str) and item.strip()]
+    cleaned = []
+    for item in items:
+        if isinstance(item, str):
+            if item.strip():
+                cleaned.append(item.strip())
+        else:
+            cleaned.append(item)
+    return cleaned
 
 
 def normalize_travel_request(payload: dict) -> dict:

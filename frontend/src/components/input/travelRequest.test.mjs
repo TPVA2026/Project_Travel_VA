@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, serverFieldErrors } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -163,4 +163,43 @@ assert.equal(valueErrors(form({ ...valid, periodMode: "month", month: "9999-12",
   assert.deepEqual(errors, { destination: long });
   const both = serverFieldErrors({ detail: { errors: [{ loc: ["preferences", "destination"], msg: long }], messages: [long, "Dates conflict."] } });
   assert.deepEqual(both, { destination: long, form: "Dates conflict." });
+}
+
+// TPVA-53: the form sends what the user chose and never invents destination, scope or costs.
+{
+  const perPerson = buildPayload(form({ ...valid, budgetScope: "perPerson" }));
+  assert.deepEqual(perPerson.budget, { amount: 8000000, currency: "VND", scope: "perPerson" });
+  assert.equal(perPerson.travelers.count, 2);
+
+  const skipped = buildPayload(form({ ...valid, destination: "   " }));
+  assert.equal(skipped.preferences?.destination, undefined, "A blank destination is omitted, not filled in");
+
+  const typed = buildPayload(form({ ...valid, destination: " hue " }));
+  assert.equal(typed.preferences.destination, "hue", "The destination is sent as typed, only trimmed");
+
+  const described = buildPayload(form({ ...valid, additionalRequirements: "Take us to Da Nang by taxi" }));
+  assert.equal(described.preferences?.destination, undefined, "Free text never fills the destination");
+  assert.equal(described.preferences?.transportation, undefined, "Free text never fills transportation");
+
+  for (const key of ["tripCosts", "transportCost", "accommodationCost"]) {
+    assert.equal(Object.hasOwn(perPerson, key), false, `${key} is not sent until the contract is agreed`);
+  }
+}
+
+// One traveler can only be submitted with a per-person budget.
+assert.equal(isSoloTravelerCount("1"), true);
+assert.equal(isSoloTravelerCount(" 1 "), true);
+assert.equal(isSoloTravelerCount(1), true);
+assert.equal(isSoloTravelerCount("01"), true);
+assert.equal(isSoloTravelerCount("2"), false);
+assert.equal(isSoloTravelerCount(""), false);
+assert.equal(isSoloTravelerCount("1.5"), false);
+{
+  const coerced = buildPayload(form({ ...valid, travelerCount: "1", budgetScope: "group" }));
+  assert.equal(coerced.travelers.count, 1);
+  assert.equal(coerced.budget.scope, "perPerson", "group is never sent with one traveler");
+  const kept = buildPayload(form({ ...valid, travelerCount: "1", budgetScope: "perPerson" }));
+  assert.equal(kept.budget.scope, "perPerson");
+  const group = buildPayload(form({ ...valid, travelerCount: "2", budgetScope: "group" }));
+  assert.equal(group.budget.scope, "group");
 }

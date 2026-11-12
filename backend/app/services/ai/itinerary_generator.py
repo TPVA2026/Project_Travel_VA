@@ -9,6 +9,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from app.algorithms.validation_common import route_reference
 from app.schemas.candidate_plan import CandidatePlan
 from app.services.ai.context_builder import build_context, supported_place_ids, valid_destination_ids
 from app.services.ai.gemini_client import GeminiError, request_text
@@ -48,7 +49,13 @@ def check_grounding(plan: dict, dataset: dict) -> list[str]:
         return [f"unknown destinationId {plan['destinationId']}"]
     places = {p["id"]: p for p in [*dataset.get("attractions", []), *dataset.get("dining", [])]}
     kind = {**{p["id"]: "dining" for p in dataset.get("dining", [])}, **{p["id"]: "sightseeing" for p in dataset.get("attractions", [])}}
-    matrix = {(l["from"], l["to"]): l for l in dataset.get("travelMatrix", dataset.get("travel_matrix", []))}
+    matrix = {}
+    for leg in dataset.get("travelMatrix", dataset.get("travel_matrix", [])):
+        pair = (leg.get("from"), leg.get("to"))
+        reference = route_reference(dataset, *pair)
+        matrix[pair] = reference or {
+            "durationMin": None, "distanceKm": None,
+        }
     errs: list[str] = []
     # Explicit dataset relationships are authoritative; absent mappings are not guessed.
     for day in plan["days"]:
