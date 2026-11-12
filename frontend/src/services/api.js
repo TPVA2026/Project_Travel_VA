@@ -421,6 +421,7 @@ async function requestJson(path, payload, opts = {}) {
     if (error?.name === "AbortError") {
       const timeout = new Error("The AI service took too long to respond.")
       timeout.status = 504
+      timeout.code = "TIMEOUT"
       throw timeout
     }
     throw error
@@ -444,6 +445,7 @@ async function requestJson(path, payload, opts = {}) {
       "The assistant could not complete the request."
     );
     error.status = res.status;
+    error.code = body.error;
     error.body = body;
     throw error;
   }
@@ -481,11 +483,16 @@ export function normalizePipelineError(error, stage = "pipeline") {
   const status = error?.status
   const serverCode = error?.body?.error
   let code = "PIPELINE_ERROR"
-  if (status === 504 || serverCode === "TIMEOUT") code = "TIMEOUT"
+  if (
+    serverCode === "NO_CANDIDATES" ||
+    serverCode === "INSUFFICIENT_CANDIDATES"
+  ) code = "NO_CANDIDATES"
+  else if (status === 504 || serverCode === "TIMEOUT") code = "TIMEOUT"
   else if (status === 429 || serverCode === "RATE_LIMIT") code = "RATE_LIMIT"
   else if (status === 503) code = "AI_BUSY"
   else if (status === 502 || (status === 500 && serverCode === "CONFIG")) code = "AI_UNAVAILABLE"
   else if (status === 422) code = "INVALID_REQUEST"
+  else if (!status) code = "AI_UNAVAILABLE"
   const wrapped = new Error(error?.message || "The assistant could not complete the request.")
   wrapped.code = code
   wrapped.status = status
@@ -649,99 +656,58 @@ export function getCandidateWarnings(candidate, ranking) {
  */
 export async function runItineraryPipeline(payload, opts = {}) {
   const requested = clampCandidateCount(opts.count)
-  const maxAttempts = Math.max(requested, Number(opts.maxAttempts) || requested * 3)
-  const allowPartial = opts.allowPartial !== false
-  const plans = []
-  const seen = new Set()
-  const warnings = []
-  let lastError = null
-
-  for (let attempt = 0; attempt < maxAttempts && plans.length < requested; attempt += 1) {
-    let generated
-    try {
-      generated = await generateItinerary(payload, {
-        timeoutMs: opts.generateTimeoutMs || 90000,
-      })
-    } catch (error) {
-      lastError = normalizePipelineError(error, "generate")
-      if (!allowPartial || plans.length === 0) throw lastError
-      warnings.push({ code: "PARTIAL_GENERATION", message: lastError.message })
-      break
-    }
-    const plan = generated?.plan
-    if (!plan) {
-      lastError = pipelineError("NO_CANDIDATES", "The assistant did not return a candidate plan.")
-      if (!allowPartial || plans.length === 0) throw lastError
-      warnings.push({ code: "PARTIAL_GENERATION", message: lastError.message })
-      break
-    }
-    const signature = planSignature(plan)
-    if (seen.has(signature)) continue
-    seen.add(signature)
-    plans.push(plan)
-  }
-
-  if (plans.length === 0) {
-    throw lastError || pipelineError(
-      "NO_CANDIDATES",
-      "The assistant did not return any usable candidate."
-    )
-  }
-  if (plans.length < requested) {
-    warnings.push({
-      code: "INSUFFICIENT_CANDIDATES",
-      message: `Only ${plans.length} distinct candidate${plans.length === 1 ? "" : "s"} could be generated.`,
-    })
-  }
-
-  const evaluated = []
-  for (const plan of plans) {
-    try {
-      const evaluation = await evaluateItinerary(payload, plan)
-      evaluated.push({
-        planId: plan.planId,
-        plan,
-        evaluation,
-        status: normalizeCandidateStatus(evaluation?.status),
-      })
-    } catch (error) {
-      const wrapped = normalizePipelineError(error, "evaluate")
-      if (!allowPartial) throw wrapped
-      warnings.push({ code: "PARTIAL_EVALUATION", message: wrapped.message })
-    }
-  }
-  if (evaluated.length === 0) {
-    throw pipelineError("NO_CANDIDATES", "No candidate itinerary could be evaluated.")
-  }
-
-  let ranking = { ranked: [], unscored: [], excluded: [] }
   try {
-    ranking = await rankItineraries(payload, evaluated.map((item) => item.plan))
+    const result = await requestJson(
+      "/itineraries/pipeline",
+      { request: payload, count: requested },
+      { timeoutMs: opts.timeoutMs || 300000 }
+    )
+    const legacyCandidate = result?.plan
+      ? [{
+          planId: result.plan.planId,
+          plan: result.plan,
+          status: result.status || result.evaluation?.status || "UNVERIFIED",
+          evaluation: result.evaluation || null,
+        }]
+      : []
+    const candidates = Array.isArray(result?.candidates)
+      ? result.candidates
+      : legacyCandidate
+    if (candidates.length === 0) {
+      throw pipelineError(
+        "NO_CANDIDATES",
+        "The assistant did not return any usable candidate."
+      )
+    }
+
+    const normalizedCandidates = candidates.map((candidate) => ({
+      ...candidate,
+      planId: candidate.planId || candidate.plan?.planId,
+      status: normalizeCandidateStatus(
+        candidate.status || candidate.evaluation?.status
+      ),
+      evaluation: candidate.evaluation || null,
+    }))
+    const primary = normalizedCandidates[0]
+    return {
+      ...result,
+      pipelineStatus:
+        result?.pipelineStatus ||
+        (Array.isArray(result?.warnings) && result.warnings.length > 0
+          ? "PARTIAL"
+          : "COMPLETE"),
+      generator: result?.generator || "ai",
+      candidates: normalizedCandidates,
+      ranking: result?.ranking || { ranked: [], unscored: [], excluded: [] },
+      warnings: Array.isArray(result?.warnings) ? result.warnings : [],
+      request: result?.request || payload,
+      // Preserve the single-candidate fields for older consumers.
+      status: result?.status || primary.status,
+      plan: result?.plan || primary.plan,
+      evaluation: result?.evaluation || primary.evaluation,
+    }
   } catch (error) {
-    const wrapped = normalizePipelineError(error, "rank")
-    if (!allowPartial) throw wrapped
-    warnings.push({ code: "RANKING_UNAVAILABLE", message: wrapped.message })
-  }
-
-  const candidates = evaluated.map(({ planId, plan, evaluation, status }) => ({
-    planId,
-    status,
-    plan,
-    evaluation,
-  }))
-  const primary = candidates[0]
-
-  return {
-    pipelineStatus: warnings.length > 0 ? "PARTIAL" : "COMPLETE",
-    generator: "ai",
-    candidates,
-    ranking,
-    warnings,
-    request: payload,
-    // Backward-compatible single-plan fields.
-    status: primary.status,
-    plan: primary.plan,
-    evaluation: primary.evaluation,
+    throw normalizePipelineError(error)
   }
 }
 

@@ -75,101 +75,72 @@ function jsonResponse(body, status = 200) {
   })
 }
 
-test('runItineraryPipeline returns three real candidates with evaluation and ranking', async () => {
+test('runItineraryPipeline delegates counts 1-3 to the backend pipeline', async () => {
   const calls = []
-  const plans = [candidatePlan('p1', 'ATTR_H_01'), candidatePlan('p2', 'ATTR_H_03'), candidatePlan('p3', 'ATTR_H_09')]
+  const plans = [
+    candidatePlan('p1', 'ATTR_H_01'),
+    candidatePlan('p2', 'ATTR_H_03'),
+    candidatePlan('p3', 'ATTR_H_09'),
+  ]
   globalThis.fetch = async (url, options) => {
-    const body = JSON.parse(options.body)
-    calls.push({ url, body })
-    if (url === '/itineraries/generate') {
-      const index = calls.filter((call) => call.url === '/itineraries/generate').length - 1
-      return jsonResponse({ status: 'UNVERIFIED', plan: plans[index] })
-    }
-    if (url === '/itineraries/evaluate') {
-      return jsonResponse(evaluation(body.plan.planId))
-    }
-    if (url === '/itineraries/rank') {
-      return jsonResponse({
-        ranked: body.plans.map((plan, index) => ({ planId: plan.planId, score: 0.9 - index * 0.1, score100: 90 - index * 10 })),
+    calls.push({ url, body: JSON.parse(options.body) })
+    const count = calls.at(-1).body.count
+    const candidates = plans.slice(0, count).map((candidate) => ({
+      planId: candidate.planId,
+      plan: candidate,
+      status: 'UNVERIFIED',
+      evaluation: evaluation(candidate.planId),
+    }))
+    return jsonResponse({
+      pipelineStatus: 'COMPLETE',
+      generator: 'ai',
+      candidates,
+      ranking: {
+        ranked: [{ planId: 'p1', score: 0.9, score100: 90 }],
         unscored: [],
         excluded: [],
-      })
-    }
-    throw new Error(`Unexpected fetch ${url}`)
+      },
+      warnings: [],
+      status: 'UNVERIFIED',
+      plan: candidates[0].plan,
+      evaluation: candidates[0].evaluation,
+    })
   }
 
-  const result = await runItineraryPipeline(request, { count: 3 })
-
-  assert.deepEqual(
-    calls.map((call) => call.url),
-    ['/itineraries/generate', '/itineraries/generate', '/itineraries/generate', '/itineraries/evaluate', '/itineraries/evaluate', '/itineraries/evaluate', '/itineraries/rank']
-  )
-  assert.equal(result.pipelineStatus, 'COMPLETE')
-  assert.deepEqual(result.candidates.map((candidate) => candidate.planId), ['p1', 'p2', 'p3'])
-  assert.equal(result.candidates[0].evaluation.components.cost.status, 'UNVERIFIED')
-  assert.equal(result.ranking.ranked.length, 3)
-  // Legacy single-plan fields stay available.
-  assert.equal(result.status, 'UNVERIFIED')
-  assert.equal(result.plan.planId, 'p1')
-})
-
-test('runItineraryPipeline returns two candidates and marks the batch partial', async () => {
-  const plans = [candidatePlan('p1', 'ATTR_H_01'), candidatePlan('p2', 'ATTR_H_03')]
-  let generateCount = 0
-  globalThis.fetch = async (url, options) => {
-    const body = JSON.parse(options.body)
-    if (url === '/itineraries/generate') {
-      const plan = plans[generateCount % plans.length]
-      generateCount += 1
-      return jsonResponse({ status: 'UNVERIFIED', plan })
-    }
-    if (url === '/itineraries/evaluate') return jsonResponse(evaluation(body.plan.planId))
-    if (url === '/itineraries/rank') {
-      return jsonResponse({ ranked: [{ planId: 'p1', score: 0.8, score100: 80 }], unscored: [], excluded: [{ planId: 'p2', status: 'UNVERIFIED', reasons: [] }] })
-    }
-    throw new Error(`Unexpected fetch ${url}`)
+  for (const count of [1, 2, 3]) {
+    const result = await runItineraryPipeline(request, { count })
+    assert.equal(result.candidates.length, count)
+    assert.equal(result.pipelineStatus, 'COMPLETE')
+    assert.equal(result.candidates[0].evaluation.components.cost.status, 'UNVERIFIED')
+    assert.equal(result.ranking.ranked.length, 1)
+    assert.equal(result.plan.planId, 'p1')
   }
-
-  const result = await runItineraryPipeline(request, { count: 3, maxAttempts: 3 })
-
-  assert.equal(result.candidates.length, 2)
-  assert.equal(result.pipelineStatus, 'PARTIAL')
-  assert.ok(result.warnings.some((warning) => warning.code === 'INSUFFICIENT_CANDIDATES'))
-})
-
-test('runItineraryPipeline returns one candidate when the assistant repeats itself', async () => {
-  const plan = candidatePlan('p1', 'ATTR_H_01')
-  globalThis.fetch = async (url, options) => {
-    const body = JSON.parse(options.body)
-    if (url === '/itineraries/generate') return jsonResponse({ status: 'UNVERIFIED', plan })
-    if (url === '/itineraries/evaluate') return jsonResponse(evaluation(body.plan.planId, 'FEASIBLE'))
-    if (url === '/itineraries/rank') return jsonResponse({ ranked: [{ planId: 'p1', score: 0.7, score100: 70 }], unscored: [], excluded: [] })
-    throw new Error(`Unexpected fetch ${url}`)
-  }
-
-  const result = await runItineraryPipeline(request, { count: 3, maxAttempts: 2 })
-
-  assert.equal(result.candidates.length, 1)
-  assert.equal(result.pipelineStatus, 'PARTIAL')
-  assert.equal(result.candidates[0].status, 'FEASIBLE')
-  assert.equal(result.ranking.ranked[0].planId, 'p1')
+  assert.deepEqual(calls.map(({ url }) => url), [
+    '/itineraries/pipeline',
+    '/itineraries/pipeline',
+    '/itineraries/pipeline',
+  ])
+  assert.deepEqual(calls.map(({ body }) => body), [
+    { request, count: 1 },
+    { request, count: 2 },
+    { request, count: 3 },
+  ])
 })
 
 test('runItineraryPipeline surfaces zero candidates and never falls back to mock data', async () => {
   const calls = []
   globalThis.fetch = async (url) => {
     calls.push(url)
-    return jsonResponse({ error: 'EMPTY', message: 'Gemini returned no candidates' }, 502)
+    return jsonResponse({ error: 'NO_CANDIDATES', message: 'Gemini returned no candidates' }, 502)
   }
 
   await assert.rejects(() => runItineraryPipeline(request, { count: 3 }), (error) => {
     assert.equal(error.status, 502)
-    assert.equal(error.code, 'AI_UNAVAILABLE')
+    assert.equal(error.code, 'NO_CANDIDATES')
     assert.equal(error.message, 'Gemini returned no candidates')
     return true
   })
-  assert.equal(calls.length, 1)
-  assert.ok(calls.every((url) => url.startsWith('/itineraries/')))
+  assert.deepEqual(calls, ['/itineraries/pipeline'])
 })
 
 test('runItineraryPipeline maps a timeout to a retryable TIMEOUT code', async () => {
@@ -183,47 +154,34 @@ test('runItineraryPipeline maps a timeout to a retryable TIMEOUT code', async ()
   })
 })
 
-test('runItineraryPipeline keeps earlier candidates when a later one fails', async () => {
-  const plan = candidatePlan('p1', 'ATTR_H_01')
-  let generateCount = 0
-  globalThis.fetch = async (url, options) => {
-    const body = JSON.parse(options.body)
-    if (url === '/itineraries/generate') {
-      generateCount += 1
-      if (generateCount === 1) return jsonResponse({ status: 'UNVERIFIED', plan })
-      return jsonResponse({ error: 'API_ERROR', message: 'quota exceeded' }, 502)
-    }
-    if (url === '/itineraries/evaluate') return jsonResponse(evaluation(body.plan.planId))
-    if (url === '/itineraries/rank') return jsonResponse({ ranked: [], unscored: [{ planId: 'p1' }], excluded: [] })
-    throw new Error(`Unexpected fetch ${url}`)
-  }
+test('runItineraryPipeline keeps backend partial results and legacy single-plan responses', async () => {
+  const candidate = candidatePlan('p1', 'ATTR_H_01')
+  globalThis.fetch = async () => jsonResponse({
+    pipelineStatus: 'PARTIAL',
+    candidates: [{
+      planId: candidate.planId,
+      plan: candidate,
+      status: 'FEASIBLE',
+      evaluation: evaluation(candidate.planId, 'FEASIBLE'),
+    }],
+    ranking: { ranked: [], unscored: [{ planId: 'p1' }], excluded: [] },
+    warnings: [{ code: 'INSUFFICIENT_CANDIDATES', message: 'Only one candidate.' }],
+  })
+  const partial = await runItineraryPipeline(request)
+  assert.equal(partial.pipelineStatus, 'PARTIAL')
+  assert.equal(partial.candidates.length, 1)
+  assert.equal(partial.candidates[0].status, 'FEASIBLE')
+  assert.equal(partial.warnings[0].code, 'INSUFFICIENT_CANDIDATES')
+  assert.equal(partial.plan.planId, 'p1')
 
-  const result = await runItineraryPipeline(request, { count: 3, allowPartial: true })
-
-  assert.equal(result.pipelineStatus, 'PARTIAL')
-  assert.deepEqual(result.candidates.map((candidate) => candidate.planId), ['p1'])
-  assert.ok(result.warnings.some((warning) => warning.code === 'PARTIAL_GENERATION'))
-})
-
-test('runItineraryPipeline can refuse partial results', async () => {
-  const plan = candidatePlan('p1', 'ATTR_H_01')
-  let generateCount = 0
-  globalThis.fetch = async (url) => {
-    if (url === '/itineraries/generate') {
-      generateCount += 1
-      if (generateCount === 1) return jsonResponse({ status: 'UNVERIFIED', plan })
-      return jsonResponse({ error: 'API_ERROR', message: 'quota exceeded' }, 502)
-    }
-    throw new Error(`Unexpected fetch ${url}`)
-  }
-
-  await assert.rejects(
-    () => runItineraryPipeline(request, { count: 3, allowPartial: false }),
-    (error) => {
-      assert.equal(error.code, 'AI_UNAVAILABLE')
-      return true
-    }
-  )
+  globalThis.fetch = async () => jsonResponse({
+    status: 'UNVERIFIED',
+    plan: candidate,
+    evaluation: evaluation(candidate.planId),
+  })
+  const legacy = await runItineraryPipeline(request)
+  assert.equal(legacy.candidates.length, 1)
+  assert.equal(legacy.candidates[0].status, 'UNVERIFIED')
 })
 
 test('planSignature treats duplicate visits as the same candidate', () => {
