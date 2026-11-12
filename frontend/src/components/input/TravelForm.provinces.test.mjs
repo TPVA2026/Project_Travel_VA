@@ -238,3 +238,13 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     for (const [key, descriptor] of originals) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else delete globalThis[key]; }
   }
 });
+
+test("M1 city picker CSS does not hover-tint the whole panel", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../../index.css", import.meta.url), "utf8");
+  assert.equal(css.includes(".request-city-panel:hover"), false, "No whole-panel hover fill");
+  assert.equal(css.includes(".request-city-panel:focus-visible"), false, "Panel is not a focusable control");
+  assert.match(css, /\.request-city-option:hover/);
+  assert.match(css, /\.request-picker:hover/);
+  assert.match(css, /\.request-picker:focus-visible/);
+});
