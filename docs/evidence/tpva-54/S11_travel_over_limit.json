@@ -1,0 +1,647 @@
+{
+  "id": "S11_travel_over_limit",
+  "title": "betweenActivities limit 10 min; day-2 leg is 22 min (dataset, unverified)",
+  "endpoint": "/itineraries/evaluate",
+  "server": "default",
+  "owner": "M4/M2",
+  "expected": {
+    "http": 200,
+    "notStatus": "FEASIBLE",
+    "status": "UNVERIFIED",
+    "codes": [
+      "LIMIT_DATA"
+    ]
+  },
+  "rule": "Over-limit legs are INFEASIBLE only on verified data. Huế matrix rows are 'unverified', so the honest result is UNVERIFIED; a confirmed INFEASIBLE needs verified routes (M2).",
+  "request": {
+    "request": {
+      "travelPeriod": {
+        "startDate": "2026-12-01",
+        "endDate": "2026-12-03"
+      },
+      "durationDays": 3,
+      "departureLocation": "Huế",
+      "travelers": {
+        "count": 2
+      },
+      "budget": {
+        "amount": 3000000,
+        "currency": "VND",
+        "scope": "group"
+      },
+      "preferences": {
+        "destination": "Huế",
+        "interests": [
+          {
+            "type": "culture",
+            "priority": 1
+          }
+        ]
+      },
+      "limits": {
+        "maxTravelTimeMinutes": 10,
+        "appliesTo": "betweenActivities"
+      }
+    },
+    "plan": {
+      "planId": "hue-over-limit",
+      "title": "Hue 3 days",
+      "destinationId": "H",
+      "missingData": [],
+      "assumptions": [],
+      "days": [
+        {
+          "dayNumber": 1,
+          "date": "2026-12-01",
+          "activities": [
+            {
+              "activityId": "d1a",
+              "placeId": "ATTR_H_03",
+              "type": "sightseeing",
+              "startTime": "08:00",
+              "endTime": "11:00",
+              "estimatedCostVnd": 200000,
+              "costStatus": "KNOWN",
+              "reason": "acceptance fixture"
+            },
+            {
+              "activityId": "d1b",
+              "placeId": "ATTR_H_05",
+              "type": "sightseeing",
+              "startTime": "11:30",
+              "endTime": "12:30",
+              "estimatedCostVnd": 0,
+              "costStatus": "KNOWN",
+              "reason": "acceptance fixture"
+            }
+          ],
+          "travelLegs": [
+            {
+              "fromPlaceId": "ATTR_H_03",
+              "toPlaceId": "ATTR_H_05",
+              "durationMin": 7,
+              "distanceKm": 2.1
+            }
+          ]
+        },
+        {
+          "dayNumber": 2,
+          "date": "2026-12-02",
+          "activities": [
+            {
+              "activityId": "d2a",
+              "placeId": "ATTR_H_01",
+              "type": "sightseeing",
+              "startTime": "08:00",
+              "endTime": "10:00",
+              "estimatedCostVnd": 150000,
+              "costStatus": "KNOWN",
+              "reason": "acceptance fixture"
+            },
+            {
+              "activityId": "d2b",
+              "placeId": "ATTR_H_08",
+              "type": "sightseeing",
+              "startTime": "10:30",
+              "endTime": "12:00",
+              "estimatedCostVnd": 0,
+              "costStatus": "KNOWN",
+              "reason": "acceptance fixture"
+            }
+          ],
+          "travelLegs": [
+            {
+              "fromPlaceId": "ATTR_H_01",
+              "toPlaceId": "ATTR_H_08",
+              "durationMin": 22,
+              "distanceKm": 7.1
+            }
+          ]
+        },
+        {
+          "dayNumber": 3,
+          "date": "2026-12-03",
+          "activities": [
+            {
+              "activityId": "d3a",
+              "placeId": "ATTR_H_02",
+              "type": "sightseeing",
+              "startTime": "08:00",
+              "endTime": "09:30",
+              "estimatedCostVnd": 25000,
+              "costStatus": "KNOWN",
+              "reason": "acceptance fixture"
+            },
+            {
+              "activityId": "d3b",
+              "placeId": "ATTR_H_09",
+              "type": "sightseeing",
+              "startTime": "10:00",
+              "endTime": "11:00",
+              "estimatedCostVnd": 0,
+              "costStatus": "KNOWN",
+              "reason": "acceptance fixture"
+            }
+          ],
+          "travelLegs": [
+            {
+              "fromPlaceId": "ATTR_H_02",
+              "toPlaceId": "ATTR_H_09",
+              "durationMin": 20,
+              "distanceKm": 6.5
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "httpStatus": 200,
+  "response": {
+    "status": "UNVERIFIED",
+    "checks": [
+      {
+        "status": "UNVERIFIED",
+        "code": "BUDGET",
+        "path": "costs",
+        "message": "Required costs are missing or invalid: transport, accommodation, dining"
+      },
+      {
+        "status": "FEASIBLE",
+        "code": "DAY_SCHEDULE",
+        "path": "days.0",
+        "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.0",
+        "message": "Thời gian giữa d1a và d1b."
+      },
+      {
+        "status": "FEASIBLE",
+        "code": "DAY_SCHEDULE",
+        "path": "days.1",
+        "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.1",
+        "message": "Thời gian giữa d2a và d2b."
+      },
+      {
+        "status": "FEASIBLE",
+        "code": "DAY_SCHEDULE",
+        "path": "days.2",
+        "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.2",
+        "message": "Thời gian giữa d3a và d3b."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.0.travelLegs",
+        "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "LIMIT_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.1.travelLegs",
+        "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.1.travelLegs",
+        "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.1.travelLegs",
+        "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "LIMIT_DATA",
+        "path": "days.1.travelLegs",
+        "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.2.travelLegs",
+        "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.2.travelLegs",
+        "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.2.travelLegs",
+        "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "LIMIT_DATA",
+        "path": "days.2.travelLegs",
+        "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+      }
+    ],
+    "reasons": [
+      {
+        "status": "UNVERIFIED",
+        "code": "BUDGET",
+        "path": "costs",
+        "message": "Required costs are missing or invalid: transport, accommodation, dining"
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.0",
+        "message": "Thời gian giữa d1a và d1b."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.1",
+        "message": "Thời gian giữa d2a và d2b."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRANSFER_GAP",
+        "path": "days.2",
+        "message": "Thời gian giữa d3a và d3b."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.0.travelLegs",
+        "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "LIMIT_DATA",
+        "path": "days.0.travelLegs",
+        "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.1.travelLegs",
+        "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.1.travelLegs",
+        "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.1.travelLegs",
+        "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "LIMIT_DATA",
+        "path": "days.1.travelLegs",
+        "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "UNSUPPORTED_LEG",
+        "path": "days.2.travelLegs",
+        "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.2.travelLegs",
+        "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "TRAVEL_DATA",
+        "path": "days.2.travelLegs",
+        "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+      },
+      {
+        "status": "UNVERIFIED",
+        "code": "LIMIT_DATA",
+        "path": "days.2.travelLegs",
+        "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+      }
+    ],
+    "planId": "hue-over-limit",
+    "components": {
+      "cost": {
+        "status": "UNVERIFIED",
+        "budget": 3000000.0,
+        "known_total": 750000.0,
+        "total_cost": null,
+        "remaining_budget": null,
+        "breakdown": {
+          "transport": null,
+          "accommodation": null,
+          "dining": null,
+          "activities": 750000.0
+        },
+        "missing_costs": [
+          "transport",
+          "accommodation",
+          "dining"
+        ],
+        "reasons": [
+          "Required costs are missing or invalid: transport, accommodation, dining"
+        ]
+      },
+      "schedule": {
+        "status": "UNVERIFIED",
+        "checks": [
+          {
+            "status": "FEASIBLE",
+            "code": "DAY_SCHEDULE",
+            "path": "days.0",
+            "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.0",
+            "message": "Thời gian giữa d1a và d1b."
+          },
+          {
+            "status": "FEASIBLE",
+            "code": "DAY_SCHEDULE",
+            "path": "days.1",
+            "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.1",
+            "message": "Thời gian giữa d2a và d2b."
+          },
+          {
+            "status": "FEASIBLE",
+            "code": "DAY_SCHEDULE",
+            "path": "days.2",
+            "message": "Kiểm tra thời lượng và giao nhau của các hoạt động."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.2",
+            "message": "Thời gian giữa d3a và d3b."
+          }
+        ],
+        "reasons": [
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.0",
+            "message": "Thời gian giữa d1a và d1b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.1",
+            "message": "Thời gian giữa d2a và d2b."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRANSFER_GAP",
+            "path": "days.2",
+            "message": "Thời gian giữa d3a và d3b."
+          }
+        ]
+      },
+      "travel": {
+        "status": "UNVERIFIED",
+        "checks": [
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "LIMIT_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.1.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "LIMIT_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.2.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "LIMIT_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+          }
+        ],
+        "reasons": [
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_03 -> ATTR_H_05."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "LIMIT_DATA",
+            "path": "days.0.travelLegs",
+            "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.1.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_01 -> ATTR_H_08."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "LIMIT_DATA",
+            "path": "days.1.travelLegs",
+            "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.2.travelLegs",
+            "message": "Chưa có chặng đã xác minh ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu durationMin cho ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "TRAVEL_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Thiếu distanceKm cho ATTR_H_02 -> ATTR_H_09."
+          },
+          {
+            "status": "UNVERIFIED",
+            "code": "LIMIT_DATA",
+            "path": "days.2.travelLegs",
+            "message": "Chưa đủ durationMin để kiểm tra maxTravelTimeMinutes."
+          }
+        ],
+        "dailyTotals": [
+          {
+            "dayNumber": 1,
+            "durationMin": null,
+            "known_durationMin": 0,
+            "distanceKm": null,
+            "known_distanceKm": 0
+          },
+          {
+            "dayNumber": 2,
+            "durationMin": null,
+            "known_durationMin": 0,
+            "distanceKm": null,
+            "known_distanceKm": 0
+          },
+          {
+            "dayNumber": 3,
+            "durationMin": null,
+            "known_durationMin": 0,
+            "distanceKm": null,
+            "known_distanceKm": 0
+          }
+        ]
+      }
+    }
+  },
+  "verdict": "PASS",
+  "notes": [],
+  "actualStatus": "UNVERIFIED",
+  "actualError": null,
+  "checkCodes": [
+    "BUDGET",
+    "DAY_SCHEDULE",
+    "LIMIT_DATA",
+    "TRANSFER_GAP",
+    "TRAVEL_DATA",
+    "UNSUPPORTED_LEG"
+  ]
+}

@@ -1,0 +1,1845 @@
+{
+  "version": 1,
+  "dataset": "backend/app/data (main @ 0035176)",
+  "scenarios": [
+    {
+      "id": "S01_valid_3day_validate",
+      "title": "Valid 3-day Huế request passes input validation",
+      "endpoint": "/api/v1/requests/validate",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "destination": "Huế",
+          "interests": [
+            {
+              "type": "culture",
+              "priority": 1
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "json": {
+          "valid": true
+        }
+      },
+      "owner": "M1/M6",
+      "rule": "Structurally valid input is accepted unchanged; destination kept as typed."
+    },
+    {
+      "id": "S02_valid_3day_generate",
+      "title": "Valid 3-day Huế request generates a candidate (Gemini)",
+      "endpoint": "/itineraries/generate",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "destination": "Huế",
+          "interests": [
+            {
+              "type": "culture",
+              "priority": 1
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "UNVERIFIED"
+      },
+      "owner": "M3",
+      "requires": [
+        "GEMINI_API_KEY"
+      ],
+      "rule": "Generation returns a CandidatePlan with status UNVERIFIED; never FEASIBLE."
+    },
+    {
+      "id": "S03_valid_3day_evaluate",
+      "title": "Valid 3-day Huế plan (dataset-grounded) evaluated",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-3d-valid",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_05",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "UNVERIFIED",
+        "codes": [
+          "BUDGET",
+          "UNSUPPORTED_LEG"
+        ],
+        "notStatus": "FEASIBLE"
+      },
+      "owner": "M4",
+      "rule": "Travel matrix rows are 'unverified' and transport/accommodation costs are unknown, so the plan must not be FEASIBLE."
+    },
+    {
+      "id": "S04_valid_3day_rank",
+      "title": "Valid 3-day Huế plan ranked",
+      "endpoint": "/itineraries/rank",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plans": [
+          {
+            "planId": "hue-3d-valid",
+            "title": "Hue 3 days",
+            "destinationId": "H",
+            "missingData": [],
+            "assumptions": [],
+            "days": [
+              {
+                "dayNumber": 1,
+                "date": "2026-12-01",
+                "activities": [
+                  {
+                    "activityId": "d1a",
+                    "placeId": "ATTR_H_03",
+                    "type": "sightseeing",
+                    "startTime": "08:00",
+                    "endTime": "11:00",
+                    "estimatedCostVnd": 200000,
+                    "costStatus": "KNOWN",
+                    "reason": "acceptance fixture"
+                  },
+                  {
+                    "activityId": "d1b",
+                    "placeId": "ATTR_H_05",
+                    "type": "sightseeing",
+                    "startTime": "11:30",
+                    "endTime": "12:30",
+                    "estimatedCostVnd": 0,
+                    "costStatus": "KNOWN",
+                    "reason": "acceptance fixture"
+                  }
+                ],
+                "travelLegs": [
+                  {
+                    "fromPlaceId": "ATTR_H_03",
+                    "toPlaceId": "ATTR_H_05",
+                    "durationMin": null,
+                    "distanceKm": null
+                  }
+                ]
+              },
+              {
+                "dayNumber": 2,
+                "date": "2026-12-02",
+                "activities": [
+                  {
+                    "activityId": "d2a",
+                    "placeId": "ATTR_H_01",
+                    "type": "sightseeing",
+                    "startTime": "08:00",
+                    "endTime": "10:00",
+                    "estimatedCostVnd": 150000,
+                    "costStatus": "KNOWN",
+                    "reason": "acceptance fixture"
+                  },
+                  {
+                    "activityId": "d2b",
+                    "placeId": "ATTR_H_08",
+                    "type": "sightseeing",
+                    "startTime": "10:30",
+                    "endTime": "12:00",
+                    "estimatedCostVnd": 0,
+                    "costStatus": "KNOWN",
+                    "reason": "acceptance fixture"
+                  }
+                ],
+                "travelLegs": [
+                  {
+                    "fromPlaceId": "ATTR_H_01",
+                    "toPlaceId": "ATTR_H_08",
+                    "durationMin": null,
+                    "distanceKm": null
+                  }
+                ]
+              },
+              {
+                "dayNumber": 3,
+                "date": "2026-12-03",
+                "activities": [
+                  {
+                    "activityId": "d3a",
+                    "placeId": "ATTR_H_02",
+                    "type": "sightseeing",
+                    "startTime": "08:00",
+                    "endTime": "09:30",
+                    "estimatedCostVnd": 25000,
+                    "costStatus": "KNOWN",
+                    "reason": "acceptance fixture"
+                  },
+                  {
+                    "activityId": "d3b",
+                    "placeId": "ATTR_H_09",
+                    "type": "sightseeing",
+                    "startTime": "10:00",
+                    "endTime": "11:00",
+                    "estimatedCostVnd": 0,
+                    "costStatus": "KNOWN",
+                    "reason": "acceptance fixture"
+                  }
+                ],
+                "travelLegs": [
+                  {
+                    "fromPlaceId": "ATTR_H_02",
+                    "toPlaceId": "ATTR_H_09",
+                    "durationMin": null,
+                    "distanceKm": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "http": 200,
+        "rankedCount": 0,
+        "excludedIds": [
+          "hue-3d-valid"
+        ]
+      },
+      "owner": "M4",
+      "rule": "An UNVERIFIED plan is excluded from ranking, never recommended."
+    },
+    {
+      "id": "S05_attr_h_08_before_opening",
+      "title": "ATTR_H_08 (Làng Hương Thủy Xuân, opens 09:00) scheduled at 08:30",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-early-h08",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_05",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "07:00",
+                  "endTime": "08:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "08:30",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "INFEASIBLE",
+        "codes": [
+          "OUTSIDE_OPENING_HOURS"
+        ]
+      },
+      "owner": "M4",
+      "rule": "An activity must sit inside one opening window (feasibility_rules.md TPVA-24)."
+    },
+    {
+      "id": "S06_missing_routing",
+      "title": "Plan has no travel legs between consecutive activities",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-no-legs",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": []
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": []
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": []
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "UNVERIFIED",
+        "codes": [
+          "MISSING_LEG"
+        ],
+        "notStatus": "FEASIBLE"
+      },
+      "owner": "M4",
+      "rule": "Missing leg -> UNVERIFIED, never synthesized."
+    },
+    {
+      "id": "S07_over_budget_group",
+      "title": "Known ticket costs exceed a 300,000 VND group budget",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 300000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-over-budget",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_05",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "INFEASIBLE",
+        "codes": [
+          "BUDGET"
+        ]
+      },
+      "owner": "M4",
+      "rule": "Known costs (375,000/person x 2 = 750,000) already prove the violation even with unknown transport/lodging."
+    },
+    {
+      "id": "S08_over_budget_per_person",
+      "title": "perPerson budget 300,000 x 2 travellers vs 750,000 known costs",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 300000,
+            "currency": "VND",
+            "scope": "perPerson"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-over-budget-pp",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_05",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "INFEASIBLE",
+        "codes": [
+          "BUDGET"
+        ]
+      },
+      "owner": "M4",
+      "rule": "perPerson budget is multiplied by travelers.count (600,000 < 750,000)."
+    },
+    {
+      "id": "S09_missing_food_price",
+      "title": "Dining stop REST_H_01 has no price in the dataset",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-food-no-price",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1c",
+                  "placeId": "REST_H_01",
+                  "type": "dining",
+                  "startTime": "13:00",
+                  "endTime": "14:00",
+                  "estimatedCostVnd": null,
+                  "costStatus": "NO_DATA",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_05",
+                  "durationMin": null,
+                  "distanceKm": null
+                },
+                {
+                  "fromPlaceId": "ATTR_H_05",
+                  "toPlaceId": "REST_H_01",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "UNVERIFIED",
+        "codes": [
+          "BUDGET"
+        ],
+        "notStatus": "FEASIBLE"
+      },
+      "owner": "M4",
+      "rule": "Unknown food price stays null/NO_DATA; cost result UNVERIFIED, never 0."
+    },
+    {
+      "id": "S10_time_overlap",
+      "title": "Two activities on day 1 overlap (08:00-11:00 and 10:30-12:00)",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-overlap",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_05",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": "200|422",
+        "notStatus": "FEASIBLE",
+        "statusOrError": [
+          "INFEASIBLE",
+          "INVALID_PLAN"
+        ]
+      },
+      "owner": "M3/M4",
+      "rule": "Overlapping activities are rejected (M3 grounding: no overlap) or INFEASIBLE (M4)."
+    },
+    {
+      "id": "S11_travel_over_limit",
+      "title": "betweenActivities limit 10 min; day-2 leg is 22 min (dataset, unverified)",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          },
+          "limits": {
+            "maxTravelTimeMinutes": 10,
+            "appliesTo": "betweenActivities"
+          }
+        },
+        "plan": {
+          "planId": "hue-over-limit",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_05",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_05",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "notStatus": "FEASIBLE",
+        "status": "UNVERIFIED",
+        "codes": [
+          "LIMIT_DATA"
+        ]
+      },
+      "owner": "M4/M2",
+      "rule": "Over-limit legs are INFEASIBLE only on verified data. Huế matrix rows are 'unverified', so the honest result is UNVERIFIED; a confirmed INFEASIBLE needs verified routes (M2)."
+    },
+    {
+      "id": "S12_duplicate_stop",
+      "title": "Same place ATTR_H_03 visited twice in a row on day 1",
+      "endpoint": "/itineraries/evaluate",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-03"
+          },
+          "durationDays": 3,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 2
+          },
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "Huế",
+            "interests": [
+              {
+                "type": "culture",
+                "priority": 1
+              }
+            ]
+          }
+        },
+        "plan": {
+          "planId": "hue-duplicate",
+          "title": "Hue 3 days",
+          "destinationId": "H",
+          "missingData": [],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "d1a",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d1b",
+                  "placeId": "ATTR_H_03",
+                  "type": "sightseeing",
+                  "startTime": "11:30",
+                  "endTime": "12:30",
+                  "estimatedCostVnd": 200000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_03",
+                  "toPlaceId": "ATTR_H_03",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 2,
+              "date": "2026-12-02",
+              "activities": [
+                {
+                  "activityId": "d2a",
+                  "placeId": "ATTR_H_01",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "10:00",
+                  "estimatedCostVnd": 150000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d2b",
+                  "placeId": "ATTR_H_08",
+                  "type": "sightseeing",
+                  "startTime": "10:30",
+                  "endTime": "12:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_01",
+                  "toPlaceId": "ATTR_H_08",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            },
+            {
+              "dayNumber": 3,
+              "date": "2026-12-03",
+              "activities": [
+                {
+                  "activityId": "d3a",
+                  "placeId": "ATTR_H_02",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:30",
+                  "estimatedCostVnd": 25000,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                },
+                {
+                  "activityId": "d3b",
+                  "placeId": "ATTR_H_09",
+                  "type": "sightseeing",
+                  "startTime": "10:00",
+                  "endTime": "11:00",
+                  "estimatedCostVnd": 0,
+                  "costStatus": "KNOWN",
+                  "reason": "acceptance fixture"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "ATTR_H_02",
+                  "toPlaceId": "ATTR_H_09",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": "200|422",
+        "notStatus": "FEASIBLE",
+        "flagged": true
+      },
+      "owner": "M3/M4",
+      "rule": "A repeated stop must be flagged (a check or a 422), not silently accepted."
+    },
+    {
+      "id": "S13_malformed_json_evaluate",
+      "title": "Malformed JSON body to /itineraries/evaluate",
+      "endpoint": "/itineraries/evaluate",
+      "raw": "{\"request\": {\"durationDays\": 3,, \"plan\": }",
+      "expected": {
+        "http": 422,
+        "detailList": true
+      },
+      "owner": "M6",
+      "rule": "FastAPI default {detail:[...]} 422; no 500, no stack trace."
+    },
+    {
+      "id": "S14_malformed_json_validate",
+      "title": "Malformed JSON body to /api/v1/requests/validate",
+      "endpoint": "/api/v1/requests/validate",
+      "raw": "{\"travelPeriod\": ",
+      "expected": {
+        "http": 422,
+        "detailList": true
+      },
+      "owner": "M6",
+      "rule": "Malformed JSON is a 422, never a 500."
+    },
+    {
+      "id": "S15_no_destination_validate",
+      "title": "No destination: input validation keeps destination empty",
+      "endpoint": "/api/v1/requests/validate",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "interests": [
+            {
+              "type": "culture",
+              "priority": 1
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "noDestinationInData": true
+      },
+      "owner": "M1/M6",
+      "rule": "Form/validator never auto-pick a city."
+    },
+    {
+      "id": "S16_no_destination_generate",
+      "title": "No destination: generation should suggest a destination",
+      "endpoint": "/itineraries/generate",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "interests": [
+            {
+              "type": "culture",
+              "priority": 1
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "status": "UNVERIFIED"
+      },
+      "owner": "M3/M4",
+      "rule": "Product decision: a skipped destination means the AI suggests one from the other constraints (TPVA-39/40, PR #50)."
+    },
+    {
+      "id": "S17_unsupported_destination_validate",
+      "title": "Unsupported destination 'Atlantis' is rejected with 422",
+      "endpoint": "/api/v1/requests/validate",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "destination": "Atlantis"
+        }
+      },
+      "expected": {
+        "http": 422
+      },
+      "owner": "M6",
+      "rule": "Unsupported destination is not silently replaced by another city."
+    },
+    {
+      "id": "S18_osrm_timeout",
+      "title": "OSRM enabled, provider never answers (timeout)",
+      "endpoint": "/itineraries/evaluate",
+      "server": "osrm_timeout",
+      "body": {
+        "request": {
+          "travelPeriod": {
+            "startDate": "2026-12-01"
+          },
+          "durationDays": 1,
+          "departureLocation": "Huế",
+          "travelers": {
+            "count": 1
+          },
+          "budget": {
+            "amount": 1000000,
+            "currency": "VND",
+            "scope": "group"
+          },
+          "preferences": {
+            "destination": "H",
+            "transportation": [
+              "car"
+            ]
+          }
+        },
+        "plan": {
+          "planId": "manual-hue-osrm",
+          "title": "Small Huế OSRM check",
+          "destinationId": "H",
+          "missingData": [
+            "prices",
+            "opening hours"
+          ],
+          "assumptions": [],
+          "days": [
+            {
+              "dayNumber": 1,
+              "date": "2026-12-01",
+              "activities": [
+                {
+                  "activityId": "hue-1",
+                  "placeId": "OTM_H_N669249200",
+                  "type": "sightseeing",
+                  "startTime": "08:00",
+                  "endTime": "09:00",
+                  "estimatedCostVnd": null,
+                  "costStatus": "NO_DATA",
+                  "reason": "Thien Mu Pagoda"
+                },
+                {
+                  "activityId": "hue-2",
+                  "placeId": "OTM_H_W161714451",
+                  "type": "sightseeing",
+                  "startTime": "09:30",
+                  "endTime": "10:30",
+                  "estimatedCostVnd": null,
+                  "costStatus": "NO_DATA",
+                  "reason": "Dong Ba Market"
+                }
+              ],
+              "travelLegs": [
+                {
+                  "fromPlaceId": "OTM_H_N669249200",
+                  "toPlaceId": "OTM_H_W161714451",
+                  "durationMin": null,
+                  "distanceKm": null
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "http": 200,
+        "notStatus": "FEASIBLE",
+        "routingStatusNot": "VERIFIED"
+      },
+      "owner": "M2/M4",
+      "rule": "Provider failure stays unknown evidence (osrm-routing.md); no 500, not FEASIBLE."
+    },
+    {
+      "id": "S19_invalid_transport_type",
+      "title": "transportation contains a number instead of a string",
+      "endpoint": "/api/v1/requests/validate",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "destination": "Huế",
+          "transportation": [
+            42
+          ]
+        }
+      },
+      "expected": {
+        "http": 422
+      },
+      "owner": "M1/M6",
+      "rule": "Schema: transportation is a list of non-empty strings."
+    }
+  ]
+}

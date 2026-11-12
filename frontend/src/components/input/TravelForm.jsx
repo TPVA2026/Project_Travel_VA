@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
+import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
 
 // The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -235,6 +236,10 @@ export default function TravelForm({ monthInputSupported }) {
   const [descriptionDraft, setDescriptionDraft] = useState("");
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
+  // One traveler can only use per person. For a group, an automatic scope is cleared;
+  // a per-person scope the user picked is kept.
+  const scopeTouched = useRef(false);
+  const scopeAuto = useRef(false);
 
   // Runs after the alert renders, so a request-level error is announced and focusable.
   useEffect(() => {
@@ -253,7 +258,31 @@ export default function TravelForm({ monthInputSupported }) {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
+  function applyScopeDefault(form) {
+    const solo = isSoloTravelerCount(form.elements.namedItem("travelerCount")?.value);
+    const group = form.querySelector('[name="budgetScope"][value="group"]');
+    const perPerson = form.querySelector('[name="budgetScope"][value="perPerson"]');
+    if (!group || !perPerson) return;
+    group.disabled = solo;
+    if (solo) group.setAttribute("aria-disabled", "true");
+    else group.removeAttribute("aria-disabled");
+    if (solo) {
+      if (group.checked) {
+        scopeTouched.current = false;
+        scopeAuto.current = true;
+      } else if (!scopeTouched.current) {
+        scopeAuto.current = true;
+      }
+      group.checked = false;
+      perPerson.checked = true;
+    } else if (scopeAuto.current && !scopeTouched.current) {
+      form.querySelectorAll('[name="budgetScope"]').forEach(radio => { radio.checked = false; });
+      scopeAuto.current = false;
+    }
+  }
+
   function refresh(form, resizeBudgetRange = false) {
+    applyScopeDefault(form);
     const data = new FormData(form);
     const wrong = submitted ? clientErrors(data) : valueErrors(data);
     setBad(wrong);
@@ -342,6 +371,7 @@ export default function TravelForm({ monthInputSupported }) {
     const form = event.currentTarget;
     const target = event.target;
     if (target.name === "periodMode") setMode(target.value);
+    if (target.name === "budgetScope") scopeTouched.current = true;
     refresh(form, target.name === "budgetAmount");
   }
 
@@ -359,6 +389,8 @@ export default function TravelForm({ monthInputSupported }) {
     setSubmitted(false);
     setProgress(0);
     setDescriptionDraft("");
+    scopeTouched.current = false;
+    scopeAuto.current = false;
   }
 
   async function onSubmit(event) {
@@ -407,6 +439,7 @@ export default function TravelForm({ monthInputSupported }) {
   const when = mode === "month"
     ? (values.month ? `${showMonth(values.month)}${values.durationDays ? ` · ${days(Number(values.durationDays))}` : ""}` : "")
     : (values.startDate && values.endDate ? `${showDate(values.startDate)} – ${showDate(values.endDate)}${dayCount ? ` · ${days(dayCount)}` : ""}` : "");
+  const soloTraveler = isSoloTravelerCount(values.travelerCount);
   const budget = values.budgetAmount
     ? `${formatBudgetInput(values.budgetAmount)} VND${values.budgetScope ? ` · ${values.budgetScope === "perPerson" ? "per person" : "whole group"}` : ""}`
     : "";
@@ -440,12 +473,12 @@ export default function TravelForm({ monthInputSupported }) {
       </div>
 
       {question(0, "departure", <label htmlFor="departureLocation">Where are you leaving from?</label>, <>
-        <input id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" autoComplete="address-level2" required data-step-focus {...described("departureLocation", null, "request-tile-input")} />
+        <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required data-step-focus onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
         <StepError name="departureLocation" error={errors.departureLocation} />
       </>)}
 
       {question(1, "destination", <label htmlFor="destination">Where do you want to go?</label>, <>
-        <input id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} data-step-focus {...described("destination", "request-step-1-hint", "request-tile-input")} />
+        <ProvinceInput id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} data-step-focus onPick={value => setControl("destination", value)} {...described("destination", "request-step-1-hint", "request-tile-input")} />
         <StepError name="destination" error={errors.destination} />
         <button type="button" className="request-link" onClick={skipDestination}>Not sure yet</button>
       </>, DESTINATION_HINT)}
@@ -498,8 +531,8 @@ export default function TravelForm({ monthInputSupported }) {
           <input id="budgetSlider" type="range" min="0" max={budgetSliderMax} step="1" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
           <div className="budget-range-labels" aria-hidden="true"><span>0 VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
           <div className="request-segmented" role="radiogroup" aria-label="Budget applies to" aria-required="true" aria-describedby={errors.budgetScope ? "budgetScope-error" : undefined}>
-            <label><input type="radio" name="budgetScope" value="group" />Whole group</label>
-            <label><input type="radio" name="budgetScope" value="perPerson" />Per person</label>
+            <label><input type="radio" name="budgetScope" value="group" disabled={soloTraveler} aria-disabled={soloTraveler || undefined} onChange={() => { scopeTouched.current = true; }} />Whole group</label>
+            <label><input type="radio" name="budgetScope" value="perPerson" onChange={() => { scopeTouched.current = true; }} />Per person</label>
           </div>
           <StepError name="budgetScope" error={errors.budgetScope} />
         </div>

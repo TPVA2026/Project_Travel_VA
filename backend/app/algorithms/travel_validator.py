@@ -52,6 +52,8 @@ def validate_travel(request: dict, plan: dict, dataset: dict | None = None) -> d
     request, plan = inputs
     dataset = dataset or {}
     limits = request.get("limits") or {}
+    modes = (request.get("preferences") or {}).get("transportation") or []
+    transport_mode = modes[0] if modes and isinstance(modes[0], str) else None
     totals = []
 
     for index, day in enumerate(plan["days"]):
@@ -69,7 +71,7 @@ def validate_travel(request: dict, plan: dict, dataset: dict | None = None) -> d
 
         references = []
         for origin, destination in expected:
-            reference = route_reference(dataset, origin, destination)
+            reference = route_reference(dataset, origin, destination, transport_mode)
             references.append(reference)
             if reference is None:
                 add_check(checks, "UNVERIFIED", "UNSUPPORTED_LEG", path, f"Chưa có chặng đã xác minh {origin} -> {destination}.")
@@ -81,7 +83,9 @@ def validate_travel(request: dict, plan: dict, dataset: dict | None = None) -> d
                 _check_limits(reference or {}, limits, checks, path)
 
         for position, leg in enumerate(day["travelLegs"]):
-            reference = route_reference(dataset, leg["fromPlaceId"], leg["toPlaceId"])
+            reference = route_reference(
+                dataset, leg["fromPlaceId"], leg["toPlaceId"], transport_mode
+            )
             if reference is None:
                 continue
             for field in ("durationMin", "distanceKm"):
@@ -106,7 +110,7 @@ def validate_travel(request: dict, plan: dict, dataset: dict | None = None) -> d
     if limits.get("appliesTo") == "fromDeparture":
         origin = request["departureLocation"]
         destination = plan["destinationId"]
-        reference = route_reference(dataset, origin, destination)
+        reference = route_reference(dataset, origin, destination, transport_mode)
         values = {field: known_number(reference.get(field)) if reference else None
                   for field in ("durationMin", "distanceKm")}
         _check_limits(values, limits, checks, "departureLocation")
