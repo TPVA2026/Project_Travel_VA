@@ -38,7 +38,7 @@ def validate_schema(plan) -> list[str]:
     return []
 
 
-def check_grounding(plan: dict, dataset: dict) -> list[str]:
+def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> list[str]:
     """Every placeId must exist in the dataset, times must not overlap, and cost
     value + status must agree with the curated dataset (not with the model's opinion).
 
@@ -82,9 +82,10 @@ def check_grounding(plan: dict, dataset: dict) -> list[str]:
                 errs.append(f"{a['activityId']}: null cost marked KNOWN")
             pl = places.get(a["placeId"])
             if pl:
-                hours_error = check_activity_hours(a, pl)
-                if hours_error:
-                    errs.append(hours_error)
+                if check_hours:
+                    hours_error = check_activity_hours(a, pl)
+                    if hours_error:
+                        errs.append(hours_error)
                 if kind[a["placeId"]] != a["type"]:
                     errs.append(f"{a['activityId']}: type {a['type']} does not match place {a['placeId']} ({kind[a['placeId']]})")
                 price = pl.get("priceVnd", pl.get("avgPricePerPersonVnd"))

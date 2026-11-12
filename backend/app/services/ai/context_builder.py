@@ -209,7 +209,7 @@ def _rank_places(places: list, request: dict) -> list:
 
     return sorted(places, key=score)
 
-def build_context(request: dict, dataset: dict) -> dict:
+def build_context(request: dict, dataset: dict, *, limit_places: bool = True) -> dict:
     preferences = request.get("preferences") if isinstance(request, dict) else None
     if isinstance(preferences, dict) and "destination" in preferences:
         wanted = preferences["destination"]
@@ -245,7 +245,7 @@ def build_context(request: dict, dataset: dict) -> dict:
     if wanted is not None:
         attractions = [p for p in attractions if _destination_of(p) == wanted]
         dining = [p for p in dining if _destination_of(p) == wanted]
-    if attractions:
+    if limit_places and attractions:
         curated = [
             p for p in attractions
             if (p.model_extra or {}).get("source") != "OpenTripMap"
