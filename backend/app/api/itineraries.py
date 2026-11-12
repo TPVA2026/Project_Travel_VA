@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from app.services.ai.gemini_client import GeminiError
 from app.services.ai.itinerary_generator import generate_candidate
+from app.services.ai.repair_service import generate_with_repair
 from app.services.input_service import request_problems, validate_travel_request
 
 from app.services.planning_service import (
@@ -19,29 +20,77 @@ router = APIRouter()
 
 @router.post("/generate")  # candidate generation (Thiện / M3)
 def generate(body: dict):
-    # Validate before generation; a candidate remains UNVERIFIED.
+    auto_repair = body.get("autoRepair", False)
+
+    if not isinstance(auto_repair, bool):
+        return JSONResponse(
+            status_code=422,
+            content={"detail": "autoRepair must be a boolean"},
+        )
+
+    request_body = {
+        key: value
+        for key, value in body.items()
+        if key != "autoRepair"
+    }
+
     try:
-        validated_request = validate_travel_request(body)
+        validated_request = validate_travel_request(request_body)
     except ValidationError as exc:
         return JSONResponse(
             status_code=422,
-            content={"detail": request_problems(body, exc)},
+            content={"detail": request_problems(request_body, exc)},
         )
-    normalized_body = validated_request.model_dump(mode="json", by_alias=True)
+
+    normalized_body = validated_request.model_dump(
+        mode="json",
+        by_alias=True,
+    )
+
     try:
-        plan = generate_candidate(normalized_body)
-    except GeminiError as e:
-        if e.code == "TIMEOUT":
+        if auto_repair:
+            result = generate_with_repair(normalized_body)
+        else:
+            plan = generate_candidate(normalized_body)
+
+    except GeminiError as exc:
+        if exc.code == "TIMEOUT":
             http = 504
-        elif e.code == "CONFIG":
+        elif exc.code == "CONFIG":
             http = 500
-        elif e.status == 422:
+        elif exc.status == 422:
             http = 422
         else:
             http = 502
-        return JSONResponse({"error": e.code, "message": e.message, "details": e.details}, status_code=http)
+
+        return JSONResponse(
+            {
+                "error": exc.code,
+                "message": exc.message,
+                "details": exc.details,
+            },
+            status_code=http,
+        )
+
+    except PlanningError as exc:
+        return JSONResponse(
+            {
+                "error": exc.code,
+                "message": exc.message,
+                "details": exc.details,
+            },
+            status_code=exc.status_code,
+        )
+
     except Exception:
-        return JSONResponse({"error": "INTERNAL"}, status_code=500)  # never echo internals / key
+        return JSONResponse(
+            {"error": "INTERNAL"},
+            status_code=500,
+        )
+
+    if auto_repair:
+        return result
+
     return {"status": "UNVERIFIED", "plan": plan}
 
 
