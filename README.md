@@ -155,3 +155,6 @@ Frontend: http://localhost:5173
 - Never commit `.env` or any API key. The Gemini key lives only in `backend/.env`; the frontend never sees it.
 - LLM output is a *candidate*: only the deterministic checks in `algorithms/` can mark a plan FEASIBLE.
 - Unknown prices/hours/travel times stay `null` ("No data available"); never treat them as 0.
+
+For the optional FreeModel provider, configuration and verification limits, see
+[FreeModel integration (M3)](docs/m3-freemodel.md).

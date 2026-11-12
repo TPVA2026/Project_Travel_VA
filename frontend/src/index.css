@@ -1888,53 +1888,6 @@ body {
 .candidate-day { margin-top: 16px; }
 .candidate-day h3 { margin: 0 0 8px; font-size: 1rem; }
 .candidate-day ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
-.entry-choice[hidden] { display: none; }
-.entry-choice { display: flex; flex-direction: column; gap: 16px; }
-.entry-choice h2 { margin: 0; font-size: 1.35rem; line-height: 1.35; color: var(--primary-navy); }
-.entry-choice-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.entry-choice-card {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left;
-  min-height: 112px; padding: 16px; border-radius: 12px; border: 1.5px solid #c9d9ec;
-  background: #fff; color: var(--text-main); font: inherit; cursor: pointer;
-}
-.entry-choice-card strong { color: var(--primary-navy); font-size: 1rem; }
-.entry-choice-card span { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; }
-.entry-choice-card:hover { border-color: var(--primary-navy); background: #f8faff; }
-.entry-choice-card:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
-
-.describe-thread { gap: 14px; }
-.describe-turn { display: flex; flex-direction: column; gap: 6px; }
-.describe-question { margin: 0; font-weight: 700; color: var(--primary-navy); }
-.describe-answer {
-  margin: 0; align-self: flex-end; max-width: 92%; padding: 10px 12px;
-  border-radius: 12px 12px 4px 12px; background: #eef2ff; border: 1px solid #dbe4f0;
-  white-space: pre-wrap; overflow-wrap: anywhere;
-}
-.describe-saved { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
-.describe-composer { display: flex; flex-direction: column; gap: 8px; }
-.describe-composer label { font-weight: 600; }
-.describe-composer textarea {
-  width: 100%; min-height: 88px; resize: vertical; font: inherit; font-size: 14px;
-  padding: 10px 12px; border: 1px solid #b7c9e1; border-radius: 8px;
-}
-.describe-composer textarea:focus { outline: 3px solid #2563eb; outline-offset: 2px; border-color: var(--primary-navy); }
-.describe-composer .primary { align-self: flex-start; min-height: 44px; }
-.mode-switch {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;
-  margin-top: 8px; padding: 12px 14px; border: 1px solid #c9d9ec; border-radius: 12px; background: #f8faff;
-}
-.mode-switch p { margin: 0; font-weight: 600; color: var(--primary-navy); }
-.mode-switch button {
-  flex: 0 0 auto; white-space: nowrap; font: inherit; font-weight: 700; min-height: 44px; padding: 8px 14px;
-  border-radius: 8px; border: 1.5px solid var(--primary-navy); background: #fff; color: var(--primary-navy); cursor: pointer;
-}
-.mode-switch button:hover { background: var(--primary-navy); color: #fff; }
-.mode-switch button:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
-@media (max-width: 640px) {
-  .entry-choice-actions { grid-template-columns: 1fr; }
-  .mode-switch button { width: 100%; }
-}
-
 /* ==========================================================================
    Results & Selected Plan — editorial travel UI
    Warm paper palette, clear hierarchy, calm motion, accessible states.
@@ -5324,85 +5277,6 @@ body {
   font-weight: 700;
 }
 
-.entry-choice-head h2 {
-  margin: 0;
-  color: var(--rv-ink);
-  font-size: 1.35rem;
-  line-height: 1.35;
-  letter-spacing: -0.02em;
-}
-
-.entry-choice-head p {
-  margin: 6px 0 0;
-  color: var(--rv-muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.entry-choice-actions {
-  gap: 14px;
-}
-
-.plan-page .entry-choice-card {
-  min-height: 168px;
-  padding: 20px;
-  border: 1px solid var(--rv-line);
-  border-radius: var(--rv-radius-md);
-  background: var(--rv-paper);
-  box-shadow: var(--rv-shadow-sm);
-  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
-}
-
-.plan-page .entry-choice-card:hover {
-  border-color: var(--rv-terra);
-  background: var(--rv-paper);
-  transform: translateY(-2px);
-  box-shadow: var(--rv-shadow-md);
-}
-
-.plan-page .entry-choice-card:active {
-  transform: translateY(0);
-}
-
-.plan-page .entry-choice-card:focus-visible {
-  outline: 3px solid rgba(164, 91, 40, 0.45);
-  outline-offset: 3px;
-}
-
-.plan-page .entry-choice-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 4px;
-  border-radius: 10px;
-  background: var(--rv-terra-soft);
-  color: var(--rv-terra-dark);
-}
-
-.plan-page .entry-choice-card strong {
-  color: var(--rv-ink);
-  font-size: 1rem;
-}
-
-.plan-page .entry-choice-card > span:not(.entry-choice-icon):not(.entry-choice-meta) {
-  color: var(--rv-muted);
-  font-size: 0.88rem;
-  line-height: 1.5;
-}
-
-.plan-page .entry-choice-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 10px;
-  color: var(--rv-terra);
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
 .plan-page .compact-form .card {
   border: 1px solid var(--rv-line);
   border-radius: var(--rv-radius-md);
@@ -5417,8 +5291,7 @@ body {
 
 .plan-page .planner label,
 .plan-page .planner .field > span:not(.error),
-.plan-page .compact-form label,
-.plan-page .describe-composer label {
+.plan-page .compact-form label {
   color: var(--rv-ink-soft);
 }
 
@@ -5426,8 +5299,7 @@ body {
 .plan-page .planner select,
 .plan-page .planner textarea,
 .plan-page .compact-form input:not([type="radio"]):not([type="checkbox"]),
-.plan-page .compact-form select,
-.plan-page .describe-composer textarea {
+.plan-page .compact-form select {
   border-color: var(--rv-line-strong);
   border-radius: var(--rv-radius-sm);
   background: var(--rv-paper);
@@ -5438,8 +5310,7 @@ body {
 .plan-page .planner select:focus,
 .plan-page .planner textarea:focus,
 .plan-page .compact-form input:focus,
-.plan-page .compact-form select:focus,
-.plan-page .describe-composer textarea:focus {
+.plan-page .compact-form select:focus {
   outline: none;
   border-color: var(--rv-terra);
   box-shadow: 0 0 0 3px rgba(164, 91, 40, 0.16);
@@ -5515,8 +5386,7 @@ body {
   min-height: 44px;
 }
 
-.plan-page .compact-form .primary,
-.plan-page .describe-composer .primary {
+.plan-page .compact-form .primary {
   min-height: 48px;
   padding: 0 20px;
   border: 1px solid var(--rv-ink);
@@ -5527,14 +5397,12 @@ body {
   transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.12s ease;
 }
 
-.plan-page .compact-form .primary:hover,
-.plan-page .describe-composer .primary:hover {
+.plan-page .compact-form .primary:hover {
   border-color: var(--rv-ink-deep);
   background: var(--rv-ink-deep);
 }
 
-.plan-page .compact-form .primary:active,
-.plan-page .describe-composer .primary:active {
+.plan-page .compact-form .primary:active {
   transform: translateY(1px);
 }
 
@@ -5567,49 +5435,10 @@ body {
   color: var(--rv-muted);
 }
 
-.plan-page .mode-switch {
-  border-color: var(--rv-line);
-  border-radius: var(--rv-radius-md);
-  background: var(--rv-sand);
-}
-
-.plan-page .mode-switch p {
-  color: var(--rv-ink);
-}
-
-.plan-page .mode-switch button {
-  border-color: var(--rv-ink);
-  border-radius: var(--rv-radius-sm);
-  background: var(--rv-paper);
-  color: var(--rv-ink);
-}
-
-.plan-page .mode-switch button:hover {
-  background: var(--rv-ink);
-  color: #ffffff;
-}
-
-.plan-page .describe-question {
-  color: var(--rv-ink);
-}
-
-.plan-page .describe-answer {
-  border-color: var(--rv-line);
-  border-radius: 12px 12px 4px 12px;
-  background: var(--rv-sand);
-  color: var(--rv-ink-soft);
-}
-
-.plan-page .describe-saved {
-  color: var(--rv-muted);
-}
-
 .plan-page .compact-form button:focus-visible,
 .plan-page .compact-form summary:focus-visible,
 .plan-page .compact-form input[type="radio"]:focus-visible,
-.plan-page .compact-form input[type="checkbox"]:focus-visible,
-.plan-page .describe-composer textarea:focus-visible,
-.plan-page .mode-switch button:focus-visible {
+.plan-page .compact-form input[type="checkbox"]:focus-visible {
   outline: 3px solid rgba(164, 91, 40, 0.45);
   outline-offset: 3px;
 }
@@ -5828,14 +5657,6 @@ body {
     gap: 7px;
   }
 
-  .plan-page .entry-choice-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .plan-page .entry-choice-card {
-    min-height: 0;
-  }
-
   .plan-page .compact-form .action-row {
     flex-direction: column;
     align-items: stretch;
@@ -5901,16 +5722,14 @@ body {
   .welcome-plan-card,
   .welcome-plan-media img,
   .preview-card.is-link,
-  .preview-media img,
-  .plan-page .entry-choice-card {
+  .preview-media img {
     transition: none;
   }
 
   .welcome-plan-card:hover,
   .welcome-plan-card:hover .welcome-plan-media img,
   .preview-card.is-link:hover,
-  .preview-card.is-link:hover .preview-media img,
-  .plan-page .entry-choice-card:hover {
+  .preview-card.is-link:hover .preview-media img {
     transform: none;
   }
 }
@@ -6322,7 +6141,7 @@ body.intro-flying .plan-aside {
   animation: fi-reveal var(--fi-reveal-duration) var(--fi-reveal-ease) var(--fi-detail-delay) both;
 }
 
-body.intro-flying .entry-choice-actions {
+body.intro-flying .plan-panel {
   animation: fi-reveal var(--fi-reveal-duration) var(--fi-reveal-ease) var(--fi-action-delay) both;
 }
 
@@ -6403,7 +6222,7 @@ body.intro-flying .entry-choice-actions {
   body.intro-flying .plan-workspace,
   body.intro-flying .site-footer,
   body.intro-flying .plan-aside,
-  body.intro-flying .entry-choice-actions {
+  body.intro-flying .plan-panel {
     animation: none;
   }
 }

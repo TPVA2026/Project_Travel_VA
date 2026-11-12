@@ -65,6 +65,15 @@ def request_text(
 
     `client` is an SDK-like object (`client.models.generate_content(...)`); tests inject a fake.
     """
+    provider = os.getenv("AI_PROVIDER", "gemini").strip().casefold()
+    if provider == "freemodel":
+        from app.services.ai.freemodel_client import request_text as freemodel_request
+        return freemodel_request(
+            prompt, schema, api_key=api_key, model=model, timeout_s=timeout_s,
+            max_retries=max_retries, client=client, sleep=sleep,
+        )
+    if provider != "gemini":
+        raise GeminiError("CONFIG", "AI_PROVIDER must be gemini or freemodel")
     api_key = os.getenv("GEMINI_API_KEY") if api_key is None else api_key
     model = model or os.getenv("GEMINI_MODEL") or DEFAULT_MODEL
     if timeout_s is None:

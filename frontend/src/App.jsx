@@ -38,6 +38,8 @@ export default function App() {
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/selected" element={<SelectedPlanPage />} />
+        <Route path="/describe" element={<Navigate to="/" replace />} />
+        <Route path="/describe/*" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
