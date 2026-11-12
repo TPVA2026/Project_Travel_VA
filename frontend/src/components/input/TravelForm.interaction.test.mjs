@@ -56,12 +56,17 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     root = createRoot(doc.querySelector("#root"));
     await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(HomePage))));
     const form = doc.querySelector("form");
-    // The surrounding page is unchanged.
+    // The surrounding page is unchanged. Start planning lands on the first form question; no chooser.
     assert.ok(doc.querySelector(".plan-intro"));
     assert.ok(doc.querySelector(".plan-layout .plan-aside"));
     assert.equal(doc.querySelector("#plan-prep-title").textContent, "Three things make the first draft easier.");
     assert.equal(doc.querySelector(".plan-outcomes h2").textContent, "What you get");
-    await actOn(() => doc.querySelector(".entry-choice-card").click());
+    assert.equal(doc.querySelector(".entry-choice"), null, "Chooser is not rendered");
+    assert.equal(doc.querySelector("#trip-describe-panel"), null, "Describe-the-trip panel is not rendered");
+    assert.equal(button("Fill in the form"), undefined);
+    assert.equal(button("Describe the trip"), undefined);
+    assert.equal(button("Switch to describing"), undefined);
+    assert.ok(form, "The form is visible immediately");
     assert.equal(doc.querySelector("#trip-form-panel").hidden, false);
 
     // Six screens, one visible question, Back only after the first.
@@ -378,25 +383,6 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(active(), "tripDescription");
     await click("Back to review");
 
-    // Form <-> Describe keeps both panels mounted and focus lands on the visible question.
-    await click("Edit budget");
-    await click("Switch to describing");
-    assert.equal(doc.querySelector("#trip-form-panel").hidden, true);
-    assert.equal(active(), "describe-draft");
-    await fill("describe-draft", "A quiet coastal place");
-    await click("Send");
-    await fill("describe-draft", "Two adults");
-    await click("Switch to the form");
-    assertStep(4);
-    assert.equal(active(), "budgetAmount");
-    assert.equal(field("budgetAmount").value, "7,654,321");
-    assert.equal(field("tripDescription").value, "We love seafood and prefer taxis.");
-    await click("Switch to describing");
-    assert.equal(field("describe-draft").value, "Two adults");
-    assert.equal(doc.querySelector(".describe-answer").textContent, "A quiet coastal place");
-    await click("Switch to the form");
-    await click("Back to review");
-
     // Successful final submit sends the exact contract payload once.
     const payload = buildPayload(new FormData(form));
     assert.deepEqual(payload, {
@@ -599,6 +585,69 @@ test("M1 month fallback: probe, labelled month/year controls, canonical field, v
     assert.equal(field("month").value, "");
     assert.equal(field("monthYear").value, "");
     assert.deepEqual(new FormData(form).getAll("month"), [""]);
+    assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
+  } finally {
+    if (root) await act(async () => root.unmount());
+    await rm(temp, { recursive: true, force: true });
+    dom.window.close();
+    for (const [key, descriptor] of originals) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else delete globalThis[key]; }
+  }
+});
+
+test("Start planning goes straight to the first form question; old describe routes redirect", async () => {
+  const runtimeErrors = [];
+  const virtualConsole = new VirtualConsole();
+  virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
+  const dom = new JSDOM('<div id="root"></div>', { url: "http://localhost/", virtualConsole });
+  const doc = dom.window.document;
+  const replacements = {
+    window: dom.window, document: doc, navigator: dom.window.navigator,
+    HTMLElement: dom.window.HTMLElement, FormData: dom.window.FormData, Image: dom.window.Image,
+    sessionStorage: dom.window.sessionStorage, localStorage: dom.window.localStorage,
+    matchMedia: query => ({ matches: /prefers-reduced-motion:\s*reduce/.test(query), media: query, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent: () => false }),
+    requestAnimationFrame: callback => setTimeout(callback, 0),
+    IS_REACT_ACT_ENVIRONMENT: true,
+    fetch: async () => ({ ok: true, json: async () => ({ destinations: [] }) }),
+  };
+  const originals = new Map(Object.keys(replacements).map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
+  for (const [key, value] of Object.entries(replacements)) Object.defineProperty(globalThis, key, { configurable: true, writable: true, value });
+  if (replacements.matchMedia) dom.window.matchMedia = replacements.matchMedia;
+  dom.window.scrollTo = () => {};
+  const temp = await mkdtemp(fileURLToPath(new URL("../../../node_modules/.request-form-test-", import.meta.url)));
+  const output = join(temp, "App.mjs");
+  await build({
+    entryPoints: [fileURLToPath(new URL("../../App.jsx", import.meta.url))],
+    outfile: output, bundle: true, format: "esm", platform: "node", jsx: "automatic", packages: "external",
+    loader: { ".png": "dataurl", ".jpg": "dataurl", ".svg": "dataurl" },
+    define: { "import.meta.env.VITE_API_BASE": "undefined" },
+  });
+  let root;
+  const tick = () => new Promise(resolve => setTimeout(resolve, 10));
+  const actOn = async callback => { await act(async () => { callback(); await tick(); }); };
+  try {
+    const { default: App } = await import(output);
+    const { createRoot } = await import("react-dom/client");
+    const { MemoryRouter } = await import("react-router-dom");
+    root = createRoot(doc.querySelector("#root"));
+
+    await actOn(() => root.render(React.createElement(MemoryRouter, { initialEntries: ["/welcome"] }, React.createElement(App))));
+    const start = [...doc.querySelectorAll("a")].find(node => node.textContent.includes("Start planning"));
+    assert.ok(start, "Welcome has Start planning");
+    assert.equal(start.getAttribute("href"), "/");
+    await actOn(() => start.click());
+    assert.equal(doc.querySelector(".entry-choice"), null, "Chooser is not rendered after Start planning");
+    assert.equal(doc.querySelector("#trip-describe-panel"), null);
+    assert.ok(doc.getElementById("departureLocation"), "First form question is visible");
+    assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you leaving from?");
+    assert.equal(doc.activeElement?.id, "departureLocation");
+
+    for (const path of ["/describe", "/describe/anything"]) {
+      await actOn(() => root.render(React.createElement(MemoryRouter, { initialEntries: [path] }, React.createElement(App))));
+      assert.equal(doc.querySelector(".welcome-page"), null, `${path} does not 404 or stay on welcome`);
+      assert.equal(doc.querySelector(".entry-choice"), null, `${path} does not show the chooser`);
+      assert.ok(doc.getElementById("departureLocation"), `${path} redirects to the form`);
+      assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you leaving from?");
+    }
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {
     if (root) await act(async () => root.unmount());
