@@ -47,19 +47,23 @@ def test_generate_three_distinct_candidates():
 
 def test_insufficient_distinct_candidates():
     duplicate = make_plan("place-a")
+    warnings = []
 
     with patch(
         "app.services.ai.itinerary_generator.generate_candidate",
         return_value=duplicate,
-    ):
-        with pytest.raises(GeminiError) as exc:
-            generate_candidates(
-                request={},
-                dataset={},
-                count=3,
-            )
+    ) as mock_generate:
+        result = generate_candidates(
+            request={},
+            dataset={},
+            count=3,
+            warnings=warnings,
+        )
 
-    assert exc.value.code == "INSUFFICIENT_CANDIDATES"
+    assert len(result) == 1
+    assert mock_generate.call_count == 9
+    assert len(warnings) == 1
+    assert "Only 1 distinct candidates" in warnings[0]
 
 
 @pytest.mark.parametrize("count", [0, -1, 1.5, True, "3"])
@@ -194,17 +198,20 @@ def test_first_candidate_prompt_has_no_previous_routes():
 
 def test_generate_candidates_respects_max_attempts():
     duplicate = make_plan("place-a")
+    warnings = []
 
     with patch(
         "app.services.ai.itinerary_generator.generate_candidate",
         return_value=duplicate,
     ) as mock_generate:
-        with pytest.raises(GeminiError) as exc:
-            generate_candidates(
-                request={},
-                dataset={},
-                count=3,
-            )
+        result = generate_candidates(
+            request={},
+            dataset={},
+            count=3,
+            warnings=warnings,
+        )
 
-    assert exc.value.code == "INSUFFICIENT_CANDIDATES"
     assert mock_generate.call_count == 9
+    assert len(result) == 1
+    assert len(warnings) == 1
+    assert "Only 1 distinct candidates" in warnings[0]

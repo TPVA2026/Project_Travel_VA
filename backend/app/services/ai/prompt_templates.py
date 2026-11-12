@@ -34,6 +34,9 @@ def build_prompt(
     request: dict,
     dataset: dict,
     previous_plans: list[dict] | None = None,
+    *,
+    repair_plan: dict | None = None,
+    repair_feedback: list[dict] | None = None,
 ) -> str:
     request = dict(request)
     if not request.get("additionalRequirements"):
@@ -71,6 +74,24 @@ def build_prompt(
             "Use only supported places from DATASET. "
             "Never invent prices, durations, or travel times. "
             "Follow all schema and system rules."
+        )
+
+    if repair_plan is not None:
+        if not repair_feedback:
+            raise ValueError("repair_feedback is required when repairing a plan")
+
+        prompt += (
+            "\n\nREPAIR_TASK:\n"
+            "Revise the previous candidate itinerary using the deterministic "
+            "M4 evaluation feedback below.\n"
+            "Keep the travel request, dataset constraints and output schema unchanged.\n"
+            "Fix only supported problems. Do not invent missing evidence.\n"
+            "Return the COMPLETE corrected CandidatePlan JSON, not a patch.\n"
+            "Do not claim FEASIBLE or VERIFIED.\n"
+            "PREVIOUS_PLAN:\n"
+            + json.dumps(repair_plan, ensure_ascii=False)
+            + "\nM4_FEEDBACK:\n"
+            + json.dumps(repair_feedback, ensure_ascii=False)
         )
 
     return prompt
