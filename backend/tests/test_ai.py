@@ -66,10 +66,12 @@ def test_grounding_enforces_cost_status_against_dataset():
     bad = copy.deepcopy(plan)
     bad["days"][0]["activities"][0]["estimatedCostVnd"] = 50000  # dataset price is null
     bad["days"][0]["activities"][0]["costStatus"] = "UNVERIFIED"
-    bad["days"][1]["activities"][0]["costStatus"] = "KNOWN"  # price 0 but source is UNVERIFIED
+    unverified = bad["days"][1]["activities"][0]
+    unverified["costStatus"] = "KNOWN"  # price 0 but source is UNVERIFIED
     errs = check_grounding(bad, dataset)
     assert any("must be null/NO_DATA" in e for e in errs)
-    assert any("must be UNVERIFIED" in e for e in errs)
+    assert unverified["costStatus"] == "UNVERIFIED"
+    assert not any("must be UNVERIFIED" in e for e in errs)
 
 
 def test_estimated_dining_price_cannot_be_marked_known():
@@ -80,7 +82,9 @@ def test_estimated_dining_price_cannot_be_marked_known():
     place["avgPricePerPersonVnd"] = 50000
     place["priceStatus"] = "ESTIMATED"
     activity.update(estimatedCostVnd=50000, costStatus="KNOWN")
-    assert any("must be UNVERIFIED" in error for error in check_grounding(candidate, estimated))
+    errs = check_grounding(candidate, estimated)
+    assert activity["costStatus"] == "UNVERIFIED"
+    assert not any("must be UNVERIFIED" in error for error in errs)
 
 
 def test_key_stays_server_side_and_structured_output_is_requested(monkeypatch):
@@ -683,6 +687,7 @@ def test_prompt_omits_bulky_place_evidence():
             "id": "ATTR_H_01",
             "name": "Đại Nội",
             "priceVnd": 200000,
+            "unverifiedFields": ["priceScope"],
             "distancesToAttractions": [{"id": "ATTR_H_02", "km": 1}],
             "mapDirectionsUrl": "https://maps.example/long",
             "sources": [{"url": "https://example.test/source"}],
@@ -690,6 +695,8 @@ def test_prompt_omits_bulky_place_evidence():
     })
     dataset = prompt.partition("DATASET:\n")[2]
     assert "ATTR_H_01" in dataset and "200000" in dataset
+    assert '"costStatus": "UNVERIFIED"' in dataset
+    assert "unverifiedFields" not in dataset
     assert "distancesToAttractions" not in dataset
     assert "mapDirectionsUrl" not in dataset
     assert "https://example.test/source" not in dataset

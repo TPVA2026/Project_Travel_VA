@@ -95,8 +95,9 @@ def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> l
                 if price is None and (a["estimatedCostVnd"] is not None or a["costStatus"] != "NO_DATA"):
                     errs.append(f"{a['activityId']}: dataset has no price for {a['placeId']}; must be null/NO_DATA")
                 expected_status = price_evidence_status(pl, dining=kind[a["placeId"]] == "dining")
+                # The dataset owns this label. A model that copies the price but writes KNOWN must not sink the plan.
                 if a["costStatus"] == "KNOWN" and expected_status == "UNVERIFIED":
-                    errs.append(f"{a['activityId']}: price evidence for {a['placeId']} is unverified; status must be UNVERIFIED")
+                    a["costStatus"] = "UNVERIFIED"
         errs.extend(_check_travel_legs(d, places, matrix))
     return errs
 
