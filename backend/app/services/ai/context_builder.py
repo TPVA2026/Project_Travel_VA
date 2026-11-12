@@ -25,6 +25,7 @@ from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator, model_validator
 
+from app.algorithms.validation_common import route_reference
 from app.services.ai.opening_hours import normalize_opening_hours
 
 log = logging.getLogger(__name__)
@@ -264,12 +265,16 @@ def build_context(request: dict, dataset: dict) -> dict:
 
     ids = {p.id for p in attractions} | {p.id for p in dining}
     matrix_raw = dataset.get("travel_matrix", dataset.get("travelMatrix"))
+    modes = (request.get("preferences") or {}).get("transportation") or []
+    transport_mode = modes[0] if modes and isinstance(modes[0], str) else None
     legs, pairs = [], set()
     for leg in _parse(_Leg, matrix_raw, "travel leg"):
         pair = (leg.from_, leg.to)
         if leg.from_ == leg.to or leg.from_ not in ids or leg.to not in ids or pair in pairs:
             continue  # only legs between retrieved places; never invent or repeat one
         pairs.add(pair)
+        if route_reference(dataset, leg.from_, leg.to, transport_mode) is None:
+            leg = leg.model_copy(update={"durationMin": None, "distanceKm": None})
         legs.append(leg)
 
     return {

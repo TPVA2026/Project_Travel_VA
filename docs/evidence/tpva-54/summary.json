@@ -1,0 +1,290 @@
+{
+  "ranAt": "2026-11-11T15:16:05.046198+00:00",
+  "baseUrls": {
+    "default": "http://localhost:3101",
+    "osrm_timeout": "http://localhost:3102"
+  },
+  "geminiKeyConfigured": false,
+  "counts": {
+    "PASS": 15,
+    "FAIL": 3,
+    "BLOCKED": 1
+  },
+  "results": [
+    {
+      "id": "S01_valid_3day_validate",
+      "endpoint": "/api/v1/requests/validate",
+      "httpStatus": 200,
+      "actualStatus": null,
+      "actualError": null,
+      "checkCodes": [],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M1/M6"
+    },
+    {
+      "id": "S02_valid_3day_generate",
+      "endpoint": "/itineraries/generate",
+      "httpStatus": 500,
+      "actualStatus": null,
+      "actualError": "CONFIG",
+      "checkCodes": [],
+      "verdict": "BLOCKED",
+      "notes": [
+        "GEMINI_API_KEY is not configured on this server; Gemini was not called."
+      ],
+      "owner": "M3"
+    },
+    {
+      "id": "S03_valid_3day_evaluate",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "UNVERIFIED",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4"
+    },
+    {
+      "id": "S04_valid_3day_rank",
+      "endpoint": "/itineraries/rank",
+      "httpStatus": 200,
+      "actualStatus": null,
+      "actualError": null,
+      "checkCodes": [],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4"
+    },
+    {
+      "id": "S05_attr_h_08_before_opening",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "INFEASIBLE",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "OUTSIDE_OPENING_HOURS",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4"
+    },
+    {
+      "id": "S06_missing_routing",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "UNVERIFIED",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "MISSING_LEG",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4"
+    },
+    {
+      "id": "S07_over_budget_group",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "INFEASIBLE",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4"
+    },
+    {
+      "id": "S08_over_budget_per_person",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "INFEASIBLE",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4"
+    },
+    {
+      "id": "S09_missing_food_price",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "UNVERIFIED",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4"
+    },
+    {
+      "id": "S10_time_overlap",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 422,
+      "actualStatus": null,
+      "actualError": "INVALID_PLAN",
+      "checkCodes": [],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M3/M4"
+    },
+    {
+      "id": "S11_travel_over_limit",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "UNVERIFIED",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "LIMIT_DATA",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M4/M2"
+    },
+    {
+      "id": "S12_duplicate_stop",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "UNVERIFIED",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "FAIL",
+      "notes": [
+        "no check flags the repeated stop (only generic data checks)"
+      ],
+      "owner": "M3/M4"
+    },
+    {
+      "id": "S13_malformed_json_evaluate",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 422,
+      "actualStatus": null,
+      "actualError": null,
+      "checkCodes": [],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M6"
+    },
+    {
+      "id": "S14_malformed_json_validate",
+      "endpoint": "/api/v1/requests/validate",
+      "httpStatus": 422,
+      "actualStatus": null,
+      "actualError": null,
+      "checkCodes": [],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M6"
+    },
+    {
+      "id": "S15_no_destination_validate",
+      "endpoint": "/api/v1/requests/validate",
+      "httpStatus": 200,
+      "actualStatus": null,
+      "actualError": null,
+      "checkCodes": [],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M1/M6"
+    },
+    {
+      "id": "S16_no_destination_generate",
+      "endpoint": "/itineraries/generate",
+      "httpStatus": 422,
+      "actualStatus": null,
+      "actualError": "NO_DATA",
+      "checkCodes": [],
+      "verdict": "FAIL",
+      "notes": [
+        "HTTP 422, expected 200"
+      ],
+      "owner": "M3/M4"
+    },
+    {
+      "id": "S17_unsupported_destination_validate",
+      "endpoint": "/api/v1/requests/validate",
+      "httpStatus": 422,
+      "actualStatus": null,
+      "actualError": null,
+      "checkCodes": [],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M6"
+    },
+    {
+      "id": "S18_osrm_timeout",
+      "endpoint": "/itineraries/evaluate",
+      "httpStatus": 200,
+      "actualStatus": "UNVERIFIED",
+      "actualError": null,
+      "checkCodes": [
+        "BUDGET",
+        "DAY_SCHEDULE",
+        "OPENING_HOURS",
+        "TRANSFER_GAP",
+        "TRAVEL_DATA",
+        "UNSUPPORTED_LEG"
+      ],
+      "verdict": "PASS",
+      "notes": [],
+      "owner": "M2/M4"
+    },
+    {
+      "id": "S19_invalid_transport_type",
+      "endpoint": "/api/v1/requests/validate",
+      "httpStatus": 200,
+      "actualStatus": null,
+      "actualError": null,
+      "checkCodes": [],
+      "verdict": "FAIL",
+      "notes": [
+        "HTTP 200, expected 422"
+      ],
+      "owner": "M1/M6"
+    }
+  ]
+}

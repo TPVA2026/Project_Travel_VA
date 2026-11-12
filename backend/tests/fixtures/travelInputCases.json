@@ -1,0 +1,591 @@
+{
+  "endpoint": "/api/v1/requests/validate",
+  "cases": [
+    {
+      "id": "budget-group",
+      "why": "group budget is accepted unchanged",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 200,
+        "data": {
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          }
+        }
+      }
+    },
+    {
+      "id": "budget-per-person",
+      "why": "perPerson budget is accepted and not multiplied by /validate",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "perPerson"
+        }
+      },
+      "expect": {
+        "http": 200,
+        "data": {
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "perPerson"
+          }
+        }
+      }
+    },
+    {
+      "id": "budget-scope-padded",
+      "why": "scope is trimmed",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": " group "
+        }
+      },
+      "expect": {
+        "http": 200,
+        "data": {
+          "budget": {
+            "amount": 3000000,
+            "currency": "VND",
+            "scope": "group"
+          }
+        }
+      }
+    },
+    {
+      "id": "budget-scope-entire-trip",
+      "why": "entireTrip is not a budget.scope value",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "entireTrip"
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "budget-scope-missing",
+      "why": "scope is required",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND"
+        }
+      },
+      "expect": {
+        "http": 422,
+        "missing": [
+          "budget.scope"
+        ]
+      }
+    },
+    {
+      "id": "budget-negative",
+      "why": "amount must be >= 0",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": -1,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "budget-currency-usd",
+      "why": "only VND",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "USD",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "travelers-zero",
+      "why": "count must be >= 1",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 0
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "travelers-missing",
+      "why": "travelers is required",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 422,
+        "missing": [
+          "travelers"
+        ]
+      }
+    },
+    {
+      "id": "period-dates-and-month",
+      "why": "dates or month, not both",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03",
+          "month": "2026-12"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 422,
+        "conflictContains": "not both"
+      }
+    },
+    {
+      "id": "duration-mismatch",
+      "why": "durationDays must equal the inclusive date span",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 2,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 422,
+        "conflictContains": "durationDays must equal"
+      }
+    },
+    {
+      "id": "duration-zero",
+      "why": "durationDays >= 1",
+      "body": {
+        "travelPeriod": {
+          "month": "2026-12"
+        },
+        "durationDays": 0,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "month-mode",
+      "why": "month + durationDays is valid",
+      "body": {
+        "travelPeriod": {
+          "month": "2026-12"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 200
+      }
+    },
+    {
+      "id": "transport-free-text",
+      "why": "transportation values are free text today (no enum)",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "transportation": [
+            "car",
+            "motorbike"
+          ]
+        }
+      },
+      "expect": {
+        "http": 200,
+        "data": {
+          "preferences": {
+            "transportation": [
+              "car",
+              "motorbike"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "transport-blank-dropped",
+      "why": "blank entries are dropped, others trimmed",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "transportation": [
+            " ",
+            "taxi "
+          ]
+        }
+      },
+      "expect": {
+        "http": 200,
+        "data": {
+          "preferences": {
+            "transportation": [
+              "taxi"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "transport-non-string",
+      "why": "a number is not a transport mode",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "transportation": [
+            42
+          ]
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "transport-not-list",
+      "why": "transportation must be a list",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "transportation": "car"
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "cost-field-not-accepted-yet",
+      "why": "proposed tripCosts is rejected until the schema changes (extra=forbid)",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "tripCosts": {
+          "transport": {
+            "status": "unknown",
+            "amountVnd": null
+          }
+        }
+      },
+      "expect": {
+        "http": 422
+      }
+    },
+    {
+      "id": "destination-omitted",
+      "why": "no destination stays empty",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        }
+      },
+      "expect": {
+        "http": 200,
+        "noDestination": true
+      }
+    },
+    {
+      "id": "destination-blank",
+      "why": "blank destination is removed, not replaced",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "destination": "   "
+        }
+      },
+      "expect": {
+        "http": 200,
+        "noDestination": true
+      }
+    },
+    {
+      "id": "destination-as-typed",
+      "why": "destination is kept exactly as typed",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "preferences": {
+          "destination": "Hue"
+        }
+      },
+      "expect": {
+        "http": 200,
+        "data": {
+          "preferences": {
+            "destination": "Hue"
+          }
+        }
+      }
+    },
+    {
+      "id": "destination-not-from-text",
+      "why": "free text never fills the destination",
+      "body": {
+        "travelPeriod": {
+          "startDate": "2026-12-01",
+          "endDate": "2026-12-03"
+        },
+        "durationDays": 3,
+        "departureLocation": "Huế",
+        "travelers": {
+          "count": 2
+        },
+        "budget": {
+          "amount": 3000000,
+          "currency": "VND",
+          "scope": "group"
+        },
+        "additionalRequirements": "Take us to Da Nang please"
+      },
+      "expect": {
+        "http": 200,
+        "noDestination": true
+      }
+    }
+  ]
+}

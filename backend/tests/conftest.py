@@ -3,6 +3,12 @@
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def disable_live_osrm(monkeypatch):
+    """Tests must opt into an injected mock router, never a live .env endpoint."""
+    monkeypatch.setenv("OSRM_ROUTING_ENABLED", "false")
+
+
 @pytest.fixture
 def m4_case():
     """Một chuyến một ngày có đủ dữ liệu đã xác nhận cho mọi ràng buộc."""
