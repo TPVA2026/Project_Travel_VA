@@ -1,0 +1,975 @@
+[
+  {
+    "id": "ACCOM_H_01",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Magnolia Boutique Hotel",
+    "propertyType": "hotel",
+    "address": "10 Trần Hữu Dục, phường Xuân Phú, Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "WiFi",
+      "Bãi đậu xe",
+      "Thang máy",
+      "Dịch vụ giặt ủi",
+      "Giữ hành lý",
+      "Lễ tân 24h"
+    ],
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.9000007008288.Magnolia%20Boutique%20Hotel.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573654803803361&priceDisplay=NIGHTNOTAX&iuid=ffa0a402-f36a-4224-b13f-615137c24021",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-11",
+      "checkOutDate": "2026-11-12",
+      "requestedPriceDisplay": "NIGHTNOTAX"
+    },
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.9000007008288.Magnolia%20Boutique%20Hotel.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573654803803361&priceDisplay=NIGHTNOTAX&iuid=ffa0a402-f36a-4224-b13f-615137c24021",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/magnolia-boutique-hotel-9000007008288",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "checkInFrom",
+          "amenities"
+        ],
+        "reportedValues": {
+          "name": "Magnolia Boutique Hotel",
+          "propertyType": "hotel",
+          "address": "10 Trần Hữu Dục, phường Xuân Phú, Huế",
+          "checkInFrom": "14:00",
+          "amenities": [
+            "WiFi",
+            "Bãi đậu xe",
+            "Thang máy",
+            "Dịch vụ giặt ủi",
+            "Giữ hành lý",
+            "Lễ tân 24h"
+          ],
+          "checkOutByConflictingValues": [
+            "14:00",
+            "12:00"
+          ]
+        },
+        "notes": "Trang có mâu thuẫn nội bộ: mục chính sách ghi trả phòng 14:00, bảng thông tin chung/FAQ ghi 12:00. Chưa chọn giờ trả phòng cho dữ liệu chính."
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy",
+      "checkOutBy"
+    ],
+    "unverifiedFields": [
+      "checkOutBy"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/hotel/vietnam/magnolia-boutique-hotel-9000007008288",
+    "checkOutVerificationStatus": "source_conflict",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Magnolia%20Boutique%20Hotel%2010%20Tr%E1%BA%A7n%20H%E1%BB%AFu%20D%E1%BB%A5c%2C%20ph%C6%B0%E1%BB%9Dng%20Xu%C3%A2n%20Ph%C3%BA%2C%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_02",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Bailey Hotel Hue",
+    "propertyType": "hotel",
+    "address": "5/28 Võ Thị Sáu, Phú Hội, Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Máy lạnh",
+      "Hồ bơi",
+      "Nhà hàng",
+      "Lễ tân 24h",
+      "Chỗ đậu xe",
+      "Thang máy",
+      "WiFi"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.9000007989809.Bailey%20Hotel%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573654803803361&priceDisplay=NIGHTNOTAX&iuid=1cdd9aad-b399-4fa8-a607-3e76af6c58a3",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-11",
+      "checkOutDate": "2026-11-12",
+      "requestedPriceDisplay": "NIGHTNOTAX"
+    },
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.9000007989809.Bailey%20Hotel%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573654803803361&priceDisplay=NIGHTNOTAX&iuid=1cdd9aad-b399-4fa8-a607-3e76af6c58a3",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/bailey-hotel-hue-9000007989809",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "checkInFrom",
+          "amenities",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "name": "Bailey Hotel Hue",
+          "propertyType": "hotel",
+          "address": "5/28 Võ Thị Sáu, Phú Hội, Huế",
+          "checkInFrom": "14:00",
+          "amenities": [
+            "Máy lạnh",
+            "Hồ bơi",
+            "Nhà hàng",
+            "Lễ tân 24h",
+            "Chỗ đậu xe",
+            "Thang máy",
+            "WiFi"
+          ],
+          "checkOutBy": "12:00"
+        }
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/hotel/vietnam/bailey-hotel-hue-9000007989809",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bailey%20Hotel%20Hue%205%2F28%20V%C3%B5%20Th%E1%BB%8B%20S%C3%A1u%2C%20Ph%C3%BA%20H%E1%BB%99i%2C%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_03",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Codo Homestay",
+    "propertyType": "homestay",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.agoda.com/vi-vn/codo-homestay-h98563568/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&los=1&searchrequestid=1cc2125f-f17d-46f1-8dd3-97e7973fcf24&ds=irDXIqrWEoVbGTPg",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-20",
+      "nights": 1,
+      "adults": 2,
+      "children": 0,
+      "rooms": 1,
+      "requestedCurrency": "VND"
+    },
+    "sources": [
+      {
+        "url": "https://www.agoda.com/vi-vn/codo-homestay-h98563568/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&los=1&searchrequestid=1cc2125f-f17d-46f1-8dd3-97e7973fcf24&ds=irDXIqrWEoVbGTPg",
+        "publisher": "Agoda",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy",
+      "address",
+      "checkInFrom",
+      "checkOutBy",
+      "amenities"
+    ],
+    "unverifiedFields": [
+      "name",
+      "propertyType"
+    ],
+    "sourceAlignmentStatus": "pending_access",
+    "sourceAlignmentNote": "Tên và loại chỗ ở đọc từ nhãn URL người dùng cung cấp, chưa xác minh nội dung trang. Không ghép thông tin của các Codo/CoDo cùng tên khi chưa đối chiếu đúng cơ sở.",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_04",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Lumiere Boutique Vỹ Dạ",
+    "propertyType": "hotel",
+    "address": "98 Phạm Văn Đồng, Vỹ Dạ, Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Máy lạnh",
+      "Nhà hàng",
+      "Lễ tân 24h",
+      "Chỗ đậu xe",
+      "Thang máy",
+      "WiFi"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.9000007890397.Lumiere%20Boutique%20V%E1%BB%B9%20D%E1%BA%A1.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573949571099577&priceDisplay=NIGHTNOTAX&iuid=07b1ae98-e596-4763-a1f9-80ab72e6556d",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-11",
+      "checkOutDate": "2026-11-12",
+      "requestedPriceDisplay": "NIGHTNOTAX"
+    },
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.9000007890397.Lumiere%20Boutique%20V%E1%BB%B9%20D%E1%BA%A1.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573949571099577&priceDisplay=NIGHTNOTAX&iuid=07b1ae98-e596-4763-a1f9-80ab72e6556d",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/lumiere-boutique-vy-da--9000007890397",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "checkInFrom",
+          "amenities",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "name": "Lumiere Boutique Vỹ Dạ",
+          "propertyType": "hotel",
+          "address": "98 Phạm Văn Đồng, Vỹ Dạ, Huế",
+          "checkInFrom": "14:00",
+          "amenities": [
+            "Máy lạnh",
+            "Nhà hàng",
+            "Lễ tân 24h",
+            "Chỗ đậu xe",
+            "Thang máy",
+            "WiFi"
+          ],
+          "checkOutBy": "12:00"
+        }
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/hotel/vietnam/lumiere-boutique-vy-da--9000007890397",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Lumiere%20Boutique%20V%E1%BB%B9%20D%E1%BA%A1%2098%20Ph%E1%BA%A1m%20V%C4%83n%20%C4%90%E1%BB%93ng%2C%20V%E1%BB%B9%20D%E1%BA%A1%2C%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_05",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Century Riverside Hotel Hue",
+    "propertyType": "hotel",
+    "address": "49 Lê Lợi, Phú Hội, Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Máy lạnh",
+      "Hồ bơi",
+      "Nhà hàng",
+      "Lễ tân 24h",
+      "Chỗ đậu xe",
+      "Thang máy",
+      "WiFi"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.1000000170888.Century%20Riverside%20Hotel%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573949571099577&priceDisplay=NIGHTNOTAX&iuid=97e069cf-c990-4ab4-be86-372b495752f4",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-11",
+      "checkOutDate": "2026-11-12",
+      "requestedPriceDisplay": "NIGHTNOTAX"
+    },
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.1000000170888.Century%20Riverside%20Hotel%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881573949571099577&priceDisplay=NIGHTNOTAX&iuid=97e069cf-c990-4ab4-be86-372b495752f4",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/century-riverside-hotel-hue-1000000170888",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "checkInFrom",
+          "amenities",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "name": "Century Riverside Hotel Hue",
+          "propertyType": "hotel",
+          "address": "49 Lê Lợi, Phú Hội, Huế",
+          "checkInFrom": "14:00",
+          "amenities": [
+            "Máy lạnh",
+            "Hồ bơi",
+            "Nhà hàng",
+            "Lễ tân 24h",
+            "Chỗ đậu xe",
+            "Thang máy",
+            "WiFi"
+          ],
+          "checkOutBy": "12:00"
+        }
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/hotel/vietnam/century-riverside-hotel-hue-1000000170888",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Century%20Riverside%20Hotel%20Hue%2049%20L%C3%AA%20L%E1%BB%A3i%2C%20Ph%C3%BA%20H%E1%BB%99i%2C%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_06",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Deluxe Villa Hue",
+    "propertyType": "villa",
+    "address": "20 Lý Tự Trọng, Xuân Phú, Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Máy lạnh",
+      "Hồ bơi",
+      "Nhà hàng",
+      "Lễ tân 24h",
+      "Chỗ đậu xe",
+      "WiFi"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.agoda.com/vi-vn/deluxe-villa-hue-h49389055/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=17%2C1%2C8&filterRoomAmenities=50&los=1&searchrequestid=c5fdbb81-e872-4272-bbc4-b68ae8740e4e&ds=irDXIqrWEoVbGTPg",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-20",
+      "nights": 1,
+      "adults": 2,
+      "children": 0,
+      "rooms": 1,
+      "requestedCurrency": "VND"
+    },
+    "sources": [
+      {
+        "url": "https://www.agoda.com/vi-vn/deluxe-villa-hue-h49389055/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=17%2C1%2C8&filterRoomAmenities=50&los=1&searchrequestid=c5fdbb81-e872-4272-bbc4-b68ae8740e4e&ds=irDXIqrWEoVbGTPg",
+        "publisher": "Agoda",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/deluxe-villa--9000003361780",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "checkInFrom",
+          "amenities",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "name": "Deluxe Villa Hue",
+          "propertyType": "villa",
+          "address": "20 Lý Tự Trọng, Xuân Phú, Huế",
+          "checkInFrom": "14:00",
+          "amenities": [
+            "Máy lạnh",
+            "Hồ bơi",
+            "Nhà hàng",
+            "Lễ tân 24h",
+            "Chỗ đậu xe",
+            "WiFi"
+          ],
+          "checkOutBy": "12:00"
+        },
+        "notes": "Nguồn bổ sung cùng tên; chưa xác nhận khớp mã cơ sở Agoda. Không dùng mô tả Orchard Road/Singapore trên trang vì mâu thuẫn với địa chỉ Huế."
+      },
+      {
+        "url": "https://en.planetofhotels.com/vietnam/hue/deluxe-villa-hue-6584830",
+        "publisher": "Planet of Hotels",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "search_index",
+        "fields": [
+          "address",
+          "checkInFrom",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "address": "20 Lý Tự Trọng, Huế",
+          "checkInFrom": "12:00",
+          "checkOutBy": "14:00"
+        },
+        "notes": "Kết quả tìm kiếm nêu giờ khác Traveloka. Giữ làm bằng chứng xung đột; thời gian chính tạm theo Traveloka, cần cơ sở xác nhận."
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [
+      "address",
+      "checkInFrom",
+      "checkOutBy",
+      "amenities"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/hotel/vietnam/deluxe-villa--9000003361780",
+    "identityVerificationStatus": "needs_cross_platform_confirmation",
+    "sourceAlignmentNote": "Dữ liệu bổ sung từ DELUXE VILLA trên Traveloka; chưa đối chiếu độc lập với mã cơ sở Agoda h49389055. Cần xác nhận cùng cơ sở trước khi dùng để đặt phòng.",
+    "checkInOutVerificationStatus": "source_conflict",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Deluxe%20Villa%20Hue%2020%20L%C3%BD%20T%E1%BB%B1%20Tr%E1%BB%8Dng%2C%20Xu%C3%A2n%20Ph%C3%BA%2C%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_07",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Sankofa Village Hill Resort & Spa",
+    "propertyType": "resort",
+    "address": "08 Ngọc Hồ, phường Kim Long, thành phố Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Hồ bơi ngoài trời",
+      "Spa",
+      "Phòng tập thể dục",
+      "Bãi đậu xe",
+      "Nhà hàng",
+      "Quầy bar"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.agoda.com/vi-vn/sankofa-village-hill-resort-and-spa_2/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=1&filterRoomAmenities=50&los=1&searchrequestid=c5fdbb81-e872-4272-bbc4-b68ae8740e4e&ds=irDXIqrWEoVbGTPg",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-20",
+      "nights": 1,
+      "adults": 2,
+      "children": 0,
+      "rooms": 1,
+      "requestedCurrency": "VND"
+    },
+    "sources": [
+      {
+        "url": "https://www.agoda.com/vi-vn/sankofa-village-hill-resort-and-spa_2/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=1&filterRoomAmenities=50&los=1&searchrequestid=c5fdbb81-e872-4272-bbc4-b68ae8740e4e&ds=irDXIqrWEoVbGTPg",
+        "publisher": "Agoda",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.sankofavillage.com.vn/vi/ve-chung-toi/",
+        "publisher": "Sankofa Village Hill Resort & Spa",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "search_index",
+        "fields": [
+          "name",
+          "address"
+        ],
+        "reportedValues": {
+          "name": "Sankofa Village Hill Resort & Spa",
+          "address": "08 Ngọc Hồ, phường Kim Long, thành phố Huế"
+        },
+        "notes": "Đọc trích đoạn chỉ mục trang chính thức; lần mở trực tiếp bị timeout."
+      },
+      {
+        "url": "https://www.trip.com/hotels/hue-hotel-detail-15312272/sankofa-village-hill-resort-and-spa/",
+        "publisher": "Trip.com",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "checkInFrom",
+          "checkOutBy",
+          "amenities"
+        ],
+        "reportedValues": {
+          "name": "Sankofa Village Hill Resort & Spa",
+          "checkInFrom": "14:00",
+          "checkOutBy": "12:00",
+          "amenities": [
+            "Hồ bơi ngoài trời",
+            "Spa",
+            "Phòng tập thể dục",
+            "Bãi đậu xe",
+            "Nhà hàng",
+            "Quầy bar"
+          ]
+        }
+      },
+      {
+        "url": "https://www.trivago.com/en-US/oar/sankofa-village-hill-resort-spa-hue?search=100-6940784",
+        "publisher": "trivago",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "search_index",
+        "fields": [
+          "checkInFrom",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "checkInFrom": "10:00",
+          "checkOutBy": "14:00"
+        },
+        "notes": "Giờ khác Trip.com; giữ để đối chiếu, chính sách giờ cần cơ sở xác nhận."
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [
+      "checkInFrom",
+      "checkOutBy",
+      "propertyType"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.sankofavillage.com.vn/vi/ve-chung-toi/",
+    "checkInOutVerificationStatus": "source_conflict",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Sankofa%20Village%20Hill%20Resort%20%26%20Spa%2008%20Ng%E1%BB%8Dc%20H%E1%BB%93%2C%20ph%C6%B0%E1%BB%9Dng%20Kim%20Long%2C%20th%C3%A0nh%20ph%E1%BB%91%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_08",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "La Vela Hue Hotel",
+    "propertyType": "hotel",
+    "address": "17, đường số 22, Đông Nam Thủy An, phường Thanh Thủy, thành phố Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Máy lạnh",
+      "Hồ bơi",
+      "Nhà hàng",
+      "Lễ tân 24h",
+      "Chỗ đậu xe",
+      "Thang máy",
+      "WiFi"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.agoda.com/vi-vn/la-vela-hue-hotel/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=15%2C8%2C-1&los=1&searchrequestid=5a96edfc-6fd7-4523-9625-756a4b7e30fa&ds=irDXIqrWEoVbGTPg",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-20",
+      "nights": 1,
+      "adults": 2,
+      "children": 0,
+      "rooms": 1,
+      "requestedCurrency": "VND"
+    },
+    "sources": [
+      {
+        "url": "https://www.agoda.com/vi-vn/la-vela-hue-hotel/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=15%2C8%2C-1&los=1&searchrequestid=5a96edfc-6fd7-4523-9625-756a4b7e30fa&ds=irDXIqrWEoVbGTPg",
+        "publisher": "Agoda",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://lavelahuehotel.com/contact/",
+        "publisher": "La Vela Hue Hotel",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "address"
+        ],
+        "reportedValues": {
+          "name": "La Vela Hue Hotel",
+          "address": "17, đường số 22, Đông Nam Thủy An, phường Thanh Thủy, thành phố Huế"
+        }
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/la-vela-hue-hotel-9000001200899",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "checkInFrom",
+          "checkOutBy",
+          "amenities"
+        ],
+        "reportedValues": {
+          "name": "La Vela Hue Hotel",
+          "propertyType": "hotel",
+          "checkInFrom": "14:00",
+          "checkOutBy": "12:00",
+          "amenities": [
+            "Máy lạnh",
+            "Hồ bơi",
+            "Nhà hàng",
+            "Lễ tân 24h",
+            "Chỗ đậu xe",
+            "Thang máy",
+            "WiFi"
+          ]
+        }
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://lavelahuehotel.com/contact/",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=La%20Vela%20Hue%20Hotel%2017%2C%20%C4%91%C6%B0%E1%BB%9Dng%20s%E1%BB%91%2022%2C%20%C4%90%C3%B4ng%20Nam%20Th%E1%BB%A7y%20An%2C%20ph%C6%B0%E1%BB%9Dng%20Thanh%20Th%E1%BB%A7y%2C%20th%C3%A0nh%20ph%E1%BB%91%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_09",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Indochine Palace",
+    "propertyType": "hotel",
+    "address": "105A Hùng Vương, phường Thuận Hóa, thành phố Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Hồ bơi",
+      "Nhà hàng",
+      "Spa",
+      "Phòng tập thể dục"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.agoda.com/vi-vn/indochine-palace-hotel/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=8%2C-1&los=1&searchrequestid=5a96edfc-6fd7-4523-9625-756a4b7e30fa&ds=irDXIqrWEoVbGTPg",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-20",
+      "nights": 1,
+      "adults": 2,
+      "children": 0,
+      "rooms": 1,
+      "requestedCurrency": "VND"
+    },
+    "sources": [
+      {
+        "url": "https://www.agoda.com/vi-vn/indochine-palace-hotel/hotel/hue-vn.html?countryId=38&finalPriceView=1&isShowMobileAppPrice=false&cid=1922896&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2026-11-20&isCalendarCallout=false&childAges=&numberOfGuest=0&missingChildAges=false&travellerType=1&showReviewSubmissionEntry=false&currencyCode=VND&isFreeOccSearch=false&tag=428762ec-5187-4bca-a1d2-edfbd6779536&flightSearchCriteria=%5Bobject+Object%5D&tspTypes=8%2C-1&los=1&searchrequestid=5a96edfc-6fd7-4523-9625-756a4b7e30fa&ds=irDXIqrWEoVbGTPg",
+        "publisher": "Agoda",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.indochinepalace.com/en",
+        "publisher": "Indochine Palace",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "amenities"
+        ],
+        "reportedValues": {
+          "name": "Indochine Palace",
+          "propertyType": "hotel",
+          "address": "105A Hùng Vương, phường Thuận Hóa, thành phố Huế",
+          "amenities": [
+            "Hồ bơi",
+            "Nhà hàng",
+            "Spa",
+            "Phòng tập thể dục"
+          ]
+        }
+      },
+      {
+        "url": "https://indochinepalace.com/en/booking-policy",
+        "publisher": "Indochine Palace",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "checkInFrom",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "checkInFrom": "14:00",
+          "checkOutBy": "12:00"
+        },
+        "notes": "Giá phụ thuộc thời điểm, thuế và phí dịch vụ; không có giá phòng cụ thể để nhập số."
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.indochinepalace.com/en",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Indochine%20Palace%20105A%20H%C3%B9ng%20V%C6%B0%C6%A1ng%2C%20ph%C6%B0%E1%BB%9Dng%20Thu%E1%BA%ADn%20H%C3%B3a%2C%20th%C3%A0nh%20ph%E1%BB%91%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_10",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Melia Vinpearl Hue",
+    "propertyType": "hotel",
+    "address": "50A Hùng Vương, Phú Nhuận, Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Máy lạnh",
+      "Hồ bơi",
+      "Nhà hàng",
+      "Lễ tân 24h",
+      "Thang máy",
+      "WiFi"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.3000020017508.Melia%20Vinpearl%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881574351207157999&priceDisplay=NIGHTNOTAX&iuid=d07a94c4-0e43-47d9-8ab5-fa38735704ed",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-11",
+      "checkOutDate": "2026-11-12",
+      "requestedPriceDisplay": "NIGHTNOTAX"
+    },
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.3000020017508.Melia%20Vinpearl%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881574351207157999&priceDisplay=NIGHTNOTAX&iuid=d07a94c4-0e43-47d9-8ab5-fa38735704ed",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/melia-vinpearl-hue-3000020017508",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "checkInFrom",
+          "amenities",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "name": "Melia Vinpearl Hue",
+          "propertyType": "hotel",
+          "address": "50A Hùng Vương, Phú Nhuận, Huế",
+          "checkInFrom": "14:00",
+          "amenities": [
+            "Máy lạnh",
+            "Hồ bơi",
+            "Nhà hàng",
+            "Lễ tân 24h",
+            "Thang máy",
+            "WiFi"
+          ],
+          "checkOutBy": "12:00"
+        }
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/hotel/vietnam/melia-vinpearl-hue-3000020017508",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Melia%20Vinpearl%20Hue%2050A%20H%C3%B9ng%20V%C6%B0%C6%A1ng%2C%20Ph%C3%BA%20Nhu%E1%BA%ADn%2C%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  },
+  {
+    "id": "ACCOM_H_11",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Azerai La Residence Hue",
+    "propertyType": "hotel",
+    "address": "05 Lê Lợi, Vĩnh Ninh, Huế",
+    "checkInFrom": "14:00",
+    "amenities": [
+      "Máy lạnh",
+      "Hồ bơi",
+      "Nhà hàng",
+      "Lễ tân 24h",
+      "Chỗ đậu xe",
+      "Thang máy",
+      "WiFi"
+    ],
+    "checkOutBy": "12:00",
+    "currency": "VND",
+    "priceScope": "unspecified",
+    "priceVerificationStatus": "missing_quote",
+    "priceNotes": "Chưa có báo giá VND xác định loại phòng/căn, ngày ở, số khách, thuế/phí và điều kiện đặt phòng. Không dùng giá 0 hoặc giá ngày khác thay thế.",
+    "bookingUrl": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.1000000235126.Azerai%20La%20Residence%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881574351207157999&priceDisplay=NIGHTNOTAX&iuid=d7738d10-74ae-404d-a156-e0e8ce3fa571",
+    "bookingContext": {
+      "source": "url_parameters_only",
+      "isPriceQuote": false,
+      "checkInDate": "2026-11-11",
+      "checkOutDate": "2026-11-12",
+      "requestedPriceDisplay": "NIGHTNOTAX"
+    },
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/detail?spec=11-11-2026.12-11-2026.1.1.HOTEL.1000000235126.Azerai%20La%20Residence%20Hue.2&loginPromo=1&funnel_source=iconTravelokaHomepage&prevSearchId=1881574351207157999&priceDisplay=NIGHTNOTAX&iuid=d7738d10-74ae-404d-a156-e0e8ce3fa571",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessAttemptedOn": "2026-11-11",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Đã thử mở URL gốc nhưng không đọc được nội dung cơ sở hoặc báo giá theo ngày. Tham số URL là ngữ cảnh tìm kiếm, không xác nhận còn phòng hay giá."
+      },
+      {
+        "url": "https://www.traveloka.com/vi-vn/hotel/vietnam/azerai-la-residence-hue-1000000235126",
+        "publisher": "Traveloka",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "propertyType",
+          "address",
+          "checkInFrom",
+          "amenities",
+          "checkOutBy"
+        ],
+        "reportedValues": {
+          "name": "Azerai La Residence Hue",
+          "propertyType": "hotel",
+          "address": "05 Lê Lợi, Vĩnh Ninh, Huế",
+          "checkInFrom": "14:00",
+          "amenities": [
+            "Máy lạnh",
+            "Hồ bơi",
+            "Nhà hàng",
+            "Lễ tân 24h",
+            "Chỗ đậu xe",
+            "Thang máy",
+            "WiFi"
+          ],
+          "checkOutBy": "12:00"
+        }
+      }
+    ],
+    "missingFields": [
+      "pricePerNightVnd",
+      "roomType",
+      "maxGuestsPerUnit",
+      "taxesAndFees",
+      "cancellationPolicy"
+    ],
+    "unverifiedFields": [],
+    "sourceAlignmentStatus": "partial",
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/hotel/vietnam/azerai-la-residence-hue-1000000235126",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Azerai%20La%20Residence%20Hue%2005%20L%C3%AA%20L%E1%BB%A3i%2C%20V%C4%A9nh%20Ninh%2C%20Hu%E1%BA%BF",
+    "notes": "Giờ nhận/trả phòng dùng định dạng 24h, không phải giờ mở cửa tham quan. Tiện ích có thể phát sinh phụ phí. Chưa có số liệu chặng đi từ/đến nơi lưu trú."
+  }
+]
