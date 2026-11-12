@@ -14,7 +14,8 @@ from app.algorithms.validation_common import result_from_checks
 from app.schemas.candidate_plan import CandidatePlan
 from app.schemas.revision import RevisionRequest
 from app.services.ai.context_builder import build_context, supported_place_ids, valid_destination_ids
-from app.services.ai.itinerary_generator import check_grounding
+from app.services.ai.gemini_client import GeminiError
+from app.services.ai.itinerary_generator import _candidate_signature, check_grounding, generate_candidate
 from app.services.data_service import load_dataset
 from app.services.input_service import (
     request_problems,
@@ -304,6 +305,134 @@ def rank_candidate_plans(
     result["ranked"] = result["ranked"][:limit]
     result["limit"] = limit
     return result
+
+
+def run_itinerary_pipeline(
+    request: dict,
+    count: int = 3,
+    *,
+    routing_service: RoutingService | None = None,
+) -> dict:
+    """Generate distinct candidates, evaluate them, and rank eligible plans."""
+    if not isinstance(count, int) or isinstance(count, bool) or not 1 <= count <= 3:
+        raise PlanningError(
+            "INVALID_CANDIDATE_COUNT",
+            "Candidate count must be an integer from 1 to 3.",
+        )
+    try:
+        normalized_request = validate_travel_request(request).model_dump(
+            mode="json", by_alias=True
+        )
+    except ValidationError as exc:
+        raise PlanningError(
+            "VALIDATION_ERROR",
+            "Invalid travel request.",
+            request_problems(request, exc),
+        ) from None
+
+    dataset = _load_planning_dataset()
+    plans = []
+    seen = set()
+    warnings = []
+    generation_error = None
+    for _ in range(count * 3):
+        if len(plans) == count:
+            break
+        try:
+            plan = generate_candidate(
+                normalized_request,
+                dataset,
+                previous_plans=plans.copy(),
+            )
+        except GeminiError as exc:
+            generation_error = exc
+            break
+
+        signature = _candidate_signature(plan)
+        if signature in seen:
+            continue
+        seen.add(signature)
+        plans.append(plan)
+
+    if not plans and generation_error:
+        raise generation_error
+    if not plans:
+        raise GeminiError(
+            "INSUFFICIENT_CANDIDATES",
+            "No distinct candidate itineraries could be generated.",
+        )
+    if generation_error:
+        warnings.append({
+            "code": "PARTIAL_GENERATION",
+            "message": generation_error.message,
+        })
+    if len(plans) < count:
+        warnings.append({
+            "code": "INSUFFICIENT_CANDIDATES",
+            "message": f"Only {len(plans)} distinct candidate(s) generated; requested {count}.",
+        })
+
+    service = routing_service or get_default_routing_service()
+    candidates = []
+    rankable_plans = []
+    for plan in plans:
+        try:
+            evaluation = evaluate_plan(
+                normalized_request,
+                plan,
+                routing_service=service,
+            )
+            status = evaluation.get("status")
+            if status not in {"FEASIBLE", "UNVERIFIED", "INFEASIBLE"}:
+                status = "UNVERIFIED"
+            rankable_plans.append(plan)
+        except PlanningError as exc:
+            evaluation = None
+            status = "UNVERIFIED"
+            warnings.append({
+                "code": "EVALUATION_UNAVAILABLE",
+                "planId": plan["planId"],
+                "message": exc.message,
+            })
+        candidates.append({
+            "planId": plan["planId"],
+            "status": status,
+            "plan": plan,
+            "evaluation": evaluation,
+        })
+
+    ranking = {"ranked": [], "unscored": [], "excluded": []}
+    if rankable_plans:
+        try:
+            ranking = rank_candidate_plans(
+                normalized_request,
+                rankable_plans,
+                routing_service=service,
+            )
+        except PlanningError as exc:
+            warnings.append({
+                "code": "RANKING_UNAVAILABLE",
+                "message": exc.message,
+            })
+    elif candidates:
+        warnings.append({
+            "code": "RANKING_UNAVAILABLE",
+            "message": "No evaluated candidates were available for ranking.",
+        })
+
+    primary = candidates[0]
+    return {
+        "pipelineStatus": "PARTIAL" if warnings else "COMPLETE",
+        "generator": "ai",
+        "candidates": candidates,
+        "ranking": ranking,
+        "warnings": warnings,
+        "request": normalized_request,
+        # Keep the former single-candidate response fields for existing clients.
+        "status": primary["status"],
+        "plan": primary["plan"],
+        "evaluation": primary["evaluation"],
+    }
 
 
 def revise_and_evaluate(request: dict, plan: dict, revision: dict) -> dict:

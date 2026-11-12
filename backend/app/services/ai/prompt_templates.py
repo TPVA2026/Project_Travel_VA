@@ -37,6 +37,8 @@ def build_prompt(
     *,
     repair_plan: dict | None = None,
     repair_feedback: list[dict] | None = None,
+    revision_plan: dict | None = None,
+    revision_change: dict | None = None,
 ) -> str:
     request = dict(request)
     if not request.get("additionalRequirements"):
@@ -92,6 +94,28 @@ def build_prompt(
             + json.dumps(repair_plan, ensure_ascii=False)
             + "\nM4_FEEDBACK:\n"
             + json.dumps(repair_feedback, ensure_ascii=False)
+        )
+
+    if revision_plan is not None:
+        if revision_change is None:
+            raise ValueError("revision_change is required")
+
+        prompt += (
+            "\n\nUSER_REVISION_TASK:\n"
+            "Revise the existing itinerary according to the user's requested change.\n"
+            "The updated TRAVEL_REQUEST is authoritative.\n"
+            "Preserve unaffected activities, dates and time slots whenever possible.\n"
+            "Change only what is necessary to satisfy the updated request.\n"
+            "If the change affects multiple activities, update all affected activities.\n"
+            "Use ONLY supported places and factual values from DATASET.\n"
+            "Do not invent prices, opening hours, travel times or place IDs.\n"
+            "Return the COMPLETE revised CandidatePlan JSON, not a patch.\n"
+            "The revised plan must follow the output schema.\n"
+            "Do not claim the revised plan is FEASIBLE or VERIFIED.\n"
+            "ORIGINAL_PLAN:\n"
+            + json.dumps(revision_plan, ensure_ascii=False)
+            + "\nREQUESTED_CHANGE:\n"
+            + json.dumps(revision_change, ensure_ascii=False)
         )
 
     return prompt
