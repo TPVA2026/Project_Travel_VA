@@ -25,7 +25,17 @@ variable. Missing model configuration falls back to `gemini-3.7-flash`.
 
 When `AI_PROVIDER` is unset, the legacy `gemini` path remains the default for
 backward compatibility. Set `AI_PROVIDER=gemini` to use the existing Google SDK
-and its `GEMINI_*` settings. Unknown providers fail with `CONFIG`; a failed
+and its `GEMINI_*` settings. Set `AI_PROVIDER=codex` to use the same chat
+completions client against the CCPro gateway:
+
+```dotenv
+AI_PROVIDER=codex
+CODEX_BASE_URL=https://api.ccpro.cn/v1
+CODEX_MODEL=gpt-6-luna
+CODEX_API_KEY=
+```
+
+Put that key in `backend/.env` only. Unknown providers fail with `CONFIG`; a failed
 FreeModel request never silently switches providers or generates sample data.
 
 Each FreeModel call waits up to `FREEMODEL_TIMEOUT_MS` (180 seconds in the

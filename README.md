@@ -144,7 +144,7 @@ python -m pytest
 python -m uvicorn app.main:app --reload --port 3001
 ```
 
-Then fill `GEMINI_API_KEY` in `backend/.env` (server only, never commit). Health check: http://localhost:3001/health, API docs: http://localhost:3001/docs
+Then fill `CODEX_API_KEY` in `backend/.env` (server only, never commit). The base URL is already `https://api.ccpro.cn/v1`. Health check: http://localhost:3001/health, API docs: http://localhost:3001/docs
 
 ```bash
 # frontend (new terminal)

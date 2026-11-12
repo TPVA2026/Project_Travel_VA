@@ -77,7 +77,7 @@ def request_text(
             prompt, schema, api_key=api_key,
             model=model or (os.getenv("CODEX_MODEL") or "gpt-6-luna") if codex else model,
             timeout_s=timeout_s, max_retries=max_retries, client=client, sleep=sleep,
-            base_url=(os.getenv("CODEX_BASE_URL") or "https://api.openai.com/v1") if codex else None,
+            base_url=(os.getenv("CODEX_BASE_URL") or "https://api.ccpro.cn/v1") if codex else None,
         )
     if provider != "gemini":
         raise GeminiError("CONFIG", "AI_PROVIDER must be gemini, freemodel, or codex")
