@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.services import planning_service as planning
+from app.services.ai.gemini_client import GeminiError
 from app.services.ai import itinerary_generator as generator
 
 client = TestClient(app)
@@ -144,6 +145,23 @@ def test_pipeline_endpoint_returns_zero_to_three_candidates(
             warning["code"] == "INSUFFICIENT_CANDIDATES"
             for warning in result["warnings"]
         )
+
+
+def test_pipeline_preserves_upstream_rate_limit_status(pipeline, monkeypatch):
+    request, _, _, _, _, _ = pipeline
+    monkeypatch.setattr(
+        planning,
+        "generate_candidate",
+        Mock(side_effect=GeminiError("API_ERROR", "Gemini returned HTTP 429", 429)),
+    )
+
+    response = client.post(
+        "/itineraries/pipeline",
+        json={"request": request, "count": 3},
+    )
+
+    assert response.status_code == 429
+    assert response.json()["error"] == "RATE_LIMIT"
 
 
 @pytest.mark.parametrize("case", ["request", "unsupported", "missing_ids", "schema", "place", "mapping", "cost"])

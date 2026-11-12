@@ -154,6 +154,18 @@ test('runItineraryPipeline maps a timeout to a retryable TIMEOUT code', async ()
   })
 })
 
+test('runItineraryPipeline preserves the provider rate-limit code', async () => {
+  globalThis.fetch = async () =>
+    jsonResponse({ error: 'RATE_LIMIT', message: 'Gemini rate limit reached' }, 429)
+
+  await assert.rejects(() => runItineraryPipeline(request), (error) => {
+    assert.equal(error.code, 'RATE_LIMIT')
+    assert.equal(error.status, 429)
+    assert.match(error.message, /rate limit/i)
+    return true
+  })
+})
+
 test('runItineraryPipeline keeps backend partial results and legacy single-plan responses', async () => {
   const candidate = candidatePlan('p1', 'ATTR_H_01')
   globalThis.fetch = async () => jsonResponse({
@@ -436,6 +448,40 @@ async function renderCandidateComparison(candidates, ranking) {
     throw error
   }
 }
+
+test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', async () => {
+  for (const count of [0, 1, 2, 3]) {
+    const candidates = Array.from({ length: count }, (_, index) => {
+      const id = `p-${count}-${index + 1}`
+      return {
+        planId: id,
+        status: 'UNVERIFIED',
+        plan: candidatePlan(id, 'ATTR_H_01'),
+        evaluation: evaluation(id),
+      }
+    })
+    const { dom, cleanup } = await renderCandidateComparison(candidates, {
+      ranked: [],
+      unscored: [],
+      excluded: [],
+    })
+    try {
+      const cards = dom.window.document.querySelectorAll('.plan-card')
+      assert.equal(cards.length, count)
+      if (count === 0) {
+        assert.match(dom.window.document.body.textContent, /Không có lịch trình nào/)
+      } else {
+        assert.match(
+          dom.window.document.querySelector('#candidate-results-heading').textContent,
+          new RegExp(`${count} lịch trình từ trợ lý`)
+        )
+        assert.doesNotMatch(dom.window.document.body.textContent, /3 plan comparison/i)
+      }
+    } finally {
+      await cleanup()
+    }
+  }
+})
 
 test('CandidateComparison UI separates FEASIBLE, UNVERIFIED and INFEASIBLE candidates', async () => {
   const feasiblePlan = candidatePlan('p-feasible', 'ATTR_H_01')

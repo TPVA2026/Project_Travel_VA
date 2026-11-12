@@ -54,18 +54,25 @@ def generate(body: dict):
             plan = generate_candidate(normalized_body)
 
     except GeminiError as exc:
-        if exc.code == "TIMEOUT":
+        if exc.status == 429:
+            http = 429
+            code = "RATE_LIMIT"
+        elif exc.code == "TIMEOUT":
             http = 504
+            code = exc.code
         elif exc.code == "CONFIG":
             http = 500
+            code = exc.code
         elif exc.status == 422:
             http = 422
+            code = exc.code
         else:
             http = 502
+            code = exc.code
 
         return JSONResponse(
             {
-                "error": exc.code,
+                "error": code,
                 "message": exc.message,
                 "details": exc.details,
             },
@@ -145,19 +152,25 @@ def pipeline(body: PipelineBody):
     try:
         return run_itinerary_pipeline(body.request, body.count)
     except GeminiError as exc:
-        if exc.code == "TIMEOUT":
+        if exc.status == 429:
+            http = 429
+            code = "RATE_LIMIT"
+        elif exc.code == "TIMEOUT":
             http = 504
+            code = exc.code
         elif exc.code == "CONFIG":
             http = 500
+            code = exc.code
         elif exc.code == "NO_DATA" or exc.status == 422:
             http = 422
+            code = exc.code
         else:
             http = 502
-        code = (
-            "NO_CANDIDATES"
-            if exc.code in {"EMPTY", "INSUFFICIENT_CANDIDATES"}
-            else exc.code
-        )
+            code = (
+                "NO_CANDIDATES"
+                if exc.code in {"EMPTY", "INSUFFICIENT_CANDIDATES"}
+                else exc.code
+            )
         return JSONResponse(
             {"error": code, "message": exc.message, "details": exc.details},
             status_code=http,

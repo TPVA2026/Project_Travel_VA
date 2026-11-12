@@ -62,6 +62,13 @@ function aiErrorCopy(error) {
         'Yêu cầu tạo lịch trình đã quá thời gian chờ. Hãy thử lại; không có kết quả mẫu nào được hiển thị thay thế.',
     }
   }
+  if (code === 'RATE_LIMIT' || code === 'AI_BUSY') {
+    return {
+      title: 'Dịch vụ AI đang quá tải',
+      message:
+        'Nhà cung cấp AI đang giới hạn số yêu cầu hoặc đã hết hạn mức tạm thời. Hãy chờ một lúc rồi thử lại; không có dữ liệu mẫu nào được hiển thị thay thế.',
+    }
+  }
   if (code === 'AI_UNAVAILABLE') {
     return {
       title: 'Trợ lý AI tạm thời không khả dụng',
