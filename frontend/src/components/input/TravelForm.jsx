@@ -200,7 +200,9 @@ export default function TravelForm() {
     const amount = normalizeBudgetInput(data.get("budgetAmount"));
     const validBudget = /^\d+$/.test(amount) && Number.isSafeInteger(Number(amount));
     setBudgetIsSet(validBudget);
-    if (validBudget || amount === "") setBudgetSliderValue(validBudget ? Number(amount) : 0);
+    if (validBudget || amount === "") {
+      setBudgetSliderValue(validBudget ? Math.floor(Number(amount) / 1000) * 1000 : 0);
+    }
     if (resizeBudgetRange) setBudgetSliderMax(Math.max(BUDGET_SLIDER_MAX, validBudget ? Number(amount) : 0));
   }
 
@@ -246,8 +248,18 @@ export default function TravelForm() {
     goToStep(target, { edit: target !== REVIEW, name: first });
   }
 
+  function snapBudgetField(form) {
+    const input = form.elements.namedItem("budgetAmount");
+    if (!input) return;
+    const shown = formatBudgetInput(input.value);
+    if (shown === input.value) return;
+    input.value = shown;
+    refresh(form);
+  }
+
   function next() {
     const form = formRef.current;
+    snapBudgetField(form);
     const all = clientErrors(new FormData(form));
     const names = fieldsOf(step);
     const found = Object.fromEntries(Object.entries(all).filter(([name]) => names.includes(name)));
@@ -313,6 +325,7 @@ export default function TravelForm() {
     event.preventDefault();
     if (step !== REVIEW) { next(); return; }
     if (sending) return;
+    snapBudgetField(event.currentTarget);
     const data = new FormData(event.currentTarget);
     const found = placeErrors(clientErrors(data));
     setSubmitted(true);
@@ -447,9 +460,9 @@ export default function TravelForm() {
 
       {question(4, "budget", <label htmlFor="budgetAmount">What is your budget?</label>, <>
         <div className="simple-budget request-budget">
-          <input id="budgetAmount" name="budgetAmount" type="text" inputMode="numeric" placeholder="e.g. 5,000,000" onBlur={event => { event.currentTarget.value = formatBudgetInput(event.currentTarget.value); }} required data-step-focus {...described("budgetAmount", "request-step-4-hint", "request-tile-input")} />
+          <input id="budgetAmount" name="budgetAmount" type="text" inputMode="numeric" placeholder="e.g. 5,000,000" onBlur={event => { const shown = formatBudgetInput(event.currentTarget.value); if (shown !== event.currentTarget.value) setControl("budgetAmount", shown); }} required data-step-focus {...described("budgetAmount", null, "request-tile-input")} />
           <StepError name="budgetAmount" error={errors.budgetAmount} />
-          <input id="budgetSlider" type="range" min="0" max={budgetSliderMax} step="1" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
+          <input id="budgetSlider" type="range" min="0" max={budgetSliderMax} step="1000" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
           <div className="budget-range-labels" aria-hidden="true"><span>0 VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
           <div className="request-segmented" role="radiogroup" aria-label="Budget applies to" aria-required="true" aria-describedby={errors.budgetScope ? "budgetScope-error" : undefined}>
             <label><input type="radio" name="budgetScope" value="group" disabled={soloTraveler} aria-disabled={soloTraveler || undefined} onChange={() => { scopeTouched.current = true; }} />Whole group</label>
@@ -457,7 +470,7 @@ export default function TravelForm() {
           </div>
           <StepError name="budgetScope" error={errors.budgetScope} />
         </div>
-      </>, "In VND. Slide, or type an exact amount.")}
+      </>)}
 
       {question(DESCRIBE, "describe", <label htmlFor="tripDescription">Is there anything else you’d like to describe?</label>, <>
         <textarea id="tripDescription" name="additionalRequirements" className="request-describe" rows="7" maxLength={ADDITIONAL_REQUIREMENTS_MAX} value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus {...described("additionalRequirements", `request-step-${DESCRIBE}-hint request-describe-count`, "request-describe")} />

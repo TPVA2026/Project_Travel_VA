@@ -263,8 +263,10 @@ export function clientErrors(data) {
   if (data.get("travelerCount") === "" || data.get("travelerCount") == null) {
     errors.travelerCount = REQUIRED;
   }
-  if (normalizeBudgetInput(data.get("budgetAmount")) === "") {
-    errors.budgetAmount = REQUIRED;
+  const budgetRaw = normalizeBudgetInput(data.get("budgetAmount"));
+  if (budgetRaw === "") errors.budgetAmount = REQUIRED;
+  else if (/^\d+$/.test(budgetRaw) && Number(budgetRaw) > 0 && Number(budgetRaw) < 1000) {
+    errors.budgetAmount = "Enter at least 1,000 VND.";
   }
   if (!data.get("budgetScope")) errors.budgetScope = REQUIRED;
 
@@ -288,7 +290,7 @@ export function buildPayload(data, now = new Date()) {
     departureLocation: String(data.get("departureLocation")).trim(),
     travelers: { count: Number(data.get("travelerCount")) },
     budget: {
-      amount: Number(normalizeBudgetInput(data.get("budgetAmount"))),
+      amount: Number(thousandVnd(data.get("budgetAmount"))),
       currency: "VND",
       scope: isSoloTravelerCount(data.get("travelerCount")) ? "perPerson" : data.get("budgetScope"),
     },
@@ -383,8 +385,17 @@ export function normalizeBudgetInput(value) {
   return /^\d{1,3}(,\d{3})+$/.test(text) ? text.replaceAll(",", "") : text;
 }
 
-export function formatBudgetInput(value) {
+// Trip budgets ignore VND below 1,000. 3,987,654 is saved as 3,987,000.
+function thousandVnd(value) {
   const raw = normalizeBudgetInput(value);
+  if (!/^\d+$/.test(raw)) return raw;
+  const amount = Number(raw);
+  if (!Number.isSafeInteger(amount) || amount < 1000) return raw;
+  return String(Math.floor(amount / 1000) * 1000);
+}
+
+export function formatBudgetInput(value) {
+  const raw = thousandVnd(value);
   return /^\d+$/.test(raw) ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : String(value ?? "");
 }
 
