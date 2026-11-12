@@ -4,6 +4,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from app.services.ai.gemini_client import GeminiError
 from app.services.ai.itinerary_generator import generate_candidate
+from app.services.ai.repair_service import generate_with_repair
+from app.services.ai.revision_service import revise_with_gemini
 from app.services.input_service import request_problems, validate_travel_request
 
 from app.services.planning_service import (
@@ -11,6 +13,7 @@ from app.services.planning_service import (
     evaluate_plan,
     rank_candidate_plans,
     revise_and_evaluate,
+    run_itinerary_pipeline,
 )
 
 router = APIRouter()
@@ -18,29 +21,84 @@ router = APIRouter()
 
 @router.post("/generate")  # candidate generation (Thiện / M3)
 def generate(body: dict):
-    # Validate before generation; a candidate remains UNVERIFIED.
+    auto_repair = body.get("autoRepair", False)
+
+    if not isinstance(auto_repair, bool):
+        return JSONResponse(
+            status_code=422,
+            content={"detail": "autoRepair must be a boolean"},
+        )
+
+    request_body = {
+        key: value
+        for key, value in body.items()
+        if key != "autoRepair"
+    }
+
     try:
-        validated_request = validate_travel_request(body)
+        validated_request = validate_travel_request(request_body)
     except ValidationError as exc:
         return JSONResponse(
             status_code=422,
-            content={"detail": request_problems(body, exc)},
+            content={"detail": request_problems(request_body, exc)},
         )
-    normalized_body = validated_request.model_dump(mode="json", by_alias=True)
+
+    normalized_body = validated_request.model_dump(
+        mode="json",
+        by_alias=True,
+    )
+
     try:
-        plan = generate_candidate(normalized_body)
-    except GeminiError as e:
-        if e.code == "TIMEOUT":
+        if auto_repair:
+            result = generate_with_repair(normalized_body)
+        else:
+            plan = generate_candidate(normalized_body)
+
+    except GeminiError as exc:
+        if exc.status == 429:
+            http = 429
+            code = "RATE_LIMIT"
+        elif exc.code == "TIMEOUT":
             http = 504
-        elif e.code == "CONFIG":
+            code = exc.code
+        elif exc.code == "CONFIG":
             http = 500
-        elif e.status == 422:
+            code = exc.code
+        elif exc.status == 422:
             http = 422
+            code = exc.code
         else:
             http = 502
-        return JSONResponse({"error": e.code, "message": e.message, "details": e.details}, status_code=http)
+            code = exc.code
+
+        return JSONResponse(
+            {
+                "error": code,
+                "message": exc.message,
+                "details": exc.details,
+            },
+            status_code=http,
+        )
+
+    except PlanningError as exc:
+        return JSONResponse(
+            {
+                "error": exc.code,
+                "message": exc.message,
+                "details": exc.details,
+            },
+            status_code=exc.status_code,
+        )
+
     except Exception:
-        return JSONResponse({"error": "INTERNAL"}, status_code=500)  # never echo internals / key
+        return JSONResponse(
+            {"error": "INTERNAL"},
+            status_code=500,
+        )
+
+    if auto_repair:
+        return result
+
     return {"status": "UNVERIFIED", "plan": plan}
 
 
@@ -84,22 +142,87 @@ def rank(body: RankBody):
         return JSONResponse({"error": "INTERNAL"}, status_code=500)
 
 
+class PipelineBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    request: dict
+    count: int = Field(default=3, ge=1, le=3, strict=True)
+
+
+@router.post("/pipeline")
+def pipeline(body: PipelineBody):
+    try:
+        return run_itinerary_pipeline(body.request, body.count)
+    except GeminiError as exc:
+        if exc.status == 429:
+            http = 429
+            code = "RATE_LIMIT"
+        elif exc.code == "TIMEOUT":
+            http = 504
+            code = exc.code
+        elif exc.code == "CONFIG":
+            http = 500
+            code = exc.code
+        elif exc.code == "NO_DATA" or exc.status == 422:
+            http = 422
+            code = exc.code
+        else:
+            http = 502
+            code = (
+                "NO_CANDIDATES"
+                if exc.code in {"EMPTY", "INSUFFICIENT_CANDIDATES"}
+                else exc.code
+            )
+        return JSONResponse(
+            {"error": code, "message": exc.message, "details": exc.details},
+            status_code=http,
+        )
+    except PlanningError as exc:
+        return JSONResponse(
+            {"error": exc.code, "message": exc.message, "details": exc.details},
+            status_code=exc.status_code,
+        )
+    except Exception:
+        return JSONResponse({"error": "INTERNAL"}, status_code=500)
+
+
 class ReviseBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     request: dict
     plan: dict
     revision: dict
+    autoRegenerate: bool = False
 
 
 @router.post("/revise")
 def revise(body: ReviseBody):
     try:
+        if body.autoRegenerate:
+            return revise_with_gemini(body.request, body.plan, body.revision)
         return revise_and_evaluate(body.request, body.plan, body.revision)
     except PlanningError as exc:
         return JSONResponse(
             {"error": exc.code, "message": exc.message, "details": exc.details},
             status_code=exc.status_code,
         )
+    except GeminiError as exc:
+        if exc.code == "TIMEOUT":
+            http = 504
+        elif exc.code == "CONFIG":
+            http = 500
+        elif exc.status == 422:
+            http = 422
+        else:
+            http = 502
+
+        return JSONResponse(
+            {
+                "error": exc.code,
+                "message": exc.message,
+                "details": exc.details,
+            },
+            status_code=http,
+        )
+
     except Exception:
         return JSONResponse({"error": "INTERNAL"}, status_code=500)
 
