@@ -32,7 +32,7 @@ def test_selected_loader_reads_only_hue_and_preserves_place_and_route_evidence(m
     opened = watch_hue_files(monkeypatch)
     scoped = data_service.load_dataset(selection)
     assert opened == ["destinations.json", "Hue/attractions.json", "Hue/restaurants.json",
-                      "Hue/accomodation.json", "travel_matrix.json"]
+                      "Hue/accomodation.json", "Hue/transport.json", "travel_matrix.json"]
     for key in ("attractions", "dining", "hotels"):
         assert scoped[key] == [p for p in full[key] if p["destinationId"] == "H"]
     assert scoped["travel_matrix"] == full["travel_matrix"]  # Keep departure-route evidence.

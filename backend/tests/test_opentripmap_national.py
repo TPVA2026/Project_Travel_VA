@@ -75,6 +75,7 @@ def test_nationwide_snapshot_is_available_to_planner(tmp_path, monkeypatch):
         "HaNoi/attractions.json": [{"id": "OTM_VN_01_W1", "destinationId": "VN_01", "name": "Temple", "priceVnd": None}],
         "Hue/attractions.json": [], "Hue/restaurants.json": [], "Hue/accomodation.json": [],
         "HaNoi/restaurants.json": [], "HaNoi/accomodation.json": [], "travel_matrix.json": [],
+        "Hue/transport.json": [], "HaNoi/transport.json": [],
         "opentripmap_vietnam.json": {
             "destinations": [{"id": "VN_01", "city": "Hà Nội"}],
             "attractions": [{"id": "LEGACY_IGNORED", "destinationId": "VN_01",
@@ -84,7 +85,7 @@ def test_nationwide_snapshot_is_available_to_planner(tmp_path, monkeypatch):
         (tmp_path / filename).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / filename).write_text(json.dumps(value), encoding="utf-8")
     dataset = data_service.load_dataset()
-    assert set(dataset) == {"destinations", "attractions", "dining", "travel_matrix", "hotels"}
+    assert set(dataset) == {"destinations", "attractions", "dining", "travel_matrix", "hotels", "transport"}
     assert len(dataset["destinations"]) == 2
     assert all(p["id"] != "LEGACY_IGNORED" for p in dataset["attractions"])
     assert build_context({"preferences": {"destination": "Hà Nội"}}, dataset)[

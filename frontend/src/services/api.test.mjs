@@ -524,6 +524,24 @@ test('CandidateComparison shows estimated lodging without promoting candidate st
   }
 })
 
+test('transport projection labels the adult one-way MVP fare and excluded transfers', async () => {
+  const result = evaluation('transport-demo')
+  result.components.cost.projection = {
+    subtotalVnd: 800000, totalVnd: null, uncovered: [],
+    items: [{ category: 'transport', name: 'Hà Nội → Huế (bus)', travelers: 2,
+      perPersonVnd: 400000, amountVnd: 800000, status: 'ESTIMATED', sourceUrl: null }],
+  }
+  const { dom, cleanup } = await renderCandidateComparison([
+    { planId: 'transport-demo', status: 'UNVERIFIED', plan: candidatePlan('transport-demo', 'ATTR_H_01'), evaluation: result },
+  ], { ranked: [], unscored: [], excluded: [] })
+  try {
+    assert.match(dom.window.document.body.textContent, /2 người lớn/)
+    assert.match(dom.window.document.body.textContent, /một chiều/)
+    assert.match(dom.window.document.body.textContent, /Không gồm chiều về và trung chuyển/)
+    assert.match(dom.window.document.body.textContent, /nguồn đang bổ sung/)
+  } finally { await cleanup() }
+})
+
 test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', async () => {
   for (const count of [0, 1, 2, 3]) {
     const candidates = Array.from({ length: count }, (_, index) => {

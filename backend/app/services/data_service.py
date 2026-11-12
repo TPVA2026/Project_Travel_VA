@@ -12,6 +12,7 @@ import re
 import unicodedata
 
 from app.services.destination_resolution import request_destination, resolve_destination_id
+from app.schemas.transport_reference import TransportReference
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
@@ -187,8 +188,8 @@ def _apply_routing_points(dataset: dict, raw: object, *, scoped: bool = False) -
 
 
 def _load_destination_collections(destinations: list[dict]) -> dict:
-    """Read the three required files per destination, rejecting misplaced data."""
-    collections = {"attractions": [], "dining": [], "hotels": []}
+    """Read place collections and transport references, rejecting misplaced data."""
+    collections = {"attractions": [], "dining": [], "hotels": [], "transport": []}
     folders, destination_ids, place_ids = set(), set(), set()
     for destination in destinations:
         folder = destination.get("dataFolder")
@@ -211,6 +212,15 @@ def _load_destination_collections(destinations: list[dict]) -> dict:
                     raise ValueError(f"Invalid, duplicate or misplaced record: {folder}/{filename}")
                 place_ids.add(place["id"])
             collections[key].extend(rows)
+        transport = _load(f"{folder}/transport.json")
+        if not isinstance(transport, list):
+            raise ValueError(f"Invalid transport collection: {folder}")
+        for raw in transport:
+            record = TransportReference.model_validate(raw).model_dump(by_alias=True)
+            if record["destinationId"] != destination_id or record["id"] in place_ids:
+                raise ValueError(f"Invalid or misplaced transport record: {folder}")
+            place_ids.add(record["id"])
+            collections["transport"].append(record)
     return collections
 
 
@@ -229,7 +239,7 @@ def load_dataset(destination: str | None = None, *, request: dict | None = None)
         destination_id = resolve_destination_id(selection, destinations)
         destinations = [d for d in destinations if d["id"] == destination_id]
         if not destinations:
-            return {"destinations": [], "attractions": [], "dining": [], "hotels": [], "travel_matrix": []}
+            return {"destinations": [], "attractions": [], "dining": [], "hotels": [], "transport": [], "travel_matrix": []}
     collections = _load_destination_collections(destinations)
     raw = {
         "destinations": destinations,
@@ -239,6 +249,7 @@ def load_dataset(destination: str | None = None, *, request: dict | None = None)
     }
     normalized = normalize_dataset(raw)
     normalized["hotels"] = collections["hotels"]
+    normalized["transport"] = collections["transport"]
     if any(h.get("demoDefault") for h in collections["hotels"]):
         normalized["demoCostPolicy"] = {"status": "ESTIMATED", "nights": "durationDays - 1"}
     routing_points = DATA_DIR / "routing_points.json"

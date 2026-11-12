@@ -1,6 +1,6 @@
 # Dataset by destination
 
-Each entry in `destinations.json` declares a `dataFolder`. Edit the three files
+Each entry in `destinations.json` declares a `dataFolder`. Edit the four files
 inside that folder; empty collections are JSON arrays `[]`.
 
 | File | Contents |
@@ -9,15 +9,18 @@ inside that folder; empty collections are JSON arrays `[]`.
 | `<dataFolder>/restaurants.json` | Dining venues for that destination |
 | `<dataFolder>/attractions.json` | Curated and imported sightseeing records for that destination |
 | `<dataFolder>/accomodation.json` | Lodging room/rate options for that destination |
+| `<dataFolder>/transport.json` | Reference transport fares to that destination; `[]` when unavailable |
 
 Examples: `Hue/`, `NhaTrang/`, `DaNang/`, `HoChiMinh/`. Folder names use
 unaccented PascalCase. The lodging filename is intentionally `accomodation.json`.
-The loader validates folder names, unique IDs and each record's `destinationId`;
-all three files are required. The former root collection files are removed.
+The loader validates folder names, unique IDs and each record's `destinationId`.
+All four files are read and validated by the loader. Transport references use
+`app/schemas/transport_reference.py`. The former root collection files are removed.
 
 Planning resolves the request destination through `destinations.json` before
 opening place files. For example, `Huế`/`Hue`/`H` reads only
-`Hue/attractions.json`, `Hue/restaurants.json` and `Hue/accomodation.json`, plus
+`Hue/attractions.json`, `Hue/restaurants.json`, `Hue/accomodation.json` and
+`Hue/transport.json`, plus
 shared route evidence. Generate, Evaluate, Rank and revision use this scoped
 loader. The destination list and input validation read only the manifest.
 Place-name requests from the UI include the destination to use the same scope.
@@ -54,9 +57,16 @@ or copy a POI coordinate into the reviewed overlay to satisfy this check.
 travel_matrix.json and routing_points.json are supporting route evidence.
 They are not substitutes for exact visitor hours or booking quotes.
 
-`transport/hue.json` preserves reference transport fares imported from main.
-The runtime loader does not treat these references as verified trip quotes;
-dates, fare scope, passenger counts and source evidence still need confirmation.
+`Hue/transport.json` preserves the nine reference transport fares imported from
+main. Other destinations currently have empty transport arrays. The confirmed MVP
+policy uses VND per adult, one-way, with service fees included, fixed for all
+dates. Terminal transfers are excluded. Sources remain pending (`sourceUrl: null`);
+these are ESTIMATED references, not verified booking quotes. The projection uses
+the cheapest fare matching the origin and requested modes, multiplies it by the
+traveler count once, and never adds an inferred return fare. With no mode selected,
+the cheapest available mode is explicitly labelled as a projection assumption.
+Unmatched routes/modes remain unknown. Verified totals and budget feasibility do
+not treat these estimates as confirmed spend.
 
 archive/legacy-20261112 holds the exact pre-migration source snapshots, including
 the former OpenTripMap and Hue enrichment files. They are not read at runtime.
