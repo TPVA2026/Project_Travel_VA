@@ -36,14 +36,14 @@ def test_validate_request_rejects_destination_outside_dataset():
             "departureLocation": "Ho Chi Minh City",
             "travelers": {"count": 2},
             "budget": {"amount": 3000000, "currency": "VND", "scope": "group"},
-            "preferences": {"destination": "Da Nang"},
+            "preferences": {"destination": "Atlantis (unsupported test destination)"},
         },
     )
 
     assert response.status_code == 422
     detail = response.json()["detail"]
     assert detail["errors"][0]["loc"] == ["preferences", "destination"]
-    assert "Nha Trang" in detail["messages"][0]
+    assert "Khánh Hoà" in detail["messages"][0]
 
 def test_invalid_duration():
     response = client.post(

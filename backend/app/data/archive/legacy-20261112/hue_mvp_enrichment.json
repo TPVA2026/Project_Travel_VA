@@ -1,0 +1,86 @@
+{
+  "reviewedOn": "2026-11-12",
+  "description": "Non-destructive enrichment of the 20 M2 Hue MVP records. Field evidence is not blanket verification of a place.",
+  "interestTags": {
+    "ATTR_H_01": ["sightseeing", "culture"],
+    "ATTR_H_02": ["sightseeing", "culture"],
+    "ATTR_H_03": ["sightseeing", "culture"],
+    "ATTR_H_04": ["sightseeing", "relaxation"],
+    "ATTR_H_05": ["sightseeing", "culture"],
+    "ATTR_H_06": ["sightseeing", "culture"],
+    "ATTR_H_07": ["sightseeing", "culture"],
+    "ATTR_H_08": ["sightseeing", "culture"],
+    "ATTR_H_09": ["sightseeing", "culture"],
+    "ATTR_H_10": ["sightseeing", "culture"],
+    "REST_H_01": ["culture"],
+    "REST_H_02": ["culture"],
+    "REST_H_03": ["culture"],
+    "REST_H_04": ["culture"],
+    "REST_H_05": ["culture"],
+    "REST_H_06": ["culture"],
+    "REST_H_07": ["culture"],
+    "REST_H_08": ["culture"],
+    "REST_H_09": ["culture"],
+    "REST_H_10": ["culture"]
+  },
+  "tagMethod": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+  "updates": {
+    "ATTR_H_02": {
+      "fields": {"priceVnd": 50000, "priceScope": "perPerson"},
+      "evidence": {
+        "sourceUrl": "https://huetourism.gov.vn/goi-y-nhung-goc-check-in-sieu-tho-tai-hue/?pid=MjI5NTJ8Y3NkbGRs0",
+        "publisher": "Hue tourism department portal",
+        "checkedOn": "2026-11-12",
+        "status": "SOURCE_REPORTED",
+        "fields": ["priceVnd", "priceScope"],
+        "note": "Portal lists Cung An Dinh admission at 50,000 VND/person, rather than the seed's 25,000. Does not verify the visit date's promotions, admission eligibility, opening hours or address."
+      }
+    },
+    "ATTR_H_06": {
+      "fields": {"recommendedVisitWindow": "08:00 - 16:00"},
+      "evidence": {
+        "sourceUrl": "https://hue.aeonmall-vietnam.com/cam-nang-aeon-mall-hue/lang-non-tay-ho.html",
+        "publisher": "AEON MALL Hue",
+        "checkedOn": "2026-11-12",
+        "status": "RECOMMENDATION_ONLY",
+        "fields": ["recommendedVisitWindow"],
+        "note": "Recommended visiting window only. The article explicitly says there are no fixed operating hours; do not convert this to openingHours or a hard constraint."
+      }
+    }
+  },
+  "demoDiningEstimates": {
+    "REST_H_01": {"status": "UNVERIFIED", "upperPerPersonVnd": 50000, "sourceUrl": "https://eva.vn/di-dau-xem-gi/quan-banh-hue-nam-sau-trong-hem-ban-hon-50-nam-van-tap-nap-nguoi-an-c40a490344.html", "note": "Only an older per-person ceiling was found; no defensible average. Keep average unknown."},
+    "REST_H_02": {"min": 30000, "max": 70000, "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html", "basis": "One published serving per person; demo assumption, not a measured average."},
+    "REST_H_03": {"min": 35000, "max": 35000, "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html", "basis": "One published bowl per person. Seasonal dish; availability on the travel date is unknown."},
+    "REST_H_04": {"min": 15000, "max": 20000, "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html", "basis": "One bowl per person; article labels 64 Ung Binh, seed labels 64 kiet 7 Ung Binh. Demo name match, address should be reviewed."},
+    "REST_H_05": {"status": "UNVERIFIED", "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html", "note": "Newspaper says 94 Bach Dang while selected seed is 20 Bach Dang; other sources give different prices. Do not transfer price across an unresolved address mismatch."},
+    "REST_H_06": {"min": 250000, "max": 300000, "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html", "basis": "Published per-person meal with 4–5 dishes. A different Traveloka meal estimate is 100000–200000/person; menu and portion mix differ.", "alternativeSourceUrl": "https://www.traveloka.com/vi-vn/explore/culinary/gns-foodtour-hue/337248"},
+    "REST_H_07": {"min": 10000, "max": 25000, "sourceUrl": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438", "basis": "Preserved M2 published per-item range; assumes one sandwich per person. Newspaper reports a from-price of 15000; not a fixed full-meal price."},
+    "REST_H_08": {"min": 35000, "max": 100000, "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html", "basis": "Published per-person dining range for 94 Bui Thi Xuan; midpoint is a demo budget estimate."},
+    "REST_H_09": {"min": 10000, "max": 20000, "sourceUrl": "https://lofita.vn/vi/quan-che-cung-dinh-hue.html", "basis": "Published range for Che Cam at 10 Nguyen Sinh Cung; assumes one cup per person, a snack rather than a complete meal."},
+    "REST_H_10": {"min": 20000, "max": 20000, "sourceUrl": "https://bathaofood.com/review-thuy-banh-canh-nam-pho-hue/", "basis": "Published bowl price at 16 Pham Hong Thai; assumes one bowl per person."}
+  },
+  "demoHours": {
+    "REST_H_02": {"openingHours": "08:00 - 19:00", "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html", "status": "SOURCE_REPORTED_DEMO", "note": "User approved choosing a reported schedule for demo. Foody lists 09:00–21:00; not verified directly with venue."}
+  },
+  "hotels": [
+    {"id": "HOTEL_H_EMM_DELUXE", "destinationId": "H", "name": "ÊMM Hotel Hue", "address": "15 Ly Thuong Kiet, Hue", "roomType": "Deluxe", "capacityAdults": 2, "pricePerRoomNightVnd": 1190476, "currency": "VND", "priceStatus": "ESTIMATED", "priceType": "from", "sourceUrl": "https://www.emmhotels.com/en/emm-hotel-hue/", "checkedOn": "2026-11-12", "demoDefault": true, "note": "Published from-price per night, not a dated quote. Taxes, extra beds, child policy, blackout dates and availability need confirmation."},
+    {"id": "HOTEL_H_EMM_FAMILY", "destinationId": "H", "name": "ÊMM Hotel Hue", "address": "15 Ly Thuong Kiet, Hue", "roomType": "Family", "capacityAdults": 4, "pricePerRoomNightVnd": 1931217, "currency": "VND", "priceStatus": "ESTIMATED", "priceType": "from", "sourceUrl": "https://www.emmhotels.com/en/emm-hotel-hue/", "checkedOn": "2026-11-12", "demoDefault": false, "note": "Published family-room from-price; no availability or price guaranteed for the travel date."},
+    {"id": "HOTEL_H_ROSALEEN_SUPERIOR", "destinationId": "H", "name": "Rosaleen Boutique Hotel", "address": "34–36 Chu Van An, Hue", "roomType": "Superior", "capacityAdults": 2, "publishedRoomPriceVnd": 1000000, "currency": "VND", "priceStatus": "UNVERIFIED", "sourceUrl": "https://rosaleenhotel.com/en/product/deluxe-family-suite-with-window/", "checkedOn": "2026-11-12", "demoDefault": false, "note": "Official page identifies Superior/2 guests and 1000000 VND despite its misleading URL slug. Billing period, taxes and dated availability not established; excluded from automatic nightly calculation."}
+  ],
+  "pendingConfirmation": {
+    "REST_H_02": {
+      "field": "openingHours",
+      "reason": "User allowed a reported demo schedule; demoHours chooses 08:00–19:00 from VnExpress. Conflicting hours remain documented; not directly venue-verified.",
+      "candidates": [
+        {"value": "09:00 - 21:00", "sourceUrl": "https://www.foody.vn/hue/banh-uot-thit-nuong-huyen-anh"},
+        {"value": "08:00 - 19:00", "sourceUrl": "https://www.vietnamgo.net/places/banh-uot-huyen-anh-hue"}
+      ]
+    },
+    "ATTR_H_07": {
+      "field": "openingHours",
+      "reason": "Active school, visitor permission and precise weekday/weekend windows not confirmed. Do not infer exact hours from 'afternoon'.",
+      "sourceUrl": "https://khamphahue.com.vn/Hue-24h/Chi-tiet/tid/Tam-nay-di-Hue-dep-nhat-nam.html/pid/16849/cid/242"
+    }
+  }
+}

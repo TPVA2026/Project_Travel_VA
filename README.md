@@ -26,6 +26,7 @@ itineraries for selected areas of Vietnam with an LLM, then verifies cost/time/d
 │   │   │   ├── attractions.json
 │   │   │   ├── destinations.json
 │   │   │   ├── restaurants.json
+│   │   │   ├── accommodations.json             # Lodging room/rate options
 │   │   │   └── travel_matrix.json
 │   │   ├── schemas/                  # Pydantic schemas & JSON validation schemas
 │   │   │   ├── candidate_plan.py
@@ -117,6 +118,12 @@ itineraries for selected areas of Vietnam with an LLM, then verifies cost/time/d
 | `docs/`                                                           | Design and test documentation                         | all              |
 
 ## Setup
+
+Place data is managed in four canonical collections: provinces in
+`destinations.json`, dining in `restaurants.json`, sightseeing in
+`attractions.json`, and lodging in `accommodations.json`. See
+[dataset management](backend/app/data/README.md). Former OpenTripMap/Hue
+snapshots are archived for provenance and are not loaded separately.
 
 Requires Python 3.11+ (backend) and Node 20+ (frontend only).
 

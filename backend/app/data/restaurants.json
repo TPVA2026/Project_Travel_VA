@@ -259,7 +259,23 @@
     "priceDisplay": "35.000 VND",
     "unitPriceVnd": 35000,
     "priceType": "approximate",
-    "priceVerificationStatus": "estimate"
+    "priceVerificationStatus": "estimate",
+    "diningEstimateEvidence": {
+      "status": "UNVERIFIED",
+      "upperPerPersonVnd": 50000,
+      "sourceUrl": "https://eva.vn/di-dau-xem-gi/quan-banh-hue-nam-sau-trong-hem-ban-hon-50-nam-van-tap-nap-nguoi-an-c40a490344.html",
+      "note": "Only an older per-person ceiling was found; no defensible average. Keep average unknown."
+    },
+    "source": "https://www.traveloka.com/vi-vn/explore/culinary/gns-quan-banh-hue/188015",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://www.traveloka.com/vi-vn/explore/culinary/gns-quan-banh-hue/188015"
+    }
   },
   {
     "id": "REST_H_02",
@@ -530,7 +546,52 @@
       "notes": "User confirmed that the supplied distance table uses the 50 Kim Long branch.",
       "branchConfirmedByUser": true
     },
-    "sourceAlignmentNote": "50 Kim Long was selected by user instruction. The retained Foody URL refers to 3 Ho Tung Mau, not this branch."
+    "sourceAlignmentNote": "50 Kim Long was selected by user instruction. The retained Foody URL refers to 3 Ho Tung Mau, not this branch.",
+    "openingHours": "08:00 - 19:00",
+    "openingHoursEvidence": {
+      "openingHours": "08:00 - 19:00",
+      "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "status": "SOURCE_REPORTED_DEMO",
+      "note": "User approved choosing a reported schedule for demo. Foody lists 09:00–21:00; not verified directly with venue."
+    },
+    "diningEstimateEvidence": {
+      "min": 30000,
+      "max": 70000,
+      "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "basis": "One published serving per person; demo assumption, not a measured average."
+    },
+    "avgPricePerPersonVnd": 50000.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 30000,
+      "max": 70000,
+      "scope": "perPerson",
+      "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "status": "ESTIMATED",
+      "note": "One published serving per person; demo assumption, not a measured average."
+    },
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": null
+    },
+    "pendingConfirmation": {
+      "field": "openingHours",
+      "reason": "User allowed a reported demo schedule; demoHours chooses 08:00–19:00 from VnExpress. Conflicting hours remain documented; not directly venue-verified.",
+      "candidates": [
+        {
+          "value": "09:00 - 21:00",
+          "sourceUrl": "https://www.foody.vn/hue/banh-uot-thit-nuong-huyen-anh"
+        },
+        {
+          "value": "08:00 - 19:00",
+          "sourceUrl": "https://www.vietnamgo.net/places/banh-uot-huyen-anh-hue"
+        }
+      ]
+    }
   },
   {
     "id": "REST_H_03",
@@ -820,7 +881,33 @@
     "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
     "priceDisplay": "30.000 VND",
     "unitPriceVnd": 30000,
-    "priceType": "exact"
+    "priceType": "exact",
+    "diningEstimateEvidence": {
+      "min": 35000,
+      "max": 35000,
+      "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "basis": "One published bowl per person. Seasonal dish; availability on the travel date is unknown."
+    },
+    "avgPricePerPersonVnd": 35000.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 35000,
+      "max": 35000,
+      "scope": "perPerson",
+      "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "status": "ESTIMATED",
+      "note": "One published bowl per person. Seasonal dish; availability on the travel date is unknown."
+    },
+    "source": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383"
+    }
   },
   {
     "id": "REST_H_04",
@@ -1108,7 +1195,33 @@
       "min": 7000,
       "max": 10000
     },
-    "priceType": "range"
+    "priceType": "range",
+    "diningEstimateEvidence": {
+      "min": 15000,
+      "max": 20000,
+      "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "basis": "One bowl per person; article labels 64 Ung Binh, seed labels 64 kiet 7 Ung Binh. Demo name match, address should be reviewed."
+    },
+    "avgPricePerPersonVnd": 17500.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 15000,
+      "max": 20000,
+      "scope": "perPerson",
+      "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "status": "ESTIMATED",
+      "note": "One bowl per person; article labels 64 Ung Binh, seed labels 64 kiet 7 Ung Binh. Demo name match, address should be reviewed."
+    },
+    "source": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377"
+    }
   },
   {
     "id": "REST_H_05",
@@ -1396,7 +1509,30 @@
       "min": 20000,
       "max": 30000
     },
-    "priceType": "range"
+    "priceType": "range",
+    "diningEstimateEvidence": {
+      "status": "UNVERIFIED",
+      "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "note": "Newspaper says 94 Bach Dang while selected seed is 20 Bach Dang; other sources give different prices. Do not transfer price across an unresolved address mismatch."
+    },
+    "source": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322"
+    },
+    "priceRangeVnd": {
+      "min": 20000,
+      "max": 30000,
+      "scope": "perServing",
+      "source": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+      "status": "ESTIMATED",
+      "note": "Preserved M2 published range; not a confirmed order or per-person meal total."
+    }
   },
   {
     "id": "REST_H_06",
@@ -1685,7 +1821,34 @@
       "min": 50000,
       "max": 250000
     },
-    "priceType": "range"
+    "priceType": "range",
+    "diningEstimateEvidence": {
+      "min": 250000,
+      "max": 300000,
+      "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "basis": "Published per-person meal with 4–5 dishes. A different Traveloka meal estimate is 100000–200000/person; menu and portion mix differ.",
+      "alternativeSourceUrl": "https://www.traveloka.com/vi-vn/explore/culinary/gns-foodtour-hue/337248"
+    },
+    "avgPricePerPersonVnd": 275000.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 250000,
+      "max": 300000,
+      "scope": "perPerson",
+      "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "status": "ESTIMATED",
+      "note": "Published per-person meal with 4–5 dishes. A different Traveloka meal estimate is 100000–200000/person; menu and portion mix differ."
+    },
+    "source": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391"
+    }
   },
   {
     "id": "REST_H_07",
@@ -1979,7 +2142,33 @@
       "min": 10000,
       "max": 25000
     },
-    "priceType": "range"
+    "priceType": "range",
+    "diningEstimateEvidence": {
+      "min": 10000,
+      "max": 25000,
+      "sourceUrl": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438",
+      "basis": "Preserved M2 published per-item range; assumes one sandwich per person. Newspaper reports a from-price of 15000; not a fixed full-meal price."
+    },
+    "avgPricePerPersonVnd": 17500.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 10000,
+      "max": 25000,
+      "scope": "perPerson",
+      "source": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438",
+      "status": "ESTIMATED",
+      "note": "Preserved M2 published per-item range; assumes one sandwich per person. Newspaper reports a from-price of 15000; not a fixed full-meal price."
+    },
+    "source": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438"
+    }
   },
   {
     "id": "REST_H_08",
@@ -2287,7 +2476,33 @@
       "min": 35000,
       "max": 100000
     },
-    "priceType": "range"
+    "priceType": "range",
+    "diningEstimateEvidence": {
+      "min": 35000,
+      "max": 100000,
+      "sourceUrl": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "basis": "Published per-person dining range for 94 Bui Thi Xuan; midpoint is a demo budget estimate."
+    },
+    "avgPricePerPersonVnd": 67500.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 35000,
+      "max": 100000,
+      "scope": "perPerson",
+      "source": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+      "status": "ESTIMATED",
+      "note": "Published per-person dining range for 94 Bui Thi Xuan; midpoint is a demo budget estimate."
+    },
+    "source": "https://thanhphohue.net/dia-diem-hue/chao-vit-thuan",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://thanhphohue.net/dia-diem-hue/chao-vit-thuan"
+    }
   },
   {
     "id": "REST_H_09",
@@ -2592,7 +2807,33 @@
     "priceType": "from",
     "priceUnit": "ly",
     "priceDisplay": "Từ 15.000 VND/ly",
-    "unitPriceFromVnd": 15000
+    "unitPriceFromVnd": 15000,
+    "diningEstimateEvidence": {
+      "min": 10000,
+      "max": 20000,
+      "sourceUrl": "https://lofita.vn/vi/quan-che-cung-dinh-hue.html",
+      "basis": "Published range for Che Cam at 10 Nguyen Sinh Cung; assumes one cup per person, a snack rather than a complete meal."
+    },
+    "avgPricePerPersonVnd": 15000.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 10000,
+      "max": 20000,
+      "scope": "perPerson",
+      "source": "https://lofita.vn/vi/quan-che-cung-dinh-hue.html",
+      "status": "ESTIMATED",
+      "note": "Published range for Che Cam at 10 Nguyen Sinh Cung; assumes one cup per person, a snack rather than a complete meal."
+    },
+    "source": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/"
+    }
   },
   {
     "id": "REST_H_10",
@@ -2871,6 +3112,32 @@
       "min": 5000,
       "max": 15000
     },
-    "priceType": "range"
+    "priceType": "range",
+    "diningEstimateEvidence": {
+      "min": 20000,
+      "max": 20000,
+      "sourceUrl": "https://bathaofood.com/review-thuy-banh-canh-nam-pho-hue/",
+      "basis": "Published bowl price at 16 Pham Hong Thai; assumes one bowl per person."
+    },
+    "avgPricePerPersonVnd": 20000.0,
+    "priceStatus": "ESTIMATED",
+    "priceRangeVnd": {
+      "min": 20000,
+      "max": 20000,
+      "scope": "perPerson",
+      "source": "https://bathaofood.com/review-thuy-banh-canh-nam-pho-hue/",
+      "status": "ESTIMATED",
+      "note": "Published bowl price at 16 Pham Hong Thai; assumes one bowl per person."
+    },
+    "source": "https://nangtrip.com/activities/thuy-banh-canh-nam-pho",
+    "sourceNote": "Reference URL only; see sources, unverifiedFields and enrichmentEvidence for field-level confidence.",
+    "interestTags": [
+      "culture"
+    ],
+    "interestTagProvenance": {
+      "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
+      "reviewedOn": "2026-11-12",
+      "sourceUrl": "https://nangtrip.com/activities/thuy-banh-canh-nam-pho"
+    }
   }
 ]

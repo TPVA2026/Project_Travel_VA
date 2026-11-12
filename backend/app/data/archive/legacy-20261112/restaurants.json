@@ -1,0 +1,2876 @@
+[
+  {
+    "id": "REST_H_01",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Quán bánh O Lé",
+    "address": "9/17, kiệt 104 Kim Long, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Qu%C3%A1n%20b%C3%A1nh%20O%20L%C3%A9%209%2F17%20ki%E1%BB%87t%20104%20Kim%20Long%20Hu%E1%BA%BF",
+    "openingHours": "11:00 - 20:00",
+    "priceScope": "perServing",
+    "priceScopeNotes": "Khoảng 35.000 VND/set bánh theo bài Traveloka; mức tham khảo.",
+    "distanceFromCenter": {
+      "distanceKm": 3.5,
+      "durationMin": 10,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 0.6,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 2,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 6.4,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 4.9,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 2.3,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 5.1,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 3.9,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        },
+        "durationMin": 12,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.traveloka.com/vi-vn/explore/culinary/gns-quan-banh-hue/188015",
+        "publisher": "Traveloka",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "verificationStatus": "partial",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "unitPriceVnd",
+          "priceScope"
+        ],
+        "reportedValues": {
+          "address": "9/17, kiệt 104 Kim Long, thành phố Huế",
+          "priceVnd": "35.000 VND",
+          "priceScope": "perServing"
+        },
+        "notes": "Bài công bố khoảng 35.000 VND/set và địa chỉ; không công bố giờ mở cửa hoặc tuyến đường."
+      }
+    ],
+    "preferredSourceUrl": "https://www.traveloka.com/vi-vn/explore/culinary/gns-quan-banh-hue/188015",
+    "unverifiedFields": [
+      "openingHours",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "priceDisplay": "35.000 VND",
+    "unitPriceVnd": 35000,
+    "priceType": "approximate",
+    "priceVerificationStatus": "estimate"
+  },
+  {
+    "id": "REST_H_02",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Bánh ướt - Bún thịt nướng Huyền Anh",
+    "address": "50 Kim Long, thành phố Huế",
+    "sources": [
+      {
+        "url": "https://www.foody.vn/hue/banh-uot-huyen-anh-2",
+        "publisher": "Foody",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "verificationStatus": "different_branch",
+        "fields": [],
+        "reportedValues": {
+          "name": "Bánh Ướt Huyền Anh 2",
+          "address": "3 Hồ Tùng Mậu, thành phố Huế",
+          "openingHours": "08:00 - 20:00",
+          "priceVnd": "10.000 - 30.000 VND"
+        },
+        "notes": "Reference for Huyen Anh 2 at 3 Ho Tung Mau only. Does not verify the selected branch at 50 Kim Long; reportedValues are preserved as evidence for the other branch."
+      }
+    ],
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=B%C3%A1nh+%C6%B0%E1%BB%9Bt+-+B%C3%BAn+th%E1%BB%8Bt+n%C6%B0%E1%BB%9Bng+Huy%E1%BB%81n+Anh+50+Kim+Long%2C+th%C3%A0nh+ph%E1%BB%91+Hu%E1%BA%BF",
+    "priceScope": "unspecified",
+    "priceScopeNotes": "Price and opening hours for 50 Kim Long are unverified. The Foody reference describes a different branch; do not reuse its price or hours.",
+    "distanceFromCenter": {
+      "distanceKm": null,
+      "durationMin": null,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 0.6,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 2,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 3.8,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 12,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 4.3,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 2,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 4.5,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 3.3,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 10,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants",
+      "name",
+      "address",
+      "openingHours",
+      "unitPriceRangeVnd"
+    ],
+    "sourceAlignmentStatus": "branch_mismatch",
+    "addressVerificationStatus": "user_provided_unverified",
+    "addressProvenance": {
+      "type": "user_instruction",
+      "providedOn": "2026-11-11",
+      "notes": "User confirmed that the supplied distance table uses the 50 Kim Long branch.",
+      "branchConfirmedByUser": true
+    },
+    "sourceAlignmentNote": "50 Kim Long was selected by user instruction. The retained Foody URL refers to 3 Ho Tung Mau, not this branch."
+  },
+  {
+    "id": "REST_H_03",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Bún giấm nuốc Gia Hội",
+    "address": "02 Chi Lăng, phường Phú Cát, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bún+Giấm+Nuốc+Gia+Hội+Hue",
+    "openingHours": "15:00 - 18:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 2,
+      "durationMin": 6,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 0.1,
+        "verificationStatus": "unverified",
+        "durationMin": 1,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 1.9,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.8,
+        "verificationStatus": "unverified",
+        "durationMin": 12,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách.",
+        "reportedValues": {
+          "address": "2 Chi Lăng, Huế"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceVnd"
+        ],
+        "notes": "Một tô bún.",
+        "reportedValues": {
+          "priceVnd": "35.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+        "publisher": "Khám Phá Huế",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceVnd",
+          "priceScope"
+        ],
+        "notes": "Ưu tiên bài Khám Phá Huế trong link.txt cho giờ và giá; khác bài VnExpress cũ.",
+        "reportedValues": {
+          "address": "02 Chi Lăng, phường Phú Cát, thành phố Huế",
+          "openingHours": "15:00 - 18:00",
+          "priceVnd": "30.000 VND",
+          "priceScope": "perServing"
+        }
+      }
+    ],
+    "priceScopeNotes": "Một tô bún giấm nuốc; món theo mùa hè, theo Khám Phá Huế.",
+    "preferredSourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+    "unverifiedFields": [
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "30.000 VND",
+    "unitPriceVnd": 30000,
+    "priceType": "exact"
+  },
+  {
+    "id": "REST_H_04",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Quán hến Hoa Đông",
+    "address": "64 kiệt 7 Ưng Bình, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cơm+hến+Hoa+Đông+Hue",
+    "openingHours": "07:00 - 22:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 3,
+      "durationMin": 8,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 6.4,
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 5.8,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 2.2,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 5,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://heritagevietnamairlines.cdn.vccloud.vn/wp-content/uploads/2023/09/HeritageGuide.Hue_.T10.Vie_.pdf",
+        "publisher": "Vietnam Airlines — Heritage Guide (2023)",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một tô cơm hoặc bún hến.",
+        "reportedValues": {
+          "priceVnd": "15.000 - 20.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Giá theo phần thông tin chung trong bài MIA.vn; nguồn không xác nhận số lượng món cho một bữa/người.",
+        "reportedValues": {
+          "address": "64 kiệt 7 Ưng Bình, Huế",
+          "openingHours": "07:00 - 22:00",
+          "priceVnd": "7.000 - 10.000 VND"
+        }
+      }
+    ],
+    "priceScopeNotes": "Khoảng giá tham khảo của bài MIA.vn cho quán cơm hến; cần xác nhận khẩu phần/menu trước khi dùng tính chi phí.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "7.000 - 10.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 7000,
+      "max": 10000
+    },
+    "priceType": "range"
+  },
+  {
+    "id": "REST_H_05",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Bún bò mệ Kéo",
+    "address": "20 Bạch Đằng, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bún+bò+mệ+Kéo+Hue",
+    "openingHours": "06:00 - 10:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 1.5,
+      "durationMin": 5,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 0.1,
+        "verificationStatus": "unverified",
+        "durationMin": 1,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 2,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.8,
+        "verificationStatus": "unverified",
+        "durationMin": 12,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.5,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://visithue.vn/quan-bun-bo-la-nhat-xu-hue-ban-hang-than-toc-khach-tu-phuc-vu/?pid=MjEzNjV8Y3NkbGRs0",
+        "publisher": "Visit Hue",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một tô đầy đủ; bài viết ghi 94 Bạch Đằng, khác địa chỉ 20 Bạch Đằng trong nguồn cũ; cần đối chiếu đúng cơ sở.",
+        "reportedValues": {
+          "priceVnd": "50.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Dùng khung giờ ghi trong mục thông tin chung; bài có câu mô tả thời lượng không khớp, không dùng câu đó để tính giờ.",
+        "reportedValues": {
+          "address": "20 Bạch Đằng, Huế",
+          "openingHours": "06:00 - 10:00",
+          "priceVnd": "20.000 - 30.000 VND"
+        }
+      }
+    ],
+    "priceScopeNotes": "Giá tham khảo cho bún theo bài MIA.vn tại số 20 Bạch Đằng.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "20.000 - 30.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 20000,
+      "max": 30000
+    },
+    "priceType": "range"
+  },
+  {
+    "id": "REST_H_06",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Cơm niêu chạn",
+    "address": "1 Nguyễn Thái Học, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cơm+niêu+Chạn+Hue",
+    "openingHours": "08:00 - 22:00",
+    "priceScope": "unspecified",
+    "distanceFromCenter": {
+      "distanceKm": 1,
+      "durationMin": 4,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.9,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 4.3,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 1.9,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 2.2,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 2,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 0.7,
+        "verificationStatus": "unverified",
+        "durationMin": 3,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 0.85,
+        "verificationStatus": "unverified",
+        "durationMin": 3,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.2,
+        "verificationStatus": "unverified",
+        "durationMin": 4,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://wanderlog.com/place/details/2317194/c%C6%A1m-ni%C3%AAu-ch%E1%BA%A1n",
+        "publisher": "Wanderlog",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một người, bữa gồm 4–5 món.",
+        "reportedValues": {
+          "priceScope": "perPerson",
+          "priceVnd": "250.000 - 300.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Khoảng giá theo MIA.vn; chưa đủ căn cứ xác nhận đơn vị priceScope, cần menu hoặc xác nhận của quán.",
+        "reportedValues": {
+          "address": "1 Nguyễn Thái Học, Huế",
+          "openingHours": "08:00 - 22:00",
+          "priceVnd": "50.000 - 250.000 VND"
+        }
+      }
+    ],
+    "priceScopeNotes": "Bài MIA.vn chỉ ghi khoảng giá tham khảo, không nêu theo người, món hay nhóm; không tiếp tục gán perPerson từ nguồn giá cũ.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "50.000 - 250.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 50000,
+      "max": 250000
+    },
+    "priceType": "range"
+  },
+  {
+    "id": "REST_H_07",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Bánh mì O Tho",
+    "address": "14 Trần Cao Vân, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bánh+Mì+Trường+Tiền+O+Tho+Hue",
+    "openingHours": "06:30 - 11:00; 15:00 - 03:00",
+    "priceScope": "perItem",
+    "distanceFromCenter": {
+      "distanceKm": 1,
+      "durationMin": 4,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 4.3,
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 3.7,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 12,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 0.7,
+        "verificationStatus": "unverified",
+        "durationMin": 3,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 2.8,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 1.3,
+        "verificationStatus": "unverified",
+        "durationMin": 4,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 0.4,
+        "verificationStatus": "unverified",
+        "durationMin": 2,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://hues.vn/dia-diem/tiem-banh-mi-truong-tien-o-tho/",
+        "publisher": "HueS — Huế trong tầm tay",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address",
+          "openingHours"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách.",
+        "reportedValues": {
+          "openingHours": "06:30 - 10:30; 16:00 - 03:00"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một ổ bánh mì; 15.000 là giá khởi điểm.",
+        "reportedValues": {
+          "priceVnd": "15.000 VND"
+        },
+        "verificationStatus": "reference"
+      },
+      {
+        "url": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438",
+        "publisher": "MIA.vn",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Cập nhật hai ca và khoảng giá theo mục O Tho; giữ giá dạng khoảng, không tự tính trung bình.",
+        "reportedValues": {
+          "address": "14 Trần Cao Vân, Huế",
+          "openingHours": "06:30 - 11:00; 15:00 - 03:00",
+          "priceVnd": "10.000 - 25.000 VND"
+        }
+      }
+    ],
+    "openingHoursNote": "Ca thứ hai kết thúc 03:00 ngày hôm sau; giờ theo bài MIA.vn trong link.txt.",
+    "priceScopeNotes": "Khoảng giá tham khảo bánh mì theo bài MIA.vn; không phải giá cố định cho mọi loại nhân.",
+    "preferredSourceUrl": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu.",
+    "priceDisplay": "10.000 - 25.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 10000,
+      "max": 25000
+    },
+    "priceType": "range"
+  },
+  {
+    "id": "REST_H_08",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Cháo Vịt Thuận",
+    "address": "94 Bùi Thị Xuân, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cháo+Vịt+Thuận+Hue",
+    "openingHours": "11:00 - 20:00",
+    "priceScope": "unspecified",
+    "distanceFromCenter": {
+      "distanceKm": null,
+      "durationMin": null,
+      "distanceRangeKm": {
+        "min": 2,
+        "max": 3
+      },
+      "durationRangeMin": {
+        "min": 7,
+        "max": 10
+      },
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 2.5,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 1.8,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 3.5,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 5,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 3.6,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 3.4,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 2.6,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 3.6,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 2.4,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://news.huengaynay.vn/travel/the-best-food-in-vietnam-60385.html",
+        "publisher": "Báo Huế ngày nay",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một người, tùy lựa chọn món ăn kèm."
+      },
+      {
+        "url": "https://huetripo.hue.gov.vn/co-so-an-uong/quan-an/vit-thuan-897020",
+        "publisher": "Huế TRIPO",
+        "providedVia": "backend/app/data/link.txt",
+        "lastCheckedOn": "2026-11-11",
+        "verificationStatus": "unverified",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Link do người dùng cung cấp; công cụ đọc web chưa tải được trang. Chưa dùng link để xác nhận trường dữ liệu nào."
+      },
+      {
+        "url": "https://thanhphohue.net/dia-diem-hue/chao-vit-thuan",
+        "publisher": "Thành Phố Huế NET",
+        "providedVia": "backend/app/data/link.txt",
+        "publishedOn": "2024-09-29",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "unitPriceRangeVnd"
+        ],
+        "reportedValues": {
+          "name": "Cháo Vịt Thuận",
+          "address": "94 Bùi Thị Xuân, Huế",
+          "priceVnd": "35.000 - 100.000 VND"
+        },
+        "notes": "Trang công bố tên, địa chỉ và khoảng giá; không công bố giờ mở cửa hoặc đơn vị tính giá."
+      }
+    ],
+    "priceScopeNotes": "Thành Phố Huế NET ghi khoảng giá 35.000–100.000 VND nhưng không nêu đơn vị theo người, món hay nhóm; không suy perPerson từ bài này.",
+    "dataReviewNotes": [
+      "Giữ giờ 11:00–20:00 từ dữ liệu trước; bài Thành Phố Huế NET không công bố giờ nên chưa xác minh theo nguồn được chọn.",
+      "Khoảng giá trong bài ngày 29/09/2024 là thông tin tham khảo, không xác nhận giá hiện hành."
+    ],
+    "preferredSourceUrl": "https://thanhphohue.net/dia-diem-hue/chao-vit-thuan",
+    "unverifiedFields": [
+      "openingHours",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Đã đối chiếu tên, địa chỉ và khoảng giá theo link mới; giờ và số liệu di chuyển chưa được trang này xác nhận.",
+    "priceDisplay": "35.000 - 100.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 35000,
+      "max": 100000
+    },
+    "priceType": "range"
+  },
+  {
+    "id": "REST_H_09",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Chè Cầm",
+    "address": "10 Nguyễn Sinh Cung, Vỹ Dạ, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Chè+Cầm+Hue",
+    "openingHours": "16:00 - 22:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 1,
+      "durationMin": 3,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 5.1,
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 4.5,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 0.85,
+        "verificationStatus": "unverified",
+        "durationMin": 3,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 1.3,
+        "verificationStatus": "unverified",
+        "durationMin": 4,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 3.6,
+        "verificationStatus": "unverified",
+        "durationMin": 11,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_10",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://hue-ictc.husc.edu.vn/baiviet.php?id=5",
+        "publisher": "Hue-ICT Challenge 2026 — Trường Đại học Khoa học, Đại học Huế",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://vnexpress.net/12-hang-quan-khach-phai-thu-khi-den-hue-4903753.html",
+        "publisher": "VnExpress",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2025-06-23",
+        "fields": [
+          "priceScope",
+          "unitPriceFromVnd"
+        ],
+        "notes": "Một phần chè."
+      },
+      {
+        "url": "https://huetripo.hue.gov.vn/co-so-an-uong/quan-an/che-cam-742890",
+        "publisher": "Huế TRIPO",
+        "providedVia": "backend/app/data/link.txt",
+        "lastCheckedOn": "2026-11-11",
+        "verificationStatus": "unverified",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Link do người dùng cung cấp; công cụ đọc web chưa tải được trang. Chưa dùng link để xác nhận trường dữ liệu nào."
+      },
+      {
+        "url": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/",
+        "publisher": "iVIVU",
+        "providedVia": "backend/app/data/link.txt",
+        "publishedOn": "2026-06-10",
+        "accessedOn": "2026-11-11",
+        "accessStatus": "read",
+        "verificationStatus": "partial",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "unitPriceFromVnd",
+          "unitPriceFromVnd",
+          "priceType",
+          "priceUnit",
+          "priceScope"
+        ],
+        "reportedValues": {
+          "address": "10 Nguyễn Sinh Cung, Vỹ Dạ, Huế",
+          "openingHours": "16:00 - 22:00",
+          "priceVnd": "Từ 15.000 VND/ly",
+          "priceFromVnd": 15000,
+          "priceType": "from",
+          "priceUnit": "ly",
+          "priceScope": "perServing"
+        },
+        "notes": "Mục 6 — Chè Cầm. Bài nêu giờ hằng ngày 16h–22h và giá khoảng từ 15.000 VND/ly tùy loại; không công bố khoảng cách hoặc thời gian di chuyển."
+      }
+    ],
+    "priceScopeNotes": "Một ly chè; giá từ 15.000 VND tùy loại, không phải giá cố định cho mọi ly.",
+    "dataReviewNotes": [
+      "Giá khởi điểm theo bài ngày 10/06/2026, có thể thay đổi theo loại chè; chưa xác nhận giá hiện hành.",
+      "Link Huế TRIPO cũ chưa tải được, giữ trong sources để đối chiếu; không dùng làm nguồn cho lần cập nhật này."
+    ],
+    "preferredSourceUrl": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/",
+    "unverifiedFields": [
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "distancesToRestaurants"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Địa chỉ, giờ và giá khởi điểm đối chiếu theo mục Chè Cầm trong bài iVIVU; chưa xác minh số liệu tuyến đường.",
+    "priceType": "from",
+    "priceUnit": "ly",
+    "priceDisplay": "Từ 15.000 VND/ly",
+    "unitPriceFromVnd": 15000
+  },
+  {
+    "id": "REST_H_10",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Bánh canh Nam Phổ - Thúy",
+    "address": "16 Phạm Hồng Thái, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Thúy+Bánh+Canh+Nam+Phổ+Hue",
+    "openingHours": "11:15 - 20:00",
+    "priceScope": "perServing",
+    "distanceFromCenter": {
+      "distanceKm": 2.5,
+      "durationMin": 7,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToRestaurants": [
+      {
+        "toRestaurantId": "REST_H_01",
+        "distanceKm": 7.7,
+        "verificationStatus": "unverified",
+        "durationMin": 24,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_02",
+        "distanceKm": 3.3,
+        "verificationStatus": "unverified",
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+          "branchConfirmedByUser": true
+        },
+        "durationMin": 10,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_03",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_04",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_05",
+        "distanceKm": 1.5,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_06",
+        "distanceKm": 1.1,
+        "verificationStatus": "unverified",
+        "durationMin": 4,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_07",
+        "distanceKm": 0.4,
+        "verificationStatus": "unverified",
+        "durationMin": 2,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_08",
+        "distanceKm": 2.4,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      },
+      {
+        "toRestaurantId": "REST_H_09",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        },
+        "distanceSource": {
+          "type": "user_provided_table",
+          "providedOn": "2026-11-11",
+          "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://thanhphohue.net/dia-diem-hue/banh-canh-nam-pho-chi-thuy",
+        "publisher": "Thành Phố Huế NET",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "address"
+        ],
+        "notes": "Đối chiếu từ nguồn web công khai vì link tìm kiếm Google Maps không tải được trong công cụ đọc web; không xác nhận lại giá hoặc khoảng cách."
+      },
+      {
+        "url": "https://www.foody.vn/bai-viet/thuc-hu-top-5-quan-banh-canh-nam-pho-phai-thu-o-hue-lieu-co-ngon-nhu-loi-don-19534",
+        "publisher": "Foody",
+        "accessedOn": "2026-11-11",
+        "publishedOn": "2022-09-19",
+        "fields": [
+          "priceScope",
+          "unitPriceRangeVnd"
+        ],
+        "notes": "Một phần món ăn; khoảng giá từ bài năm 2022, cần cập nhật menu trước khi dùng tính chi phí hiện tại."
+      },
+      {
+        "url": "https://nangtrip.com/activities/thuy-banh-canh-nam-pho",
+        "publisher": "NangTrip",
+        "providedVia": "backend/app/data/link.txt",
+        "lastCheckedOn": "2026-11-11",
+        "verificationStatus": "unverified",
+        "accessStatus": "unavailable",
+        "fields": [],
+        "notes": "Link do người dùng cung cấp; công cụ đọc web chưa tải được trang. Chưa dùng link để xác nhận trường dữ liệu nào."
+      }
+    ],
+    "priceScopeNotes": "Một phần món ăn; khoảng giá từ bài năm 2022, cần cập nhật menu trước khi dùng tính chi phí hiện tại.",
+    "dataReviewNotes": [
+      "Link trong link.txt vẫn chưa tải được; giữ các giá trị cũ và nguồn đã có, chưa xác minh thông tin hiện tại qua link này."
+    ],
+    "preferredSourceUrl": "https://nangtrip.com/activities/thuy-banh-canh-nam-pho",
+    "unverifiedFields": [
+      "address",
+      "openingHours",
+      "unitPriceRangeVnd",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "pending_access",
+    "sourceAlignmentNote": "Chưa đọc được link chỉ định; các giá trị giữ từ nguồn cũ chưa được đối chiếu với link.txt.",
+    "priceDisplay": "5.000 - 15.000 VND",
+    "unitPriceRangeVnd": {
+      "min": 5000,
+      "max": 15000
+    },
+    "priceType": "range"
+  }
+]

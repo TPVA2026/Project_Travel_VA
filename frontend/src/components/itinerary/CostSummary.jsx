@@ -1,5 +1,6 @@
 import { fmtMoney, knownTotal } from '../../services/mockData.js'
 import Icon from '../common/Icon.jsx'
+import CostProjection from './CostProjection.jsx'
 
 const CATEGORY_LABEL = {
   transport: 'Di chuyển',
@@ -61,6 +62,7 @@ export default function CostSummary({ plan, costEvaluation, resolveName }) {
         </strong>
       </div>
 
+      <CostProjection projection={evaluation?.projection} />
       {budget != null && (
         <div className="cost-breakdown">
           <div className="cost-row">

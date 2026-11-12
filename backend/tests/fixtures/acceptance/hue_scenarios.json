@@ -194,7 +194,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -349,7 +349,7 @@
                     "type": "sightseeing",
                     "startTime": "08:00",
                     "endTime": "09:30",
-                    "estimatedCostVnd": 25000,
+                    "estimatedCostVnd": 50000,
                     "costStatus": "KNOWN",
                     "reason": "acceptance fixture"
                   },
@@ -502,7 +502,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -640,7 +640,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -786,7 +786,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -938,7 +938,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -1106,7 +1106,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -1259,7 +1259,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -1416,7 +1416,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },
@@ -1569,7 +1569,7 @@
                   "type": "sightseeing",
                   "startTime": "08:00",
                   "endTime": "09:30",
-                  "estimatedCostVnd": 25000,
+                  "estimatedCostVnd": 50000,
                   "costStatus": "KNOWN",
                   "reason": "acceptance fixture"
                 },

@@ -58,7 +58,9 @@ def main() -> None:
         filename = "_".join(str(round(value * 1000000)) for value in box) + ".json"
         all_items.extend(json.loads((cache / filename).read_text(encoding="utf-8")))
     places = normalize_places(all_items, provinces)
-    _write_json(DATA_DIR / "opentripmap_vietnam.json", {
+    import_target = DATA_DIR / "archive/imports/opentripmap_vietnam.json"
+    import_target.parent.mkdir(parents=True, exist_ok=True)
+    _write_json(import_target, {
         "destinations": make_destinations(provinces), "attractions": places,
         "source": "OpenTripMap", "boundarySource": "Vietnamese Provinces Database",
         "tileCount": len(tiles),

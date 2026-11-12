@@ -233,6 +233,8 @@ def build_context(request: dict, dataset: dict, *, limit_places: bool = True) ->
                 d.id for d in destinations
                 if any(wanted_key == _name_key((d.model_extra or {}).get(key))
                        for key in ("name", "city", "city_name"))
+                or any(isinstance(alias, str) and wanted_key == _name_key(alias)
+                       for alias in ((d.model_extra or {}).get("aliases") or []))
             }
         if len(matches) != 1:
             return _empty()  # never guess a destination or broaden the search

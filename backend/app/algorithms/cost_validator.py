@@ -210,6 +210,10 @@ def evaluate_candidate_costs(request: dict, plan: dict, dataset: dict,
     result = validate_cost_budget({"budget": budget}, {"costs": costs})
     result["estimatedRanges"] = estimates
     result["costEvidence"] = evidence
+    from app.services.hue_cost_projection import project_hue_costs
+    projection = project_hue_costs(travel_request.model_dump(mode="json", by_alias=True), candidate, dataset, result)
+    if projection is not None:
+        result["projection"] = projection
     return result
 
 

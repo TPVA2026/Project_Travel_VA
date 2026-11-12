@@ -93,7 +93,7 @@ def _normalize_place(raw: dict, destination_ids: dict[str, str], dining: bool) -
     )
     price_field = "avgPricePerPersonVnd" if dining else "priceVnd"
     item[price_field] = _exact_number(item.get(price_field, item.get("cost")), "vnd")
-    if dining and item.get("priceScope", "perPerson") != "perPerson":
+    if dining and item.get("priceScope", "perPerson") != "perPerson" and item.get("priceStatus") != "ESTIMATED":
         item["avgPricePerPersonVnd"] = None
     return item
 
@@ -182,40 +182,27 @@ def _apply_routing_points(dataset: dict, raw: object) -> dict:
 
 
 def load_dataset() -> dict:
+    """Read only the four canonical collections and supporting route data.
+
+    Archived OpenTripMap snapshots are provenance, not runtime inputs. Internal
+    dining/hotels keys stay compatible with existing planning consumers.
+    """
     raw = {
         "destinations": _load("destinations.json"),
         "attractions": _load("attractions.json"),
         "dining": _load("restaurants.json"),
         "travel_matrix": _load("travel_matrix.json"),
     }
-    imported = DATA_DIR / "opentripmap_attractions.json"
-    if imported.exists():
-        with imported.open(encoding="utf-8") as file:
-            extra = json.load(file)
-        if not isinstance(extra, list) or not all(isinstance(place, dict) for place in extra):
-            raise ValueError("Invalid OpenTripMap attraction snapshot")
-        existing_ids = {place.get("id") for place in raw["attractions"]}
-        raw["attractions"].extend(place for place in extra if place.get("id") not in existing_ids)
-    national = DATA_DIR / "opentripmap_vietnam.json"
-    national_enabled = national.exists()
-    if national_enabled:
-        with national.open(encoding="utf-8") as file:
-            nationwide = json.load(file)
-        if (not isinstance(nationwide, dict)
-                or not isinstance(nationwide.get("destinations"), list)
-                or not isinstance(nationwide.get("attractions"), list)):
-            raise ValueError("Invalid nationwide OpenTripMap snapshot")
-        destination_ids = {item.get("id") for item in raw["destinations"]}
-        raw["destinations"].extend(
-            item for item in nationwide["destinations"]
-            if isinstance(item, dict) and item.get("id") not in destination_ids
-        )
-        attraction_ids = {item.get("id") for item in raw["attractions"]}
-        raw["attractions"].extend(
-            item for item in nationwide["attractions"]
-            if isinstance(item, dict) and item.get("id") not in attraction_ids
-        )
     normalized = normalize_dataset(raw)
+    accommodations = DATA_DIR / "accommodations.json"
+    if accommodations.exists():
+        with accommodations.open(encoding="utf-8") as file:
+            hotels = json.load(file)
+        if not isinstance(hotels, list) or any(not isinstance(h, dict) for h in hotels):
+            raise ValueError("Invalid accommodations collection")
+        normalized["hotels"] = hotels
+        if any(h.get("demoDefault") for h in hotels):
+            normalized["demoCostPolicy"] = {"status": "ESTIMATED", "nights": "durationDays - 1"}
     routing_points = DATA_DIR / "routing_points.json"
     if routing_points.exists():
         with routing_points.open(encoding="utf-8") as file:

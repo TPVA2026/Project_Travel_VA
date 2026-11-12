@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
+test('estimated lodging remains separate from verified candidate totals', () => {
+  const projection = { subtotalVnd: 2500000, totalVnd: null, uncovered: ['transport'],
+    items: [{ category: 'accommodation', amountVnd: 2000000, nights: 2, rooms: 1 }] }
+  const cost = getCandidateCost({ evaluation: { components: { cost: {
+    known_total: 100000, total_cost: null, missing_costs: ['transport', 'accommodation'], projection,
+  } } } })
+  assert.equal(cost.knownTotal, 100000)
+  assert.equal(cost.complete, false)
+  assert.deepEqual(cost.projection, projection)
+})
+
 import {
   candidateStatusLabel,
   collectPlaceIds,
@@ -370,7 +381,7 @@ async function renderCandidateComparison(candidates, ranking) {
   const { build } = await import('esbuild')
   const { mkdtemp, rm } = await import('node:fs/promises')
   const { join } = await import('node:path')
-  const { fileURLToPath } = await import('node:url')
+  const { fileURLToPath, pathToFileURL } = await import('node:url')
 
   const virtualConsole = new VirtualConsole()
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost/', virtualConsole })
@@ -412,7 +423,7 @@ async function renderCandidateComparison(candidates, ranking) {
     const { act } = await import('react')
     const { createRoot } = await import('react-dom/client')
     const { MemoryRouter } = await import('react-router-dom')
-    const { default: CandidateComparison } = await import(output)
+    const { default: CandidateComparison } = await import(pathToFileURL(output).href)
     const root = createRoot(dom.window.document.querySelector('#root'))
     await act(async () => {
       root.render(
@@ -448,6 +459,25 @@ async function renderCandidateComparison(candidates, ranking) {
     throw error
   }
 }
+
+test('CandidateComparison shows estimated lodging without promoting candidate status', async () => {
+  const result = evaluation('hotel-demo')
+  result.components.cost.projection = {
+    subtotalVnd: 2400000, totalVnd: null, uncovered: ['transport'],
+    items: [{ category: 'accommodation', name: 'Hotel demo', rooms: 1, nights: 2, amountVnd: 2200000 }],
+  }
+  const { dom, cleanup } = await renderCandidateComparison([
+    { planId: 'hotel-demo', status: 'UNVERIFIED', plan: candidatePlan('hotel-demo', 'ATTR_H_01'), evaluation: result },
+  ], { ranked: [], unscored: [], excluded: [] })
+  try {
+    assert.match(dom.window.document.body.textContent, /Dự toán tham khảo/)
+    assert.match(dom.window.document.body.textContent, /1 phòng × 2 đêm/)
+    assert.match(dom.window.document.body.textContent, /transport/)
+    assert.equal(dom.window.document.querySelector('[data-testid="candidate-recommended-hotel-demo"]'), null)
+  } finally {
+    await cleanup()
+  }
+})
 
 test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', async () => {
   for (const count of [0, 1, 2, 3]) {

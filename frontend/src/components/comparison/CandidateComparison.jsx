@@ -14,6 +14,7 @@ import {
 import { fmtMoney } from '../../services/mockData.js'
 import ItineraryTimeline from '../itinerary/ItineraryTimeline.jsx'
 import CostSummary from '../itinerary/CostSummary.jsx'
+import CostProjection from '../itinerary/CostProjection.jsx'
 import EvaluationChecks from '../itinerary/EvaluationChecks.jsx'
 import Icon from '../common/Icon.jsx'
 
@@ -73,6 +74,7 @@ function CostLine({ cost }) {
           </span>
         </p>
       )}
+      <CostProjection projection={cost.projection} compact />
     </>
   )
 }

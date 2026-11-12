@@ -13,7 +13,8 @@ from app.services.opentripmap_service import fetch_attractions
 def main() -> None:
     load_dotenv(Path(__file__).resolve().parents[1] / ".env")
     places = fetch_attractions(_load("destinations.json"), api_key=os.getenv("OPENTRIPMAP_API_KEY"))
-    target = DATA_DIR / "opentripmap_attractions.json"
+    target = DATA_DIR / "archive/imports/opentripmap_attractions.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
     temporary = target.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(places, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     temporary.replace(target)

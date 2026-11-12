@@ -562,6 +562,7 @@ export function getCandidateCost(candidate) {
     complete: cost.total_cost != null,
     budget: cost.budget ?? null,
     remaining: cost.remaining_budget ?? null,
+    ...(cost.projection ? { projection: cost.projection } : {}),
   }
 }
 

@@ -1,0 +1,2298 @@
+[
+  {
+    "id": "ATTR_H_01",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "lăng Khải Định",
+    "address": "Núi Châu Chữ, phường Thủy Xuân, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Lăng+Khải+Định+Huế",
+    "openingHours": "07:00 - 17:30",
+    "priceVnd": 150000,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 150000,
+      "child": 30000
+    },
+    "distanceFromCenter": {
+      "distanceKm": 10,
+      "durationMin": 18,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 11,
+        "verificationStatus": "unverified",
+        "durationMin": 33,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 10,
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 9.7,
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 9.1,
+        "verificationStatus": "unverified",
+        "durationMin": 28,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 7.7,
+        "verificationStatus": "unverified",
+        "durationMin": 24,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 7.1,
+        "verificationStatus": "unverified",
+        "durationMin": 22,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 11,
+        "verificationStatus": "unverified",
+        "durationMin": 33,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 9.1,
+        "verificationStatus": "unverified",
+        "durationMin": 28,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 8.6,
+        "verificationStatus": "unverified",
+        "durationMin": 26,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "ticketPriceNotes": "Vé lẻ theo người/lượt. priceVnd dùng giá người lớn; nhóm trẻ em trong bảng là từ 7–12 tuổi. Cung An Định miễn phí cho nhóm này. Các ưu đãi khác theo quy định.",
+    "sources": [
+      {
+        "url": "https://vbpl.moj.gov.vn/FileData/TW/Lists/vbpq/Attachments/185769/VanBanGoc_55.2025.NQ.HDND.signed.pdf",
+        "publisher": "HĐND thành phố Huế — Nghị quyết 55/2025/NQ-HĐND",
+        "publishedOn": "2025-12-25",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "priceVnd"
+        ],
+        "notes": "Bảng phí tham quan từng điểm, phụ lục nghị quyết. Bản PDF có trong chỉ mục tìm kiếm; mở trực tiếp gặp lỗi 502."
+      },
+      {
+        "url": "https://vinpearl.com/vi/lang-khai-dinh-hue-dinh-cao-kien-truc-lang-tam-thoi-nguyen",
+        "publisher": "Vinpearl",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "openingHoursBySeason",
+          "priceVnd",
+          "ticketPricesVnd.adult",
+          "ticketPricesVnd.child",
+          "distanceFromCenter.distanceKm"
+        ],
+        "notes": "Theo bài Vinpearl do người dùng cung cấp. Khoảng cách từ trung tâm là ước lượng của bài, chưa xác định mốc; không xác nhận thời gian di chuyển hoặc chặng giữa các địa điểm.",
+        "reportedValues": {
+          "address": "Núi Châu Chữ, phường Thủy Xuân, thành phố Huế",
+          "priceVnd": 150000,
+          "ticketPricesVnd.adult": 150000,
+          "ticketPricesVnd.child": 30000,
+          "distanceFromCenter.distanceKm": "10 km"
+        }
+      }
+    ],
+    "openingHoursBySeason": {
+      "summer": {
+        "from": "03-16",
+        "to": "10-15",
+        "hours": "06:30 - 18:00",
+        "ticketSalesHours": "06:30 - 17:30"
+      },
+      "winter": {
+        "from": "10-16",
+        "to": "03-15",
+        "hours": "07:00 - 17:30",
+        "ticketSalesHours": "07:00 - 17:00"
+      }
+    },
+    "openingHoursNote": "openingHours là khung mùa đông; xem openingHoursBySeason để chọn theo ngày tham quan.",
+    "preferredSourceUrl": "https://vinpearl.com/vi/lang-khai-dinh-hue-dinh-cao-kien-truc-lang-tam-thoi-nguyen",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_02",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Cung An Định",
+    "address": "97 Phan Đình Phùng, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cung+An+Định+Huế",
+    "openingHours": "07:00 - 17:00",
+    "priceVnd": 25000,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 25000,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": 3.3,
+      "durationMin": 10,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 8.6,
+        "verificationStatus": "unverified",
+        "durationMin": 26,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 4.3,
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 2.9,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 2.8,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 5,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 5.8,
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 6.5,
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "ticketPriceNotes": "Theo bài Vinpearl: 25.000 VND/vé người lớn, trẻ em miễn phí. Bài không nêu điều kiện tuổi trẻ em; không tự áp nhóm 7–12 tuổi từ nguồn khác.",
+    "sources": [
+      {
+        "url": "https://vbpl.moj.gov.vn/FileData/TW/Lists/vbpq/Attachments/185769/VanBanGoc_55.2025.NQ.HDND.signed.pdf",
+        "publisher": "HĐND thành phố Huế — Nghị quyết 55/2025/NQ-HĐND",
+        "publishedOn": "2025-12-25",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "ticketPricesVnd.child"
+        ],
+        "notes": "Bảng phí tham quan từng điểm, phụ lục nghị quyết. Bản PDF có trong chỉ mục tìm kiếm; mở trực tiếp gặp lỗi 502."
+      },
+      {
+        "url": "https://vinpearl.com/vi/cung-an-dinh-hue-diem-check-in-noi-tieng-hon-100-nam-tuoi-o-hue",
+        "publisher": "Vinpearl",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "openingHoursBySeason",
+          "ticketPricesVnd.child",
+          "priceVnd",
+          "ticketPricesVnd.adult"
+        ],
+        "notes": "Bài Vinpearl nêu số 97 Phan Đình Phùng, giá người lớn 25.000/vé, trẻ em miễn phí và giờ theo mùa. Dữ liệu lấy theo bài được chỉ định; không khẳng định đây là mức phí hiện hành.",
+        "reportedValues": {
+          "priceVnd": 25000,
+          "address": "97 Phan Đình Phùng, thành phố Huế",
+          "ticketPricesVnd.adult": 25000,
+          "ticketPricesVnd.child": 0
+        }
+      }
+    ],
+    "openingHoursBySeason": {
+      "summer": {
+        "hours": "06:30 - 17:30"
+      },
+      "winter": {
+        "hours": "07:00 - 17:00"
+      }
+    },
+    "openingHoursNote": "Khung mặc định là mùa đông; nguồn không nêu ngày chuyển mùa.",
+    "priceReviewNote": "Giá 25.000 VND theo bài Vinpearl trong link.txt. Nguồn nghị quyết khác nêu 50.000 VND; cần xác nhận giá hiện hành trước khi đặt vé.",
+    "preferredSourceUrl": "https://vinpearl.com/vi/cung-an-dinh-hue-diem-check-in-noi-tieng-hon-100-nam-tuoi-o-hue",
+    "priceVerificationStatus": "source_conflict",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_03",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Đại Nội",
+    "address": "Đường 23/8, phường Phú Xuân, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Hoàng+Thành+Huế",
+    "openingHours": "07:00 - 17:30",
+    "priceVnd": 200000,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 200000,
+      "child": 40000
+    },
+    "distanceFromCenter": {
+      "distanceKm": 2.6,
+      "durationMin": 7,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 10,
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 4.3,
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 6.2,
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 4.8,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 2.5,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 4.1,
+        "verificationStatus": "unverified",
+        "durationMin": 13,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "ticketPriceNotes": "Vé lẻ theo người/lượt. priceVnd dùng giá người lớn; nhóm trẻ em trong bảng là từ 7–12 tuổi. Cung An Định miễn phí cho nhóm này. Các ưu đãi khác theo quy định.",
+    "sources": [
+      {
+        "url": "https://vbpl.moj.gov.vn/FileData/TW/Lists/vbpq/Attachments/185769/VanBanGoc_55.2025.NQ.HDND.signed.pdf",
+        "publisher": "HĐND thành phố Huế — Nghị quyết 55/2025/NQ-HĐND",
+        "publishedOn": "2025-12-25",
+        "accessedOn": "2026-11-11",
+        "fields": [
+          "priceVnd"
+        ],
+        "notes": "Bảng phí tham quan từng điểm, phụ lục nghị quyết. Bản PDF có trong chỉ mục tìm kiếm; mở trực tiếp gặp lỗi 502."
+      },
+      {
+        "url": "https://vinpearl.com/vi/dai-noi-hue-huong-dan-tham-quan-tim-ve-dau-an-lich-su-co-do",
+        "publisher": "Vinpearl",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "openingHoursBySeason",
+          "priceVnd",
+          "ticketPricesVnd.adult",
+          "ticketPricesVnd.child"
+        ],
+        "notes": "Địa chỉ và khung giờ theo bài Vinpearl; thời gian theo mùa lưu riêng để tránh dùng một khung cho cả năm.",
+        "reportedValues": {
+          "address": "Đường 23/8, phường Phú Xuân, thành phố Huế",
+          "priceVnd": 200000,
+          "ticketPricesVnd.adult": 200000,
+          "ticketPricesVnd.child": 40000
+        }
+      }
+    ],
+    "openingHoursBySeason": {
+      "summer": {
+        "from": "03-16",
+        "to": "10-15",
+        "hours": "06:30 - 18:00",
+        "ticketSalesHours": "06:30 - 17:30"
+      },
+      "winter": {
+        "from": "10-16",
+        "to": "03-15",
+        "hours": "07:00 - 17:30",
+        "ticketSalesHours": "07:00 - 17:00"
+      }
+    },
+    "openingHoursNote": "openingHours là khung mùa đông; giờ bán vé có thể kết thúc trước giờ tham quan.",
+    "preferredSourceUrl": "https://vinpearl.com/vi/dai-noi-hue-huong-dan-tham-quan-tim-ve-dau-an-lich-su-co-do",
+    "unverifiedFields": [
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_04",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Bến Xưa Vỹ Dạ",
+    "address": "Kiệt 73 Nguyễn Sinh Cung, Vỹ Dạ, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Bến+Xưa+Vỹ+Dạ+Kiệt+73+Nguyễn+Sinh+Cung+Huế",
+    "openingHours": "tự do",
+    "priceVnd": 0,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 0,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": 2.3,
+      "durationMin": 6,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 10,
+        "verificationStatus": "unverified",
+        "durationMin": 30,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 3.8,
+        "verificationStatus": "unverified",
+        "durationMin": 12,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 2.4,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 5.7,
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 2.5,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 7.6,
+        "verificationStatus": "unverified",
+        "durationMin": 23,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 6.9,
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 1.6,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 2.9,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://nangtrip.com/activities/ben-xua-vy-da",
+        "publisher": "NangTrip",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address"
+        ],
+        "notes": "Địa chỉ theo mục liên hệ của NangTrip. Không dùng giờ đẹp để chụp ảnh làm giờ mở cửa; không dùng giá đồ uống làm giá vé.",
+        "reportedValues": {
+          "name": "Bến Xưa Vỹ Dạ",
+          "address": "Kiệt 73 Nguyễn Sinh Cung, Vỹ Dạ, Huế"
+        }
+      }
+    ],
+    "dataReviewNotes": [
+      "Nguồn không công bố giờ mở cửa hoặc giá vé; dữ liệu cũ về giờ/giá chưa được xác minh.",
+      "Nội dung nguồn nêu khoảng cách từ trung tâm không thống nhất (3 km và 4–5 km); chưa dùng thay số liệu di chuyển cũ."
+    ],
+    "preferredSourceUrl": "https://nangtrip.com/activities/ben-xua-vy-da",
+    "unverifiedFields": [
+      "openingHours",
+      "priceVnd",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "ticketPricesVnd.adult",
+      "ticketPricesVnd.child"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_05",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "chợ Đông Ba",
+    "address": "Đường Trần Hưng Đạo, bên sông Hương, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Chợ+Đông+Ba+Huế",
+    "openingHours": "07:00 - 19:00",
+    "priceVnd": 0,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 0,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": 1.7,
+      "durationMin": 5,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 9.6,
+        "verificationStatus": "unverified",
+        "durationMin": 29,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 2.2,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 2.2,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 4.9,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 1.8,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 6.7,
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 5.3,
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 0.5,
+        "verificationStatus": "unverified",
+        "durationMin": 2,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 2.6,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vinpearl.com/vi/cho-dong-ba-hue-trai-nghiem-tron-ven-mot-vong-mua-sam-an-uong",
+        "publisher": "Vinpearl",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address"
+        ],
+        "notes": "Bài xác nhận vị trí trên đường Trần Hưng Đạo; chưa xác nhận giờ, vé hoặc tuyến đường.",
+        "reportedValues": {
+          "address": "Đường Trần Hưng Đạo, bên sông Hương, thành phố Huế"
+        }
+      }
+    ],
+    "dataReviewNotes": [
+      "Bài được cung cấp không xác nhận giờ 07:00–19:00 hoặc mức vé miễn phí đang lưu."
+    ],
+    "preferredSourceUrl": "https://vinpearl.com/vi/cho-dong-ba-hue-trai-nghiem-tron-ven-mot-vong-mua-sam-an-uong",
+    "unverifiedFields": [
+      "openingHours",
+      "priceVnd",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "ticketPricesVnd.adult",
+      "ticketPricesVnd.child"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_06",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "làng nón bài thơ Tây Hồ",
+    "address": "Thôn Tây Hồ, xã Phú Hồ, huyện Phú Vang, Thừa Thiên Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Làng+nón+lá+Tây+Hồ+Huế",
+    "openingHours": "không cố định",
+    "priceVnd": 0,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 0,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": 12,
+      "durationMin": null,
+      "durationRangeMin": {
+        "min": 30,
+        "max": 40
+      },
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 6.3,
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 4.5,
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 5.7,
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 5,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 3.2,
+        "verificationStatus": "unverified",
+        "durationMin": 10,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 2,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 2.7,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 4.6,
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 5,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://hue.aeonmall-vietnam.com/cam-nang-aeon-mall-hue/lang-non-tay-ho.html",
+        "publisher": "AEON MALL Huế",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours",
+          "priceVnd",
+          "ticketPricesVnd.adult",
+          "ticketPricesVnd.child",
+          "distanceFromCenter.distanceKm",
+          "distanceFromCenter.durationMin",
+          "recommendedVisitHours",
+          "visitDurationRangeMin"
+        ],
+        "notes": "Giờ 08:00–16:00 là giờ gợi ý, không phải giờ hoạt động bắt buộc. Khoảng cách/thời gian là ước lượng từ trung tâm không có mốc cụ thể.",
+        "reportedValues": {
+          "address": "Thôn Tây Hồ, xã Phú Hồ, huyện Phú Vang, Thừa Thiên Huế",
+          "openingHours": "không cố định",
+          "priceVnd": 0,
+          "ticketPricesVnd.adult": 0,
+          "ticketPricesVnd.child": 0,
+          "distanceFromCenter.distanceKm": "12 km",
+          "distanceFromCenter.travelTime": "30 - 40 phút",
+          "recommendedVisitHours": "08:00 - 16:00",
+          "visitDurationRangeMin": {
+            "min": 120,
+            "max": 180
+          }
+        }
+      }
+    ],
+    "recommendedVisitHours": "08:00 - 16:00",
+    "visitDurationRangeMin": {
+      "min": 120,
+      "max": 180
+    },
+    "addressNote": "Địa danh hành chính theo bài, chưa đối chiếu thay đổi hành chính hiện tại.",
+    "preferredSourceUrl": "https://hue.aeonmall-vietnam.com/cam-nang-aeon-mall-hue/lang-non-tay-ho.html",
+    "unverifiedFields": [
+      "priceScope"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_07",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Quốc Học Huế",
+    "address": "12 Lê Lợi, phường Thuận Hóa, thành phố Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Quoc+Hoc+Hue",
+    "openingHours": "Ngày trong tuần: buổi chiều; Chủ nhật: cả ngày",
+    "priceVnd": 0,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 0,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": null,
+      "durationMin": 5,
+      "distanceRangeKm": {
+        "min": 1,
+        "max": 2
+      },
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 7.7,
+        "verificationStatus": "unverified",
+        "durationMin": 24,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 2.8,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 2.5,
+        "verificationStatus": "unverified",
+        "durationMin": 8,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 2,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 3.2,
+        "verificationStatus": "unverified",
+        "durationMin": 10,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 5.1,
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 4.7,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vinpearl.com/vi/ghe-tham-truong-quoc-hoc-hue-diem-check-in-noi-tieng-co-do",
+        "publisher": "Vinpearl",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "openingHours"
+        ],
+        "notes": "Đổi giờ cũ sang điều kiện tham quan mà bài thực sự công bố; không tự suy giờ bắt đầu/kết thúc.",
+        "reportedValues": {
+          "address": "12 Lê Lợi, phường Thuận Hóa, thành phố Huế",
+          "openingHours": "Ngày trong tuần: buổi chiều; Chủ nhật: cả ngày"
+        }
+      }
+    ],
+    "openingHoursNote": "Nguồn không công bố giờ phút cụ thể; cần liên hệ nhà trường, không coi khung giờ học là giờ mở cửa cho khách.",
+    "preferredSourceUrl": "https://vinpearl.com/vi/ghe-tham-truong-quoc-hoc-hue-diem-check-in-noi-tieng-co-do",
+    "unverifiedFields": [
+      "priceVnd",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "ticketPricesVnd.adult",
+      "ticketPricesVnd.child"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_08",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Làng Hương Thủy Xuân",
+    "address": "Đường Huyền Trân Công Chúa, phường Thủy Xuân, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Làng+Hương+Thủy+Xuân+Huế",
+    "openingHours": "09:00 - 22:00",
+    "priceVnd": 0,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 0,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": 7,
+      "durationMin": 18,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 6.3,
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 6.4,
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 7.3,
+        "verificationStatus": "unverified",
+        "durationMin": 22,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 6.9,
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 2,
+        "verificationStatus": "unverified",
+        "durationMin": 6,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 4.9,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 4.5,
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 6.3,
+        "verificationStatus": "unverified",
+        "durationMin": 19,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 5.8,
+        "verificationStatus": "unverified",
+        "durationMin": 18,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vinpearl.com/vi/lang-huong-thuy-xuan-hue-kham-pha-lang-nghe-700-nam-tuoi-giua-long-co-do",
+        "publisher": "Vinpearl",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address",
+          "distanceFromCenter.distanceKm"
+        ],
+        "notes": "Chỉ đối chiếu đường Huyền Trân Công Chúa; chưa xác minh phường hiện tại hoặc tuyến đường giữa các cặp địa điểm.",
+        "reportedValues": {
+          "distanceFromCenter.distanceKm": "7 km"
+        }
+      }
+    ],
+    "dataReviewNotes": [
+      "Nguồn xác nhận đường Huyền Trân Công Chúa và khoảng cách khoảng 7 km; chưa xác nhận giờ 09:00–22:00, giá vé hoặc thời gian di chuyển."
+    ],
+    "preferredSourceUrl": "https://vinpearl.com/vi/lang-huong-thuy-xuan-hue-kham-pha-lang-nghe-700-nam-tuoi-giua-long-co-do",
+    "unverifiedFields": [
+      "openingHours",
+      "priceVnd",
+      "priceScope",
+      "distanceFromCenter.durationMin",
+      "ticketPricesVnd.adult",
+      "ticketPricesVnd.child"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_09",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Chùa Thiên Mụ",
+    "address": "Đồi Hà Khê, khu vực Kim Long, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Chùa+Thiên+Mụ+Huế",
+    "openingHours": "24/7",
+    "priceVnd": 0,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 0,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": null,
+      "durationMin": 13,
+      "distanceRangeKm": {
+        "min": 5,
+        "max": 6
+      },
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 11,
+        "verificationStatus": "unverified",
+        "durationMin": 33,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 5,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 6.9,
+        "verificationStatus": "unverified",
+        "durationMin": 21,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 5.5,
+        "verificationStatus": "unverified",
+        "durationMin": 17,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 2.8,
+        "verificationStatus": "unverified",
+        "durationMin": 9,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 4.7,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 4.7,
+        "verificationStatus": "unverified",
+        "durationMin": 15,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_10",
+        "distanceKm": 5.3,
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 6.5,
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.klook.com/vi/blog/chua-thien-mu/",
+        "publisher": "Klook",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "openingHours",
+          "priceVnd",
+          "ticketPricesVnd.adult",
+          "ticketPricesVnd.child"
+        ],
+        "notes": "24/7 diễn đạt thông tin mở cả ngày trong bài; miễn vé vào chùa.",
+        "reportedValues": {
+          "openingHours": "24/7",
+          "priceVnd": 0,
+          "ticketPricesVnd.adult": 0,
+          "ticketPricesVnd.child": 0
+        }
+      }
+    ],
+    "openingHoursNote": "Klook mô tả mở cả ngày và miễn vé; phạm vi khu thờ tự, nghi lễ có thể có quy định riêng.",
+    "preferredSourceUrl": "https://www.klook.com/vi/blog/chua-thien-mu/",
+    "unverifiedFields": [
+      "address",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  },
+  {
+    "id": "ATTR_H_10",
+    "destinationId": "H",
+    "city": "Huế",
+    "name": "Cầu Trường Tiền",
+    "address": "Cầu Trường Tiền, bắc qua sông Hương, Huế",
+    "googlemapid": "https://www.google.com/maps/search/?api=1&query=Cầu+Trường+Tiền+Huế",
+    "openingHours": "tự do",
+    "priceVnd": 0,
+    "priceScope": "perPerson",
+    "ticketPricesVnd": {
+      "adult": 0,
+      "child": 0
+    },
+    "distanceFromCenter": {
+      "distanceKm": 1,
+      "durationMin": 3,
+      "verificationStatus": "unverified",
+      "notes": "Trung tâm chưa có mốc/toạ độ cụ thể; số liệu theo bài hoặc dữ liệu cũ, không dùng làm chặng giữa hai địa điểm."
+    },
+    "distancesToAttractions": [
+      {
+        "toAttractionId": "ATTR_H_01",
+        "distanceKm": 9.1,
+        "verificationStatus": "unverified",
+        "durationMin": 28,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_03",
+        "distanceKm": 2.2,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_04",
+        "distanceKm": 1.6,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_05",
+        "distanceKm": 0.75,
+        "verificationStatus": "unverified",
+        "durationMin": 3,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_06",
+        "distanceKm": 4.6,
+        "verificationStatus": "unverified",
+        "durationMin": 14,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_07",
+        "distanceKm": 1.4,
+        "verificationStatus": "unverified",
+        "durationMin": 5,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_08",
+        "distanceKm": 6.5,
+        "verificationStatus": "unverified",
+        "durationMin": 20,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_09",
+        "distanceKm": 5.3,
+        "verificationStatus": "unverified",
+        "durationMin": 16,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      },
+      {
+        "toAttractionId": "ATTR_H_02",
+        "distanceKm": 2.1,
+        "verificationStatus": "unverified",
+        "durationMin": 7,
+        "durationVerificationStatus": "estimated",
+        "durationEstimate": {
+          "transportMode": "motorcycle",
+          "assumedAverageSpeedKmh": 20,
+          "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+          "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+          "excludes": [
+            "parking",
+            "stops",
+            "traffic delays"
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vinpearl.com/vi/cau-trang-tien-hue-chung-nhan-lich-su-dep-mai-theo-thoi-gian",
+        "publisher": "Vinpearl",
+        "providedVia": "backend/app/data/link.txt",
+        "accessedOn": "2026-11-11",
+        "verificationStatus": "partial",
+        "accessStatus": "read",
+        "fields": [
+          "name",
+          "city",
+          "address"
+        ],
+        "notes": "Bài dùng tên Tràng Tiền và nêu tên gọi Trường Tiền; cầu nối hai bờ sông Hương.",
+        "reportedValues": {}
+      }
+    ],
+    "dataReviewNotes": [
+      "Nguồn xác nhận cầu bắc qua sông Hương; chưa xác minh giờ, giá và các tuyến đường."
+    ],
+    "preferredSourceUrl": "https://vinpearl.com/vi/cau-trang-tien-hue-chung-nhan-lich-su-dep-mai-theo-thoi-gian",
+    "unverifiedFields": [
+      "openingHours",
+      "priceVnd",
+      "priceScope",
+      "distanceFromCenter.distanceKm",
+      "distanceFromCenter.durationMin",
+      "ticketPricesVnd.adult",
+      "ticketPricesVnd.child"
+    ],
+    "sourceAlignmentStatus": "partial",
+    "sourceAlignmentNote": "Dữ liệu ưu tiên link trong link.txt; unverifiedFields là các trường chưa được link này xác nhận. Nguồn khác vẫn được giữ nguyên để đối chiếu."
+  }
+]
