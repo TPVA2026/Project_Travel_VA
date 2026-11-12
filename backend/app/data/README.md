@@ -33,8 +33,9 @@ legacyDestinationId. No ambiguous physical-place duplicates were auto-merged.
 
 The attraction with mixed restaurant/religion tags remains flagged for manual
 classification review. Dining currently covers Hue only; it is not a complete
-nationwide restaurant inventory. Three lodging options represent two hotels,
-not three independent establishments. Estimated prices remain ESTIMATED.
+nationwide restaurant inventory. Lodging includes room/rate options and sourced
+properties imported from main; records without dated quotes remain unknown.
+Multiple room options may belong to the same hotel. Estimated prices remain ESTIMATED.
 
 For Hue itinerary generation, the 10 curated attractions and 10 curated dining
 venues form the planning set. Imported OpenTripMap records remain available for
@@ -52,6 +53,10 @@ or copy a POI coordinate into the reviewed overlay to satisfy this check.
 
 travel_matrix.json and routing_points.json are supporting route evidence.
 They are not substitutes for exact visitor hours or booking quotes.
+
+`transport/hue.json` preserves reference transport fares imported from main.
+The runtime loader does not treat these references as verified trip quotes;
+dates, fare scope, passenger counts and source evidence still need confirmation.
 
 archive/legacy-20261112 holds the exact pre-migration source snapshots, including
 the former OpenTripMap and Hue enrichment files. They are not read at runtime.

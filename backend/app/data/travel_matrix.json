@@ -9,8 +9,21 @@
     "toType": "attraction",
     "distanceKm": 8.6,
     "durationMin": 26,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -28,8 +41,21 @@
     "toType": "attraction",
     "distanceKm": 11,
     "durationMin": 33,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -47,8 +73,21 @@
     "toType": "attraction",
     "distanceKm": 10,
     "durationMin": 30,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -66,8 +105,21 @@
     "toType": "attraction",
     "distanceKm": 9.7,
     "durationMin": 30,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -85,8 +137,21 @@
     "toType": "attraction",
     "distanceKm": 9.1,
     "durationMin": 28,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -104,8 +169,21 @@
     "toType": "attraction",
     "distanceKm": 7.7,
     "durationMin": 24,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -123,8 +201,21 @@
     "toType": "attraction",
     "distanceKm": 7.1,
     "durationMin": 22,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -142,8 +233,21 @@
     "toType": "attraction",
     "distanceKm": 11,
     "durationMin": 33,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -161,8 +265,21 @@
     "toType": "attraction",
     "distanceKm": 9.1,
     "durationMin": 28,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_01",
@@ -180,8 +297,21 @@
     "toType": "attraction",
     "distanceKm": 8.6,
     "durationMin": 26,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -199,8 +329,21 @@
     "toType": "attraction",
     "distanceKm": 4.3,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -218,8 +361,21 @@
     "toType": "attraction",
     "distanceKm": 2.9,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -237,8 +393,21 @@
     "toType": "attraction",
     "distanceKm": 2.8,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -256,8 +425,21 @@
     "toType": "attraction",
     "distanceKm": 5,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -275,8 +457,21 @@
     "toType": "attraction",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -294,8 +489,21 @@
     "toType": "attraction",
     "distanceKm": 5.8,
     "durationMin": 18,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -313,8 +521,21 @@
     "toType": "attraction",
     "distanceKm": 6.5,
     "durationMin": 20,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -332,8 +553,21 @@
     "toType": "attraction",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_02",
@@ -351,8 +585,21 @@
     "toType": "attraction",
     "distanceKm": 10,
     "durationMin": 30,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -370,8 +617,21 @@
     "toType": "attraction",
     "distanceKm": 4.1,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -389,8 +649,21 @@
     "toType": "attraction",
     "distanceKm": 4.1,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -408,8 +681,21 @@
     "toType": "attraction",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -427,8 +713,21 @@
     "toType": "attraction",
     "distanceKm": 4.3,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -446,8 +745,21 @@
     "toType": "attraction",
     "distanceKm": 2.7,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -465,8 +777,21 @@
     "toType": "attraction",
     "distanceKm": 6.2,
     "durationMin": 19,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -484,8 +809,21 @@
     "toType": "attraction",
     "distanceKm": 4.8,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -503,8 +841,21 @@
     "toType": "attraction",
     "distanceKm": 2.5,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_03",
@@ -522,8 +873,21 @@
     "toType": "attraction",
     "distanceKm": 10,
     "durationMin": 30,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -541,8 +905,21 @@
     "toType": "attraction",
     "distanceKm": 2.9,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -560,8 +937,21 @@
     "toType": "attraction",
     "distanceKm": 3.8,
     "durationMin": 12,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -579,8 +969,21 @@
     "toType": "attraction",
     "distanceKm": 2.4,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -598,8 +1001,21 @@
     "toType": "attraction",
     "distanceKm": 5.7,
     "durationMin": 18,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -617,8 +1033,21 @@
     "toType": "attraction",
     "distanceKm": 2.5,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -636,8 +1065,21 @@
     "toType": "attraction",
     "distanceKm": 7.6,
     "durationMin": 23,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -655,8 +1097,21 @@
     "toType": "attraction",
     "distanceKm": 6.9,
     "durationMin": 21,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -674,8 +1129,21 @@
     "toType": "attraction",
     "distanceKm": 1.6,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_04",
@@ -693,8 +1161,21 @@
     "toType": "attraction",
     "distanceKm": 9.6,
     "durationMin": 29,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -712,8 +1193,21 @@
     "toType": "attraction",
     "distanceKm": 2.6,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -731,8 +1225,21 @@
     "toType": "attraction",
     "distanceKm": 2.2,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -750,8 +1257,21 @@
     "toType": "attraction",
     "distanceKm": 2.2,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -769,8 +1289,21 @@
     "toType": "attraction",
     "distanceKm": 4.9,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -788,8 +1321,21 @@
     "toType": "attraction",
     "distanceKm": 1.8,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -807,8 +1353,21 @@
     "toType": "attraction",
     "distanceKm": 6.7,
     "durationMin": 21,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -826,8 +1385,21 @@
     "toType": "attraction",
     "distanceKm": 5.3,
     "durationMin": 16,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -845,8 +1417,21 @@
     "toType": "attraction",
     "distanceKm": 0.5,
     "durationMin": 2,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_05",
@@ -864,8 +1449,21 @@
     "toType": "attraction",
     "distanceKm": 6.3,
     "durationMin": 19,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -883,8 +1481,21 @@
     "toType": "attraction",
     "distanceKm": 5,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -902,8 +1513,21 @@
     "toType": "attraction",
     "distanceKm": 4.5,
     "durationMin": 14,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -921,8 +1545,21 @@
     "toType": "attraction",
     "distanceKm": 5.7,
     "durationMin": 18,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -940,8 +1577,21 @@
     "toType": "attraction",
     "distanceKm": 5,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -959,8 +1609,21 @@
     "toType": "attraction",
     "distanceKm": 3.2,
     "durationMin": 10,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -978,8 +1641,21 @@
     "toType": "attraction",
     "distanceKm": 2,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -997,8 +1673,21 @@
     "toType": "attraction",
     "distanceKm": 2.7,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -1016,8 +1705,21 @@
     "toType": "attraction",
     "distanceKm": 4.6,
     "durationMin": 14,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_06",
@@ -1035,8 +1737,21 @@
     "toType": "attraction",
     "distanceKm": 7.7,
     "durationMin": 24,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1054,8 +1769,21 @@
     "toType": "attraction",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1073,8 +1801,21 @@
     "toType": "attraction",
     "distanceKm": 2.8,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1092,8 +1833,21 @@
     "toType": "attraction",
     "distanceKm": 2.5,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1111,8 +1865,21 @@
     "toType": "attraction",
     "distanceKm": 2,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1130,8 +1897,21 @@
     "toType": "attraction",
     "distanceKm": 3.2,
     "durationMin": 10,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1149,8 +1929,21 @@
     "toType": "attraction",
     "distanceKm": 5.1,
     "durationMin": 16,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1168,8 +1961,21 @@
     "toType": "attraction",
     "distanceKm": 4.7,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1187,8 +1993,21 @@
     "toType": "attraction",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_07",
@@ -1206,8 +2025,21 @@
     "toType": "attraction",
     "distanceKm": 6.3,
     "durationMin": 19,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1225,8 +2057,21 @@
     "toType": "attraction",
     "distanceKm": 5.8,
     "durationMin": 18,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1244,8 +2089,21 @@
     "toType": "attraction",
     "distanceKm": 6.4,
     "durationMin": 20,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1263,8 +2121,21 @@
     "toType": "attraction",
     "distanceKm": 7.3,
     "durationMin": 22,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1282,8 +2153,21 @@
     "toType": "attraction",
     "distanceKm": 6.9,
     "durationMin": 21,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1301,8 +2185,21 @@
     "toType": "attraction",
     "distanceKm": 2,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1320,8 +2217,21 @@
     "toType": "attraction",
     "distanceKm": 4.9,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1339,8 +2249,21 @@
     "toType": "attraction",
     "distanceKm": 4.5,
     "durationMin": 14,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1358,8 +2281,21 @@
     "toType": "attraction",
     "distanceKm": 6.3,
     "durationMin": 19,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_08",
@@ -1377,8 +2313,21 @@
     "toType": "attraction",
     "distanceKm": 11,
     "durationMin": 33,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1396,8 +2345,21 @@
     "toType": "attraction",
     "distanceKm": 6.5,
     "durationMin": 20,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1415,8 +2377,21 @@
     "toType": "attraction",
     "distanceKm": 5,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1434,8 +2409,21 @@
     "toType": "attraction",
     "distanceKm": 6.9,
     "durationMin": 21,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1453,8 +2441,21 @@
     "toType": "attraction",
     "distanceKm": 5.5,
     "durationMin": 17,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1472,8 +2473,21 @@
     "toType": "attraction",
     "distanceKm": 2.8,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1491,8 +2505,21 @@
     "toType": "attraction",
     "distanceKm": 4.7,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1510,8 +2537,21 @@
     "toType": "attraction",
     "distanceKm": 4.7,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1529,8 +2569,21 @@
     "toType": "attraction",
     "distanceKm": 5.3,
     "durationMin": 16,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_09",
@@ -1548,8 +2601,21 @@
     "toType": "attraction",
     "distanceKm": 9.1,
     "durationMin": 28,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1567,8 +2633,21 @@
     "toType": "attraction",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1586,8 +2665,21 @@
     "toType": "attraction",
     "distanceKm": 2.2,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1605,8 +2697,21 @@
     "toType": "attraction",
     "distanceKm": 1.6,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1624,8 +2729,21 @@
     "toType": "attraction",
     "distanceKm": 0.75,
     "durationMin": 3,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1643,8 +2761,21 @@
     "toType": "attraction",
     "distanceKm": 4.6,
     "durationMin": 14,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1662,8 +2793,21 @@
     "toType": "attraction",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1681,8 +2825,21 @@
     "toType": "attraction",
     "distanceKm": 6.5,
     "durationMin": 20,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1700,8 +2857,21 @@
     "toType": "attraction",
     "distanceKm": 5.3,
     "durationMin": 16,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "unverified",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from existing unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/attractions.json",
       "recordId": "ATTR_H_10",
@@ -1719,8 +2889,27 @@
     "toType": "restaurant",
     "distanceKm": 0.6,
     "durationMin": 2,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1738,8 +2927,26 @@
     "toType": "restaurant",
     "distanceKm": 4.1,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1757,8 +2964,26 @@
     "toType": "restaurant",
     "distanceKm": 6.4,
     "durationMin": 20,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1776,8 +3001,26 @@
     "toType": "restaurant",
     "distanceKm": 4.1,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1795,8 +3038,26 @@
     "toType": "restaurant",
     "distanceKm": 4.9,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1814,8 +3075,26 @@
     "toType": "restaurant",
     "distanceKm": 4.1,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1833,8 +3112,26 @@
     "toType": "restaurant",
     "distanceKm": 2.3,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1852,8 +3149,26 @@
     "toType": "restaurant",
     "distanceKm": 5.1,
     "durationMin": 16,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1871,8 +3186,26 @@
     "toType": "restaurant",
     "distanceKm": 3.9,
     "durationMin": 12,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_01",
@@ -1890,8 +3223,27 @@
     "toType": "restaurant",
     "distanceKm": 0.6,
     "durationMin": 2,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -1909,8 +3261,27 @@
     "toType": "restaurant",
     "distanceKm": 3.4,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -1928,8 +3299,27 @@
     "toType": "restaurant",
     "distanceKm": 3.8,
     "durationMin": 12,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -1947,8 +3337,27 @@
     "toType": "restaurant",
     "distanceKm": 3.5,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -1966,8 +3375,27 @@
     "toType": "restaurant",
     "distanceKm": 4.3,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -1985,8 +3413,27 @@
     "toType": "restaurant",
     "distanceKm": 3.5,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -2004,8 +3451,27 @@
     "toType": "restaurant",
     "distanceKm": 2,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -2023,8 +3489,27 @@
     "toType": "restaurant",
     "distanceKm": 4.5,
     "durationMin": 14,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -2042,8 +3527,27 @@
     "toType": "restaurant",
     "distanceKm": 3.3,
     "durationMin": 10,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_02",
@@ -2061,8 +3565,26 @@
     "toType": "restaurant",
     "distanceKm": 4.1,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2080,8 +3602,27 @@
     "toType": "restaurant",
     "distanceKm": 3.4,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2099,8 +3640,26 @@
     "toType": "restaurant",
     "distanceKm": 3.4,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2118,8 +3677,26 @@
     "toType": "restaurant",
     "distanceKm": 0.1,
     "durationMin": 1,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2137,8 +3714,26 @@
     "toType": "restaurant",
     "distanceKm": 1.9,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2156,8 +3751,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2175,8 +3788,26 @@
     "toType": "restaurant",
     "distanceKm": 3.8,
     "durationMin": 12,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2194,8 +3825,26 @@
     "toType": "restaurant",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2213,8 +3862,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_03",
@@ -2232,8 +3899,26 @@
     "toType": "restaurant",
     "distanceKm": 6.4,
     "durationMin": 20,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2251,8 +3936,27 @@
     "toType": "restaurant",
     "distanceKm": 5.8,
     "durationMin": 18,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2270,8 +3974,26 @@
     "toType": "restaurant",
     "distanceKm": 3.4,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2289,8 +4011,26 @@
     "toType": "restaurant",
     "distanceKm": 3.5,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2308,8 +4048,26 @@
     "toType": "restaurant",
     "distanceKm": 2.2,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2327,8 +4085,26 @@
     "toType": "restaurant",
     "distanceKm": 2.7,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2346,8 +4122,26 @@
     "toType": "restaurant",
     "distanceKm": 5,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2365,8 +4159,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2384,8 +4196,26 @@
     "toType": "restaurant",
     "distanceKm": 2.7,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_04",
@@ -2403,8 +4233,26 @@
     "toType": "restaurant",
     "distanceKm": 4.1,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2422,8 +4270,27 @@
     "toType": "restaurant",
     "distanceKm": 3.5,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2441,8 +4308,26 @@
     "toType": "restaurant",
     "distanceKm": 0.1,
     "durationMin": 1,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2460,8 +4345,26 @@
     "toType": "restaurant",
     "distanceKm": 3.5,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2479,8 +4382,26 @@
     "toType": "restaurant",
     "distanceKm": 2,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2498,8 +4419,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2517,8 +4456,26 @@
     "toType": "restaurant",
     "distanceKm": 3.8,
     "durationMin": 12,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2536,8 +4493,26 @@
     "toType": "restaurant",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2555,8 +4530,26 @@
     "toType": "restaurant",
     "distanceKm": 1.5,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_05",
@@ -2574,8 +4567,26 @@
     "toType": "restaurant",
     "distanceKm": 4.9,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2593,8 +4604,27 @@
     "toType": "restaurant",
     "distanceKm": 4.3,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2612,8 +4642,26 @@
     "toType": "restaurant",
     "distanceKm": 1.9,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2631,8 +4679,26 @@
     "toType": "restaurant",
     "distanceKm": 2.2,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2650,8 +4716,26 @@
     "toType": "restaurant",
     "distanceKm": 2,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2669,8 +4753,26 @@
     "toType": "restaurant",
     "distanceKm": 0.7,
     "durationMin": 3,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2688,8 +4790,26 @@
     "toType": "restaurant",
     "distanceKm": 3.4,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2707,8 +4827,26 @@
     "toType": "restaurant",
     "distanceKm": 0.85,
     "durationMin": 3,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2726,8 +4864,26 @@
     "toType": "restaurant",
     "distanceKm": 1.2,
     "durationMin": 4,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_06",
@@ -2745,8 +4901,26 @@
     "toType": "restaurant",
     "distanceKm": 4.3,
     "durationMin": 13,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2764,8 +4938,27 @@
     "toType": "restaurant",
     "distanceKm": 3.7,
     "durationMin": 12,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2783,8 +4976,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2802,8 +5013,26 @@
     "toType": "restaurant",
     "distanceKm": 2.7,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2821,8 +5050,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2840,8 +5087,26 @@
     "toType": "restaurant",
     "distanceKm": 0.7,
     "durationMin": 3,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2859,8 +5124,26 @@
     "toType": "restaurant",
     "distanceKm": 2.8,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2878,8 +5161,26 @@
     "toType": "restaurant",
     "distanceKm": 1.3,
     "durationMin": 4,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2897,8 +5198,26 @@
     "toType": "restaurant",
     "distanceKm": 0.4,
     "durationMin": 2,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_07",
@@ -2916,8 +5235,26 @@
     "toType": "restaurant",
     "distanceKm": 2.5,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -2935,8 +5272,27 @@
     "toType": "restaurant",
     "distanceKm": 1.8,
     "durationMin": 6,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -2954,8 +5310,26 @@
     "toType": "restaurant",
     "distanceKm": 3.5,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -2973,8 +5347,26 @@
     "toType": "restaurant",
     "distanceKm": 5,
     "durationMin": 15,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -2992,8 +5384,26 @@
     "toType": "restaurant",
     "distanceKm": 3.6,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -3011,8 +5421,26 @@
     "toType": "restaurant",
     "distanceKm": 3.4,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -3030,8 +5458,26 @@
     "toType": "restaurant",
     "distanceKm": 2.6,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -3049,8 +5495,26 @@
     "toType": "restaurant",
     "distanceKm": 3.6,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -3068,8 +5532,26 @@
     "toType": "restaurant",
     "distanceKm": 2.4,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_08",
@@ -3087,8 +5569,26 @@
     "toType": "restaurant",
     "distanceKm": 5.1,
     "durationMin": 16,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3106,8 +5606,27 @@
     "toType": "restaurant",
     "distanceKm": 4.5,
     "durationMin": 14,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3125,8 +5644,26 @@
     "toType": "restaurant",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3144,8 +5681,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3163,8 +5718,26 @@
     "toType": "restaurant",
     "distanceKm": 2.1,
     "durationMin": 7,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3182,8 +5755,26 @@
     "toType": "restaurant",
     "distanceKm": 0.85,
     "durationMin": 3,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3201,8 +5792,26 @@
     "toType": "restaurant",
     "distanceKm": 1.3,
     "durationMin": 4,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3220,8 +5829,26 @@
     "toType": "restaurant",
     "distanceKm": 3.6,
     "durationMin": 11,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3239,8 +5866,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_09",
@@ -3258,8 +5903,26 @@
     "toType": "restaurant",
     "distanceKm": 7.7,
     "durationMin": 24,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3277,8 +5940,27 @@
     "toType": "restaurant",
     "distanceKm": 3.3,
     "durationMin": 10,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance from user-provided table; user confirmed the Huyen Anh branch is 50 Kim Long. Not independently checked against routing evidence.",
+      "branchConfirmedByUser": true
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3296,8 +5978,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3315,8 +6015,26 @@
     "toType": "restaurant",
     "distanceKm": 2.7,
     "durationMin": 9,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3334,8 +6052,26 @@
     "toType": "restaurant",
     "distanceKm": 1.5,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3353,8 +6089,26 @@
     "toType": "restaurant",
     "distanceKm": 1.1,
     "durationMin": 4,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3372,8 +6126,26 @@
     "toType": "restaurant",
     "distanceKm": 0.4,
     "durationMin": 2,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3391,8 +6163,26 @@
     "toType": "restaurant",
     "distanceKm": 2.4,
     "durationMin": 8,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
@@ -3410,8 +6200,26 @@
     "toType": "restaurant",
     "distanceKm": 1.4,
     "durationMin": 5,
-    "verificationStatus": "unverified",
-    "source": "UNVERIFIED: copied from current seed; routing evidence required",
+    "verificationStatus": "estimated",
+    "source": "ESTIMATED: duration calculated from seed distance using declared assumptions",
+    "distanceVerificationStatus": "user_provided",
+    "durationVerificationStatus": "estimated",
+    "durationEstimate": {
+      "transportMode": "motorcycle",
+      "assumedAverageSpeedKmh": 20,
+      "method": "ceil(distanceKm / assumedAverageSpeedKmh * 60)",
+      "basis": "User-requested estimate from unverified distance; speed is an assumption, not a measured average.",
+      "excludes": [
+        "parking",
+        "stops",
+        "traffic delays"
+      ]
+    },
+    "distanceSource": {
+      "type": "user_provided_table",
+      "providedOn": "2026-11-11",
+      "notes": "Directed distance transcribed from user table; no routing evidence supplied."
+    },
     "sourceReference": {
       "file": "backend/app/data/Hue/restaurants.json",
       "recordId": "REST_H_10",
