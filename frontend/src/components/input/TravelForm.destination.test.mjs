@@ -6,6 +6,11 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import React, { act } from "react";
+import { localTodayIso, addDaysIso, MAX_TRIP_DAYS } from "./travelRequest.js";
+
+const today = localTodayIso();
+const startSoon = today;
+const endSoon = addDaysIso(today, MAX_TRIP_DAYS - 1);
 
 // DOM-level integration for TPVA-41/42/43: the destination is sent as typed or left out;
 // the form never shows a suggestion screen or the backend's supported-city list.
@@ -52,7 +57,7 @@ test("M1 destination: plain input, skipped destination goes straight to results,
   const generateCalls = () => fetchCalls.filter(call => /\/itineraries\//.test(call.url));
   const onResults = () => Boolean(doc.querySelector("#results-probe"));
   const BASE = {
-    travelPeriod: { startDate: "2031-03-02", endDate: "2031-03-04" },
+    travelPeriod: { startDate: startSoon, endDate: endSoon },
     durationDays: 3,
     departureLocation: "Ha Noi",
     travelers: { count: 2 },
@@ -78,8 +83,8 @@ test("M1 destination: plain input, skipped destination goes straight to results,
       await click("Next");
       if (destination) { await fill("destination", destination); await click("Next"); }
       else { await fill("destination", "Typed then skipped"); await click("Not sure yet"); }
-      await fill("startDate", "2031-03-02");
-      await fill("endDate", "2031-03-04");
+      await fill("startDate", startSoon);
+      await fill("endDate", endSoon);
       await click("Next");
       await click("2 travelers");
       await click("Next");

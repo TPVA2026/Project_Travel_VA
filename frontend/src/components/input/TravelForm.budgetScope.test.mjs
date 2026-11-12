@@ -6,6 +6,11 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import React, { act } from "react";
+import { localTodayIso, addDaysIso, MAX_TRIP_DAYS } from "./travelRequest.js";
+
+const today = localTodayIso();
+const startSoon = today;
+const endSoon = addDaysIso(today, MAX_TRIP_DAYS - 1);
 
 // DOM-level integration: one traveler can only use a per-person budget.
 // Whole group is disabled, and a previous group choice is switched to per person.
@@ -60,8 +65,8 @@ test("M1 budget scope: one traveler can only choose per person", async () => {
     await fill("departureLocation", "Ha Noi");
     await click("Next");
     await click("Not sure yet");
-    await fill("startDate", "2031-03-02");
-    await fill("endDate", "2031-03-04");
+    await fill("startDate", startSoon);
+    await fill("endDate", endSoon);
     await click("Next");
     assert.deepEqual(visible(), [3]);
   };

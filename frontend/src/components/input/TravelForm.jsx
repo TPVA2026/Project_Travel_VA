@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, tripLimitHint, startDateBounds, endDateBounds, monthBounds } from "./travelRequest";
 
 // The slider's standard range is 0..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -157,7 +157,7 @@ export function monthFromParts(month, year) {
  * month select and year spin box writing one hidden canonical `month` field.
  * Only one enabled control is ever named "month".
  */
-export function MonthField({ supported, disabled, error, invalid, focusFirst, onCommit }) {
+export function MonthField({ supported, disabled, error, invalid, focusFirst, onCommit, minMonth, maxMonth }) {
   const hiddenRef = useRef(null);
   const monthRef = useRef(null);
   const yearRef = useRef(null);
@@ -170,7 +170,7 @@ export function MonthField({ supported, disabled, error, invalid, focusFirst, on
       <div className="field">
         <label htmlFor="month">Month<span className="req" aria-hidden="true">*</span></label>
         <div className="request-date-control">
-          <input id="month" name="month" type="month" required disabled={disabled} data-step-focus={focusFirst ? true : undefined} className={invalid ? "invalid" : undefined} aria-invalid={invalid || undefined} aria-describedby={errorId} />
+          <input id="month" name="month" type="month" min={minMonth || undefined} max={maxMonth || undefined} required disabled={disabled} data-step-focus={focusFirst ? true : undefined} className={invalid ? "invalid" : undefined} aria-invalid={invalid || undefined} aria-describedby={errorId} />
           <button type="button" className="request-picker" aria-label="Open calendar for Month" disabled={disabled} onClick={() => {
             const input = document.getElementById("month");
             input.focus();
@@ -193,6 +193,14 @@ export function MonthField({ supported, disabled, error, invalid, focusFirst, on
   }
   const fixClass = invalid ? "invalid" : undefined;
   const shown = error && error.startsWith("Use a month") ? MONTH_FALLBACK_ERROR : error;
+  const minYear = minMonth ? minMonth.slice(0, 4) : undefined;
+  const maxYear = maxMonth ? maxMonth.slice(0, 4) : undefined;
+  const yearText = yearRef.current?.value ?? "";
+  const monthDisabled = (mm) => {
+    if (!/^\d{1,4}$/.test(yearText) || Number(yearText) < 1) return false;
+    const ym = `${String(Number(yearText)).padStart(4, "0")}-${mm}`;
+    return Boolean((minMonth && ym < minMonth) || (maxMonth && ym > maxMonth));
+  };
 
   return (
     <fieldset className="field request-month-fallback" aria-describedby={errorId}>
@@ -203,12 +211,15 @@ export function MonthField({ supported, disabled, error, invalid, focusFirst, on
           <label htmlFor="month">Month</label>
           <select id="month" ref={monthRef} defaultValue="" disabled={disabled} required onInput={sync} onChange={() => { sync(); onCommit?.(); }} data-step-focus={focusFirst ? true : undefined} data-error-for={!focusYear ? "month" : undefined} className={fixClass} aria-invalid={invalid || undefined} aria-describedby={errorId}>
             <option value="">Choose month</option>
-            {MONTH_NAMES.map((name, index) => <option key={name} value={String(index + 1).padStart(2, "0")}>{name}</option>)}
+            {MONTH_NAMES.map((name, index) => {
+              const mm = String(index + 1).padStart(2, "0");
+              return <option key={name} value={mm} disabled={monthDisabled(mm)}>{name}</option>;
+            })}
           </select>
         </div>
         <div>
           <label htmlFor="monthYear">Year</label>
-          <input id="monthYear" ref={yearRef} type="number" min="1" max="9999" step="1" inputMode="numeric" placeholder="YYYY" defaultValue="" disabled={disabled} required onInput={sync} onChange={() => { sync(); onCommit?.(); }} data-error-for={focusYear ? "month" : undefined} className={fixClass} aria-invalid={invalid || undefined} aria-describedby={errorId} />
+          <input id="monthYear" ref={yearRef} type="number" min={minYear || "1"} max={maxYear || "9999"} step="1" inputMode="numeric" placeholder="YYYY" defaultValue="" disabled={disabled} required onInput={sync} onChange={() => { sync(); onCommit?.(); }} data-error-for={focusYear ? "month" : undefined} className={fixClass} aria-invalid={invalid || undefined} aria-describedby={errorId} />
         </div>
       </div>
       {shown && <span className={invalid ? "error" : undefined} id="month-error">{shown}</span>}
@@ -372,6 +383,13 @@ export default function TravelForm({ monthInputSupported }) {
     const target = event.target;
     if (target.name === "periodMode") setMode(target.value);
     if (target.name === "budgetScope") scopeTouched.current = true;
+    if (target.name === "startDate") {
+      const endInput = form.elements.namedItem("endDate");
+      const end = endInput?.value;
+      const start = target.value;
+      const span = inclusiveDays(start, end);
+      if (end && (span == null || span > MAX_TRIP_DAYS)) endInput.value = "";
+    }
     refresh(form, target.name === "budgetAmount");
   }
 
@@ -435,6 +453,9 @@ export default function TravelForm({ monthInputSupported }) {
     };
   };
 
+  const { min: startMin, max: startMax } = startDateBounds();
+  const { min: endMin, max: endMax } = endDateBounds(values.startDate);
+  const { min: monthMin, max: monthMax } = monthBounds();
   const dayCount = mode === "dates" ? inclusiveDays(values.startDate, values.endDate) : null;
   const when = mode === "month"
     ? (values.month ? `${showMonth(values.month)}${values.durationDays ? ` · ${days(Number(values.durationDays))}` : ""}` : "")
@@ -492,25 +513,34 @@ export default function TravelForm({ monthInputSupported }) {
         <div className="request-date-grid" hidden={mode !== "dates"}>
           <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required>
             <div className="request-date-control">
-              <input id="startDate" name="startDate" type="date" required disabled={mode !== "dates"} data-step-focus={mode === "dates" ? true : undefined} {...described("startDate")} />
+              <input id="startDate" name="startDate" type="date" min={startMin} max={startMax} required disabled={mode !== "dates"} data-step-focus={mode === "dates" ? true : undefined} {...described("startDate")} />
               <button type="button" className="request-picker" aria-label="Open calendar for Start date" disabled={mode !== "dates"} onClick={() => openPicker("startDate")}><CalendarIcon /></button>
             </div>
           </Field>
           <Field label="End date" name="endDate" error={errors.endDate} bad={bad} required>
             <div className="request-date-control">
-              <input id="endDate" name="endDate" type="date" min={values.startDate || undefined} required disabled={mode !== "dates"} {...described("endDate")} />
+              <input id="endDate" name="endDate" type="date" min={endMin} max={endMax} required disabled={mode !== "dates"} {...described("endDate")} />
               <button type="button" className="request-picker" aria-label="Open calendar for End date" disabled={mode !== "dates"} onClick={() => openPicker("endDate")}><CalendarIcon /></button>
             </div>
           </Field>
           {dayCount > 0 && <p className="request-question-hint request-span" aria-live="polite">{days(dayCount)}, including both dates</p>}
         </div>
         <div className="request-date-grid" hidden={mode !== "month"}>
-          <MonthField supported={nativeMonth} disabled={mode !== "month"} error={errors.month} invalid={Boolean(bad.month)} focusFirst={mode === "month"} onCommit={() => refresh(formRef.current)} />
-          <Field label="Number of days" name="durationDays" error={errors.durationDays} bad={bad} required>
-            <input id="durationDays" name="durationDays" type="number" min="1" step="1" placeholder="e.g. 3" required disabled={mode !== "month"} {...described("durationDays")} />
-          </Field>
+          <MonthField supported={nativeMonth} disabled={mode !== "month"} error={errors.month} invalid={Boolean(bad.month)} focusFirst={mode === "month"} minMonth={monthMin} maxMonth={monthMax} onCommit={() => refresh(formRef.current)} />
+          <div className="field request-span">
+            <span id="durationDays-label">Number of days<span className="req" aria-hidden="true">*</span></span>
+            <div className="request-choices request-choices-days" role="group" aria-labelledby="durationDays-label" aria-describedby={errors.durationDays ? "durationDays-error" : undefined}>
+              {Array.from({ length: MAX_TRIP_DAYS }, (_, index) => index + 1).map((count) => (
+                <button key={count} type="button" className="request-choice" aria-pressed={values.durationDays === String(count)} disabled={mode !== "month"} onClick={() => setControl("durationDays", String(count))}>
+                  <strong>{count}</strong> {count === 1 ? "day" : "days"}
+                </button>
+              ))}
+            </div>
+            <input id="durationDays" name="durationDays" type="hidden" disabled={mode !== "month"} required />
+            <StepError name="durationDays" error={errors.durationDays} />
+          </div>
         </div>
-      </>)}
+      </>, tripLimitHint())}
 
       {question(3, "travelers", <label htmlFor="travelerCount">How many travelers?</label>, <>
         <div className="request-choices" role="group" aria-label="Quick traveler choices">

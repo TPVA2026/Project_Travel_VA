@@ -6,7 +6,25 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import React, { act } from "react";
-import { ADDITIONAL_REQUIREMENTS_MAX, buildPayload, clientErrors } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, buildPayload, clientErrors, localTodayIso, localYearMonth, addDaysIso, addMonthsYm, addYearsIso, tripLimitHint } from "./travelRequest.js";
+
+const today = localTodayIso();
+const currentMonth = localYearMonth();
+const nextMonth = addMonthsYm(currentMonth, 1);
+const lastThisMonth = addDaysIso(`${nextMonth}-01`, -1);
+const startCross = lastThisMonth >= today ? lastThisMonth : addDaysIso(`${addMonthsYm(currentMonth, 2)}-01`, -1);
+const endCross = addDaysIso(startCross, MAX_TRIP_DAYS - 1);
+const startMax = addYearsIso(today, 1);
+function showDate(iso) {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" });
+}
+function showMonth(value) {
+  return new Date(`${value}-01T00:00:00Z`).toLocaleDateString("en-GB", { timeZone: "UTC", month: "long", year: "numeric" });
+}
+const monthWindowMax = addMonthsYm(currentMonth, 12);
+const pickMonth = addMonthsYm(currentMonth, 4) <= monthWindowMax ? addMonthsYm(currentMonth, 4) : monthWindowMax;
+const pickMonthPart = pickMonth.slice(5, 7);
+const pickYearPart = pickMonth.slice(0, 4);
 
 // DOM-level integration, not a browser visual or screen-reader test.
 test("M1 one-question request flow: steps, validation, budget, dates, review and submit", async () => {
@@ -103,12 +121,14 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     assertStep(2, "Blank destination is allowed");
 
-    // Desktop date controls are native pickers with ISO values and any valid year.
+    // Desktop date controls are native pickers with a supported window and inclusive day cap.
     assert.equal(field("startDate").type, "date");
     assert.equal(field("endDate").type, "date");
     assert.equal(doc.querySelector('label[for="startDate"]').textContent.replace("*", ""), "Start date");
     assert.equal(doc.querySelector('label[for="endDate"]').textContent.replace("*", ""), "End date");
-    assert.equal(field("startDate").max, "", "Years are not capped");
+    assert.equal(field("startDate").min, today);
+    assert.equal(field("startDate").max, startMax);
+    assert.equal(doc.getElementById("request-step-2-hint").textContent, tripLimitHint());
     assert.equal(active(), "startDate");
     let pickerCalls = 0;
     field("startDate").showPicker = () => { pickerCalls += 1; };
@@ -120,26 +140,30 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     assertStep(2);
     assert.equal(doc.getElementById("startDate-error").textContent, "This field is required.");
-    await fill("startDate", "2031-12-30");
-    await fill("endDate", "2031-12-29");
+    await fill("startDate", startCross);
+    await fill("endDate", addDaysIso(startCross, -1));
     await click("Next");
     assertStep(2);
     assert.equal(doc.getElementById("endDate-error").textContent, "End date must be on or after the start date.");
-    await fill("endDate", "2032-01-02");
-    assert.match(doc.querySelector(".request-span").textContent, /^4 days/);
-    // Month branch: month + year with a day count; both branches keep their entries.
+    await fill("endDate", endCross);
+    assert.match(doc.querySelector(".request-span").textContent, new RegExp(`^${MAX_TRIP_DAYS} days`));
+    assert.equal(field("endDate").min, startCross);
+    assert.equal(field("endDate").max, endCross);
+    // Month branch: start month + card day count; both branches keep their entries.
     await radio("periodMode", "month");
     assert.equal(field("month").type, "month");
-    assert.equal(field("durationDays").type, "number");
+    assert.equal(field("month").min, currentMonth);
+    assert.equal(field("month").max, addMonthsYm(currentMonth, 12));
+    assert.equal(field("durationDays").type, "hidden");
     assert.equal(field("startDate").disabled, true);
-    assert.equal(field("startDate").value, "2031-12-30");
-    await fill("month", "2035-02");
-    await fill("durationDays", "5");
+    assert.equal(field("startDate").value, startCross);
+    await fill("month", nextMonth);
+    await fill("durationDays", String(MAX_TRIP_DAYS));
     await radio("periodMode", "dates");
-    assert.equal(field("startDate").value, "2031-12-30");
-    assert.equal(field("endDate").value, "2032-01-02");
-    assert.equal(field("month").value, "2035-02");
-    assert.equal(field("durationDays").value, "5");
+    assert.equal(field("startDate").value, startCross);
+    assert.equal(field("endDate").value, endCross);
+    assert.equal(field("month").value, nextMonth);
+    assert.equal(field("durationDays").value, String(MAX_TRIP_DAYS));
     await radio("periodMode", "month");
     assert.deepEqual(clientErrors(new FormData(form)).month, undefined);
     assert.equal(new FormData(form).has("startDate"), false, "Inactive date branch is not submitted");
@@ -148,15 +172,15 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
 
     // Travelers: no default, quick picks and any other whole number.
     assert.equal(field("travelerCount").value, "");
-    assert.deepEqual([...doc.querySelectorAll(".request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.deepEqual([...doc.querySelectorAll("#request-step-3 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
     await click("Next");
     assertStep(3);
     assert.equal(active(), "travelerCount");
-    await actOn(() => [...doc.querySelectorAll(".request-choice")][1].click());
+    await actOn(() => [...doc.querySelectorAll("#request-step-3 .request-choice")][1].click());
     assert.equal(field("travelerCount").value, "2");
-    assert.equal([...doc.querySelectorAll(".request-choice")][1].getAttribute("aria-pressed"), "true");
+    assert.equal([...doc.querySelectorAll("#request-step-3 .request-choice")][1].getAttribute("aria-pressed"), "true");
     await fill("travelerCount", "7");
-    assert.deepEqual([...doc.querySelectorAll(".request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.deepEqual([...doc.querySelectorAll("#request-step-3 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
     await click("Next");
     assertStep(4);
     assert.equal(active(), "budgetAmount");
@@ -284,7 +308,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.deepEqual(rows(), {
       "Leaving from": "Hue",
       "Going to": "Not chosen. We'll suggest destinations based on your trip.",
-      When: "February 2035 · 5 days",
+      When: `${showMonth(nextMonth)} · ${MAX_TRIP_DAYS} days`,
       Travelers: "7 travelers",
       Budget: "7,654,321 VND · per person",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
@@ -309,7 +333,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Edit dates");
     await radio("periodMode", "dates");
     await click("Back to review");
-    assert.equal(rows().When, "30 Dec 2031 – 2 Jan 2032 · 4 days");
+    assert.equal(rows().When, `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`);
     // Back/Next keeps every earlier answer, including the draft.
     for (let index = 5; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
     assert.equal(field("departureLocation").value, "Hue");
@@ -386,8 +410,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Successful final submit sends the exact contract payload once.
     const payload = buildPayload(new FormData(form));
     assert.deepEqual(payload, {
-      travelPeriod: { startDate: "2031-12-30", endDate: "2032-01-02" },
-      durationDays: 4,
+      travelPeriod: { startDate: startCross, endDate: endCross },
+      durationDays: MAX_TRIP_DAYS,
       departureLocation: "Hue",
       travelers: { count: 7 },
       budget: { amount: 7654321, currency: "VND", scope: "perPerson" },
@@ -421,8 +445,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     await click("Next");
     await radio("periodMode", "month");
-    await fill("month", "2030-07");
-    await fill("durationDays", "3");
+    await fill("month", nextMonth);
+    await fill("durationDays", String(MAX_TRIP_DAYS));
     await click("Next");
     await fill("travelerCount", "6");
     await click("Next");
@@ -432,7 +456,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     assertStep(6);
     const custom = buildPayload(new FormData(clean));
-    assert.deepEqual(custom, { travelPeriod: { month: "2030-07" }, durationDays: 3, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
+    assert.deepEqual(custom, { travelPeriod: { month: nextMonth }, durationDays: MAX_TRIP_DAYS, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
     assert.equal(custom.preferences?.destination, undefined, "Skipped destination is omitted, never filled in");
     assert.equal(field("budgetSlider").value, "70123456");
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
@@ -511,8 +535,8 @@ test("M1 month fallback: probe, labelled month/year controls, canonical field, v
     assert.equal(field("month").value, "", "No default month");
     assert.equal(field("monthYear").value, "", "No default year");
     assert.equal(field("monthYear").type, "number");
-    assert.equal(field("monthYear").min, "1");
-    assert.equal(field("monthYear").max, "9999");
+    assert.equal(field("monthYear").min, currentMonth.slice(0, 4));
+    assert.equal(field("monthYear").max, addMonthsYm(currentMonth, 12).slice(0, 4));
     assert.equal(field("month").name, "");
     assert.equal(field("monthYear").name, "");
     assert.equal(form.querySelectorAll('[name="month"]').length, 1, "Single canonical month field");
@@ -520,13 +544,13 @@ test("M1 month fallback: probe, labelled month/year controls, canonical field, v
     assert.equal(new FormData(form).has("monthYear"), false);
 
     // Empty, partial and out-of-range values block Next and focus the visible control.
-    await fill("durationDays", "4");
+    await fill("durationDays", String(MAX_TRIP_DAYS));
     await click("Next");
     assert.deepEqual(step(), [2]);
     assert.equal(doc.getElementById("month-error").textContent, "This field is required.");
     assert.equal(doc.activeElement.id, "month");
     assert.equal(field("month").getAttribute("aria-invalid"), "true");
-    await fill("month", "03");
+    await fill("month", pickMonthPart);
     assert.match(new FormData(form).get("month"), /^incomplete:/, "FormData is fresh after the select changes");
     await click("Next");
     assert.deepEqual(step(), [2]);
@@ -538,20 +562,20 @@ test("M1 month fallback: probe, labelled month/year controls, canonical field, v
       assert.deepEqual(step(), [2], `year ${year} is rejected`);
       assert.equal(doc.activeElement.id, "monthYear");
     }
-    await fill("monthYear", "9999");
-    assert.equal(new FormData(form).get("month"), "9999-03");
+    await fill("monthYear", pickYearPart);
+    assert.equal(new FormData(form).get("month"), pickMonth);
     await fill("month", "");
     await click("Next");
     assert.equal(doc.activeElement.id, "month", "Missing month focuses the month select");
-    await fill("month", "03");
+    await fill("month", pickMonthPart);
 
     // Toggling to dates disables the canonical field but keeps the entries.
     await radio("periodMode", "dates");
     assert.equal(new FormData(form).has("month"), false);
     await radio("periodMode", "month");
-    assert.equal(field("month").value, "03");
-    assert.equal(field("monthYear").value, "9999");
-    assert.equal(new FormData(form).get("month"), "9999-03");
+    assert.equal(field("month").value, pickMonthPart);
+    assert.equal(field("monthYear").value, pickYearPart);
+    assert.equal(new FormData(form).get("month"), pickMonth);
     await click("Next");
     assert.deepEqual(step(), [3]);
     await fill("travelerCount", "3");
@@ -563,15 +587,16 @@ test("M1 month fallback: probe, labelled month/year controls, canonical field, v
     await click("Next");
     assert.deepEqual(step(), [6]);
     const when = () => [...doc.querySelectorAll(".request-review > div")].find(row => row.querySelector("dt").textContent === "When").querySelector("dd").textContent;
-    assert.equal(when(), "March 9999 · 4 days");
-    // Edit, change the year, return: summary and payload follow the latest value.
+    assert.equal(when(), `${showMonth(pickMonth)} · ${MAX_TRIP_DAYS} days`);
+    // Edit, change the month, return: summary and payload follow the latest value.
     await click("Edit dates");
     assert.equal(doc.activeElement.id, "month");
-    await fill("monthYear", "2041");
+    await fill("month", nextMonth.slice(5, 7));
+    await fill("monthYear", nextMonth.slice(0, 4));
     await click("Back to review");
-    assert.equal(when(), "March 2041 · 4 days");
+    assert.equal(when(), `${showMonth(nextMonth)} · ${MAX_TRIP_DAYS} days`);
     const payload = buildPayload(new FormData(form));
-    assert.deepEqual(payload, { travelPeriod: { month: "2041-03" }, durationDays: 4, departureLocation: "Hue", travelers: { count: 3 }, budget: { amount: 0, currency: "VND", scope: "group" } });
+    assert.deepEqual(payload, { travelPeriod: { month: nextMonth }, durationDays: MAX_TRIP_DAYS, departureLocation: "Hue", travelers: { count: 3 }, budget: { amount: 0, currency: "VND", scope: "group" } });
     await click("Create itinerary");
     assert.deepEqual(fetchCalls.filter(call => call.url === "/api/v1/requests/validate"), [{ url: "/api/v1/requests/validate", payload }]);
 
