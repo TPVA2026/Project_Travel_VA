@@ -26,6 +26,7 @@ from typing import Annotated, Any
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator, model_validator
 
 from app.algorithms.validation_common import route_reference
+from app.services.ai.opening_hours import normalize_opening_hours
 
 log = logging.getLogger(__name__)
 
@@ -164,7 +165,51 @@ def _name_key(value: object) -> str | None:
     return " ".join(words) or None
 
 
-def build_context(request: dict, dataset: dict) -> dict:
+
+def _rank_places(places: list, request: dict) -> list:
+    """Rank supported places by preference match, evidence and data completeness."""
+    preferences = request.get("preferences") or {}
+    if not isinstance(preferences, dict):
+        preferences = {}
+
+    interests = preferences.get("interests", request.get("interests", []))
+    if not isinstance(interests, list):
+        interests = []
+
+    terms = [value.casefold().strip() for value in interests
+             if isinstance(value, str) and value.strip()]
+
+    dining_preferences = request.get("dining") or {}
+    if isinstance(dining_preferences, dict):
+        likes = dining_preferences.get("likes") or []
+        if isinstance(likes, list):
+            terms.extend(
+                value.casefold().strip()
+                for value in likes
+                if isinstance(value, str) and value.strip()
+            )
+
+
+    def score(place):
+        data = place.model_dump(by_alias=True)
+        searchable = " ".join(
+            str(data.get(key) or "")
+            for key in ("name", "category", "description", "tags")
+        ).casefold()
+
+        matches = sum(term in searchable for term in terms)
+        source = str(data.get("source") or "")
+        curated = source != "OpenTripMap"
+        completeness = sum(
+            data.get(key) is not None
+            for key in ("durationMin", "priceVnd", "avgPricePerPersonVnd")
+        )
+
+        return (-matches, -int(curated), -completeness, place.id)
+
+    return sorted(places, key=score)
+
+def build_context(request: dict, dataset: dict, *, limit_places: bool = True) -> dict:
     preferences = request.get("preferences") if isinstance(request, dict) else None
     if isinstance(preferences, dict) and "destination" in preferences:
         wanted = preferences["destination"]
@@ -200,14 +245,23 @@ def build_context(request: dict, dataset: dict) -> dict:
     if wanted is not None:
         attractions = [p for p in attractions if _destination_of(p) == wanted]
         dining = [p for p in dining if _destination_of(p) == wanted]
-    if nationwide:
-        curated = [p for p in attractions if (p.model_extra or {}).get("source") != "OpenTripMap"]
-        imported = [p for p in attractions if (p.model_extra or {}).get("source") == "OpenTripMap"]
-        imported.sort(key=lambda p: (
-            -((p.model_extra or {}).get("rate")
-              if isinstance((p.model_extra or {}).get("rate"), int) else 0), p.id,
-        ))
-        attractions = curated + imported[:100]
+    if limit_places and attractions:
+        curated = [
+            p for p in attractions
+            if (p.model_extra or {}).get("source") != "OpenTripMap"
+        ]
+        imported = [
+            p for p in attractions
+            if (p.model_extra or {}).get("source") == "OpenTripMap"
+        ]
+
+        curated = _rank_places(curated, request)
+        imported = _rank_places(imported, request)
+
+        imported_limit = max(0, 30 - len(curated))
+        attractions = curated + imported[:imported_limit]
+
+    dining = _rank_places(dining, request)
 
     ids = {p.id for p in attractions} | {p.id for p in dining}
     matrix_raw = dataset.get("travel_matrix", dataset.get("travelMatrix"))
@@ -225,8 +279,16 @@ def build_context(request: dict, dataset: dict) -> dict:
 
     return {
         "destinations": [d.model_dump(by_alias=True) for d in destinations],
-        "attractions": [p.model_dump(by_alias=True) for p in attractions],
-        "dining": [p.model_dump(by_alias=True) for p in dining],
+        "attractions": [
+            {**p.model_dump(by_alias=True),
+             "openingHours": normalize_opening_hours(p.model_dump(by_alias=True))}
+            for p in attractions
+        ],
+        "dining": [
+            {**p.model_dump(by_alias=True),
+             "openingHours": normalize_opening_hours(p.model_dump(by_alias=True))}
+            for p in dining
+        ],
         "travelMatrix": [leg.model_dump(by_alias=True) for leg in legs],
     }
 

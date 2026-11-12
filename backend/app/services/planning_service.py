@@ -83,7 +83,7 @@ def _prepare_evaluation_inputs(
             ) from None
 
     dataset = _load_planning_dataset()
-    context = build_context(normalized_request, dataset)
+    context = build_context(normalized_request, dataset, limit_places=False)
     if not valid_destination_ids(context):
         message = (
             "The selected destination is not supported by the current dataset."
@@ -97,7 +97,7 @@ def _prepare_evaluation_inputs(
         )
         raise PlanningError("NO_DATA", message)
     for index, plan in enumerate(validated_plans):
-        errors = check_grounding(plan, context)
+        errors = check_grounding(plan, context, check_hours=False)
         if errors:
             message = (
                 "Plan failed schema/grounding checks" if single
