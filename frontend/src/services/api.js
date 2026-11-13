@@ -735,3 +735,48 @@ export async function validateTravelRequest(payload) {
   }
   return body;
 }
+
+/** Stream fully generated and evaluated candidates, one at a time. */
+export async function streamItineraryPipeline(payload, opts = {}) {
+  const response = await fetch(apiUrl('/itineraries/pipeline-stream'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ request: payload, count: clampCandidateCount(opts.count) }),
+    signal: opts.signal,
+  })
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw pipelineError(body.error || 'STREAM_ERROR', body.message || 'Cannot start itinerary generation')
+  }
+  if (!response.body) throw pipelineError('STREAM_ERROR', 'Streaming is unavailable in this browser')
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let finalResult = null
+  const processLine = (line) => {
+    if (!line.trim()) return
+    const event = JSON.parse(line)
+    opts.onEvent?.(event)
+    if (event.type === 'complete') finalResult = event.result
+    if (event.type === 'error') throw pipelineError(event.code, event.message)
+  }
+  try {
+    while (true) {
+      const { value, done } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      let end
+      while ((end = buffer.indexOf('\n')) !== -1) {
+        const line = buffer.slice(0, end)
+        buffer = buffer.slice(end + 1)
+        processLine(line)
+      }
+    }
+    buffer += decoder.decode()
+    if (buffer.trim()) processLine(buffer)
+    if (!finalResult) throw pipelineError('STREAM_ERROR', 'Stream ended without a completed result')
+    return finalResult
+  } finally {
+    reader.releaseLock()
+  }
+}

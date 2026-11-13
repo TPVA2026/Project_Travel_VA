@@ -6,7 +6,7 @@ import {
   getSelectedPlanId,
   indexPlaces,
   resolveDestinationName,
-  runItineraryPipeline,
+  streamItineraryPipeline,
   selectPlan,
   clearSelectedPlan,
   PIPELINE_MAX_CANDIDATES,
@@ -224,6 +224,7 @@ export default function ResultsPage() {
   const [pipeline, setPipeline] = useState(null)
   const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
   const [aiError, setAiError] = useState(null)
+  const [streamProgress, setStreamProgress] = useState(null)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
   const startedRequestRef = useRef(null)
@@ -233,15 +234,35 @@ export default function ResultsPage() {
     const requestKey = JSON.stringify(pendingRequest)
     setAiLoading(true)
     setAiError(null)
+    setStreamProgress(null)
     try {
-      const body = await runItineraryPipeline(pendingRequest, { count: PIPELINE_MAX_CANDIDATES })
+      const body = await streamItineraryPipeline(pendingRequest, {
+        count: PIPELINE_MAX_CANDIDATES,
+        onEvent: (event) => {
+          if (event.type === 'progress') setStreamProgress({
+            candidateIndex: event.candidateIndex,
+            requestedCount: event.requestedCount,
+          })
+          if (event.type === 'candidate') {
+            setPipeline((current) => ({
+              pipelineStatus: 'GENERATING',
+              generator: 'ai',
+              request: pendingRequest,
+              candidates: [...(current?.candidates || []), event.candidate],
+              ranking: { ranked: [], unscored: [], excluded: [] },
+              warnings: [],
+            }))
+          }
+        },
+      })
       sessionStorage.setItem(PLAN_KEY, JSON.stringify({ requestKey, pipeline: body }))
       setPipeline(body)
     } catch (err) {
       setAiError(err)
-      setPipeline(null)
+      // Preserve already generated candidates if a later request fails.
     } finally {
       setAiLoading(false)
+      setStreamProgress(null)
     }
   }, [pendingRequest])
 
@@ -362,7 +383,9 @@ export default function ResultsPage() {
       <RequestSummary request={pendingRequest} />
 
       {pendingRequest && aiLoading && (
-        <Loading message="Waiting for the assistant to build your itineraries..." />
+        <Loading message={streamProgress
+          ? `Generating itinerary ${streamProgress.candidateIndex} of ${streamProgress.requestedCount}… You can review completed itineraries below.`
+          : 'Generating itinerary 1 of 3…'} />
       )}
 
       {pendingRequest && !aiLoading && aiError && (
@@ -373,13 +396,13 @@ export default function ResultsPage() {
         />
       )}
 
-      {pendingRequest && !aiLoading && !aiError && pipeline && (
+      {pendingRequest && pipeline && (
         <>
           <SelectedCandidateBanner
             candidate={selectedCandidate}
             onClear={() => handleSelectCandidate(selectedCandidate)}
           />
-          <PartialResultsBanner pipeline={pipeline} />
+          {!aiLoading && <PartialResultsBanner pipeline={pipeline} />}
           {placeCatalogError && (
             <p className="ai-plan-note ai-plan-note--warn">
               <Icon name="alert" size={16} />

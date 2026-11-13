@@ -228,3 +228,83 @@ def revise(body: ReviseBody):
 
 
 # Selection remains browser-local for the no-account MVP.
+
+
+@router.post('/pipeline-stream')
+def pipeline_stream(body: PipelineBody):
+    """Stream each COMPLETE candidate after evaluation, without splitting days."""
+    import json
+    from fastapi.responses import StreamingResponse
+    from app.services.ai.itinerary_generator import _candidate_signature
+    from app.services.planning_service import _load_planning_dataset
+
+    try:
+        request = validate_travel_request(body.request).model_dump(mode='json', by_alias=True)
+        if not 1 <= request['durationDays'] <= 3:
+            return JSONResponse({'error': 'INVALID_DURATION', 'message': 'MVP supports 1 to 3 days'}, status_code=422)
+        dataset = _load_planning_dataset(request)
+    except ValidationError as exc:
+        return JSONResponse({'error': 'VALIDATION_ERROR', 'details': request_problems(body.request, exc)}, status_code=422)
+    except PlanningError as exc:
+        return JSONResponse({'error': exc.code, 'message': exc.message}, status_code=exc.status_code)
+
+    def events():
+        def emit(kind, **fields):
+            return json.dumps({'type': kind, **fields}, ensure_ascii=False) + '\n'
+
+        plans, candidates, warnings, seen = [], [], [], set()
+        # Match the original pipeline's duplicate handling (up to 3 attempts per candidate).
+        attempts = 0
+        while len(candidates) < body.count and attempts < body.count * 3:
+            attempts += 1
+            yield emit('progress', candidateIndex=len(candidates) + 1, requestedCount=body.count)
+            try:
+                plan = generate_candidate(request, dataset, previous_plans=plans.copy())
+                signature = _candidate_signature(plan)
+                if signature in seen:
+                    continue
+                seen.add(signature)
+                plans.append(plan)
+                try:
+                    evaluation = evaluate_plan(request, plan)
+                    status = evaluation.get('status', 'UNVERIFIED')
+                    if status not in {'FEASIBLE', 'UNVERIFIED', 'INFEASIBLE'}:
+                        status = 'UNVERIFIED'
+                except PlanningError as exc:
+                    evaluation, status = None, 'UNVERIFIED'
+                    warnings.append({'code': 'EVALUATION_UNAVAILABLE', 'planId': plan['planId'], 'message': exc.message})
+                candidate = {'planId': plan['planId'], 'plan': plan, 'status': status, 'evaluation': evaluation}
+                candidates.append(candidate)
+                yield emit('candidate', candidateIndex=len(candidates), requestedCount=body.count, candidate=candidate)
+            except GeminiError as exc:
+                warnings.append({'code': 'PARTIAL_GENERATION', 'message': exc.message})
+                break
+            except PlanningError as exc:
+                warnings.append({'code': exc.code, 'message': exc.message})
+                break
+            except Exception:
+                warnings.append({'code': 'INTERNAL', 'message': 'Unexpected generation error'})
+                break
+
+        if len(candidates) < body.count:
+            warnings.append({'code': 'INSUFFICIENT_CANDIDATES',
+                             'message': f'Only {len(candidates)} distinct candidate(s) generated; requested {body.count}.'})
+        if not candidates:
+            yield emit('error', code=warnings[0]['code'] if warnings else 'NO_CANDIDATES',
+                       message=warnings[0]['message'] if warnings else 'No usable candidates')
+            return
+        try:
+            rankable = [c['plan'] for c in candidates if c['evaluation'] is not None]
+            ranking = rank_candidate_plans(request, rankable) if rankable else {'ranked': [], 'unscored': [], 'excluded': []}
+        except PlanningError as exc:
+            ranking = {'ranked': [], 'unscored': [], 'excluded': []}
+            warnings.append({'code': 'RANKING_UNAVAILABLE', 'message': exc.message})
+        primary = candidates[0]
+        result = {'pipelineStatus': 'PARTIAL' if warnings else 'COMPLETE',
+                  'generator': 'ai', 'candidates': candidates, 'ranking': ranking,
+                  'warnings': warnings, 'request': request,
+                  'status': primary['status'], 'plan': primary['plan'], 'evaluation': primary['evaluation']}
+        yield emit('complete', result=result)
+
+    return StreamingResponse(events(), media_type='application/x-ndjson',
+                             headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})

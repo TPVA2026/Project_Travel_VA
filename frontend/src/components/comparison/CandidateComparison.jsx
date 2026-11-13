@@ -282,16 +282,16 @@ export default function CandidateComparison({
       <div className="section-head">
         <div>
           <h2 id="candidate-results-heading">
-            {candidates.length} lịch trình từ trợ lý
+            {candidates.length} AI-Generated Itineraries
           </h2>
           <p className="muted">
-            Mỗi lịch được chấm bằng kiểm tra chi phí, lịch trình và di chuyển của backend.
-            Trạng thái hiển thị đúng như trả về, không nâng cấp thành đã xác minh.
+            Each itinerary is evaluated by the backend based on cost, scheduling, and travel constraints.
+            Evaluation statuses are displayed exactly as returned by the system, without falsely marking unverified itineraries as verified.
           </p>
         </div>
         <span className="count-pill">
           <Icon name="route" size={15} />
-          {candidates.length} lịch
+          {candidates.length} itineraries
         </span>
       </div>
 

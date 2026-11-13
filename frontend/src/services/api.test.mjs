@@ -567,7 +567,7 @@ test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', asy
       } else {
         assert.match(
           dom.window.document.querySelector('#candidate-results-heading').textContent,
-          new RegExp(`${count} lịch trình từ trợ lý`)
+          new RegExp(`${count} AI-Generated Itineraries`)
         )
         assert.doesNotMatch(dom.window.document.body.textContent, /3 plan comparison/i)
       }
