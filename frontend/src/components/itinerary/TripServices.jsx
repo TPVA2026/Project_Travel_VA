@@ -2,10 +2,10 @@ import {
   collectTravelLegs,
   displayPlaceName,
   getPlanServiceItems,
+  safeSourceUrl,
 } from '../../services/api.js'
 import { fmtMoney } from '../../services/mockData.js'
 import Icon from '../common/Icon.jsx'
-import SourceLink from '../common/SourceLink.jsx'
 
 const TRANSPORT_KINDS = [
   { tokens: ['train', 'tàu', 'tau'], icon: 'train', label: 'Tàu hỏa' },
@@ -46,6 +46,30 @@ function Stat({ label, value }) {
   )
 }
 
+function ServiceTitle({ id, title, sourceUrl, sourceLabel }) {
+  const safeUrl = safeSourceUrl(sourceUrl)
+  const label = sourceLabel || 'nguồn tham khảo'
+  return (
+    <h3 id={id} className="service-title">
+      {safeUrl ? (
+        <a
+          className="source-name-link"
+          href={safeUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+          title={`Mở nguồn: ${label}`}
+          aria-label={`${title} — mở nguồn ${label}`}
+        >
+          {title}
+          <Icon name="external" size={13} />
+        </a>
+      ) : (
+        title
+      )}
+    </h3>
+  )
+}
+
 function LegStatus({ verified }) {
   return verified ? (
     <span className="service-leg-status service-leg-status--verified">
@@ -63,7 +87,7 @@ function LegStatus({ verified }) {
 function StayCard({ item }) {
   const { title, room } = stayName(item?.name)
   const nights = Number(item?.nights)
-  const hasNights = Number.isFinite(nights) && nights > 0
+  const isDayTrip = Number.isFinite(nights) && nights === 0
   return (
     <article className="service-card" aria-labelledby="trip-stay-heading">
       <div className="service-card-head">
@@ -72,9 +96,12 @@ function StayCard({ item }) {
         </span>
         <div className="service-heading">
           <p className="service-kicker">Lưu trú</p>
-          <h3 id="trip-stay-heading" className="service-title">
-            {item ? title : 'Chưa có dữ liệu lưu trú'}
-          </h3>
+          <ServiceTitle
+            id="trip-stay-heading"
+            title={item ? title : 'Chưa có dữ liệu lưu trú'}
+            sourceUrl={item?.sourceUrl}
+            sourceLabel={item?.source}
+          />
           {item && (room || item.status) && (
             <div className="service-subline">
               {room && <span className="service-room">{room}</span>}
@@ -94,14 +121,13 @@ function StayCard({ item }) {
             <Stat label="Đơn giá/đêm" value={money(item.unitPriceVnd)} />
             <Stat label="Tạm tính" value={money(item.amountVnd)} />
           </div>
-          {!hasNights && (
+          {isDayTrip && (
             <p className="service-hint">Chuyến trong ngày nên chưa phát sinh đêm lưu trú.</p>
           )}
           <p className="service-note">
             Giá phòng tham khảo, chưa gồm thuế/phụ phí và chưa xác nhận tình trạng phòng cho
             ngày bạn đi.
           </p>
-          <SourceLink url={item.sourceUrl} label={item.source} />
         </>
       ) : (
         <p className="service-note">
@@ -127,9 +153,12 @@ function TransportCard({ item, legs, placesById }) {
         </span>
         <div className="service-heading">
           <p className="service-kicker">Di chuyển</p>
-          <h3 id="trip-transport-heading" className="service-title">
-            {item ? title : 'Các chặng trong lịch trình'}
-          </h3>
+          <ServiceTitle
+            id="trip-transport-heading"
+            title={item ? title : 'Các chặng trong lịch trình'}
+            sourceUrl={item?.sourceUrl}
+            sourceLabel={item?.source}
+          />
           <div className="service-subline">
             <span className="service-room">{kind.label}</span>
             {item?.status === 'ESTIMATED' && <span className="service-badge">Ước tính</span>}
@@ -149,7 +178,6 @@ function TransportCard({ item, legs, placesById }) {
             Giá tham khảo đã gồm phí dịch vụ; chưa gồm chiều về và trung chuyển sân bay, ga,
             bến xe.
           </p>
-          <SourceLink url={item.sourceUrl} label={item.source} />
         </>
       ) : (
         <p className="service-note">
@@ -207,7 +235,6 @@ export default function TripServices({ plan, placesById }) {
   if (!plan) return null
   const { stay, transport } = getPlanServiceItems(plan)
   const legs = collectTravelLegs(plan)
-  if (!stay && !transport && legs.length === 0) return null
 
   return (
     <section className="trip-services selected-wide" aria-labelledby="trip-services-heading">

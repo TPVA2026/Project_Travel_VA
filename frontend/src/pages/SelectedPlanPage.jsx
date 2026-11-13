@@ -19,7 +19,6 @@ import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
 import CostSummary from '../components/itinerary/CostSummary.jsx'
 import EvaluationChecks from '../components/itinerary/EvaluationChecks.jsx'
 import TripServices from '../components/itinerary/TripServices.jsx'
-import RevisionForm from '../components/revision/RevisionForm.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
@@ -127,15 +126,6 @@ export default function SelectedPlanPage() {
       setTimeout(() => setCopyFeedback(false), 2500)
     } catch {
       // Fallback
-    }
-  }
-
-  // When a revision is applied from RevisionForm
-  const handlePlanRevised = (revisedPlan) => {
-    setPlan(revisedPlan)
-    // If this revised plan was chosen, update the stored data as well
-    if (isChosen) {
-      selectPlan(revisedPlan)
     }
   }
 
@@ -526,25 +516,6 @@ export default function SelectedPlanPage() {
               <p className="muted small">Lịch này chưa có dữ liệu kiểm tra từ backend.</p>
             )}
           </section>
-
-          {/* Revision Section (TPVA-31) */}
-          <details className="revision-accordion selected-wide no-print">
-            <summary className="revision-summary-header">
-              <span className="revision-summary-icon" aria-hidden="true">
-                <Icon name="edit" size={18} />
-              </span>
-              <span className="revision-summary-copy">
-                <strong className="summary-title">Request a change</strong>
-                <span className="muted small">
-                  Adjust budget, duration, dates, travelers, or preferences
-                </span>
-              </span>
-              <Icon name="chevronDown" size={18} className="summary-chevron" />
-            </summary>
-            <div className="revision-panel-body">
-              <RevisionForm plan={plan} onPlanRevised={handlePlanRevised} />
-            </div>
-          </details>
         </>
       )}
     </div>

@@ -2890,44 +2890,6 @@ body {
   gap: 6px 10px;
 }
 
-.source-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border: 1px solid var(--rv-line-strong);
-  border-radius: 999px;
-  background: var(--rv-sand);
-  color: var(--rv-terra);
-  font-size: 0.7rem;
-  font-weight: 700;
-  line-height: 1.4;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
-}
-
-.source-link .icon {
-  flex: none;
-}
-
-.source-link:hover {
-  border-color: var(--rv-terra);
-  background: var(--rv-terra-soft);
-  color: var(--rv-terra-dark);
-}
-
-.source-link:focus-visible {
-  outline: 2px solid var(--rv-terra);
-  outline-offset: 2px;
-}
-
-.source-link--compact {
-  padding: 1px 7px;
-  font-size: 0.66rem;
-  letter-spacing: 0.02em;
-}
-
 /* Stay and transport summary at the bottom of the selected plan */
 .trip-services {
   display: flex;
@@ -3075,10 +3037,6 @@ body {
   line-height: 1.5;
 }
 
-.service-card .source-link {
-  align-self: flex-start;
-}
-
 .service-legs-block {
   display: flex;
   flex-direction: column;
@@ -3207,10 +3165,6 @@ body {
   .service-leg {
     flex-direction: column;
     gap: 6px;
-  }
-
-  .source-link {
-    white-space: normal;
   }
 }
 
@@ -3822,6 +3776,39 @@ body {
   font-size: 0.92rem;
   font-weight: 700;
   line-height: 1.35;
+}
+
+.source-name-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--rv-terra) 45%, transparent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
+}
+
+.source-name-link .icon {
+  margin-left: 4px;
+  color: var(--rv-terra);
+  opacity: 0.7;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.source-name-link:hover {
+  color: var(--rv-terra-dark);
+  text-decoration-color: var(--rv-terra);
+}
+
+.source-name-link:hover .icon {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.source-name-link:focus-visible {
+  outline: 2px solid var(--rv-terra);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 .activity-desc {

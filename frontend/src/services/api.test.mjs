@@ -622,7 +622,6 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
   const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
   try {
     const body = dom.window.document.body.textContent
-    const sourceLinks = dom.window.document.querySelectorAll('.source-link')
     assert.match(body, /Dự toán tham khảo/)
     assert.match(body, /Lưu trú/)
     assert.match(body, /1 phòng/)
@@ -633,8 +632,17 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
     assert.match(body, /2 người/)
     assert.match(body, /800,000 VND/)
     assert.match(body, /Các chặng trong ngày/)
-    assert.ok(sourceLinks.length >= 3)
-    assert.ok([...sourceLinks].some((link) => link.getAttribute('href') === 'https://example.com/place'))
+    const serviceSources = dom.window.document.querySelectorAll('.service-card .source-name-link')
+    assert.equal(serviceSources.length, 2)
+    assert.equal(serviceSources[0].getAttribute('href'), 'https://example.com/hotel')
+    assert.equal(serviceSources[1].getAttribute('href'), 'https://example.com/bus')
+    const activitySource = dom.window.document.querySelector('.activity-card .source-name-link')
+    assert.equal(activitySource.getAttribute('href'), 'https://example.com/place')
+    assert.equal(activitySource.getAttribute('target'), '_blank')
+    assert.match(activitySource.getAttribute('rel'), /noopener/)
+    assert.equal(dom.window.document.querySelector('.activity-name-row .source-link'), null)
+    assert.equal(dom.window.document.querySelector('.cost-row .source-link'), null)
+    assert.doesNotMatch(body, /Request a change/)
     assert.match(body, /Kiểm tra từ backend/)
     assert.match(body, /Ngân sách/)
   } finally {

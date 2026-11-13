@@ -1,6 +1,6 @@
 import { fmtMoney } from '../../services/mockData.js'
+import { safeSourceUrl } from '../../services/api.js'
 import Icon from '../common/Icon.jsx'
-import SourceLink from '../common/SourceLink.jsx'
 
 const TYPE_LABEL = {
   dining: 'Ăn uống',
@@ -51,6 +51,8 @@ export default function ActivityCard({ activity, place, travelLeg, source }) {
   const startTime = activity.start || activity.startTime || '--:--'
   const endTime = activity.end || activity.endTime || '--:--'
   const name = place?.name || activity.name || 'Địa điểm chưa có tên'
+  const sourceUrl = safeSourceUrl(source?.url)
+  const sourceLabel = source?.label || 'nguồn tham khảo'
   const openingHours = place?.openingHours || null
   const referencePrice = place?.priceDisplay || null
   const formattedCost =
@@ -87,8 +89,21 @@ export default function ActivityCard({ activity, place, travelLeg, source }) {
         </div>
 
         <div className="activity-name-row">
-          <span className="activity-name">{name}</span>
-          {source && <SourceLink url={source.url} label={source.label} compact />}
+          {sourceUrl ? (
+            <a
+              className="activity-name source-name-link"
+              href={sourceUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              title={`Mở nguồn: ${sourceLabel}`}
+              aria-label={`${name} — mở nguồn ${sourceLabel}`}
+            >
+              {name}
+              <Icon name="external" size={12} />
+            </a>
+          ) : (
+            <span className="activity-name">{name}</span>
+          )}
         </div>
 
         {activity.reason && <p className="activity-desc muted small">{activity.reason}</p>}
