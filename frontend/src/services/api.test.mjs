@@ -506,7 +506,7 @@ test('SelectedPlanPage resolves saved place IDs from the backend after reopening
   }
 })
 
-test('CandidateComparison shows estimated lodging without promoting candidate status', async () => {
+test('CandidateComparison keeps projected estimates off the compact card without promoting status', async () => {
   const result = evaluation('hotel-demo')
   result.components.cost.projection = {
     subtotalVnd: 2400000, totalVnd: null, uncovered: ['transport'],
@@ -516,16 +516,16 @@ test('CandidateComparison shows estimated lodging without promoting candidate st
     { planId: 'hotel-demo', status: 'UNVERIFIED', plan: candidatePlan('hotel-demo', 'ATTR_H_01'), evaluation: result },
   ], { ranked: [], unscored: [], excluded: [] })
   try {
-    assert.match(dom.window.document.body.textContent, /Dự toán tham khảo/)
-    assert.match(dom.window.document.body.textContent, /1 phòng × 2 đêm/)
-    assert.match(dom.window.document.body.textContent, /transport/)
+    const body = dom.window.document.body.textContent
+    assert.doesNotMatch(body, /Dự toán tham khảo/)
+    assert.match(body, /Chưa xác minh 1 mục chi phí/)
     assert.equal(dom.window.document.querySelector('[data-testid="candidate-recommended-hotel-demo"]'), null)
   } finally {
     await cleanup()
   }
 })
 
-test('transport projection labels the adult one-way MVP fare and excluded transfers', async () => {
+test('CandidateComparison keeps transport projection details for the detail page', async () => {
   const result = evaluation('transport-demo')
   result.components.cost.projection = {
     subtotalVnd: 800000, totalVnd: null, uncovered: [],
@@ -536,11 +536,38 @@ test('transport projection labels the adult one-way MVP fare and excluded transf
     { planId: 'transport-demo', status: 'UNVERIFIED', plan: candidatePlan('transport-demo', 'ATTR_H_01'), evaluation: result },
   ], { ranked: [], unscored: [], excluded: [] })
   try {
-    assert.match(dom.window.document.body.textContent, /2 người lớn/)
-    assert.match(dom.window.document.body.textContent, /một chiều/)
-    assert.match(dom.window.document.body.textContent, /Không gồm chiều về và trung chuyển/)
-    assert.match(dom.window.document.body.textContent, /nguồn đang bổ sung/)
+    const body = dom.window.document.body.textContent
+    assert.doesNotMatch(body, /2 người lớn/)
+    assert.doesNotMatch(body, /một chiều/)
+    assert.match(body, /Chưa xác minh 1 mục chi phí/)
   } finally { await cleanup() }
+})
+
+test('SelectedPlanPage shows projections and verification details for a plan', async () => {
+  const result = evaluation('hotel-detail', 'UNVERIFIED', [
+    { code: 'BUDGET', status: 'UNVERIFIED', message: 'Budget is missing or invalid.' },
+  ])
+  result.components.cost.projection = {
+    subtotalVnd: 2400000, totalVnd: null, uncovered: ['transport'],
+    items: [{ category: 'accommodation', name: 'Hotel demo', rooms: 1, nights: 2, amountVnd: 2200000 }],
+  }
+  const selected = {
+    ...candidatePlan('hotel-detail', 'ATTR_H_01'),
+    id: 'hotel-detail',
+    status: 'UNVERIFIED',
+    evaluation: result,
+    missing: [],
+  }
+  const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
+  try {
+    const body = dom.window.document.body.textContent
+    assert.match(body, /Dự toán tham khảo/)
+    assert.match(body, /1 phòng × 2 đêm/)
+    assert.match(body, /Kiểm tra từ backend/)
+    assert.match(body, /Ngân sách/)
+  } finally {
+    await cleanup()
+  }
 })
 
 test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', async () => {
@@ -655,17 +682,17 @@ test('CandidateComparison UI separates FEASIBLE, UNVERIFIED and INFEASIBLE candi
     // Known vs unknown costs are never conflated.
     assert.match(doc.body.textContent, /Tổng chi phí/)
     assert.match(doc.body.textContent, /Tổng đã biết/)
-    assert.match(doc.body.textContent, /Chưa xác minh 1 mục \(không tính là 0\): transport/)
+    assert.match(doc.body.textContent, /Chưa xác minh 1 mục chi phí/)
 
-    // Routing evidence is shown per candidate.
+    // Routing evidence is summarised per candidate on the card.
     assert.match(doc.body.textContent, /Lộ trình: 2\/2 chặng đã xác minh/)
-    assert.match(doc.body.textContent, /Chưa có bằng chứng lộ trình/)
 
     // INFEASIBLE cannot be selected and is never called verified/recommended.
-    const infeasibleCard = [...doc.querySelectorAll('.plan-card')].find((node) => node.textContent.includes('p-infeasible'))
+    const infeasibleCard = [...doc.querySelectorAll('.plan-card')].find((node) => node.textContent.includes('Không khả thi'))
     const selectButton = [...infeasibleCard.querySelectorAll('button')].find((node) => node.textContent.includes('Chọn lịch này'))
     assert.equal(selectButton.disabled, true)
-    assert.equal(infeasibleCard.textContent.includes('Đề xuất đã xếp hạng'), false)
+    assert.equal(infeasibleCard.textContent.includes('Đề xuất'), false)
+    assert.match(infeasibleCard.textContent, /Vượt ràng buộc chuyến đi/)
   } finally {
     await cleanup()
   }

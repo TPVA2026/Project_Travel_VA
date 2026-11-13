@@ -193,26 +193,26 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(field("budgetAmount").value, "7,500,000");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "7,500,000 VND");
     await fill("budgetAmount", "1234567");
-    assert.equal(field("budgetSlider").value, "1234567");
+    assert.equal(field("budgetSlider").value, "1234000");
     // Standard slider range is 0..80,000,000 VND.
     assert.equal(field("budgetSlider").min, "0");
     assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(doc.querySelector(".budget-range-labels").textContent, "0 VND80,000,000 VND");
     await fill("budgetAmount", "45,678,901");
     assert.equal(field("budgetSlider").max, "80000000");
-    assert.equal(field("budgetSlider").value, "45678901");
+    assert.equal(field("budgetSlider").value, "45678000");
     await fill("budgetSlider", "80000000");
     assert.equal(field("budgetAmount").value, "80,000,000");
     assert.equal(buildPayload(new FormData(form)).budget.amount, 80000000);
     await fill("budgetAmount", "79,999,999");
-    assert.equal(field("budgetSlider").value, "79999999");
+    assert.equal(field("budgetSlider").value, "79999000");
     // A larger exact amount is still valid and widens the range instead of being capped.
     await fill("budgetAmount", "123,456,789");
     assert.equal(field("budgetSlider").max, "123456789");
-    assert.equal(field("budgetSlider").value, "123456789");
-    assert.equal(buildPayload(new FormData(form)).budget.amount, 123456789);
+    assert.equal(field("budgetSlider").value, "123456000");
+    assert.equal(buildPayload(new FormData(form)).budget.amount, 123456000);
     await fill("budgetSlider", "12345678");
-    assert.equal(field("budgetAmount").value, "12,345,678");
+    assert.equal(field("budgetAmount").value, "12,345,000");
     assert.equal(field("budgetSlider").max, "123456789", "Sliding must not shrink its own range");
     await fill("budgetAmount", "");
     assert.equal(field("budgetSlider").max, "80000000", "Clearing the amount returns to the standard range");
@@ -231,9 +231,9 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assertStep(4, "Scope must be chosen");
     assert.equal(doc.getElementById("budgetScope-error").textContent, "This field is required.");
     assert.equal(doc.activeElement, form.querySelector('[name="budgetScope"][value="group"]'));
-    await fill("budgetAmount", "7654321");
+    await fill("budgetAmount", "7654000");
     await actOn(() => { field("budgetAmount").focus(); field("budgetAmount").blur(); });
-    assert.equal(field("budgetAmount").value, "7,654,321", "Formatting happens on blur");
+    assert.equal(field("budgetAmount").value, "7,654,000", "Formatting happens on blur");
     assert.equal(field("budgetSlider").max, "80000000");
     await radio("budgetScope", "perPerson");
     assert.equal(apiCalls(), 0, "No API call before the final review");
@@ -299,7 +299,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       "Going to": "Not chosen. We'll suggest destinations based on your trip.",
       When: `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`,
       Travelers: "7 travelers",
-      Budget: "7,654,321 VND · per person",
+      Budget: "7,654,000 VND · per person",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
     });
     assert.equal(doc.querySelector(".request-draft-note, #request-review-draft-note"), null, "Draft-only note is removed");
@@ -326,8 +326,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     for (let index = 5; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
     assert.equal(field("departureLocation").value, "Hue");
     for (let index = 1; index <= 6; index += 1) { await click("Next"); assertStep(index); }
-    assert.equal(field("budgetAmount").value, "7,654,321");
-    assert.equal(field("budgetSlider").value, "7654321");
+    assert.equal(field("budgetAmount").value, "7,654,000");
+    assert.equal(field("budgetSlider").value, "7654000");
     assert.equal(field("tripDescription").value, "We love seafood and prefer taxis.");
 
     // Editing from review still validates the edited question before returning.
@@ -402,7 +402,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       durationDays: MAX_TRIP_DAYS,
       departureLocation: "Hue",
       travelers: { count: 7 },
-      budget: { amount: 7654321, currency: "VND", scope: "perPerson" },
+      budget: { amount: 7654000, currency: "VND", scope: "perPerson" },
       additionalRequirements: "We love seafood and prefer taxis.",
     });
     fetchImpl = async () => ({ ok: true, json: async () => ({ valid: true, data: payload }) });
@@ -443,9 +443,9 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     assertStep(6);
     const custom = buildPayload(new FormData(clean));
-    assert.deepEqual(custom, { travelPeriod: { startDate: startCross, endDate: endCross }, durationDays: MAX_TRIP_DAYS, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123456, currency: "VND", scope: "group" } });
+    assert.deepEqual(custom, { travelPeriod: { startDate: startCross, endDate: endCross }, durationDays: MAX_TRIP_DAYS, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123000, currency: "VND", scope: "group" } });
     assert.equal(custom.preferences?.destination, undefined, "Skipped destination is omitted, never filled in");
-    assert.equal(field("budgetSlider").value, "70123456");
+    assert.equal(field("budgetSlider").value, "70123000");
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {
     if (root) await act(async () => root.unmount());

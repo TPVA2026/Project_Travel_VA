@@ -12,9 +12,11 @@ import {
   indexPlaces,
   createNameResolver,
   formatReason,
+  groupEvaluationReasons,
 } from '../services/api.js'
 import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
 import CostSummary from '../components/itinerary/CostSummary.jsx'
+import EvaluationChecks from '../components/itinerary/EvaluationChecks.jsx'
 import RevisionForm from '../components/revision/RevisionForm.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
@@ -176,6 +178,9 @@ export default function SelectedPlanPage() {
     plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
   const totalCost = plan ? knownTotal(plan).total : 0
   const resolveName = createNameResolver(plan, placesById)
+  const verificationGroups = plan?.evaluation
+    ? groupEvaluationReasons(plan.evaluation, plan.ranking, plan.planId || plan.id)
+    : []
 
   return (
     <div className={`selected-page-container${isChosen ? ' is-chosen' : ''}`}>
@@ -353,26 +358,28 @@ export default function SelectedPlanPage() {
                   </div>
                 </div>
 
-                <div className="reasons-block">
-                  <h3 className="reasons-title">
-                    <Icon name="sparkle" size={16} />
-                    Why this plan fits
-                  </h3>
-                  <ul className="reasons-list">
-                    {plan.fit?.map((r) => (
-                      <li key={r}>
-                        <Icon name="check" size={15} />
-                        {r}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {plan.fit?.length > 0 && (
+                  <div className="reasons-block">
+                    <h3 className="reasons-title">
+                      <Icon name="sparkle" size={16} />
+                      Why this plan fits
+                    </h3>
+                    <ul className="reasons-list">
+                      {plan.fit.map((r) => (
+                        <li key={r}>
+                          <Icon name="check" size={15} />
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {plan.status === 'INFEASIBLE' && (
                   <div className="plan-alert-box alert-infeasible">
                     <Icon name="alert" size={16} />
                     <span>
-                      <strong>Cannot be chosen:</strong> {plan.failReason}
+                      <strong>Cannot be chosen:</strong> {plan.failReason || 'Vi phạm ràng buộc chuyến đi.'}
                       <span className="small-tip">
                         Use the revision form below to adjust your budget or constraints.
                       </span>
@@ -384,7 +391,8 @@ export default function SelectedPlanPage() {
                   <div className="plan-alert-box alert-unverified">
                     <Icon name="info" size={16} />
                     <span>
-                      <strong>Unverified items:</strong> {plan.missing?.map((reason) => formatReason(reason, { resolveName })).join(', ')} (not counted as 0)
+                      <strong>Chưa xác minh đầy đủ.</strong> Xem bảng kiểm tra bên dưới; phần thiếu
+                      không được tính là 0.
                     </span>
                   </div>
                 )}
@@ -459,6 +467,56 @@ export default function SelectedPlanPage() {
               </div>
             </div>
           </div>
+
+          <section
+            className="verification-panel selected-wide"
+            aria-labelledby="verification-heading"
+          >
+            <div className="verification-head">
+              <span className="verification-icon" aria-hidden="true">
+                <Icon name="info" size={18} />
+              </span>
+              <div>
+                <h2 id="verification-heading" className="verification-title">
+                  Kiểm tra từ backend
+                </h2>
+                <p className="muted small">
+                  Ngân sách, lịch trình và di chuyển được chấm đúng như kết quả trả về, không nâng
+                  cấp trạng thái.
+                </p>
+              </div>
+            </div>
+
+            {plan.evaluation ? (
+              <>
+                <EvaluationChecks evaluation={plan.evaluation} />
+                {verificationGroups.length > 0 ? (
+                  <div className="verification-groups">
+                    {verificationGroups.map((group) => (
+                      <div key={group.key} className="verification-group">
+                        <h3 className="verification-group-label">{group.label}</h3>
+                        <ul className="reasons-list">
+                          {group.reasons.map((reason, index) => (
+                            <li key={`${group.key}-${index}`}>
+                              <Icon name="alert" size={15} />
+                              {formatReason(reason, { resolveName })}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="verification-ok">
+                    <Icon name="check" size={15} />
+                    Không có mục nào cần kiểm tra thêm.
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="muted small">Lịch này chưa có dữ liệu kiểm tra từ backend.</p>
+            )}
+          </section>
 
           {/* Revision Section (TPVA-31) */}
           <details className="revision-accordion selected-wide no-print">

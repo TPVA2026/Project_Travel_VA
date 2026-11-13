@@ -324,6 +324,7 @@ export default function ResultsPage() {
       id: plan.planId,
       status: candidate.status,
       evaluation: candidate.evaluation,
+      ranking: pipeline?.ranking || null,
       request: pendingRequest,
       destination,
       image:
@@ -350,13 +351,13 @@ export default function ResultsPage() {
     <section className="results-page">
       <header className="results-head">
         <div className="results-intro-copy">
-          <p className="page-eyebrow">Step 2 of 3 · Results</p>
-          <h1 className="results-title">Choose the itinerary that fits your trip</h1>
+          <p className="page-eyebrow">Bước 2/3 · Kết quả</p>
+          <h1 className="results-title">Chọn lịch trình phù hợp với chuyến đi</h1>
           <p className="results-subtitle muted">
-            Review the assistant draft and the backend checks behind it. Statuses are shown exactly as returned, never upgraded to verified.
+            So sánh các phương án trợ lý tạo ra cùng kết quả kiểm tra của backend. Chọn một lịch
+            hoặc mở chi tiết để xem toàn bộ bảng kiểm tra và cảnh báo.
           </p>
         </div>
-
       </header>
 
       <RequestSummary request={pendingRequest} />
