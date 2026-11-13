@@ -8,6 +8,7 @@ import {
   knownTotal,
   fmtMoney,
   collectPlaceIds,
+  collectActivitySources,
   fetchPlaceCatalog,
   indexPlaces,
   createNameResolver,
@@ -17,6 +18,7 @@ import {
 import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
 import CostSummary from '../components/itinerary/CostSummary.jsx'
 import EvaluationChecks from '../components/itinerary/EvaluationChecks.jsx'
+import TripServices from '../components/itinerary/TripServices.jsx'
 import RevisionForm from '../components/revision/RevisionForm.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
@@ -178,6 +180,7 @@ export default function SelectedPlanPage() {
     plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
   const totalCost = plan ? knownTotal(plan).total : 0
   const resolveName = createNameResolver(plan, placesById)
+  const activitySources = collectActivitySources(plan)
   const verificationGroups = plan?.evaluation
     ? groupEvaluationReasons(plan.evaluation, plan.ranking, plan.planId || plan.id)
     : []
@@ -462,11 +465,17 @@ export default function SelectedPlanPage() {
                 </div>
 
                 {placeCatalogError && <p role="status" className="muted small">{placeCatalogError}</p>}
-                <ItineraryTimeline days={plan.days} placesById={placesById} />
+                <ItineraryTimeline
+                  days={plan.days}
+                  placesById={placesById}
+                  activitySources={activitySources}
+                />
                 <CostSummary plan={plan} costEvaluation={plan.evaluation?.components?.cost} resolveName={resolveName} />
               </div>
             </div>
           </div>
+
+          <TripServices plan={plan} placesById={placesById} />
 
           <section
             className="verification-panel selected-wide"

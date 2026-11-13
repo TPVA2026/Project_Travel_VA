@@ -14,7 +14,9 @@ test('estimated lodging remains separate from verified candidate totals', () => 
 
 import {
   candidateStatusLabel,
+  collectActivitySources,
   collectPlaceIds,
+  collectTravelLegs,
   createNameResolver,
   displayPlaceName,
   evaluateItinerary,
@@ -26,11 +28,13 @@ import {
   getCandidateRanking,
   getCandidateWarnings,
   getCheckStatus,
+  getPlanServiceItems,
   getRoutingEvidence,
   groupEvaluationReasons,
   indexPlaces,
   normalizeCandidateStatus,
   planSignature,
+  safeSourceUrl,
   rankItineraries,
   runItineraryPipeline,
   VERIFICATION_CHECKS,
@@ -78,6 +82,49 @@ function evaluation(planId, status = 'UNVERIFIED', reasons = []) {
     },
   }
 }
+
+test('activity sources and trip services are read from backend fields safely', () => {
+  assert.equal(safeSourceUrl('javascript:alert(1)'), null)
+  assert.equal(safeSourceUrl('not a url'), null)
+  assert.equal(safeSourceUrl('https://example.com/a'), 'https://example.com/a')
+
+  const plan = {
+    days: [
+      {
+        dayNumber: 1,
+        activities: [{ activityId: 'a1', placeId: 'ATTR_H_01' }],
+        travelLegs: [{ fromPlaceId: 'ATTR_H_01', toPlaceId: 'REST_H_01', durationMin: 12, distanceKm: 3.4 }],
+      },
+      { dayNumber: 2, activities: [], travelLegs: [{}] },
+    ],
+    evaluation: {
+      components: {
+        cost: {
+          costEvidence: [{ activityId: 'a1', source: 'https://example.com/place' }],
+          projection: {
+            items: [
+              { category: 'accommodation', name: 'Hotel demo — Deluxe', rooms: 1, nights: 2 },
+              { category: 'transport', name: 'Hà Nội → Huế (bus)', travelers: 2 },
+            ],
+          },
+        },
+      },
+    },
+  }
+
+  const sources = collectActivitySources(plan)
+  assert.equal(sources.get('a1').url, 'https://example.com/place')
+  assert.equal(sources.get('a1').label, 'example.com')
+
+  const services = getPlanServiceItems(plan)
+  assert.equal(services.stay.name, 'Hotel demo — Deluxe')
+  assert.equal(services.transport.name, 'Hà Nội → Huế (bus)')
+
+  const legs = collectTravelLegs(plan)
+  assert.equal(legs.length, 2)
+  assert.equal(legs[0].dayNumber, 1)
+  assert.equal(legs[1].dayNumber, 2)
+})
 
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -547,9 +594,23 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
   const result = evaluation('hotel-detail', 'UNVERIFIED', [
     { code: 'BUDGET', status: 'UNVERIFIED', message: 'Budget is missing or invalid.' },
   ])
+  result.components.cost.costEvidence = [
+    { activityId: 'hotel-detail-a1', category: 'activities', source: 'https://example.com/place' },
+  ]
   result.components.cost.projection = {
-    subtotalVnd: 2400000, totalVnd: null, uncovered: ['transport'],
-    items: [{ category: 'accommodation', name: 'Hotel demo', rooms: 1, nights: 2, amountVnd: 2200000 }],
+    subtotalVnd: 3200000, totalVnd: null, uncovered: [],
+    items: [
+      {
+        category: 'accommodation', name: 'Hotel demo — Deluxe', rooms: 1, nights: 2,
+        unitPriceVnd: 1100000, amountVnd: 2200000, status: 'ESTIMATED',
+        sourceUrl: 'https://example.com/hotel',
+      },
+      {
+        category: 'transport', name: 'Hà Nội → Huế (bus)', travelers: 2,
+        perPersonVnd: 400000, amountVnd: 800000, status: 'ESTIMATED',
+        sourceUrl: 'https://example.com/bus',
+      },
+    ],
   }
   const selected = {
     ...candidatePlan('hotel-detail', 'ATTR_H_01'),
@@ -561,8 +622,19 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
   const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
   try {
     const body = dom.window.document.body.textContent
+    const sourceLinks = dom.window.document.querySelectorAll('.source-link')
     assert.match(body, /Dự toán tham khảo/)
-    assert.match(body, /1 phòng × 2 đêm/)
+    assert.match(body, /Lưu trú/)
+    assert.match(body, /1 phòng/)
+    assert.match(body, /2 đêm/)
+    assert.match(body, /Hotel demo/)
+    assert.match(body, /Di chuyển/)
+    assert.match(body, /Hà Nội → Huế/)
+    assert.match(body, /2 người/)
+    assert.match(body, /800,000 VND/)
+    assert.match(body, /Các chặng trong ngày/)
+    assert.ok(sourceLinks.length >= 3)
+    assert.ok([...sourceLinks].some((link) => link.getAttribute('href') === 'https://example.com/place'))
     assert.match(body, /Kiểm tra từ backend/)
     assert.match(body, /Ngân sách/)
   } finally {

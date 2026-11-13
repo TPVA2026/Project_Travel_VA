@@ -24,3 +24,18 @@ def test_place_names_come_from_destination_dataset_for_requested_ids_only():
 
 def test_place_lookup_without_ids_does_not_return_entire_dataset():
     assert client.get("/api/v1/places").json() == {"places": []}
+
+
+def test_place_lookup_returns_an_openable_source_per_place():
+    dataset = load_dataset()
+    hotel = next(h for h in dataset["hotels"] if h.get("sourceUrl"))
+    ids = ["ATTR_H_03", "REST_H_03", hotel["id"]]
+
+    response = client.get("/api/v1/places", params=[("ids", i) for i in ids])
+
+    assert response.status_code == 200
+    places = {p["id"]: p for p in response.json()["places"]}
+    for place_id in ids:
+        assert places[place_id]["sourceUrl"].startswith("https://")
+        assert places[place_id]["source"]
+

@@ -1,5 +1,6 @@
 import { fmtMoney } from '../../services/mockData.js'
 import Icon from '../common/Icon.jsx'
+import SourceLink from '../common/SourceLink.jsx'
 
 const TYPE_LABEL = {
   dining: 'Ăn uống',
@@ -25,7 +26,7 @@ function travelLegLabel(travelLeg) {
   return [duration, distance].filter(Boolean).join(' · ')
 }
 
-export default function ActivityCard({ activity, place, travelLeg }) {
+export default function ActivityCard({ activity, place, travelLeg, source }) {
   if (!activity) return null
 
   const isSightseeing = activity.type === 'sightseeing' || activity.type === 'attraction'
@@ -85,7 +86,10 @@ export default function ActivityCard({ activity, place, travelLeg }) {
           </span>
         </div>
 
-        <div className="activity-name">{name}</div>
+        <div className="activity-name-row">
+          <span className="activity-name">{name}</span>
+          {source && <SourceLink url={source.url} label={source.label} compact />}
+        </div>
 
         {activity.reason && <p className="activity-desc muted small">{activity.reason}</p>}
 

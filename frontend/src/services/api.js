@@ -343,6 +343,86 @@ export function indexPlaces(places) {
   return byId
 }
 
+export function safeSourceUrl(value) {
+  if (typeof value !== "string") return null
+  const trimmed = value.trim()
+  if (!/^https?:\/\//i.test(trimmed)) return null
+  try {
+    const url = new URL(trimmed)
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : null
+  } catch {
+    return null
+  }
+}
+
+export function sourceLabel(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "") || "Nguồn"
+  } catch {
+    return "Nguồn"
+  }
+}
+
+function makeSource(url, label) {
+  const safeUrl = safeSourceUrl(url)
+  if (!safeUrl) return null
+  const text = typeof label === "string" && label.trim()
+    ? label.trim()
+    : sourceLabel(safeUrl)
+  return { url: safeUrl, label: text }
+}
+
+/**
+ * Every source the backend already returns for an activity, keyed by activity
+ * id. Place metadata is the primary source in the timeline; cost evidence is
+ * the fallback when a place has no source of its own.
+ */
+export function collectActivitySources(plan) {
+  const sources = new Map()
+  const add = (activityId, url, label) => {
+    if (activityId == null) return
+    const key = String(activityId)
+    if (sources.has(key)) return
+    const source = makeSource(url, label)
+    if (source) sources.set(key, source)
+  }
+  const cost = plan?.evaluation?.components?.cost
+  for (const item of Array.isArray(cost?.projection?.items) ? cost.projection.items : []) {
+    add(item?.activityId, item?.sourceUrl, item?.source)
+  }
+  for (const evidence of Array.isArray(cost?.costEvidence) ? cost.costEvidence : []) {
+    add(evidence?.activityId, evidence?.source, evidence?.sourceLabel)
+  }
+  for (const day of Array.isArray(plan?.days) ? plan.days : []) {
+    for (const activity of Array.isArray(day?.activities) ? day.activities : []) {
+      add(activity?.activityId, activity?.sourceUrl || activity?.source, activity?.sourceLabel)
+    }
+  }
+  return sources
+}
+
+export function getPlanServiceItems(plan) {
+  const items = plan?.evaluation?.components?.cost?.projection?.items
+  const list = Array.isArray(items) ? items : []
+  return {
+    stay: list.find((item) => item?.category === "accommodation") || null,
+    transport: list.find((item) => item?.category === "transport") || null,
+  }
+}
+
+export function collectTravelLegs(plan) {
+  const legs = []
+  for (const day of Array.isArray(plan?.days) ? plan.days : []) {
+    const dayLegs = Array.isArray(day?.travelLegs) ? day.travelLegs : []
+    const dayNumber = day?.dayNumber ?? day?.day ?? null
+    for (const leg of dayLegs) {
+      if (!leg || typeof leg !== "object") continue
+      legs.push({ ...leg, dayNumber })
+    }
+  }
+  return legs
+}
+
 function placeFrom(placesById, placeId) {
   if (!placesById || placeId == null) return null
   const key = String(placeId)

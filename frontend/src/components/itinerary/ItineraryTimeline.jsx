@@ -12,7 +12,7 @@ function formatDate(value) {
   })
 }
 
-export default function ItineraryTimeline({ days, placesById }) {
+export default function ItineraryTimeline({ days, placesById, activitySources }) {
   if (!days || days.length === 0) {
     return (
       <div className="empty-timeline-box">
@@ -85,6 +85,11 @@ export default function ItineraryTimeline({ days, placesById }) {
                       placesById?.get?.(String(act.placeId)) ||
                       placesById?.[act.placeId] ||
                       null
+                    const placeSource = place?.sourceUrl
+                      ? { url: place.sourceUrl, label: place.source }
+                      : null
+                    const source =
+                      placeSource || activitySources?.get?.(String(act.activityId)) || null
 
                     return (
                       <ActivityCard
@@ -92,6 +97,7 @@ export default function ItineraryTimeline({ days, placesById }) {
                         activity={act}
                         place={place}
                         travelLeg={idx > 0 ? leg : null}
+                        source={source}
                       />
                     )
                   })
