@@ -60,7 +60,7 @@ export default function SelectedPlanPage() {
     fetchPlaceCatalog({ ids, destination: plan.destinationId }).then((places) => {
       if (!cancelled) setPlacesById(indexPlaces(places))
     }).catch(() => {
-      if (!cancelled) setPlaceCatalogError('Không tải được tên địa điểm. Hãy tải lại trang để thử lại.')
+      if (!cancelled) setPlaceCatalogError('Could not load place names. Reload the page to try again.')
     })
     return () => { cancelled = true }
   }, [plan])
@@ -274,7 +274,7 @@ export default function SelectedPlanPage() {
                     You&rsquo;re going to {destinationLabel}
                   </strong>
                   <p className="chosen-header-sub">
-                    This itinerary is saved to your trip. Revise it below, print the schedule, or switch plans.
+                    This itinerary is saved to your trip. Print the schedule, copy a summary, or switch plans.
                   </p>
                 </div>
               </div>
@@ -372,7 +372,7 @@ export default function SelectedPlanPage() {
                   <div className="plan-alert-box alert-infeasible">
                     <Icon name="alert" size={16} />
                     <span>
-                      <strong>Cannot be chosen:</strong> {plan.failReason || 'Vi phạm ràng buộc chuyến đi.'}
+                      <strong>Cannot be chosen:</strong> {plan.failReason || 'Breaks a trip constraint.'}
                       <span className="small-tip">
                         Use the revision form below to adjust your budget or constraints.
                       </span>
@@ -384,8 +384,8 @@ export default function SelectedPlanPage() {
                   <div className="plan-alert-box alert-unverified">
                     <Icon name="info" size={16} />
                     <span>
-                      <strong>Chưa xác minh đầy đủ.</strong> Xem bảng kiểm tra bên dưới; phần thiếu
-                      không được tính là 0.
+                      <strong>Not fully verified.</strong> See the checks below; missing amounts
+                      are not counted as zero.
                     </span>
                   </div>
                 )}
@@ -477,11 +477,11 @@ export default function SelectedPlanPage() {
               </span>
               <div>
                 <h2 id="verification-heading" className="verification-title">
-                  Kiểm tra từ backend
+                  Backend checks
                 </h2>
                 <p className="muted small">
-                  Ngân sách, lịch trình và di chuyển được chấm đúng như kết quả trả về, không nâng
-                  cấp trạng thái.
+                  Budget, schedule, and travel are scored exactly as returned, with no status
+                  upgrades.
                 </p>
               </div>
             </div>
@@ -508,12 +508,12 @@ export default function SelectedPlanPage() {
                 ) : (
                   <p className="verification-ok">
                     <Icon name="check" size={15} />
-                    Không có mục nào cần kiểm tra thêm.
+                    No items need further checking.
                   </p>
                 )}
               </>
             ) : (
-              <p className="muted small">Lịch này chưa có dữ liệu kiểm tra từ backend.</p>
+              <p className="muted small">This plan has no backend check data yet.</p>
             )}
           </section>
         </>

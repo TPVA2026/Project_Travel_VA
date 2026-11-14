@@ -9,6 +9,7 @@ import {
   runItineraryPipeline,
   selectPlan,
   clearSelectedPlan,
+  candidateStatusLabel,
   PIPELINE_MAX_CANDIDATES,
 } from '../services/api.js'
 import {
@@ -178,7 +179,9 @@ function SelectedCandidateBanner({ candidate, onClear }) {
           <span className="chosen-banner-destination">{plan.title}</span>
           <div className="muted small">
             {plan.days?.length || 0} days · Status:{' '}
-            <span className={`badge badge-${candidate.status}`}>{candidate.status}</span>
+            <span className={`badge badge-${candidate.status}`}>
+              {candidateStatusLabel(candidate.status)}
+            </span>
           </div>
         </div>
       </div>
@@ -419,8 +422,8 @@ export default function ResultsPage() {
           </span>
           <h2>Start with your trip details</h2>
           <p className="muted">
-            Lịch trình chỉ được tạo từ yêu cầu chuyến đi và backend AI, không dùng dữ liệu mẫu.
-            Hãy nhập ngày đi, ngân sách và điểm đến để xem các lịch trình thật.
+            Itineraries are created from your trip request by the backend AI only; no sample
+            data is used. Enter your dates, budget, and destination to see real plans.
           </p>
           <Link to="/" className="btn btn-primary">
             Create your itinerary

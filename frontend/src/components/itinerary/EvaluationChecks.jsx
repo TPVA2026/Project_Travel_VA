@@ -7,6 +7,12 @@ const CHECK_ICONS = {
   travel: 'route',
 }
 
+const CHECK_STATUS_LABEL = {
+  FEASIBLE: 'Pass',
+  UNVERIFIED: 'Needs check',
+  INFEASIBLE: 'Fails',
+}
+
 function formatMeasure(value, unit) {
   return value == null ? null : `${Number(value).toLocaleString('en-US')} ${unit}`
 }
@@ -38,7 +44,9 @@ export default function EvaluationChecks({ evaluation }) {
                 <Icon name={CHECK_ICONS[key]} size={15} />
               </span>
               <span className="check-chip-label">{label}</span>
-              <span className={`badge badge-${status}`}>{status}</span>
+              <span className={`badge badge-${status}`}>
+                {CHECK_STATUS_LABEL[status] || status}
+              </span>
             </div>
           )
         })}

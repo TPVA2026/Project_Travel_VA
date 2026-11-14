@@ -295,7 +295,7 @@ test('comparison helpers separate known vs unknown costs and routing evidence', 
   assert.equal(routing.verified, 1)
   assert.equal(routing.unverified, 1)
 
-  assert.equal(candidateStatusLabel('SUCCESS'), 'Chưa xác minh')
+  assert.equal(candidateStatusLabel('SUCCESS'), 'Unverified')
   assert.equal(normalizeCandidateStatus('FEASIBLE'), 'FEASIBLE')
   assert.equal(normalizeCandidateStatus('nope'), 'UNVERIFIED')
 
@@ -389,7 +389,7 @@ test('place lookup sends the selected destination to avoid loading other folders
 })
 
 
-test('Results helpers group backend reasons into Vietnamese topics', () => {
+test('Results helpers group backend reasons into topics', () => {
   const evaluation = {
     reasons: [
       { status: 'UNVERIFIED', code: 'BUDGET', message: 'Known costs exceed budget.' },
@@ -408,7 +408,7 @@ test('Results helpers group backend reasons into Vietnamese topics', () => {
   const groups = groupEvaluationReasons(evaluation, ranking, 'p1')
 
   assert.deepEqual(groups.map((group) => group.key), ['budget', 'travelTime', 'routing', 'plan'])
-  assert.deepEqual(groups.map((group) => group.label), ['Ngân sách', 'Thời gian di chuyển', 'Đường đi chưa xác minh', 'Thông tin chuyến đi'])
+  assert.deepEqual(groups.map((group) => group.label), ['Budget', 'Travel time', 'Unverified route', 'Trip details'])
   assert.equal(groups[2].reasons.length, 1)
 })
 
@@ -433,12 +433,12 @@ test('Results helpers map ids to names, resolve activity ids and keep unknown id
   assert.equal(createNameResolver(plan, placesById)('act-002'), 'Bún bò mệ Kéo')
   assert.equal(
     formatReason({ code: 'TRANSFER_GAP', status: 'INFEASIBLE', message: 'Thời gian giữa act-001 và act-002.' }, { plan, placesById }),
-    'Không đủ thời gian di chuyển giữa Đại Nội và Bún bò mệ Kéo.'
+    'Not enough travel time between Đại Nội and Bún bò mệ Kéo.'
   )
 })
 
-test('Evaluation checks use Vietnamese labels and never invent a status', () => {
-  assert.deepEqual(VERIFICATION_CHECKS.map((check) => check.label), ['Ngân sách', 'Lịch trình', 'Di chuyển'])
+test('Evaluation checks use clear labels and never invent a status', () => {
+  assert.deepEqual(VERIFICATION_CHECKS.map((check) => check.label), ['Budget', 'Schedule', 'Travel'])
   assert.equal(getCheckStatus({ components: { cost: { status: 'UNVERIFIED' } } }, 'cost'), 'UNVERIFIED')
   assert.equal(getCheckStatus({ components: { cost: { status: 'SUCCESS' } } }, 'cost'), null)
   assert.equal(getCheckStatus(null, 'cost'), null)
@@ -564,8 +564,8 @@ test('CandidateComparison keeps projected estimates off the compact card without
   ], { ranked: [], unscored: [], excluded: [] })
   try {
     const body = dom.window.document.body.textContent
-    assert.doesNotMatch(body, /Dự toán tham khảo/)
-    assert.match(body, /Chưa xác minh 1 mục chi phí/)
+    assert.doesNotMatch(body, /Estimated total/)
+    assert.match(body, /Unverified 1 cost item/)
     assert.equal(dom.window.document.querySelector('[data-testid="candidate-recommended-hotel-demo"]'), null)
   } finally {
     await cleanup()
@@ -584,9 +584,9 @@ test('CandidateComparison keeps transport projection details for the detail page
   ], { ranked: [], unscored: [], excluded: [] })
   try {
     const body = dom.window.document.body.textContent
-    assert.doesNotMatch(body, /2 người lớn/)
-    assert.doesNotMatch(body, /một chiều/)
-    assert.match(body, /Chưa xác minh 1 mục chi phí/)
+    assert.doesNotMatch(body, /2 people/)
+    assert.doesNotMatch(body, /One way/)
+    assert.match(body, /Unverified 1 cost item/)
   } finally { await cleanup() }
 })
 
@@ -622,16 +622,16 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
   const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
   try {
     const body = dom.window.document.body.textContent
-    assert.match(body, /Dự toán tham khảo/)
-    assert.match(body, /Lưu trú/)
-    assert.match(body, /1 phòng/)
-    assert.match(body, /2 đêm/)
+    assert.match(body, /Estimated total/)
+    assert.match(body, /Stay/)
+    assert.match(body, /1 rooms/)
+    assert.match(body, /2 nights/)
     assert.match(body, /Hotel demo/)
-    assert.match(body, /Di chuyển/)
+    assert.match(body, /Transport/)
     assert.match(body, /Hà Nội → Huế/)
-    assert.match(body, /2 người/)
+    assert.match(body, /2 people/)
     assert.match(body, /800,000 VND/)
-    assert.match(body, /Các chặng trong ngày/)
+    assert.match(body, /Travel legs by day/)
     const serviceSources = dom.window.document.querySelectorAll('.service-card .source-name-link')
     assert.equal(serviceSources.length, 2)
     assert.equal(serviceSources[0].getAttribute('href'), 'https://example.com/hotel')
@@ -643,8 +643,8 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
     assert.equal(dom.window.document.querySelector('.activity-name-row .source-link'), null)
     assert.equal(dom.window.document.querySelector('.cost-row .source-link'), null)
     assert.doesNotMatch(body, /Request a change/)
-    assert.match(body, /Kiểm tra từ backend/)
-    assert.match(body, /Ngân sách/)
+    assert.match(body, /Backend checks/)
+    assert.match(body, /Budget/)
   } finally {
     await cleanup()
   }
@@ -670,11 +670,11 @@ test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', asy
       const cards = dom.window.document.querySelectorAll('.plan-card')
       assert.equal(cards.length, count)
       if (count === 0) {
-        assert.match(dom.window.document.body.textContent, /Không có lịch trình nào/)
+        assert.match(dom.window.document.body.textContent, /No itineraries to compare/)
       } else {
         assert.match(
           dom.window.document.querySelector('#candidate-results-heading').textContent,
-          new RegExp(`${count} lịch trình từ trợ lý`)
+          new RegExp(`${count} itineraries from the assistant`)
         )
         assert.doesNotMatch(dom.window.document.body.textContent, /3 plan comparison/i)
       }
@@ -750,9 +750,9 @@ test('CandidateComparison UI separates FEASIBLE, UNVERIFIED and INFEASIBLE candi
   const { dom, cleanup } = await renderCandidateComparison(candidates, ranking)
   const doc = dom.window.document
   try {
-    assert.equal(doc.querySelector('[data-testid="candidate-status-p-feasible"]').textContent, 'Đủ điều kiện')
-    assert.equal(doc.querySelector('[data-testid="candidate-status-p-unverified"]').textContent, 'Chưa xác minh')
-    assert.equal(doc.querySelector('[data-testid="candidate-status-p-infeasible"]').textContent, 'Không khả thi')
+    assert.equal(doc.querySelector('[data-testid="candidate-status-p-feasible"]').textContent, 'Feasible')
+    assert.equal(doc.querySelector('[data-testid="candidate-status-p-unverified"]').textContent, 'Unverified')
+    assert.equal(doc.querySelector('[data-testid="candidate-status-p-infeasible"]').textContent, 'Not feasible')
 
     // Only the ranked FEASIBLE candidate carries a verified recommendation tag.
     assert.ok(doc.querySelector('[data-testid="candidate-recommended-p-feasible"]'))
@@ -760,19 +760,19 @@ test('CandidateComparison UI separates FEASIBLE, UNVERIFIED and INFEASIBLE candi
     assert.equal(doc.querySelector('[data-testid="candidate-recommended-p-infeasible"]'), null)
 
     // Known vs unknown costs are never conflated.
-    assert.match(doc.body.textContent, /Tổng chi phí/)
-    assert.match(doc.body.textContent, /Tổng đã biết/)
-    assert.match(doc.body.textContent, /Chưa xác minh 1 mục chi phí/)
+    assert.match(doc.body.textContent, /Total cost/)
+    assert.match(doc.body.textContent, /Known total/)
+    assert.match(doc.body.textContent, /Unverified 1 cost item/)
 
     // Routing evidence is summarised per candidate on the card.
-    assert.match(doc.body.textContent, /Lộ trình: 2\/2 chặng đã xác minh/)
+    assert.match(doc.body.textContent, /Route: 2\/2 legs verified/)
 
     // INFEASIBLE cannot be selected and is never called verified/recommended.
-    const infeasibleCard = [...doc.querySelectorAll('.plan-card')].find((node) => node.textContent.includes('Không khả thi'))
-    const selectButton = [...infeasibleCard.querySelectorAll('button')].find((node) => node.textContent.includes('Chọn lịch này'))
+    const infeasibleCard = [...doc.querySelectorAll('.plan-card')].find((node) => node.textContent.includes('Not feasible'))
+    const selectButton = [...infeasibleCard.querySelectorAll('button')].find((node) => node.textContent.includes('Choose this plan'))
     assert.equal(selectButton.disabled, true)
-    assert.equal(infeasibleCard.textContent.includes('Đề xuất'), false)
-    assert.match(infeasibleCard.textContent, /Vượt ràng buộc chuyến đi/)
+    assert.equal(infeasibleCard.textContent.includes('Suggested'), false)
+    assert.match(infeasibleCard.textContent, /Breaks trip constraints/)
   } finally {
     await cleanup()
   }
