@@ -5,7 +5,7 @@ function formatDate(value) {
   if (!value) return null
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString('vi-VN', {
+  return date.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -16,7 +16,7 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
   if (!days || days.length === 0) {
     return (
       <div className="empty-timeline-box">
-        <p className="muted">Chưa có chi tiết lịch trình.</p>
+        <p className="muted">No schedule details yet.</p>
       </div>
     )
   }
@@ -41,7 +41,7 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
 
               <div className="timeline-day-header">
                 <div className="tl-day-wrap">
-                  <span className="tl-day">Ngày {dayNumber}</span>
+                  <span className="tl-day">Day {dayNumber}</span>
                   {dateLabel && (
                     <>
                       <span className="tl-date-separator" aria-hidden="true">—</span>
@@ -54,7 +54,7 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
                   {attractionsCount > 0 && (
                     <span
                       className="tl-badge tl-badge-attraction"
-                      title={`${attractionsCount} điểm tham quan`}
+                      title={`${attractionsCount} sightseeing stops`}
                     >
                       <Icon name="landmark" size={14} />
                       {attractionsCount}
@@ -63,7 +63,7 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
                   {diningCount > 0 && (
                     <span
                       className="tl-badge tl-badge-dining"
-                      title={`${diningCount} điểm ăn uống`}
+                      title={`${diningCount} dining stops`}
                     >
                       <Icon name="utensils" size={14} />
                       {diningCount}
@@ -74,7 +74,7 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
 
               <div className="timeline-activities">
                 {activities.length === 0 ? (
-                  <p className="muted small">Ngày này chưa có hoạt động nào.</p>
+                  <p className="muted small">No activities for this day.</p>
                 ) : (
                   activities.map((act, idx) => {
                     const leg =

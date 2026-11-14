@@ -8,9 +8,9 @@ import { fmtMoney } from '../../services/mockData.js'
 import Icon from '../common/Icon.jsx'
 
 const TRANSPORT_KINDS = [
-  { tokens: ['train', 'tàu', 'tau'], icon: 'train', label: 'Tàu hỏa' },
-  { tokens: ['flight', 'plane', 'máy bay', 'may bay', 'hàng không'], icon: 'plane', label: 'Máy bay' },
-  { tokens: ['bus', 'coach', 'xe khách', 'xe khach'], icon: 'bus', label: 'Xe khách' },
+  { tokens: ['train', 'tàu', 'tau'], icon: 'train', label: 'Train' },
+  { tokens: ['flight', 'plane', 'máy bay', 'may bay', 'hàng không'], icon: 'plane', label: 'Flight' },
+  { tokens: ['bus', 'coach', 'xe khách', 'xe khach'], icon: 'bus', label: 'Coach' },
 ]
 
 function transportKind(item) {
@@ -18,23 +18,23 @@ function transportKind(item) {
   return (
     TRANSPORT_KINDS.find((kind) => kind.tokens.some((token) => text.includes(token))) || {
       icon: 'route',
-      label: 'Di chuyển',
+      label: 'Transport',
     }
   )
 }
 
 function stayName(name) {
-  if (!name) return { title: 'Chỗ nghỉ', room: null }
+  if (!name) return { title: 'Stay', room: null }
   const [title, room] = String(name).split(' — ')
-  return { title: title || 'Chỗ nghỉ', room: room || null }
+  return { title: title || 'Stay', room: room || null }
 }
 
 function serviceTitle(name) {
-  return String(name || 'Di chuyển chính').replace(/\s*\((?:bus|train|flight)\)\s*$/i, '')
+  return String(name || 'Main transport').replace(/\s*\((?:bus|train|flight)\)\s*$/i, '')
 }
 
 function money(value) {
-  return value == null ? 'Chưa có' : fmtMoney(value)
+  return value == null ? 'Not available' : fmtMoney(value)
 }
 
 function Stat({ label, value }) {
@@ -48,7 +48,7 @@ function Stat({ label, value }) {
 
 function ServiceTitle({ id, title, sourceUrl, sourceLabel }) {
   const safeUrl = safeSourceUrl(sourceUrl)
-  const label = sourceLabel || 'nguồn tham khảo'
+  const label = sourceLabel || 'source'
   return (
     <h3 id={id} className="service-title">
       {safeUrl ? (
@@ -57,8 +57,8 @@ function ServiceTitle({ id, title, sourceUrl, sourceLabel }) {
           href={safeUrl}
           target="_blank"
           rel="noreferrer noopener"
-          title={`Mở nguồn: ${label}`}
-          aria-label={`${title} — mở nguồn ${label}`}
+          title={`Open source: ${label}`}
+          aria-label={`${title} — open source ${label}`}
         >
           {title}
           <Icon name="external" size={13} />
@@ -74,12 +74,12 @@ function LegStatus({ verified }) {
   return verified ? (
     <span className="service-leg-status service-leg-status--verified">
       <Icon name="check" size={12} />
-      Đã xác minh
+      Verified
     </span>
   ) : (
     <span className="service-leg-status service-leg-status--unverified">
       <Icon name="alert" size={12} />
-      Chưa xác minh
+      Unverified
     </span>
   )
 }
@@ -95,10 +95,10 @@ function StayCard({ item }) {
           <Icon name="bed" size={19} />
         </span>
         <div className="service-heading">
-          <p className="service-kicker">Lưu trú</p>
+          <p className="service-kicker">Stay</p>
           <ServiceTitle
             id="trip-stay-heading"
-            title={item ? title : 'Chưa có dữ liệu lưu trú'}
+            title={item ? title : 'No stay data'}
             sourceUrl={item?.sourceUrl}
             sourceLabel={item?.source}
           />
@@ -106,7 +106,7 @@ function StayCard({ item }) {
             <div className="service-subline">
               {room && <span className="service-room">{room}</span>}
               {item.status === 'ESTIMATED' && (
-                <span className="service-badge">Ước tính</span>
+                <span className="service-badge">Estimated</span>
               )}
             </div>
           )}
@@ -116,23 +116,23 @@ function StayCard({ item }) {
       {item ? (
         <>
           <div className="service-stats">
-            <Stat label="Số phòng" value={item.rooms == null ? 'Chưa có' : `${item.rooms} phòng`} />
-            <Stat label="Số đêm" value={item.nights == null ? 'Chưa có' : `${item.nights} đêm`} />
-            <Stat label="Đơn giá/đêm" value={money(item.unitPriceVnd)} />
-            <Stat label="Tạm tính" value={money(item.amountVnd)} />
+            <Stat label="Rooms" value={item.rooms == null ? 'Not available' : `${item.rooms} rooms`} />
+            <Stat label="Nights" value={item.nights == null ? 'Not available' : `${item.nights} nights`} />
+            <Stat label="Price/night" value={money(item.unitPriceVnd)} />
+            <Stat label="Subtotal" value={money(item.amountVnd)} />
           </div>
           {isDayTrip && (
-            <p className="service-hint">Chuyến trong ngày nên chưa phát sinh đêm lưu trú.</p>
+            <p className="service-hint">Day trip, so no overnight stay is added.</p>
           )}
           <p className="service-note">
-            Giá phòng tham khảo, chưa gồm thuế/phụ phí và chưa xác nhận tình trạng phòng cho
-            ngày bạn đi.
+            Reference room price. Taxes and fees are not included, and availability is not
+            confirmed for your dates.
           </p>
         </>
       ) : (
         <p className="service-note">
-          Backend chưa trả về chỗ nghỉ phù hợp cho lịch này. Phần chi phí lưu trú được tính là
-          chưa xác minh, không phải 0.
+          The backend did not return a matching stay for this plan. Stay costs are treated as
+          unverified, not zero.
         </p>
       )}
     </article>
@@ -152,16 +152,16 @@ function TransportCard({ item, legs, placesById }) {
           <Icon name={kind.icon} size={19} />
         </span>
         <div className="service-heading">
-          <p className="service-kicker">Di chuyển</p>
+          <p className="service-kicker">Transport</p>
           <ServiceTitle
             id="trip-transport-heading"
-            title={item ? title : 'Các chặng trong lịch trình'}
+            title={item ? title : 'Travel legs in this plan'}
             sourceUrl={item?.sourceUrl}
             sourceLabel={item?.source}
           />
           <div className="service-subline">
             <span className="service-room">{kind.label}</span>
-            {item?.status === 'ESTIMATED' && <span className="service-badge">Ước tính</span>}
+            {item?.status === 'ESTIMATED' && <span className="service-badge">Estimated</span>}
           </div>
         </div>
       </div>
@@ -169,43 +169,43 @@ function TransportCard({ item, legs, placesById }) {
       {item ? (
         <>
           <div className="service-stats">
-            <Stat label="Hành khách" value={item.travelers == null ? 'Chưa có' : `${item.travelers} người`} />
-            <Stat label="Chiều đi" value="Một chiều" />
-            <Stat label="Mỗi người" value={money(item.perPersonVnd)} />
-            <Stat label="Tạm tính" value={money(item.amountVnd)} />
+            <Stat label="Travelers" value={item.travelers == null ? 'Not available' : `${item.travelers} people`} />
+            <Stat label="Direction" value="One way" />
+            <Stat label="Per person" value={money(item.perPersonVnd)} />
+            <Stat label="Subtotal" value={money(item.amountVnd)} />
           </div>
           <p className="service-note">
-            Giá tham khảo đã gồm phí dịch vụ; chưa gồm chiều về và trung chuyển sân bay, ga,
-            bến xe.
+            Reference fare including service fees; the return leg and airport, station, or
+            bus-terminal transfers are not included.
           </p>
         </>
       ) : (
         <p className="service-note">
-          Backend chưa trả về giá vé chính cho lịch này. Các chặng bên dưới chỉ là khoảng cách
-          và thời gian di chuyển trong ngày, không phải giá vé.
+          The backend did not return a primary fare for this plan. The legs below show daily
+          distance and travel time only, not fares.
         </p>
       )}
 
       <div className="service-legs-block">
         <div className="service-legs-head">
-          <h4 className="service-legs-title">Các chặng trong ngày</h4>
+          <h4 className="service-legs-title">Travel legs by day</h4>
           {legs.length > 0 && (
             <span className="service-legs-count">
-              {verifiedLegs}/{legs.length} chặng đã xác minh
+              {verifiedLegs}/{legs.length} legs verified
             </span>
           )}
         </div>
 
         {legs.length === 0 ? (
           <p className="service-note">
-            Lịch này chưa có chặng di chuyển giữa các hoạt động.
+            This plan has no travel legs between activities.
           </p>
         ) : (
           <ul className="service-legs-list">
             {legs.map((leg, index) => {
               const verified = leg.durationMin != null || leg.distanceKm != null
               const duration =
-                leg.durationMin != null ? `${leg.durationMin} phút` : 'Chưa rõ thời gian'
+                leg.durationMin != null ? `${leg.durationMin} min` : 'Time unknown'
               const distance = leg.distanceKm != null ? `${leg.distanceKm} km` : null
               return (
                 <li className="service-leg" key={`${leg.dayNumber || 'day'}-${index}`}>
@@ -216,7 +216,7 @@ function TransportCard({ item, legs, placesById }) {
                       {displayPlaceName(leg.toPlaceId, placesById)}
                     </span>
                     <span className="service-leg-meta">
-                      {leg.dayNumber != null && `Ngày ${leg.dayNumber} · `}
+                      {leg.dayNumber != null && `Day ${leg.dayNumber} · `}
                       {[duration, distance].filter(Boolean).join(' · ')}
                     </span>
                   </div>
@@ -240,13 +240,13 @@ export default function TripServices({ plan, placesById }) {
     <section className="trip-services selected-wide" aria-labelledby="trip-services-heading">
       <div className="services-head">
         <div>
-          <p className="page-eyebrow">Lưu trú & di chuyển</p>
+          <p className="page-eyebrow">Stay &amp; transport</p>
           <h2 id="trip-services-heading" className="services-title">
-            Chỗ nghỉ và cách di chuyển
+            Where you stay and how you get around
           </h2>
           <p className="muted small">
-            Thông tin backend trả về cho đúng lịch này. Giá và tình trạng còn cần xác nhận trước
-            khi đặt.
+            Returned by the backend for this exact plan. Prices and availability still need
+            confirming before you book.
           </p>
         </div>
       </div>

@@ -17,7 +17,7 @@ import { fmtMoney } from '../../services/mockData.js'
 import Icon from '../common/Icon.jsx'
 
 function money(value) {
-  return value == null ? 'Chưa xác minh' : fmtMoney(value)
+  return value == null ? 'Unverified' : fmtMoney(value)
 }
 
 function statusClass(status) {
@@ -30,7 +30,7 @@ function RankingLine({ ranking }) {
       <p className="plan-note">
         <Icon name="star" size={15} />
         <span>
-          Xếp hạng #{ranking.position}
+          Rank #{ranking.position}
           {ranking.score100 != null ? ` · ${Number(ranking.score100).toFixed(1)}/100` : ''}
         </span>
       </p>
@@ -40,7 +40,7 @@ function RankingLine({ ranking }) {
     return (
       <p className="plan-note plan-note--warn">
         <Icon name="info" size={15} />
-        <span>Đủ điều kiện nhưng thiếu dữ liệu để chấm điểm xếp hạng.</span>
+        <span>Eligible, but missing data to score the ranking.</span>
       </p>
     )
   }
@@ -48,7 +48,7 @@ function RankingLine({ ranking }) {
     return (
       <p className="plan-note plan-note--warn">
         <Icon name="alert" size={15} />
-        <span>Bị loại khỏi xếp hạng vì trạng thái không đạt.</span>
+        <span>Excluded from ranking because the status did not pass.</span>
       </p>
     )
   }
@@ -59,13 +59,13 @@ function CostLine({ cost }) {
   return (
     <>
       <div className="card-cost-row">
-        <span className="cost-label">{cost.complete ? 'Tổng chi phí' : 'Tổng đã biết'}</span>
+        <span className="cost-label">{cost.complete ? 'Total cost' : 'Known total'}</span>
         <strong className="card-cost">{money(cost.knownTotal)}</strong>
       </div>
       {cost.missing.length > 0 && (
         <p className="unverified-line" role="status">
           <Icon name="alert" size={15} />
-          <span>Chưa xác minh {cost.missing.length} mục chi phí</span>
+          <span>Unverified {cost.missing.length} cost {cost.missing.length === 1 ? 'item' : 'items'}</span>
         </p>
       )}
     </>
@@ -79,8 +79,8 @@ function RoutingLine({ evidence }) {
     <p className={kind}>
       <Icon name="route" size={15} />
       <span>
-        Lộ trình: {evidence.verified}/{evidence.total} chặng đã xác minh
-        {evidence.unverified > 0 ? ` · ${evidence.unverified} chặng cần kiểm tra` : ''}
+        Route: {evidence.verified}/{evidence.total} legs verified
+        {evidence.unverified > 0 ? ` · ${evidence.unverified} legs need checking` : ''}
       </span>
     </p>
   )
@@ -138,31 +138,31 @@ function CandidateCard({
           {isRecommended && (
             <span className="badge badge-suggested" data-testid={`candidate-recommended-${candidate.planId}`}>
               <Icon name="sparkle" size={13} />
-              Đề xuất
+              Suggested
             </span>
           )}
         </div>
         {selected && (
           <div className="card-selected-ribbon">
             <Icon name="check" size={14} />
-            Đã chọn
+            Selected
           </div>
         )}
       </div>
 
       <div className="card-body">
-        <span className="card-index-label">Phương án {index + 1}</span>
+        <span className="card-index-label">Option {index + 1}</span>
         <h3 className="card-destination">{destination || plan.destinationId}</h3>
         {plan.title && <p className="card-title">{plan.title}</p>}
 
         <div className="card-meta" aria-label="Trip summary">
           <span>
             <Icon name="calendar" size={16} />
-            {plan.days?.length || 0} ngày
+            {plan.days?.length || 0} {plan.days?.length === 1 ? 'day' : 'days'}
           </span>
           <span>
             <Icon name="landmark" size={16} />
-            {activityCount} hoạt động
+            {activityCount} {activityCount === 1 ? 'activity' : 'activities'}
           </span>
         </div>
 
@@ -174,13 +174,13 @@ function CandidateCard({
           {isInfeasible && warnings.length > 0 && (
             <p className="plan-note plan-note--danger">
               <Icon name="alert" size={15} />
-              <span>Vượt ràng buộc chuyến đi</span>
+              <span>Breaks trip constraints</span>
             </p>
           )}
           {!isInfeasible && unresolved > 0 && (
             <p className="unverified-line" role="status">
               <Icon name="alert" size={15} />
-              <span>{unresolved} mục chưa xác minh</span>
+              <span>{unresolved} unverified {unresolved === 1 ? 'item' : 'items'}</span>
             </p>
           )}
         </div>
@@ -195,24 +195,24 @@ function CandidateCard({
               disabled={isInfeasible}
               title={
                 isInfeasible
-                  ? 'Không thể chọn lịch không khả thi. Hãy chỉnh yêu cầu trước.'
+                  ? 'Cannot choose an infeasible plan. Adjust your request first.'
                   : selected
-                    ? 'Lịch này đang được chọn cho chuyến đi'
-                    : 'Chọn lịch này cho chuyến đi'
+                    ? 'This plan is selected for your trip'
+                    : 'Choose this plan for your trip'
               }
               onClick={() => onSelect?.(candidate)}
             >
               {selected ? (
                 <>
                   <Icon name="check" size={15} />
-                  Đã chọn
+                  Selected
                 </>
               ) : (
-                'Chọn lịch này'
+                'Choose this plan'
               )}
             </button>
             <Link className="btn btn-sm btn-primary" to={detailUrl}>
-              {selected ? 'Mở chi tiết' : 'Xem chi tiết'}
+              {selected ? 'Open details' : 'View details'}
               <Icon name="arrowRight" size={15} />
             </Link>
           </div>
@@ -230,7 +230,7 @@ export default function CandidateComparison({
   onSelectPlan,
 }) {
   if (!Array.isArray(candidates) || candidates.length === 0) {
-    return <p className="muted">Không có lịch trình nào để so sánh.</p>
+    return <p className="muted">No itineraries to compare.</p>
   }
 
   return (
@@ -238,15 +238,15 @@ export default function CandidateComparison({
       <div className="section-head">
         <div>
           <h2 id="candidate-results-heading">
-            {candidates.length} lịch trình từ trợ lý
+            {candidates.length} itineraries from the assistant
           </h2>
           <p className="muted">
-            Chọn một lịch và mở chi tiết để xem toàn bộ bảng kiểm tra và cảnh báo của backend.
+            Choose a plan and open its details to see the full backend checks and warnings.
           </p>
         </div>
         <span className="count-pill">
           <Icon name="route" size={15} />
-          {candidates.length} lịch
+          {candidates.length} {candidates.length === 1 ? 'plan' : 'plans'}
         </span>
       </div>
 

@@ -200,9 +200,9 @@ export async function fetchPlaceCatalog({ ids, destination } = {}) {
     if (destination) query.set('destination', destination);
     uniqueIds.slice(offset, offset + 100).forEach((id) => query.append('ids', id));
     const response = await fetch(apiUrl(`/api/v1/places?${query}`));
-    if (!response.ok) throw new Error('Không đọc được danh mục tên địa điểm.');
+    if (!response.ok) throw new Error('Could not load the place name catalog.');
     const body = await response.json();
-    if (!Array.isArray(body.places)) throw new Error('Danh mục địa điểm không hợp lệ.');
+    if (!Array.isArray(body.places)) throw new Error('The place catalog is invalid.');
     places.push(...body.places);
   }
   return places;
@@ -211,9 +211,9 @@ export async function fetchPlaceCatalog({ ids, destination } = {}) {
 const VALID_STATUSES = new Set(['FEASIBLE', 'INFEASIBLE', 'UNVERIFIED'])
 
 export const VERIFICATION_CHECKS = [
-  { key: 'cost', label: 'Ngân sách' },
-  { key: 'schedule', label: 'Lịch trình' },
-  { key: 'travel', label: 'Di chuyển' },
+  { key: 'cost', label: 'Budget' },
+  { key: 'schedule', label: 'Schedule' },
+  { key: 'travel', label: 'Travel' },
 ]
 
 export function getCheckStatus(evaluation, checkKey) {
@@ -222,15 +222,15 @@ export function getCheckStatus(evaluation, checkKey) {
 }
 
 const REASON_TOPICS = [
-  { key: 'budget', label: 'Ngân sách', codes: ['BUDGET'] },
+  { key: 'budget', label: 'Budget', codes: ['BUDGET'] },
   {
     key: 'openingHours',
-    label: 'Giờ mở cửa',
+    label: 'Opening hours',
     codes: ['OPENING_HOURS', 'OUTSIDE_OPENING_HOURS'],
   },
   {
     key: 'travelTime',
-    label: 'Thời gian di chuyển',
+    label: 'Travel time',
     codes: [
       'TRANSFER_GAP', 'TRAVEL_MISMATCH', 'TRAVEL_LIMIT', 'LIMIT_DATA',
       'DAILY_LIMIT_DATA', 'TRIP_TIME_LIMIT',
@@ -238,12 +238,12 @@ const REASON_TOPICS = [
   },
   {
     key: 'routing',
-    label: 'Đường đi chưa xác minh',
+    label: 'Unverified route',
     codes: ['UNSUPPORTED_LEG', 'TRAVEL_DATA', 'MISSING_LEG', 'LEG_ENDPOINTS', 'LEG_ORDER'],
   },
   {
     key: 'schedule',
-    label: 'Lịch trình',
+    label: 'Schedule',
     codes: [
       'DAY_COUNT', 'TRAVEL_MONTH', 'DAY_NUMBER', 'TRAVEL_DATE', 'DAY_SCHEDULE',
       'ACTIVITY_ORDER',
@@ -251,11 +251,11 @@ const REASON_TOPICS = [
   },
   {
     key: 'place',
-    label: 'Dữ liệu địa điểm',
+    label: 'Place data',
     codes: ['PLACE_DATA', 'PLACE_SOURCE', 'VISIT_DURATION_DATA', 'VISIT_DURATION'],
   },
-  { key: 'plan', label: 'Thông tin chuyến đi', codes: ['DESTINATION_ID', 'INVALID_INPUT'] },
-  { key: 'ranking', label: 'Xếp hạng', codes: [] },
+  { key: 'plan', label: 'Trip details', codes: ['DESTINATION_ID', 'INVALID_INPUT'] },
+  { key: 'ranking', label: 'Ranking', codes: [] },
 ]
 
 const TOPIC_FOR_CODE = new Map(
@@ -357,9 +357,9 @@ export function safeSourceUrl(value) {
 
 export function sourceLabel(url) {
   try {
-    return new URL(url).hostname.replace(/^www\./, "") || "Nguồn"
+    return new URL(url).hostname.replace(/^www\./, "") || "Source"
   } catch {
-    return "Nguồn"
+    return "Source"
   }
 }
 
@@ -471,27 +471,27 @@ function replaceIds(message, resolveName) {
 }
 
 function translateCostMessage(message) {
-  if (message === 'Known costs exceed budget.') return 'Chi phí đã biết vượt ngân sách.'
-  if (message === 'Budget is missing or invalid.') return 'Ngân sách chưa có hoặc không hợp lệ.'
+  if (message === 'Known costs exceed budget.') return 'Known costs exceed your budget.'
+  if (message === 'Budget is missing or invalid.') return 'Budget is missing or invalid.'
   if (message === 'Cost total exceeds the supported numeric range.') {
-    return 'Tổng chi phí vượt giới hạn số mà hệ thống hỗ trợ.'
+    return 'Cost total exceeds the supported numeric range.'
   }
   if (message.startsWith('Required costs are missing or invalid:')) {
     const missing = message
       .slice('Required costs are missing or invalid:'.length)
       .trim()
       .replace(/\.$/, '')
-    return `Còn thiếu hoặc chưa hợp lệ các chi phí: ${missing}.`
+    return `Required costs are missing or invalid: ${missing}.`
   }
   return message
 }
 
 function translateMeasurementFields(message) {
   return message
-    .replace(/\bdurationMin\b/g, 'thời gian di chuyển')
-    .replace(/\bdistanceKm\b/g, 'khoảng cách')
-    .replace(/\bmaxTravelTimeMinutes\b/g, 'giới hạn thời gian di chuyển')
-    .replace(/\bmaxDistanceKm\b/g, 'giới hạn khoảng cách')
+    .replace(/\bdurationMin\b/g, 'travel time')
+    .replace(/\bdistanceKm\b/g, 'distance')
+    .replace(/\bmaxTravelTimeMinutes\b/g, 'travel time limit')
+    .replace(/\bmaxDistanceKm\b/g, 'distance limit')
 }
 
 export function formatReason(reason, context = {}) {
@@ -511,59 +511,59 @@ export function formatReason(reason, context = {}) {
     case 'BUDGET':
       return translateCostMessage(message)
     case 'DESTINATION_ID':
-      return 'Điểm đến không có trong dữ liệu đã xác minh.'
+      return 'Destination is not in the verified dataset.'
     case 'DAY_COUNT':
-      return 'Số ngày của lịch trình không khớp với yêu cầu.'
+      return 'Itinerary day count does not match the request.'
     case 'TRAVEL_MONTH':
-      return 'Ngày bắt đầu nằm ngoài tháng bạn đã chọn.'
+      return 'Start date is outside the month you chose.'
     case 'DAY_NUMBER':
-      return 'Thứ tự các ngày phải bắt đầu từ 1 và liên tục.'
+      return 'Day numbers must start at 1 and be consecutive.'
     case 'TRAVEL_DATE':
-      return 'Các ngày trong lịch trình không khớp hoặc không liên tiếp.'
+      return 'Itinerary dates do not match or are not consecutive.'
     case 'DAY_SCHEDULE':
-      return 'Các hoạt động bị trùng giờ hoặc có thời lượng không hợp lệ.'
+      return 'Activities overlap or have invalid durations.'
     case 'ACTIVITY_ORDER':
-      return 'Các hoạt động chưa được sắp theo giờ bắt đầu.'
+      return 'Activities are not sorted by start time.'
     case 'PLACE_DATA':
-      return 'Không tìm thấy địa điểm này trong dữ liệu đã xác minh.'
+      return 'This place was not found in the verified dataset.'
     case 'PLACE_SOURCE':
-      return 'Nguồn dữ liệu của địa điểm chưa được xác minh.'
+      return 'The place data source is not verified.'
     case 'OPENING_HOURS':
-      return 'Chưa đủ dữ liệu giờ mở cửa để kiểm tra.'
+      return 'Not enough opening-hours data to check.'
     case 'OUTSIDE_OPENING_HOURS':
-      return 'Hoạt động nằm ngoài giờ mở cửa của địa điểm.'
+      return 'The activity falls outside the place opening hours.'
     case 'VISIT_DURATION_DATA':
-      return 'Thời lượng tham quan tối thiểu không hợp lệ.'
+      return 'Minimum visit duration is invalid.'
     case 'VISIT_DURATION':
-      return 'Thời gian dành cho địa điểm chưa đủ mức tối thiểu.'
+      return 'Time allotted for the place is below the minimum.'
     case 'TRANSFER_GAP': {
-      const match = message.match(/giữa (.+?) và (.+?)\.?$/i)
-      const places = match ? `${match[1]} và ${match[2]}` : 'hai hoạt động liên tiếp'
+      const match = message.match(/between (.+?) and (.+?)\.?$/i) || message.match(/giữa (.+?) và (.+?)\.?$/i)
+      const places = match ? `${match[1]} and ${match[2]}` : 'two consecutive activities'
       return normalized.status === 'INFEASIBLE'
-        ? `Không đủ thời gian di chuyển giữa ${places}.`
-        : `Chưa xác minh được thời gian di chuyển giữa ${places}.`
+        ? `Not enough travel time between ${places}.`
+        : `Travel time between ${places} is unverified.`
     }
     case 'LEG_ENDPOINTS':
-      return 'Danh sách chặng đi không khớp với các hoạt động trong ngày.'
+      return 'Travel legs do not match the day activities.'
     case 'MISSING_LEG':
-      return 'Thiếu chặng di chuyển giữa hai hoạt động liên tiếp.'
+      return 'Missing a travel leg between two consecutive activities.'
     case 'LEG_ORDER':
-      return 'Các chặng đi chưa được liệt kê đúng thứ tự hoạt động.'
+      return 'Travel legs are not listed in activity order.'
     case 'UNSUPPORTED_LEG':
       return message
     case 'TRAVEL_DATA':
       return message
     case 'TRAVEL_MISMATCH':
-      return 'Thời gian hoặc khoảng cách trong lịch trình không khớp dữ liệu đã xác minh.'
+      return 'Itinerary time or distance does not match the verified data.'
     case 'TRAVEL_LIMIT':
       return message
     case 'LIMIT_DATA':
     case 'DAILY_LIMIT_DATA':
       return message
     case 'TRIP_TIME_LIMIT':
-      return 'Tổng thời gian di chuyển vượt giới hạn của cả chuyến.'
+      return 'Total travel time exceeds the trip limit.'
     case 'INVALID_INPUT':
-      return 'Dữ liệu lịch trình không hợp lệ.'
+      return 'Itinerary data is invalid.'
     default:
       return message
   }
@@ -697,15 +697,15 @@ export function normalizeCandidateStatus(status) {
 }
 
 export const CANDIDATE_STATUS_LABEL = {
-  FEASIBLE: "Đủ điều kiện",
-  UNVERIFIED: "Chưa xác minh",
-  INFEASIBLE: "Không khả thi",
+  FEASIBLE: "Feasible",
+  UNVERIFIED: "Unverified",
+  INFEASIBLE: "Not feasible",
 }
 
 export const CANDIDATE_STATUS_HINT = {
-  FEASIBLE: "Đã vượt qua kiểm tra chi phí, lịch trình và di chuyển.",
-  UNVERIFIED: "Còn dữ liệu chưa xác minh; chưa phải đề xuất đã xác minh và không tính phần thiếu là 0.",
-  INFEASIBLE: "Vi phạm ràng buộc đã kiểm tra; không thể chọn.",
+  FEASIBLE: "Passed budget, schedule, and travel checks.",
+  UNVERIFIED: "Some data is unverified; this is not a verified recommendation and missing costs are not counted as 0.",
+  INFEASIBLE: "Violates checked constraints; cannot be selected.",
 }
 
 export function candidateStatusLabel(status) {
