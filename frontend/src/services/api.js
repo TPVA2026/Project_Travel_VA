@@ -549,17 +549,30 @@ export function formatReason(reason, context = {}) {
       return 'Missing a travel leg between two consecutive activities.'
     case 'LEG_ORDER':
       return 'Travel legs are not listed in activity order.'
-    case 'UNSUPPORTED_LEG':
-      return message
-    case 'TRAVEL_DATA':
-      return message
+    case 'UNSUPPORTED_LEG': {
+      const match = message.match(/^Chưa có chặng đã xác minh (.+?) -> (.+?)\.?$/)
+      return match ? `No verified route from ${match[1]} to ${match[2]}.` : message
+    }
+    case 'TRAVEL_DATA': {
+      const match = message.match(/^Thiếu (.+?) cho (.+?) -> (.+?)\.?$/)
+      return match ? `Missing ${match[1]} for ${match[2]} to ${match[3]}.` : message
+    }
     case 'TRAVEL_MISMATCH':
       return 'Itinerary time or distance does not match the verified data.'
-    case 'TRAVEL_LIMIT':
-      return message
-    case 'LIMIT_DATA':
-    case 'DAILY_LIMIT_DATA':
-      return message
+    case 'TRAVEL_LIMIT': {
+      const match = message.match(/^(.+?)=([\d.]+) vượt giới hạn ([\d.]+)\.?$/)
+      if (!match) return message
+      const label = match[1].charAt(0).toUpperCase() + match[1].slice(1)
+      return `${label} ${match[2]} exceeds the limit of ${match[3]}.`
+    }
+    case 'LIMIT_DATA': {
+      const match = message.match(/^Chưa đủ (.+?) để kiểm tra (.+?)\.?$/)
+      return match ? `Not enough ${match[1]} data to check the ${match[2]}.` : message
+    }
+    case 'DAILY_LIMIT_DATA': {
+      const match = message.match(/^Chưa đủ (.+?) của cả ngày\.?$/)
+      return match ? `Not enough ${match[1]} data for the whole day.` : message
+    }
     case 'TRIP_TIME_LIMIT':
       return 'Total travel time exceeds the trip limit.'
     case 'INVALID_INPUT':

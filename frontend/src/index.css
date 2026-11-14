@@ -6790,3 +6790,46 @@ body.intro-flying .plan-panel {
 .question-form .request-city-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .question-form .request-city-name { font-size: 15px; font-weight: 700; line-height: 1.25; color: var(--rv-ink); }
 .question-form .request-city-hint { font-size: 12px; font-weight: 500; line-height: 1.2; color: var(--rv-muted); }
+
+/* ==========================================================================
+   Final polish pass: warm palette consistency, motion and accessibility
+   ========================================================================== */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--rv-terra-soft);
+  color: var(--rv-ink);
+}
+
+.error-box {
+  background: #fdf3f1;
+  border-color: #f0c9c2;
+  color: var(--rv-red);
+}
+
+.error-title { color: #7d2a22; }
+.error-message { color: #8a3329; }
+.plan-alert-box .small-tip { display: block; margin-top: 4px; opacity: 0.85; }
+
+@media (max-width: 720px) {
+  .selected-left .btn-choose,
+  .actions-block .btn-choose {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -29,9 +29,9 @@ import {
 } from '../services/destinationImages.js'
 
 const STATUS_LABEL = {
-  FEASIBLE: 'Fits your trip',
+  FEASIBLE: 'Feasible',
   INFEASIBLE: 'Not feasible',
-  UNVERIFIED: 'Needs checking',
+  UNVERIFIED: 'Unverified',
 }
 
 export default function SelectedPlanPage() {
@@ -374,7 +374,7 @@ export default function SelectedPlanPage() {
                     <span>
                       <strong>Cannot be chosen:</strong> {plan.failReason || 'Breaks a trip constraint.'}
                       <span className="small-tip">
-                        Use the revision form below to adjust your budget or constraints.
+                        Adjust your budget or constraints and create a new plan.
                       </span>
                     </span>
                   </div>
