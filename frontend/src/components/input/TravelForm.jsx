@@ -502,11 +502,11 @@ export default function TravelForm() {
 
       <div className="actions request-actions">
         {errors.form && <p className="error" role="alert" id="request-form-error" tabIndex={-1}>{errors.form}</p>}
-        <button className="primary request-next" type="submit" disabled={sending}>{step === REVIEW ? (sending ? "Checking…" : "Create itinerary") : nextLabel}</button>
+        <button className="primary request-next" type="submit" disabled={sending}>{step === REVIEW ? (sending ? "Creating plans…" : "Create itinerary") : nextLabel}</button>
         <BusIllustration progress={progress} />
         <div className="request-footer">
           <button className="request-link" type="button" onClick={clearForm}>Clear form</button>
-          <p className="completion-label" aria-live="polite">{progress}% finding</p>
+          <p className="completion-label" aria-live="polite">{progress}% complete</p>
         </div>
       </div>
     </form>

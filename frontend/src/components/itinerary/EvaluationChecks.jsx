@@ -7,6 +7,12 @@ const CHECK_ICONS = {
   travel: 'route',
 }
 
+const CHECK_STATUS_LABEL = {
+  FEASIBLE: 'Pass',
+  UNVERIFIED: 'Needs check',
+  INFEASIBLE: 'Fails',
+}
+
 function formatMeasure(value, unit) {
   return value == null ? null : `${Number(value).toLocaleString('en-US')} ${unit}`
 }
@@ -15,8 +21,8 @@ function travelDaySummary(day) {
   if (!day || typeof day !== 'object') return null
   const minutes = formatMeasure(day.durationMin, 'min')
   const kilometers = formatMeasure(day.distanceKm, 'km')
-  if (minutes == null && kilometers == null) return 'chưa xác minh dữ liệu di chuyển'
-  return [minutes || 'chưa rõ thời gian', kilometers || 'chưa rõ khoảng cách']
+  if (minutes == null && kilometers == null) return 'travel data not verified'
+  return [minutes || 'time unknown', kilometers || 'distance unknown']
     .filter(Boolean)
     .join(' · ')
 }
@@ -38,7 +44,9 @@ export default function EvaluationChecks({ evaluation }) {
                 <Icon name={CHECK_ICONS[key]} size={15} />
               </span>
               <span className="check-chip-label">{label}</span>
-              <span className={`badge badge-${status}`}>{status}</span>
+              <span className={`badge badge-${status}`}>
+                {CHECK_STATUS_LABEL[status] || status}
+              </span>
             </div>
           )
         })}
@@ -50,7 +58,7 @@ export default function EvaluationChecks({ evaluation }) {
             <li key={day?.dayNumber}>
               <Icon name="clock" size={13} />
               <span>
-                <strong>Ngày {day?.dayNumber}</strong> {travelDaySummary(day)}
+                <strong>Day {day?.dayNumber}</strong> {travelDaySummary(day)}
               </span>
             </li>
           ))}

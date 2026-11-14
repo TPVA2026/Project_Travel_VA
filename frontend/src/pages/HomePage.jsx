@@ -113,7 +113,7 @@ export default function HomePage() {
               </li>
               <li>
                 <Icon name="route" size={17} />
-                <span><strong>A plan you can revise</strong>, print, or copy.</span>
+                <span><strong>A plan you can save</strong>, print, or copy.</span>
               </li>
             </ul>
           </section>

@@ -3,10 +3,10 @@ import Icon from '../common/Icon.jsx'
 import CostProjection from './CostProjection.jsx'
 
 const CATEGORY_LABEL = {
-  transport: 'Di chuyển',
-  accommodation: 'Lưu trú',
-  dining: 'Ăn uống',
-  activities: 'Hoạt động',
+  transport: 'Transport',
+  accommodation: 'Stay',
+  dining: 'Dining',
+  activities: 'Activities',
 }
 
 function categoryLabel(category) {
@@ -46,14 +46,14 @@ export default function CostSummary({ plan, costEvaluation, resolveName }) {
   return (
     <section className="cost-summary" aria-labelledby="cost-summary-title">
       <h3 id="cost-summary-title" className="cost-summary-title">
-        Chi phí dự kiến
+        Estimated costs
       </h3>
 
       <div className="total-box">
-        <span className="cost-total-label">{complete ? 'Tổng' : 'Tổng đã biết'}</span>
+        <span className="cost-total-label">{complete ? 'Total' : 'Known total'}</span>
         <strong className="cost-total-value">
           {total == null ? (
-            'Chưa xác minh'
+            'Unverified'
           ) : (
             <>
               {Number(total).toLocaleString('en-US')} <small>VND</small>
@@ -66,13 +66,13 @@ export default function CostSummary({ plan, costEvaluation, resolveName }) {
       {budget != null && (
         <div className="cost-breakdown">
           <div className="cost-row">
-            <span className="cost-category">Ngân sách của bạn</span>
+            <span className="cost-category">Your budget</span>
             <span>{fmtMoney(budget)}</span>
           </div>
           {remaining != null && (
             <div className="cost-row">
               <span className="cost-category">
-                {remaining >= 0 ? 'Còn lại sau chi phí đã biết' : 'Vượt ngân sách'}
+                {remaining >= 0 ? 'Left after known costs' : 'Over budget'}
               </span>
               <span className={remaining < 0 ? 'unverified' : ''}>
                 {fmtMoney(Math.abs(remaining))}
@@ -86,7 +86,7 @@ export default function CostSummary({ plan, costEvaluation, resolveName }) {
         <p className="cost-warning">
           <Icon name="alert" size={15} />
           <span>
-            Chỉ hiển thị chi phí đã biết. Chưa xác minh: {missing.map((item) => missingLabel(item, resolveName)).join(', ')} (không tính là 0).
+            Known costs only. Unverified: {missing.map((item) => missingLabel(item, resolveName)).join(', ')} (not counted as zero).
           </span>
         </p>
       )}
