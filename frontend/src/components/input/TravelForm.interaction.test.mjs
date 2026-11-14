@@ -425,7 +425,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(clean.querySelector('[name="periodMode"]'), null);
     assert.equal(clean.querySelector(".request-draft-note"), null);
     assert.equal(doc.getElementById("request-describe-count").textContent, `0/${ADDITIONAL_REQUIREMENTS_MAX}`);
-    assert.equal(clean.querySelector(".completion-label").textContent, "0% finding");
+    assert.equal(clean.querySelector(".completion-label").textContent, "0% complete");
     assert.equal(button("Back"), undefined);
 
     // Group scope and a high custom amount on a dates trip.

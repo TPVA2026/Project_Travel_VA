@@ -366,7 +366,13 @@ export default function ResultsPage() {
       <RequestSummary request={pendingRequest} />
 
       {pendingRequest && aiLoading && (
-        <Loading message="Waiting for the assistant to build your itineraries..." />
+        <div className="generating-panel">
+          <Loading message="Building your plans" />
+          <p className="generating-note muted small">
+            This usually takes 30–90 seconds. Each option is checked against your budget,
+            opening hours, and travel times before it appears.
+          </p>
+        </div>
       )}
 
       {pendingRequest && !aiLoading && aiError && (

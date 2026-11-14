@@ -50,7 +50,8 @@ const plan = {
   missingData: [], assumptions: [],
 }
 
-function candidatePlan(planId, placeId) {
+function candidatePlan(planId, placeId, placeIds = null) {
+  const ids = Array.isArray(placeIds) ? placeIds : [placeId]
   return {
     planId,
     title: `Trip ${planId}`,
@@ -60,7 +61,16 @@ function candidatePlan(planId, placeId) {
     days: [{
       dayNumber: 1,
       date: '2026-12-01',
-      activities: [{ activityId: `${planId}-a1`, placeId, type: 'sightseeing', startTime: '09:00', endTime: '10:00', estimatedCostVnd: 0, costStatus: 'KNOWN', reason: 'Visit' }],
+      activities: ids.map((id, index) => ({
+        activityId: `${planId}-a${index + 1}`,
+        placeId: id,
+        type: index === 1 ? 'dining' : 'sightseeing',
+        startTime: `${String(9 + index).padStart(2, '0')}:00`,
+        endTime: `${String(10 + index).padStart(2, '0')}:00`,
+        estimatedCostVnd: 0,
+        costStatus: 'KNOWN',
+        reason: 'Visit',
+      })),
       travelLegs: [],
     }],
   }
@@ -614,6 +624,21 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
   }
   const selected = {
     ...candidatePlan('hotel-detail', 'ATTR_H_01'),
+    days: [
+      ...candidatePlan('hotel-detail', 'ATTR_H_01').days,
+      {
+        dayNumber: 2,
+        date: '2026-12-02',
+        activities: [{
+          activityId: 'hotel-detail-a2',
+          placeId: 'ATTR_H_02',
+          type: 'sightseeing',
+          startTime: '09:00',
+          endTime: '10:00',
+        }],
+        travelLegs: [],
+      },
+    ],
     id: 'hotel-detail',
     status: 'UNVERIFIED',
     evaluation: result,
@@ -645,19 +670,71 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
     assert.doesNotMatch(body, /Request a change/)
     assert.match(body, /Backend checks/)
     assert.match(body, /Budget/)
+    assert.equal(dom.window.document.querySelectorAll('.intro-actions button').length, 2)
+    assert.equal(dom.window.document.querySelectorAll('.chosen-header-tools button').length, 0)
+    const { act } = await import('react')
+    assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 2)
+    await act(async () => {
+      dom.window.document.querySelector('[data-testid="schedule-day-2"]').click()
+    })
+    assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 1)
+    assert.match(dom.window.document.querySelector('.timeline-day-group').textContent, /Day 2/)
+    await act(async () => {
+      dom.window.document.querySelector('[data-testid="schedule-day-all"]').click()
+    })
+    assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 2)
+    await act(async () => {
+      dom.window.document.querySelector('.actions-block .btn-choose').click()
+    })
+    assert.equal(dom.window.document.querySelector('.chosen-header-banner'), null)
+    assert.match(
+      dom.window.document.querySelector('.actions-block .btn-choose').textContent,
+      /Choose this plan/
+    )
+    await act(async () => {
+      dom.window.document.querySelector('.actions-block .btn-choose').click()
+    })
+    assert.ok(dom.window.document.querySelector('.chosen-header-banner'))
+    assert.match(
+      dom.window.document.querySelector('.actions-block .btn-choose').textContent,
+      /Remove from your trip/
+    )
   } finally {
     await cleanup()
   }
 })
 
-test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', async () => {
+test('CandidateComparison renders 0-3 candidates and compares same-destination plans', async () => {
   for (const count of [0, 1, 2, 3]) {
+    const routeSets = [
+      ['ATTR_H_01', 'ATTR_H_02', 'ATTR_H_03'],
+      ['ATTR_H_01', 'ATTR_H_03', 'ATTR_H_02'],
+      ['ATTR_H_01', 'ATTR_H_04', 'ATTR_H_05'],
+    ]
     const candidates = Array.from({ length: count }, (_, index) => {
       const id = `p-${count}-${index + 1}`
+      const plan = candidatePlan(
+        id,
+        'ATTR_H_01',
+        count === 3 ? routeSets[index] : null
+      )
+      if (count === 3) {
+        plan.days.push({
+          dayNumber: 2,
+          date: '2026-12-02',
+          activities: [{
+            activityId: `${id}-day-2`,
+            placeId: 'ATTR_H_06',
+            type: 'sightseeing',
+            startTime: '09:00',
+            endTime: '10:00',
+          }],
+        })
+      }
       return {
         planId: id,
         status: 'UNVERIFIED',
-        plan: candidatePlan(id, 'ATTR_H_01'),
+        plan,
         evaluation: evaluation(id),
       }
     })
@@ -672,11 +749,75 @@ test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', asy
       if (count === 0) {
         assert.match(dom.window.document.body.textContent, /No itineraries to compare/)
       } else {
+        const heading = dom.window.document
+          .querySelector('#candidate-results-heading')
+          .textContent.trim()
         assert.match(
-          dom.window.document.querySelector('#candidate-results-heading').textContent,
-          new RegExp(`${count} itineraries from the assistant`)
+          heading,
+          count === 1
+            ? /^1 itinerary from the assistant$/
+            : new RegExp(`${count} ways to see|${count} itineraries`)
         )
         assert.doesNotMatch(dom.window.document.body.textContent, /3 plan comparison/i)
+
+        if (count === 1) {
+          assert.equal(dom.window.document.querySelector('.compare-matrix'), null)
+          assert.equal(dom.window.document.querySelector('.route-compare'), null)
+          assert.equal(dom.window.document.querySelector('.same-destination-note'), null)
+          assert.equal(dom.window.document.querySelector('.card-difference'), null)
+          assert.doesNotMatch(
+            dom.window.document.body.textContent,
+            /1 itineraries|unique stop|Only here|Only in this plan|different mix of stops/i
+          )
+        }
+
+        if (count === 3) {
+          const doc = dom.window.document
+          assert.match(doc.body.textContent, /3 ways to see Huế/)
+          assert.match(doc.body.textContent, /Same destination, different plans/)
+          assert.match(
+            doc.body.textContent,
+            /Adds 2 stops no other plan includes: ATTR_H_04, ATTR_H_05\./
+          )
+          assert.match(
+            doc.body.textContent,
+            /Uses the same stops as Option 1, but in a different order\./
+          )
+          assert.ok(doc.querySelector('.compare-matrix'))
+          assert.ok(doc.querySelector('.route-compare'))
+          assert.ok(doc.querySelector('th[scope="row"] .compare-row-label'))
+          assert.ok(
+            [...doc.querySelectorAll('.compare-row-label')].some(
+              (label) => label.textContent === 'Route difference'
+            )
+          )
+          assert.match(doc.body.textContent, /Day 1: 3 stops · Day 2: 1 stop/)
+          assert.equal(doc.querySelectorAll('.route-compare-column').length, 3)
+          assert.equal(doc.querySelectorAll('.route-stop-list li').length, 9)
+          assert.ok(doc.querySelectorAll('.compare-row--differs').length >= 1)
+
+          const { act } = await import('react')
+          const matrixRows = doc.querySelectorAll('.compare-matrix tbody tr')
+          assert.equal(matrixRows.length, 6)
+          await act(async () => {
+            doc.querySelector('[data-testid="compare-differences-only"]').click()
+          })
+          assert.equal(
+            doc.querySelector('[data-testid="compare-differences-only"]').getAttribute('aria-pressed'),
+            'true'
+          )
+          assert.equal(doc.querySelectorAll('.compare-matrix tbody tr').length, 1)
+
+          await act(async () => {
+            doc.querySelector('[data-day-number="2"]').click()
+          })
+          assert.equal(doc.querySelectorAll('.route-stop-list li').length, 3)
+          assert.match(doc.querySelector('.route-compare-day-title').textContent, /Day 2/)
+          await act(async () => {
+            doc.querySelector('[data-day-number="1"]').click()
+          })
+          assert.equal(doc.querySelectorAll('.route-stop-list li').length, 9)
+        }
       }
     } finally {
       await cleanup()

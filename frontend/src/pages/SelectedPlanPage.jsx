@@ -22,7 +22,6 @@ import TripServices from '../components/itinerary/TripServices.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
-import Fireworks from '../components/common/Fireworks.jsx'
 import {
   getDestinationImage,
   getDestinationLabel,
@@ -40,14 +39,14 @@ export default function SelectedPlanPage() {
   const storedId = getSelectedPlanId()
 
   // Use URL query id, or fallback to stored selected plan
-  const activePlanId = queryId || storedId
-
   const [plan, setPlan] = useState(null)
+  const activePlanId = queryId || storedId || plan?.id || plan?.planId
   const [loading, setLoading] = useState(Boolean(activePlanId))
   const [error, setError] = useState(null)
   const [isChosen, setIsChosen] = useState(false)
-  const [celebrate, setCelebrate] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState(false)
+  const [copyError, setCopyError] = useState('')
+  const [activeScheduleDay, setActiveScheduleDay] = useState('all')
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
 
@@ -99,12 +98,9 @@ export default function SelectedPlanPage() {
     if (isChosen) {
       clearSelectedPlan()
       setIsChosen(false)
-      setCelebrate(false)
     } else {
-      const selection = selectPlan(plan)
+      await selectPlan(plan)
       setIsChosen(true)
-      setCelebrate(true)
-      await selection
     }
   }
 
@@ -122,10 +118,12 @@ export default function SelectedPlanPage() {
 
     try {
       await navigator.clipboard.writeText(summaryText)
+      setCopyError('')
       setCopyFeedback(true)
       setTimeout(() => setCopyFeedback(false), 2500)
     } catch {
-      // Fallback
+      setCopyFeedback(false)
+      setCopyError('Could not copy the summary. Check clipboard permissions and try again.')
     }
   }
 
@@ -168,6 +166,13 @@ export default function SelectedPlanPage() {
   const dayCount = plan?.days?.length || 0
   const activityCount =
     plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
+  const scheduleDays = Array.isArray(plan?.days) ? plan.days : []
+  const scheduleDayNumbers = scheduleDays.map(
+    (day, index) => Number(day.day || day.dayNumber) || index + 1
+  )
+  const selectedScheduleDay = scheduleDayNumbers.includes(activeScheduleDay)
+    ? activeScheduleDay
+    : 'all'
   const totalCost = plan ? knownTotal(plan).total : 0
   const resolveName = createNameResolver(plan, placesById)
   const activitySources = collectActivitySources(plan)
@@ -177,20 +182,6 @@ export default function SelectedPlanPage() {
 
   return (
     <div className={`selected-page-container${isChosen ? ' is-chosen' : ''}`}>
-      <Fireworks active={celebrate} onDone={() => setCelebrate(false)} />
-      {celebrate && plan && (
-        <div className="chosen-toast" role="status" aria-live="polite">
-          <span className="chosen-toast-icon" aria-hidden="true">
-            <Icon name="check" size={18} />
-          </span>
-          <span className="chosen-toast-copy">
-            <strong>Trip chosen</strong>
-            <span className="chosen-toast-meta">
-              {destinationLabel} · {dayCount} days
-            </span>
-          </span>
-        </div>
-      )}
       <nav className="page-back no-print" aria-label="Breadcrumb">
         <Link to="/results" className="back-link">
           <Icon name="arrowLeft" size={16} />
@@ -240,6 +231,15 @@ export default function SelectedPlanPage() {
               <Icon name={copyFeedback ? 'check' : 'copy'} size={16} />
               {copyFeedback ? 'Copied' : 'Copy summary'}
             </button>
+            {(copyError || copyFeedback) && (
+              <span
+                className={`copy-feedback ${copyError ? 'copy-feedback--error' : ''}`}
+                role="status"
+                aria-live="polite"
+              >
+                {copyError || 'Summary copied.'}
+              </span>
+            )}
           </div>
         )}
       </header>
@@ -271,36 +271,18 @@ export default function SelectedPlanPage() {
                 </span>
                 <div>
                   <strong className="chosen-header-title">
-                    You&rsquo;re going to {destinationLabel}
+                    Saved to your trip
                   </strong>
                   <p className="chosen-header-sub">
-                    This itinerary is saved to your trip. Print the schedule, copy a summary, or switch plans.
+                    Your selection stays in this browser. You can compare the other plans at any time.
                   </p>
                 </div>
               </div>
 
               <div className="chosen-header-tools no-print">
-                <button
-                  type="button"
-                  className="tool-btn"
-                  onClick={() => window.print()}
-                  title="Print or save as PDF"
-                >
-                  <Icon name="printer" size={15} />
-                  Print / Save PDF
-                </button>
-                <button
-                  type="button"
-                  className="tool-btn"
-                  onClick={handleCopySummary}
-                  title="Copy text summary to clipboard"
-                >
-                  <Icon name={copyFeedback ? 'check' : 'copy'} size={15} />
-                  {copyFeedback ? 'Copied' : 'Copy summary'}
-                </button>
                 <Link to="/results" className="tool-btn">
                   <Icon name="swap" size={15} />
-                  Switch plan
+                  Compare plans
                 </Link>
               </div>
             </div>
@@ -407,7 +389,7 @@ export default function SelectedPlanPage() {
                     {isChosen ? (
                       <>
                         <Icon name="check" size={18} />
-                        Selected — click to remove
+                        Remove from your trip
                       </>
                     ) : (
                       'Choose this plan'
@@ -435,13 +417,12 @@ export default function SelectedPlanPage() {
                 className="selected-right-scroll"
                 role="region"
                 aria-label="Daily schedule and cost summary"
-                tabIndex={0}
               >
                 <div className="schedule-header">
                   <div>
                     <h2 className="itinerary-heading">Daily schedule</h2>
                     <p className="muted small">
-                      Attractions, dining stops, time windows, and travel legs.
+                      Choose a day to focus on its stops.
                     </p>
                   </div>
                   <button
@@ -454,9 +435,47 @@ export default function SelectedPlanPage() {
                   </button>
                 </div>
 
+                {dayCount > 1 && (
+                  <div className="schedule-day-controls" role="group" aria-label="Filter schedule by day">
+                    <button
+                      type="button"
+                      className="schedule-day-button"
+                      data-testid="schedule-day-all"
+                      aria-pressed={selectedScheduleDay === 'all'}
+                      onClick={() => setActiveScheduleDay('all')}
+                    >
+                      All days
+                    </button>
+                    {scheduleDays.map((day, index) => {
+                      const dayNumber = scheduleDayNumbers[index]
+                      const stopCount = day.activities?.length || 0
+                      return (
+                        <button
+                          type="button"
+                          className="schedule-day-button"
+                          key={dayNumber}
+                          data-testid={`schedule-day-${dayNumber}`}
+                          aria-label={`Show day ${dayNumber}, ${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`}
+                          aria-pressed={selectedScheduleDay === dayNumber}
+                          onClick={() => setActiveScheduleDay(dayNumber)}
+                        >
+                          Day {dayNumber}
+                          <span>{stopCount}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+
                 {placeCatalogError && <p role="status" className="muted small">{placeCatalogError}</p>}
                 <ItineraryTimeline
-                  days={plan.days}
+                  days={
+                    selectedScheduleDay === 'all'
+                      ? scheduleDays
+                      : scheduleDays.filter(
+                          (_, index) => scheduleDayNumbers[index] === selectedScheduleDay
+                        )
+                  }
                   placesById={placesById}
                   activitySources={activitySources}
                 />
