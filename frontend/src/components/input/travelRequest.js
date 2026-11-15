@@ -195,6 +195,8 @@ function filledWrong(value, bad) {
   return value !== "" && value != null && bad(Number(value));
 }
 
+export const MIN_BUDGET_VND = 2_000_000;
+
 export function valueErrors(data) {
   const errors = {};
   const start = data.get("startDate");
@@ -226,7 +228,9 @@ export function valueErrors(data) {
   }
   const budget = normalizeBudgetInput(data.get("budgetAmount"));
   if (budget !== "" && (!/^\d+$/.test(budget) || !Number.isSafeInteger(Number(budget)))) {
-    errors.budgetAmount = "Budget must be a whole number of VND, from 0.";
+    errors.budgetAmount = "Budget must be a whole number of VND.";
+  } else if (/^\d+$/.test(budget) && Number(budget) < MIN_BUDGET_VND) {
+    errors.budgetAmount = "Enter at least 2,000,000 VND.";
   }
   for (const [type] of INTERESTS) {
     const priority = data.get(`${type}Priority`);
@@ -265,9 +269,6 @@ export function clientErrors(data) {
   }
   const budgetRaw = normalizeBudgetInput(data.get("budgetAmount"));
   if (budgetRaw === "") errors.budgetAmount = REQUIRED;
-  else if (/^\d+$/.test(budgetRaw) && Number(budgetRaw) > 0 && Number(budgetRaw) < 1000) {
-    errors.budgetAmount = "Enter at least 1,000 VND.";
-  }
   if (!data.get("budgetScope")) errors.budgetScope = REQUIRED;
 
   const minutes = data.get("maxTravelTimeMinutes");
@@ -374,7 +375,7 @@ export function mapServerErrors(errors) {
 
 // UI completion only; this does not indicate API validation or trip feasibility.
 export function progressOf(data) {
-  const keys = ["startDate", "durationDays", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"];
+  const keys = ["startDate", "durationDays", "departureLocation", "travelerCount", "budgetAmount"];
   const filled = keys.filter(key => String(data.get(key) ?? "").trim()).length;
   return Math.round(filled / keys.length * 100);
 }

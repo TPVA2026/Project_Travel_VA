@@ -75,9 +75,9 @@ simple.delete("budgetScope");
 assert.equal(clientErrors(simple).budgetScope, "This field is required.");
 
 assert.equal(progressOf(form({})), 0);
-assert.equal(progressOf(form({ departureLocation: "Da Nang", travelerCount: "2", budgetAmount: "0" })), 50);
+assert.equal(progressOf(form({ departureLocation: "Da Nang", travelerCount: "2", budgetAmount: "0" })), 60);
 assert.equal(progressOf(form(valid)), 100);
-assert.equal(progressOf(form({ startDate: today, endDate: validEnd })), 17);
+assert.equal(progressOf(form({ startDate: today, endDate: validEnd })), 20);
 assert.equal(progressOf(form({ ...valid })), 100);
 assert.equal(progressOf(form({ destination: "Hoi An", interest: ["nature"] })), 0);
 
@@ -87,7 +87,9 @@ assert.equal(formatBudgetInput("500"), "500");
 assert.equal(normalizeBudgetInput("5,000,000"), "5000000");
 assert.equal(buildPayload(form({ ...valid, budgetAmount: "5,000,000" })).budget.amount, 5000000);
 assert.equal(buildPayload(form({ ...valid, budgetAmount: "3987654" })).budget.amount, 3987000);
-assert.equal(clientErrors(form({ ...valid, budgetAmount: "500" })).budgetAmount, "Enter at least 1,000 VND.");
+assert.equal(clientErrors(form({ ...valid, budgetAmount: "500" })).budgetAmount, "Enter at least 2,000,000 VND.");
+assert.equal(clientErrors(form({ ...valid, budgetAmount: "1999999" })).budgetAmount, "Enter at least 2,000,000 VND.");
+assert.deepEqual(clientErrors(form({ ...valid, budgetAmount: "2000000" })), {});
 assert.deepEqual(clientErrors(form({ ...valid, budgetAmount: "5,000,000" })), {});
 assert.equal(formatBudgetInput("0"), "0");
 for (const invalid of ["5,00,000", "-1", "1.5", "abc"]) {

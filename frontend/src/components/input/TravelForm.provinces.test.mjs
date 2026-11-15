@@ -4,7 +4,7 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import { build } from "esbuild";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import React, { act } from "react";
 import { localTodayIso, addDaysIso, MAX_TRIP_DAYS } from "./travelRequest.js";
 import { allProvincesSorted, POPULAR_PROVINCES } from "./provinces.js";
@@ -62,7 +62,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
   const listShown = name => !doc.getElementById(`${name}-suggestions`).hidden;
   const noWards = labels => assert.equal(labels.some(label => /phường|xã|đặc khu/i.test(label)), false, "No ward suggestions");
   try {
-    const { default: TravelForm } = await import(output);
+    const { default: TravelForm } = await import(pathToFileURL(output).href);
     const { createRoot } = await import("react-dom/client");
     const { MemoryRouter, Routes, Route } = await import("react-router-dom");
     const mount = async () => {
@@ -159,17 +159,16 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.equal(listShown("departureLocation"), false);
     assert.equal(departure.value, "da");
 
-    // Free text that matches nothing is kept as typed; Next works with no highlighted option.
+    // Free text that matches nothing is kept as typed. Destination is on this same step.
     await fill("departureLocation", "Sa Pa town");
     assert.equal(listShown("departureLocation"), false);
-    await click("Next");
-    assert.deepEqual(visible(), [1]);
+    assert.deepEqual(visible(), [0]);
 
-    // Destination: arriving at the step (autofocus) does not open the panel; a click does.
+    // Focusing the destination does not open its panel; a click does.
     const destination = field("destination");
     assert.equal(destination.placeholder, "e.g. Da Nang, Da Lat");
     await actOn(() => destination.focus());
-    assert.equal(listShown("destination"), false, "Step autofocus does not open the destination panel");
+    assert.equal(listShown("destination"), false, "Focus does not open the destination panel");
     await clickField("destination");
     assert.equal(listShown("destination"), true);
     assert.deepEqual(sectionNames("destination", "popular"), [...POPULAR_PROVINCES]);
@@ -196,16 +195,15 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.equal(listShown("destination"), false, "No match: no list and no error");
     assert.equal(doc.getElementById("destination-error"), null);
     await click("Next");
-    assert.deepEqual(visible(), [2]);
+    assert.deepEqual(visible(), [1]);
     await fill("startDate", startSoon);
     await fill("endDate", endSoon);
     await click("Next");
     await click("2 travelers");
-    await click("Next");
     await fill("budgetAmount", "9000000");
-    await radio("budgetScope", "group");
     await click("Next");
-    await click("Skip for now");
+    await click("Next");
+    await click("Next");
     await click("Create itinerary");
     const sent = validateCalls().at(-1).payload;
     assert.equal(sent.departureLocation, "Sa Pa town", "Free text is sent as typed");
@@ -217,7 +215,6 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await fill("departureLocation", "hanoi");
     assert.deepEqual(optionNames("departureLocation"), ["Hà Nội"]);
     await actOn(() => doc.getElementById("departureLocation-suggestions-0").click());
-    await click("Next");
     await fill("destination", "da lat");
     assert.deepEqual(optionNames("destination"), ["Lâm Đồng"]);
     await actOn(() => doc.getElementById("destination-suggestions-0").click());
@@ -226,11 +223,10 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await fill("endDate", endSoon);
     await click("Next");
     await click("2 travelers");
-    await click("Next");
     await fill("budgetAmount", "9000000");
-    await radio("budgetScope", "group");
     await click("Next");
-    await click("Skip for now");
+    await click("Next");
+    await click("Next");
     await click("Create itinerary");
     const selected = validateCalls().at(-1).payload;
     assert.equal(selected.departureLocation, "Hà Nội");
