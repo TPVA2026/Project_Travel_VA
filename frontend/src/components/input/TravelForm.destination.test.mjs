@@ -4,7 +4,7 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import { build } from "esbuild";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import React, { act } from "react";
 import { localTodayIso, addDaysIso, MAX_TRIP_DAYS } from "./travelRequest.js";
 
@@ -61,10 +61,10 @@ test("M1 destination: plain input, skipped destination goes straight to results,
     durationDays: 3,
     departureLocation: "Ha Noi",
     travelers: { count: 2 },
-    budget: { amount: 9000000, currency: "VND", scope: "group" },
+    budget: { amount: 9000000, currency: "VND", scope: "perPerson" },
   };
   try {
-    const { default: TravelForm } = await import(output);
+    const { default: TravelForm } = await import(pathToFileURL(output).href);
     const { createRoot } = await import("react-dom/client");
     const { MemoryRouter, Routes, Route } = await import("react-router-dom");
     const mount = async () => {
@@ -80,37 +80,35 @@ test("M1 destination: plain input, skipped destination goes straight to results,
     // Answers every question; the destination is typed or skipped as given.
     const answer = async destination => {
       await fill("departureLocation", "  Ha Noi ");
+      if (destination) await fill("destination", destination);
       await click("Next");
-      if (destination) { await fill("destination", destination); await click("Next"); }
-      else { await fill("destination", "Typed then skipped"); await click("Not sure yet"); }
       await fill("startDate", startSoon);
       await fill("endDate", endSoon);
       await click("Next");
       await click("2 travelers");
-      await click("Next");
       await fill("budgetAmount", "9000000");
-      await radio("budgetScope", "group");
+      await click("Per person");
       await click("Next");
-      await click("Skip for now");
-      assert.deepEqual(visible(), [6]);
+      await click("Next");
+      await click("Next");
+      assert.deepEqual(visible(), [5]);
     };
 
-    // Plain destination input: example placeholder, no supported-city dropdown, no city fetch.
+    // Plain destination input on the places step: example placeholder, no supported-city dropdown, no city fetch.
     await mount();
-    await fill("departureLocation", "Ha Noi");
-    await click("Next");
-    assert.deepEqual(visible(), [1]);
+    assert.deepEqual(visible(), [0]);
+    assert.equal(doc.querySelector('label[for="destination"]').textContent, "Going to");
     assert.equal(field("destination").placeholder, "e.g. Da Nang, Da Lat");
     assert.equal(field("destination").getAttribute("role"), "combobox", "Province suggestions, not a required pick");
     assert.equal(field("destination").hasAttribute("required"), false);
-    assert.equal(doc.getElementById("request-step-1-hint").textContent, "Optional. Skip it and we'll suggest destinations based on your trip.");
+    assert.equal(doc.getElementById("destination-hint").textContent, "Skip it and we'll suggest destinations based on your trip.");
     assert.equal(fetchCalls.some(call => call.url === "/api/v1/destinations"), false, "The form does not load the supported-city list");
 
     // Skipped destination: sent without preferences.destination, straight to results.
     await mount();
     await answer("");
     assert.equal(doc.querySelector(".request-review > div:nth-child(2) dd").textContent, "Not chosen. We'll suggest destinations based on your trip.");
-    assert.equal(doc.querySelectorAll(".request-step").length, 7, "Seven questions, no suggestion screen");
+    assert.equal(doc.querySelectorAll(".request-step").length, 6, "Six questions, no suggestion screen");
     assert.doesNotMatch(doc.body.textContent, /Pick a destination/);
     await click("Create itinerary");
     assert.deepEqual(validateCalls().map(call => call.payload), [BASE], "Skipped destination is validated without preferences.destination");
@@ -129,7 +127,7 @@ test("M1 destination: plain input, skipped destination goes straight to results,
     } }) });
     await click("Create itinerary");
     assert.equal(validateCalls().at(-1).payload.preferences.destination, "dasd", "The typed destination is sent as typed");
-    assert.deepEqual(visible(), [6], "Stays on review");
+    assert.deepEqual(visible(), [5], "Stays on review");
     assert.equal(doc.getElementById("destination-error"), null, "No error under the destination field");
     assert.equal(field("destination").hasAttribute("aria-invalid"), false);
     const shown = [...doc.querySelectorAll(".error")].map(node => node.textContent);
@@ -141,8 +139,9 @@ test("M1 destination: plain input, skipped destination goes straight to results,
     // Skipping the destination afterwards submits without it.
     validateImpl = async () => ({ ok: true, json: async () => ({ valid: true }) });
     await click("Edit destination");
-    await click("Not sure yet");
-    assert.deepEqual(visible(), [6]);
+    await fill("destination", "");
+    await click("Back to review");
+    assert.deepEqual(visible(), [5]);
     await click("Create itinerary");
     assert.deepEqual(validateCalls().at(-1).payload, BASE);
     assert.equal(onResults(), true);
