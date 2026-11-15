@@ -12,8 +12,8 @@ const today = localTodayIso();
 const startSoon = today;
 const endSoon = addDaysIso(today, MAX_TRIP_DAYS - 1);
 
-// The form budget is always per person. There is no whole-group choice.
-test("M1 budget scope: the form only offers per person", async () => {
+// Per person is a switch. It stays off and hidden until the party has two or more travelers.
+test("M1 budget scope: per person appears for two or more travelers", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
@@ -75,14 +75,15 @@ test("M1 budget scope: the form only offers per person", async () => {
     await mount();
     await toParty();
     const toggle = () => doc.querySelector(".request-scope-toggle");
-    assert.equal(toggle().textContent.trim(), "Per person");
-    assert.equal(toggle().getAttribute("aria-pressed"), "true");
+    assert.equal(toggle(), null, "The switch stays hidden until there are two travelers");
+    await click("1 traveler");
+    assert.equal(toggle(), null);
     assert.equal(field("budgetScope").value, "perPerson");
-    assert.equal(doc.querySelector('[name="budgetScope"][value="group"]'), null);
-    await click("Per person");
+    await click("4 travelers");
+    assert.equal(toggle().textContent.trim(), "Per person");
     assert.equal(toggle().getAttribute("aria-pressed"), "false");
     assert.equal(field("budgetScope").value, "");
-    await click("4 travelers");
+    assert.equal(doc.querySelector('[name="budgetScope"][value="group"]'), null);
     await fill("budgetAmount", "3000000");
     await click("Next");
     assert.deepEqual(visible(), [2]);

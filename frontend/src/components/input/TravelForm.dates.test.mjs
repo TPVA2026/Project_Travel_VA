@@ -122,6 +122,7 @@ test("M1 date limits: start date, 1–3 day cards, computed return date, start c
     assert.deepEqual(visible(), [2]);
     await fill("travelerCount", "2");
     await fill("budgetAmount", "2000000");
+    await click("Per person");
     await click("Next");
     await click("Next");
     await click("Next");

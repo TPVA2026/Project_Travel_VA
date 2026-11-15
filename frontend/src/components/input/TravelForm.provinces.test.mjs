@@ -201,6 +201,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await click("Next");
     await click("2 travelers");
     await fill("budgetAmount", "9000000");
+    await click("Per person");
     await click("Next");
     await click("Next");
     await click("Next");
@@ -224,6 +225,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await click("Next");
     await click("2 travelers");
     await fill("budgetAmount", "9000000");
+    await click("Per person");
     await click("Next");
     await click("Next");
     await click("Next");

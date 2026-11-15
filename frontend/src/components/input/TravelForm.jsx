@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, tripLimitHint, startDateBounds, addDaysIso, isValidTripDays, endDateFromLength, formatReturnLabel, formatBangkokDate, isIsoDate, MIN_BUDGET_VND, INTERESTS } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, tripLimitHint, startDateBounds, addDaysIso, isValidTripDays, endDateFromLength, formatReturnLabel, formatBangkokDate, isIsoDate, MIN_BUDGET_VND, INTERESTS } from "./travelRequest";
 
 // The slider's standard range is 2,000,000..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -40,7 +40,7 @@ export const DESTINATION_HINT = "Skip it and we'll suggest destinations based on
 export const DESTINATION_UNAVAILABLE = "We couldn't plan a trip to that destination. Edit it or skip it to get suggestions.";
 const CONTROL_NAME = { interests: "interest" };
 
-const INITIAL_VALUES = { budgetScope: "perPerson" };
+const INITIAL_VALUES = {};
 
 // Server errors for the destination are not shown on the field (no long city list);
 // they become one short request-level message instead.
@@ -168,7 +168,24 @@ export default function TravelForm() {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
+  // One traveler is always per person, with no switch. Two or more start with the switch off.
+  function syncBudgetScope(form) {
+    const scope = form.elements.namedItem("budgetScope");
+    if (!scope) return;
+    const count = form.elements.namedItem("travelerCount")?.value;
+    if (isSoloTravelerCount(count)) {
+      scope.value = "perPerson";
+      scope.dataset.forced = "solo";
+      return;
+    }
+    if (scope.dataset.forced === "solo") {
+      scope.value = "";
+      delete scope.dataset.forced;
+    }
+  }
+
   function refresh(form, resizeBudgetRange = false) {
+    syncBudgetScope(form);
     const data = new FormData(form);
     const wrong = submitted ? clientErrors(data) : valueErrors(data);
     setBad(wrong);
@@ -350,6 +367,8 @@ export default function TravelForm() {
     ? `${showDate(values.startDate)} – ${showDate(computedEnd)} · ${days(dayCount)}`
     : "";
   const perPerson = values.budgetScope === "perPerson";
+  const travelerNumber = Number(String(values.travelerCount ?? "").trim());
+  const showPerPerson = Number.isInteger(travelerNumber) && travelerNumber >= 2;
   const budget = values.budgetAmount
     ? `${formatBudgetInput(values.budgetAmount)} VND${perPerson ? " · per person" : ""}`
     : "";
@@ -462,12 +481,14 @@ export default function TravelForm() {
           <StepError name="budgetAmount" error={errors.budgetAmount} />
           <input id="budgetSlider" type="range" min={MIN_BUDGET_VND} max={budgetSliderMax} step="1000" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
           <div className="budget-range-labels" aria-hidden="true"><span>{formatBudgetInput(MIN_BUDGET_VND)} VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
-          <button type="button" className="request-scope-toggle" aria-pressed={perPerson} data-error-for="budgetScope" onClick={() => setControl("budgetScope", perPerson ? "" : "perPerson")}>
-            <span className="request-scope-knob" aria-hidden="true" />
-            Per person
-          </button>
+          {showPerPerson && (
+            <button type="button" className="request-scope-toggle" aria-pressed={perPerson} data-error-for="budgetScope" onClick={() => setControl("budgetScope", perPerson ? "" : "perPerson")}>
+              <span className="request-scope-knob" aria-hidden="true" />
+              Per person
+            </button>
+          )}
           <input type="hidden" name="budgetScope" value={perPerson ? "perPerson" : ""} readOnly />
-          <StepError name="budgetScope" error={errors.budgetScope} />
+          {showPerPerson && <StepError name="budgetScope" error={errors.budgetScope} />}
         </div>
       </>)}
 

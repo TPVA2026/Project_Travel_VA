@@ -87,6 +87,7 @@ test("M1 destination: plain input, skipped destination goes straight to results,
       await click("Next");
       await click("2 travelers");
       await fill("budgetAmount", "9000000");
+      await click("Per person");
       await click("Next");
       await click("Next");
       await click("Next");

@@ -170,8 +170,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
 
     // Budget: unset vs zero, exact typed amounts, slider both ways, explicit scope.
     assert.equal(field("budgetAmount").value, "");
-    assert.equal(field("budgetScope").value, "perPerson");
-    assert.equal(doc.querySelector(".request-scope-toggle").getAttribute("aria-pressed"), "true");
+    assert.equal(field("budgetScope").value, "");
+    assert.equal(doc.querySelector(".request-scope-toggle").getAttribute("aria-pressed"), "false");
     assert.equal(doc.querySelector(".request-scope-toggle").textContent.trim(), "Per person");
     assert.equal(form.querySelector('[name="budgetScope"][value="group"]'), null);
     assert.equal(field("budgetSlider").value, "2000000");
@@ -231,6 +231,10 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(field("budgetAmount").value, "7,654,000", "Formatting happens on blur");
     assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(apiCalls(), 0, "No API call before the final review");
+    await click("Next");
+    assertStep(2, "Per person stays off until it is switched on");
+    assert.equal(doc.getElementById("budgetScope-error").textContent, "This field is required.");
+    await click("Per person");
     await click("Next");
 
     // Optional travel style. Several can be chosen, and none is allowed.
@@ -425,6 +429,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Next");
     await fill("travelerCount", "6");
     await fill("budgetAmount", "70123456");
+    await click("Per person");
     await click("Next");
     await click("Next");
     await click("Next");
