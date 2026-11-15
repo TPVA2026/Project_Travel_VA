@@ -263,6 +263,29 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Optional describe step: message icon, white textarea with example placeholder, sent when non-empty.
     assertStep(4);
     assert.equal(doc.querySelector("#request-step-4 h2").textContent, "Is there anything else you’d like to describe?");
+    // Older answers collapse so the current question stays on screen.
+    const threadToggle = doc.querySelector(".request-thread-toggle");
+    assert.ok(threadToggle);
+    assert.equal(threadToggle.getAttribute("aria-expanded"), "false");
+    assert.equal(threadToggle.getAttribute("aria-controls"), "request-thread-list");
+    assert.equal(threadToggle.textContent.trim(), "Show all answers");
+    assert.match(doc.querySelector(".request-thread-summary").textContent, /Hue/);
+    assert.equal(doc.querySelectorAll(".request-thread-item").length, 1, "Only the latest answer stays visible");
+    assert.match(doc.querySelector(".request-thread-item").textContent, /What kind of trip should we prioritize/);
+    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Where are you traveling")), false);
+    await click("Show all answers");
+    assert.equal(threadToggle.getAttribute("aria-expanded"), "true");
+    assert.equal(threadToggle.textContent.trim(), "Hide");
+    assert.equal(doc.querySelector(".request-thread-summary"), null);
+    const expandedItems = [...doc.querySelectorAll(".request-thread-item")];
+    assert.equal(expandedItems.length, 4);
+    assert.ok(expandedItems.some(node => node.textContent.includes("Where are you traveling")));
+    const placesItem = expandedItems.find(node => node.textContent.includes("Where are you traveling"));
+    await actOn(() => placesItem.click());
+    assertStep(0, "An expanded thread item still opens that answer for editing");
+    await click("Next");
+    assertStep(4, "Thread edit from the describe step returns to describe");
+    assert.equal(doc.querySelector(".request-thread-toggle").getAttribute("aria-expanded"), "false", "The thread collapses again on the returned step");
     assert.equal(doc.querySelector("#request-step-4 .request-optional").textContent, "Optional");
     assert.equal(doc.getElementById("request-step-4-hint").textContent, "Food, transport, interests, your group or travel limits.");
     assert.equal(button("Skip for now"), undefined);
@@ -302,7 +325,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       "Travel style": "Culture, Nature",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
     });
-    assert.equal(doc.querySelector(".request-thread"), null, "The chat thread is hidden on review");
+    assert.equal(doc.querySelector(".request-thread, .request-thread-wrap"), null, "The chat thread is hidden on review");
     assert.equal(doc.querySelector(".request-draft-note, #request-review-draft-note"), null, "Draft-only note is removed");
     assert.equal(form.querySelector("details"), null, "Advanced options drawer is removed");
     for (const name of ["characteristics", "maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "transportation", "diningPreferred"]) assert.equal(field(name), null, name);

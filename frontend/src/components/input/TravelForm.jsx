@@ -189,6 +189,7 @@ export default function TravelForm() {
   const [returnStep, setReturnStep] = useState(null);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
+  const [threadOpen, setThreadOpen] = useState(false);
 
   // Runs after the alert renders, so a request-level error is announced and focusable.
   useEffect(() => {
@@ -207,6 +208,11 @@ export default function TravelForm() {
   useEffect(() => {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
+
+  // Keep the current question on screen: collapse older answers when the step changes.
+  useEffect(() => {
+    setThreadOpen(false);
+  }, [step]);
 
   // One traveler is always per person, with no switch. Two or more default to a group total.
   function syncBudgetScope(form) {
@@ -358,6 +364,7 @@ export default function TravelForm() {
     setDescriptionDraft("");
     setReached(new Set());
     setReturnStep(null);
+    setThreadOpen(false);
   }
 
   async function onSubmit(event) {
@@ -439,6 +446,10 @@ export default function TravelForm() {
     { step: STYLE, question: "What kind of trip should we prioritize?", answer: styleText },
     { step: DESCRIBE, question: "Is there anything else you’d like to describe?", answer: hasDraft ? descriptionDraft.trim() : "Nothing added" },
   ].filter(item => reached.has(item.step) && item.step < step);
+  const canCollapseThread = thread.length > 1;
+  const hiddenThread = canCollapseThread && !threadOpen ? thread.slice(0, -1) : [];
+  const visibleThread = canCollapseThread && !threadOpen ? thread.slice(-1) : thread;
+  const threadSummary = hiddenThread.map(item => item.answer).filter(Boolean).join(" · ");
 
   const question = (index, art, title, children, hint, optional = false) => (
     <section id={`request-step-${index}`} data-step={index} className="request-step request-question" hidden={step !== index} aria-labelledby={`request-step-${index}-title`}>
@@ -460,16 +471,32 @@ export default function TravelForm() {
       </div>
 
       {thread.length > 0 && step !== REVIEW && (
-        <ol className="request-thread">
-          {thread.map(item => (
-            <li key={item.step}>
-              <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })}>
-                <span className="request-thread-q">{item.question}</span>
-                <span className="request-thread-a">{item.answer}</span>
+        <div className="request-thread-wrap">
+          {canCollapseThread && (
+            <div className="request-thread-toolbar">
+              <button
+                type="button"
+                className="request-thread-toggle"
+                aria-expanded={threadOpen}
+                aria-controls="request-thread-list"
+                onClick={() => setThreadOpen(open => !open)}
+              >
+                {threadOpen ? "Hide" : "Show all answers"}
               </button>
-            </li>
-          ))}
-        </ol>
+              {!threadOpen && threadSummary ? <p className="request-thread-summary">{threadSummary}</p> : null}
+            </div>
+          )}
+          <ol id="request-thread-list" className="request-thread">
+            {visibleThread.map(item => (
+              <li key={item.step}>
+                <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })}>
+                  <span className="request-thread-q">{item.question}</span>
+                  <span className="request-thread-a">{item.answer}</span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </div>
       )}
 
       {question(PLACES, "departure", "Where are you traveling?", <>
