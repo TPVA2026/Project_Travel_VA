@@ -95,7 +95,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await clickField("departureLocation");
     assert.equal(departure.getAttribute("aria-expanded"), "true");
     assert.equal(listShown("departureLocation"), true);
-    assert.equal(heading("departureLocation", "popular"), "Popular destinations");
+    assert.equal(heading("departureLocation", "popular"), "Popular cities");
     assert.deepEqual(sectionNames("departureLocation", "popular"), [...POPULAR_PROVINCES]);
     assert.equal(heading("departureLocation", "all"), "All provinces & cities");
     assert.deepEqual(sectionNames("departureLocation", "all"), allProvincesSorted());
@@ -161,7 +161,9 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
 
     // Free text that matches nothing is kept as typed. Destination is on this same step.
     await fill("departureLocation", "Sa Pa town");
-    assert.equal(listShown("departureLocation"), false);
+    assert.equal(listShown("departureLocation"), true, "The panel stays open to say there is no match");
+    assert.equal(doc.querySelector("#departureLocation-suggestions .request-city-empty")?.textContent, "No matching cities — you can keep what you typed.");
+    assert.equal(departure.value, "Sa Pa town");
     assert.deepEqual(visible(), [0]);
 
     // Focusing the destination does not open its panel; a click does.
@@ -171,6 +173,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.equal(listShown("destination"), false, "Focus does not open the destination panel");
     await clickField("destination");
     assert.equal(listShown("destination"), true);
+    assert.equal(heading("destination", "popular"), "Popular destinations");
     assert.deepEqual(sectionNames("destination", "popular"), [...POPULAR_PROVINCES]);
     assert.equal(sectionNames("destination", "all").length, 34);
 
@@ -192,7 +195,8 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.equal(destination.value, "Lâm Đồng");
 
     await fill("destination", "Da Lat town");
-    assert.equal(listShown("destination"), false, "No match: no list and no error");
+    assert.equal(listShown("destination"), true, "No match still shows a keep-what-you-typed message");
+    assert.equal(doc.querySelector("#destination-suggestions .request-city-empty")?.textContent, "No matching cities — you can keep what you typed.");
     assert.equal(doc.getElementById("destination-error"), null);
     await click("Next");
     assert.deepEqual(visible(), [1]);
