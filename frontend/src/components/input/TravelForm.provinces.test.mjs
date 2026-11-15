@@ -255,3 +255,17 @@ test("M1 city picker CSS does not hover-tint the whole panel", async () => {
   assert.match(css, /\.request-picker:hover/);
   assert.match(css, /\.request-picker:focus-visible/);
 });
+
+test("M1 answer history CSS shows the full answer without ellipsis", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../../index.css", import.meta.url), "utf8");
+  const question = css.match(/\.question-form \.request-thread-q\s*\{[^}]+\}/)?.[0] ?? "";
+  const answer = css.match(/\.question-form \.request-thread-a\s*\{[^}]+\}/)?.[0] ?? "";
+  assert.match(question, /request-thread-q/);
+  assert.match(answer, /request-thread-a/);
+  assert.doesNotMatch(question, /text-overflow:\s*ellipsis/);
+  assert.doesNotMatch(answer, /text-overflow:\s*ellipsis/);
+  assert.doesNotMatch(question, /white-space:\s*nowrap/);
+  assert.doesNotMatch(answer, /white-space:\s*nowrap/);
+  assert.equal(css.includes(".request-step-count"), false, "The n of 6 step counter styles are removed");
+});

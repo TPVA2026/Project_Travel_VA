@@ -6631,7 +6631,6 @@ body {
 .simple-request-form [hidden] { display: none !important; }
 .question-form { padding: clamp(20px, 3vw, 32px) clamp(18px, 4vw, 40px) 20px; border: 1px solid var(--rv-line); border-radius: var(--rv-radius-lg); background: var(--rv-paper); box-shadow: var(--rv-shadow-sm); }
 .question-form .request-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; }
-.question-form .request-step-count { margin: 0; color: var(--rv-muted); font-size: 13px; font-weight: 600; }
 .question-form .request-back { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 10px 0 4px; border: 0; border-radius: 999px; background: transparent; color: var(--rv-ink-soft); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .question-form .request-back span { font-size: 22px; line-height: 1; }
 .question-form .request-back:hover { background: var(--rv-sand); color: var(--rv-ink); }
@@ -6643,11 +6642,11 @@ body {
 .question-form .request-thread-toggle:focus-visible { outline: 3px solid rgba(164, 91, 40, 0.45); outline-offset: 2px; }
 .question-form .request-thread-summary { margin: 0; padding: 0 4px 4px; color: var(--rv-ink-soft); font-size: 13px; font-weight: 600; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .question-form .request-thread { display: flex; flex-direction: column; gap: 8px; width: 100%; margin: 0; padding: 0; list-style: none; }
-.question-form .request-thread-item { display: flex; flex-direction: row; align-items: baseline; gap: 8px; width: 100%; min-height: 44px; padding: 8px 14px 8px 16px; border: 0; border-left: 4px solid var(--rv-terra); border-radius: 14px; background: var(--rv-paper); box-shadow: var(--rv-shadow-sm); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.question-form .request-thread-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; width: 100%; min-height: 44px; padding: 8px 14px 8px 16px; border: 0; border-left: 4px solid var(--rv-terra); border-radius: 14px; background: var(--rv-paper); box-shadow: var(--rv-shadow-sm); color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .question-form .request-thread-item:hover { background: var(--rv-terra-soft); box-shadow: inset 0 0 0 1px var(--rv-terra); }
 .question-form .request-thread-item:focus-visible { outline: 3px solid rgba(164, 91, 40, 0.45); outline-offset: 2px; }
-.question-form .request-thread-q { flex: 0 1 auto; max-width: 46%; color: var(--rv-terra-dark); font-size: 12px; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.question-form .request-thread-a { flex: 1 1 0; min-width: 0; color: var(--rv-ink); font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.question-form .request-thread-q { flex: 0 1 auto; color: var(--rv-terra-dark); font-size: 12px; font-weight: 700; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+.question-form .request-thread-a { flex: 1 1 12rem; min-width: min(100%, 12rem); color: var(--rv-ink); font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
 .question-form .request-city-empty { margin: 0; padding: 14px 16px; color: var(--rv-ink-soft); font-size: 14px; line-height: 1.45; }
 .question-form .request-choice-check { position: relative; display: flex; align-items: center; min-height: 54px; padding: 0 18px; border: 1px solid var(--rv-line); border-radius: 14px; background: var(--rv-sand); color: var(--rv-ink); font-size: 15px; font-weight: 600; cursor: pointer; }
 .question-form .request-choice-check input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }

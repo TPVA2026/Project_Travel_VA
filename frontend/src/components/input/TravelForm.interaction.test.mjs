@@ -63,7 +63,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const assertStep = (index, message) => {
     assert.deepEqual(visible(), [index], message);
-    assert.equal(doc.querySelector(".request-step-count")?.textContent, `${index + 1} of 6`);
+    assert.equal(doc.querySelector(".request-step-count"), null, "The n of 6 step counter is removed");
   };
   const active = () => doc.activeElement?.id || doc.activeElement?.textContent;
   const apiCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate").length;
@@ -122,7 +122,6 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(field("startDate").type, "date");
     assert.equal(field("startDate").lang, "en-GB");
     assert.ok(doc.querySelector("#request-step-1 .request-date-grid > .request-span"));
-    assert.match(doc.querySelector(".request-step-count").textContent, /2 of 6/);
     assert.equal(field("endDate").type, "hidden");
     assert.equal(doc.querySelector('label[for="startDate"]').textContent.replace("*", ""), "Start date");
     assert.equal(doc.querySelector('[name="periodMode"]'), null, "The By month option is removed");

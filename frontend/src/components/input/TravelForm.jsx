@@ -467,7 +467,6 @@ export default function TravelForm() {
         {step > 0
           ? <button className="request-back" type="button" onClick={back}><span aria-hidden="true">‹</span> Back</button>
           : <span />}
-        <p className="request-step-count">{step + 1} of {REVIEW + 1}</p>
       </div>
 
       {thread.length > 0 && step !== REVIEW && (
