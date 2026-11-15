@@ -46,7 +46,7 @@ export default function HomePage() {
     <div className="plan-page">
       {showIntro && <FlightIntro onDone={finishIntro} />}
       <header className="plan-intro">
-        <p className="page-eyebrow">Step 1 of 3 · Plan</p>
+        <p className="page-eyebrow">Plan a trip</p>
         <h1 className="plan-title">Tell us the trip. We’ll build the plan.</h1>
         <p className="plan-lead">
           Share your dates, budget, and travel style. Compare verified itineraries, then keep
@@ -86,7 +86,7 @@ export default function HomePage() {
               <ul className="plan-prep-list">
                 <li>
                   <Icon name="calendar" size={16} />
-                  <span><strong>Pick a rough date range</strong> Even a week or month is enough.</span>
+                  <span><strong>Pick a start date and length</strong> Trips can last 1 to 3 days.</span>
                 </li>
                 <li>
                   <Icon name="wallet" size={16} />

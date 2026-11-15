@@ -7,7 +7,7 @@ import { allProvincesSorted, foldText, matchProvinces, POPULAR_PROVINCES, provin
 // not on programmatic or step autofocus. The text is never replaced unless the user
 // picks an option; Enter without a highlighted option keeps its normal meaning
 // (go to the next question).
-export default function ProvinceInput({ id, onPick, className, "aria-describedby": describedBy, ...inputProps }) {
+export default function ProvinceInput({ id, onPick, className, popularHeading = "Popular destinations", "aria-describedby": describedBy, ...inputProps }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -21,7 +21,8 @@ export default function ProvinceInput({ id, onPick, className, "aria-describedby
         ...allProvincesSorted().map(name => ({ name, group: "all", hint: provinceHint(name) })),
       ]
     : matches.map(name => ({ name, group: "match", hint: provinceHint(name) }));
-  const shown = open && options.length > 0 && !exact;
+  const noMatch = open && !browsing && !exact && options.length === 0;
+  const shown = (open && options.length > 0 && !exact) || noMatch;
 
   function pick(name) {
     onPick(name);
@@ -103,11 +104,13 @@ export default function ProvinceInput({ id, onPick, className, "aria-describedby
         onKeyDown={onKeyDown}
         onBlur={() => { setOpen(false); setActive(-1); }}
       />
-      <div id={listId} className="request-city-panel" role="listbox" aria-label="Province suggestions" hidden={!shown}>
-        {browsing && shown ? (
+      <div id={listId} className="request-city-panel" role={noMatch ? undefined : "listbox"} aria-label="Province suggestions" hidden={!shown}>
+        {noMatch ? (
+          <p className="request-city-empty" role="status">No matching cities — you can keep what you typed.</p>
+        ) : browsing && shown ? (
           <>
             <div className="request-city-group" role="group" aria-labelledby={`${listId}-popular`} data-section="popular">
-              <h3 id={`${listId}-popular`} className="request-city-heading">Popular destinations</h3>
+              <h3 id={`${listId}-popular`} className="request-city-heading">{popularHeading}</h3>
               <ul className="request-city-list">{popular.map(({ option, index }) => renderOption(option, index))}</ul>
             </div>
             <div className="request-city-group" role="group" aria-labelledby={`${listId}-all`} data-section="all">

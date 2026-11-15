@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, tripLimitHint, startDateBounds, addDaysIso, isValidTripDays, endDateFromLength, formatReturnLabel, formatBangkokDate, isIsoDate, MIN_BUDGET_VND, INTERESTS } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, MAX_TRAVELERS, tripLimitHint, startDateBounds, isValidTripDays, endDateFromLength, formatReturnLabel, formatBangkokDate, isIsoDate, MIN_BUDGET_VND, INTERESTS } from "./travelRequest";
 
 // The slider's standard range is 2,000,000..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -82,10 +82,10 @@ function days(count) {
   return `${count} ${count === 1 ? "day" : "days"}`;
 }
 
-function Field({ label, name, error, bad, required, children }) {
+function Field({ label, name, error, bad, required, className, children }) {
   const wrong = Boolean(bad?.[name]);
   return (
-    <div className="field">
+    <div className={["field", className].filter(Boolean).join(" ")}>
       <label htmlFor={name}>
         {label}
         {required && <span className="req" aria-hidden="true">*</span>}
@@ -131,6 +131,45 @@ function CalendarIcon() {
   );
 }
 
+function ChoiceGroup({ labelledBy, label, describedBy, className, value, options, onChange, focusFirst }) {
+  function onKeyDown(event) {
+    const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+    let nextIndex;
+    if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = options.length - 1;
+    else if (keys[event.key] != null) {
+      const current = options.findIndex(option => option.value === String(value));
+      const from = current < 0 ? (keys[event.key] > 0 ? -1 : 0) : current;
+      nextIndex = (from + keys[event.key] + options.length) % options.length;
+    } else return;
+    event.preventDefault();
+    onChange(options[nextIndex].value);
+    event.currentTarget.querySelectorAll('[role="radio"]')[nextIndex]?.focus();
+  }
+  const none = value == null || value === "";
+  return (
+    <div className={className} role="radiogroup" aria-labelledby={labelledBy} aria-label={labelledBy ? undefined : label} aria-describedby={describedBy} onKeyDown={onKeyDown}>
+      {options.map((option, index) => {
+        const checked = value === option.value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            className="request-choice"
+            aria-checked={checked}
+            tabIndex={checked || (none && index === 0) ? 0 : -1}
+            data-step-focus={focusFirst && index === 0 ? true : undefined}
+            onClick={() => onChange(option.value)}
+          >
+            <strong>{option.value}</strong> {option.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function TravelForm() {
   const navigate = useNavigate();
   const formRef = useRef(null);
@@ -145,9 +184,9 @@ export default function TravelForm() {
   const [bad, setBad] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [descriptionDraft, setDescriptionDraft] = useState("");
   const [reached, setReached] = useState(() => new Set());
+  const [returnStep, setReturnStep] = useState(null);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
 
@@ -162,13 +201,14 @@ export default function TravelForm() {
     const wanted = focusRequest.name ? CONTROL_NAME[focusRequest.name] ?? focusRequest.name : null;
     const control = wanted && [...(section?.querySelectorAll(`[data-error-for="${wanted}"], [name="${wanted}"]`) ?? [])].find(node => node.type !== "hidden" && !node.disabled);
     (control || section?.querySelector("[data-step-focus]:not([disabled])"))?.focus();
+    if (typeof section?.scrollIntoView === "function") section.scrollIntoView({ block: "nearest" });
   }, [focusRequest]);
 
   useEffect(() => {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
-  // One traveler is always per person, with no switch. Two or more start with the switch off.
+  // One traveler is always per person, with no switch. Two or more default to a group total.
   function syncBudgetScope(form) {
     const scope = form.elements.namedItem("budgetScope");
     if (!scope) return;
@@ -178,10 +218,10 @@ export default function TravelForm() {
       scope.dataset.forced = "solo";
       return;
     }
-    if (scope.dataset.forced === "solo") {
-      scope.value = "";
-      delete scope.dataset.forced;
+    if (scope.dataset.forced === "solo" || scope.value !== "perPerson") {
+      scope.value = "group";
     }
+    delete scope.dataset.forced;
   }
 
   function refresh(form, resizeBudgetRange = false) {
@@ -190,7 +230,6 @@ export default function TravelForm() {
     const wrong = submitted ? clientErrors(data) : valueErrors(data);
     setBad(wrong);
     setErrors(wrong);
-    setProgress(progressOf(data));
     setValues({
       ...Object.fromEntries(["departureLocation", "destination", "startDate", "endDate", "durationDays", "travelerCount", "budgetAmount", "budgetScope"].map(name => [name, String(data.get(name) ?? "")])),
       interests: data.getAll("interest"),
@@ -229,7 +268,7 @@ export default function TravelForm() {
     setFocusRequest({ step: next, name });
   }
 
-  function goToStep(next, { edit = false, name } = {}) {
+  function goToStep(next, { edit = false, name, returnTo } = {}) {
     setReached(prev => {
       if (next <= step) return prev;
       const copy = new Set(prev);
@@ -238,6 +277,8 @@ export default function TravelForm() {
     });
     setStep(next);
     setEditing(edit);
+    if (returnTo != null) setReturnStep(returnTo);
+    else if (!edit) setReturnStep(null);
     focusStep(next, name);
   }
 
@@ -250,7 +291,7 @@ export default function TravelForm() {
     }
     const first = names.sort((a, b) => stepOf(a) - stepOf(b))[0];
     const target = stepOf(first);
-    goToStep(target, { edit: target !== REVIEW, name: first });
+    goToStep(target, { edit: target !== REVIEW, name: first, returnTo: target !== REVIEW ? REVIEW : undefined });
   }
 
   function snapBudgetField(form) {
@@ -272,6 +313,12 @@ export default function TravelForm() {
     setBad(found);
     if (Object.keys(found).length) {
       focusStep(step, names.find(name => found[name]));
+      return;
+    }
+    if (returnStep != null) {
+      const target = returnStep;
+      setReturnStep(null);
+      goToStep(target);
       return;
     }
     goToStep(editing || step === DESCRIBE ? REVIEW : step + 1);
@@ -308,9 +355,9 @@ export default function TravelForm() {
     setErrors({});
     setBad({});
     setSubmitted(false);
-    setProgress(0);
     setDescriptionDraft("");
     setReached(new Set());
+    setReturnStep(null);
   }
 
   async function onSubmit(event) {
@@ -323,7 +370,6 @@ export default function TravelForm() {
     setSubmitted(true);
     setBad(found);
     setErrors(found);
-    setProgress(progressOf(data));
     if (Object.keys(found).length) { routeErrors(found); return; }
     setSending(true);
     try {
@@ -370,8 +416,9 @@ export default function TravelForm() {
   const travelerNumber = Number(String(values.travelerCount ?? "").trim());
   const showPerPerson = Number.isInteger(travelerNumber) && travelerNumber >= 2;
   const budget = values.budgetAmount
-    ? `${formatBudgetInput(values.budgetAmount)} VND${perPerson ? " · per person" : ""}`
+    ? `${formatBudgetInput(values.budgetAmount)} VND${showPerPerson ? (perPerson ? " · per person" : " · for the group") : ""}`
     : "";
+  const progress = progressOf(step, reached.size);
   const travelers = values.travelerCount ? `${values.travelerCount} ${values.travelerCount === "1" ? "traveler" : "travelers"}` : "";
   const styleNames = INTERESTS.filter(([type]) => (values.interests ?? []).includes(type)).map(([, label]) => label);
   const styleText = styleNames.length ? styleNames.join(", ") : "Nothing selected";
@@ -384,14 +431,14 @@ export default function TravelForm() {
     ["Travel style", styleText, STYLE, "style"],
   ];
   const hasDraft = descriptionDraft.trim() !== "";
-  const nextLabel = editing ? "Back to review" : "Next";
+  const nextLabel = returnStep === REVIEW ? "Back to review" : "Next";
   const thread = [
-    { step: PLACES, question: "Where are you traveling?", answer: `${values.departureLocation?.trim() || ""} → ${values.destination?.trim() || "Not chosen"}` },
+    { step: PLACES, question: "Where are you traveling?", answer: `${values.departureLocation?.trim() || ""} → ${values.destination?.trim() || NO_DESTINATION}` },
     { step: DATES, question: "When are you going?", answer: when },
     { step: PARTY, question: "Who is going, and what's the budget?", answer: [travelers, budget].filter(Boolean).join(" · ") },
     { step: STYLE, question: "What kind of trip should we prioritize?", answer: styleText },
     { step: DESCRIBE, question: "Is there anything else you’d like to describe?", answer: hasDraft ? descriptionDraft.trim() : "Nothing added" },
-  ].filter(item => reached.has(item.step) && item.step !== step);
+  ].filter(item => reached.has(item.step) && item.step < step);
 
   const question = (index, art, title, children, hint, optional = false) => (
     <section id={`request-step-${index}`} data-step={index} className="request-step request-question" hidden={step !== index} aria-labelledby={`request-step-${index}-title`}>
@@ -405,17 +452,18 @@ export default function TravelForm() {
 
   return (
     <form ref={formRef} key={formKey} className="planner compact-form simple-request-form question-form" onSubmit={onSubmit} onInput={onInput} noValidate>
-      {step > 0 && (
-        <div className="request-topbar">
-          <button className="request-back" type="button" onClick={back}><span aria-hidden="true">‹</span> Back</button>
-        </div>
-      )}
+      <div className="request-topbar">
+        {step > 0
+          ? <button className="request-back" type="button" onClick={back}><span aria-hidden="true">‹</span> Back</button>
+          : <span />}
+        <p className="request-step-count">{step + 1} of {REVIEW + 1}</p>
+      </div>
 
-      {thread.length > 0 && (
+      {thread.length > 0 && step !== REVIEW && (
         <ol className="request-thread">
           {thread.map(item => (
             <li key={item.step}>
-              <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: editing || step === REVIEW })}>
+              <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })}>
                 <span className="request-thread-q">{item.question}</span>
                 <span className="request-thread-a">{item.answer}</span>
               </button>
@@ -426,7 +474,7 @@ export default function TravelForm() {
 
       {question(PLACES, "departure", "Where are you traveling?", <>
         <Field label="Leaving from" name="departureLocation" error={errors.departureLocation} bad={bad} required>
-          <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required data-step-focus onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
+          <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required data-step-focus popularHeading="Popular cities" onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
         </Field>
         <Field label="Going to" name="destination" error={errors.destination} bad={bad}>
           <ProvinceInput id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} onPick={value => setControl("destination", value)} {...described("destination", "destination-hint", "request-tile-input")} />
@@ -436,21 +484,22 @@ export default function TravelForm() {
 
       {question(DATES, "calendar", "When are you going?", <>
         <div className="request-date-grid">
-          <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required>
+          <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required className="request-span">
             <div className="request-date-control">
-              <input id="startDate" name="startDate" type="date" min={startMin} max={startMax} required data-step-focus {...described("startDate")} />
+              <input id="startDate" name="startDate" type="date" lang="en-GB" min={startMin} max={startMax} required data-step-focus onClick={() => openPicker("startDate")} {...described("startDate")} />
               <button type="button" className="request-picker" aria-label="Open calendar for Start date" onClick={() => openPicker("startDate")}><CalendarIcon /></button>
             </div>
           </Field>
           <div className="field request-span">
             <span id="durationDays-label">How many days?<span className="req" aria-hidden="true">*</span></span>
-            <div className="request-choices request-choices-days" role="group" aria-labelledby="durationDays-label" aria-describedby={errors.durationDays ? "durationDays-error" : undefined}>
-              {Array.from({ length: MAX_TRIP_DAYS }, (_, index) => index + 1).map((count) => (
-                <button key={count} type="button" className="request-choice" aria-pressed={values.durationDays === String(count)} onClick={() => setControl("durationDays", String(count))}>
-                  <strong>{count}</strong> {count === 1 ? "day" : "days"}
-                </button>
-              ))}
-            </div>
+            <ChoiceGroup
+              labelledBy="durationDays-label"
+              describedBy={errors.durationDays ? "durationDays-error" : undefined}
+              className="request-choices request-choices-days"
+              value={values.durationDays}
+              onChange={count => setControl("durationDays", count)}
+              options={Array.from({ length: MAX_TRIP_DAYS }, (_, index) => ({ value: String(index + 1), label: index === 0 ? "day" : "days" }))}
+            />
             <input id="durationDays" name="durationDays" type="hidden" required />
             <input id="endDate" name="endDate" type="hidden" />
             <StepError name="durationDays" error={errors.durationDays} />
@@ -464,15 +513,16 @@ export default function TravelForm() {
 
       {question(PARTY, "travelers", "Who is going, and what's the budget?", <>
         <div className="field">
-          <label htmlFor="travelerCount">How many travelers?<span className="req" aria-hidden="true">*</span></label>
-          <div className="request-choices" role="group" aria-label="Quick traveler choices">
-            {QUICK_TRAVELERS.map(count => (
-              <button key={count} type="button" className="request-choice" aria-pressed={values.travelerCount === String(count)} data-step-focus={count === 1 ? true : undefined} onClick={() => setControl("travelerCount", String(count))}>
-                <strong>{count}</strong> {count === 1 ? "traveler" : "travelers"}
-              </button>
-            ))}
-          </div>
-          <input id="travelerCount" name="travelerCount" type="number" min="1" step="1" placeholder="Other number" required {...described("travelerCount", null, "request-tile-input")} />
+          <label id="travelerCount-label" htmlFor="travelerCount">How many travelers?<span className="req" aria-hidden="true">*</span></label>
+          <ChoiceGroup
+            labelledBy="travelerCount-label"
+            className="request-choices"
+            value={QUICK_TRAVELERS.some(count => values.travelerCount === String(count)) ? values.travelerCount : ""}
+            onChange={count => setControl("travelerCount", count)}
+            focusFirst
+            options={QUICK_TRAVELERS.map(count => ({ value: String(count), label: count === 1 ? "traveler" : "travelers" }))}
+          />
+          <input id="travelerCount" name="travelerCount" type="number" min="1" max={MAX_TRAVELERS} step="1" placeholder="Other number" required {...described("travelerCount", null, "request-tile-input")} />
           <StepError name="travelerCount" error={errors.travelerCount} />
         </div>
         <div className="simple-budget request-budget">
@@ -482,12 +532,12 @@ export default function TravelForm() {
           <input id="budgetSlider" type="range" min={MIN_BUDGET_VND} max={budgetSliderMax} step="1000" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
           <div className="budget-range-labels" aria-hidden="true"><span>{formatBudgetInput(MIN_BUDGET_VND)} VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
           {showPerPerson && (
-            <button type="button" className="request-scope-toggle" aria-pressed={perPerson} data-error-for="budgetScope" onClick={() => setControl("budgetScope", perPerson ? "" : "perPerson")}>
+            <button type="button" className="request-scope-toggle" aria-pressed={perPerson} aria-label={perPerson ? "Per person budget" : "Budget for the group"} data-error-for="budgetScope" onClick={() => setControl("budgetScope", perPerson ? "group" : "perPerson")}>
               <span className="request-scope-knob" aria-hidden="true" />
               Per person
             </button>
           )}
-          <input type="hidden" name="budgetScope" value={perPerson ? "perPerson" : ""} readOnly />
+          <input type="hidden" name="budgetScope" value={isSoloTravelerCount(values.travelerCount) || perPerson ? "perPerson" : "group"} readOnly />
           {showPerPerson && <StepError name="budgetScope" error={errors.budgetScope} />}
         </div>
       </>)}
@@ -518,13 +568,13 @@ export default function TravelForm() {
               <div key={key} className={value ? undefined : "missing"}>
                 <dt>{label}</dt>
                 <dd>{value || "Not set yet"}</dd>
-                <button type="button" className="request-edit" aria-label={`Edit ${key}`} onClick={() => goToStep(target, { edit: true })}>Edit</button>
+                <button type="button" className="request-edit" aria-label={`Edit ${key}`} onClick={() => goToStep(target, { edit: true, returnTo: REVIEW })}>Edit</button>
               </div>
             ))}
             <div className="request-review-draft">
               <dt>Extra description</dt>
               <dd>{hasDraft ? descriptionDraft.trim() : "Nothing added"}</dd>
-              <button type="button" className="request-edit" aria-label="Edit description" onClick={() => goToStep(DESCRIBE, { edit: true })}>Edit</button>
+              <button type="button" className="request-edit" aria-label="Edit description" onClick={() => goToStep(DESCRIBE, { edit: true, returnTo: REVIEW })}>Edit</button>
             </div>
           </dl>
         </div>

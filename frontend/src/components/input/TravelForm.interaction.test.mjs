@@ -63,7 +63,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const assertStep = (index, message) => {
     assert.deepEqual(visible(), [index], message);
-    assert.equal(doc.querySelector(".request-step-count"), null);
+    assert.equal(doc.querySelector(".request-step-count")?.textContent, `${index + 1} of 6`);
   };
   const active = () => doc.activeElement?.id || doc.activeElement?.textContent;
   const apiCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate").length;
@@ -78,6 +78,9 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.ok(doc.querySelector(".plan-intro"));
     assert.ok(doc.querySelector(".plan-layout .plan-aside"));
     assert.equal(doc.querySelector("#plan-prep-title").textContent, "Three things make the first draft easier.");
+    assert.match(doc.querySelector(".plan-prep-list").textContent, /Trips can last 1 to 3 days/);
+    assert.doesNotMatch(doc.querySelector(".plan-prep-list").textContent, /week or month/);
+    assert.equal(doc.querySelector(".page-eyebrow")?.textContent, "Plan a trip");
     assert.equal(doc.querySelector(".plan-outcomes h2").textContent, "What you get");
     assert.equal(doc.querySelector(".entry-choice"), null, "Chooser is not rendered");
     assert.equal(doc.querySelector("#trip-describe-panel"), null, "Describe-the-trip panel is not rendered");
@@ -113,10 +116,13 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await enter("departureLocation");
     assertStep(1, "Blank destination is allowed");
     assert.equal(field("destination").value, "");
-    assert.equal(doc.querySelector(".request-thread-a").textContent, "Hue → Not chosen");
+    assert.equal(doc.querySelector(".request-thread-a").textContent, "Hue → Not chosen. We'll suggest destinations based on your trip.");
 
     // Start date picker plus 1..maxDays length cards; the end date is computed.
     assert.equal(field("startDate").type, "date");
+    assert.equal(field("startDate").lang, "en-GB");
+    assert.ok(doc.querySelector("#request-step-1 .request-date-grid > .request-span"));
+    assert.match(doc.querySelector(".request-step-count").textContent, /2 of 6/);
     assert.equal(field("endDate").type, "hidden");
     assert.equal(doc.querySelector('label[for="startDate"]').textContent.replace("*", ""), "Start date");
     assert.equal(doc.querySelector('[name="periodMode"]'), null, "The By month option is removed");
@@ -138,9 +144,16 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assertStep(1, "Trip length is required");
     assert.equal(doc.getElementById("durationDays-error").textContent, "This field is required.");
     const dayCards = [...doc.querySelectorAll("#request-step-1 .request-choice")];
+    assert.equal(doc.querySelector("#request-step-1 [role='radiogroup']").getAttribute("aria-labelledby"), "durationDays-label");
+    assert.deepEqual(dayCards.map(node => node.getAttribute("role")), ["radio", "radio", "radio"]);
     assert.deepEqual(dayCards.map(node => node.textContent.replace(/\s+/g, " ").trim()), ["1 day", "2 days", "3 days"]);
     await actOn(() => dayCards[MAX_TRIP_DAYS - 1].click());
     assert.equal(field("durationDays").value, String(MAX_TRIP_DAYS));
+    await actOn(() => dayCards[MAX_TRIP_DAYS - 1].dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true, cancelable: true })));
+    assert.equal(field("durationDays").value, String(MAX_TRIP_DAYS - 1));
+    assert.equal(dayCards[MAX_TRIP_DAYS - 2].getAttribute("aria-checked"), "true");
+    await actOn(() => dayCards[MAX_TRIP_DAYS - 2].click());
+    await actOn(() => dayCards[MAX_TRIP_DAYS - 1].click());
     assert.equal(field("endDate").value, endCross, "End date is start + (n-1) days");
     assert.equal(doc.querySelector("#request-step-1 .request-question-hint.request-span").textContent, formatReturnLabel(endCross));
     // Changing the start date keeps the chosen length and recomputes the end date.
@@ -155,25 +168,25 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
 
     // Travelers: no default, quick picks and any other whole number.
     assert.equal(field("travelerCount").value, "");
-    assert.deepEqual([...doc.querySelectorAll("#request-step-2 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.equal(doc.querySelector("#request-step-2 [role='radiogroup']").getAttribute("aria-labelledby"), "travelerCount-label");
+    assert.deepEqual([...doc.querySelectorAll("#request-step-2 .request-choice")].map(node => node.getAttribute("aria-checked")), ["false", "false", "false", "false"]);
     await click("Next");
     assertStep(2);
     assert.equal(active(), "travelerCount");
     await actOn(() => [...doc.querySelectorAll("#request-step-2 .request-choice")][1].click());
     assert.equal(field("travelerCount").value, "2");
-    assert.equal([...doc.querySelectorAll("#request-step-2 .request-choice")][1].getAttribute("aria-pressed"), "true");
+    assert.equal([...doc.querySelectorAll("#request-step-2 .request-choice")][1].getAttribute("aria-checked"), "true");
     await fill("travelerCount", "7");
-    assert.deepEqual([...doc.querySelectorAll("#request-step-2 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.deepEqual([...doc.querySelectorAll("#request-step-2 .request-choice")].map(node => node.getAttribute("aria-checked")), ["false", "false", "false", "false"]);
     await click("Next");
     assertStep(2);
     assert.equal(active(), "budgetAmount");
 
-    // Budget: unset vs zero, exact typed amounts, slider both ways, explicit scope.
+    // Budget: unset vs zero, exact typed amounts, slider both ways. Groups default to a total budget.
     assert.equal(field("budgetAmount").value, "");
-    assert.equal(field("budgetScope").value, "");
+    assert.equal(field("budgetScope").value, "group");
     assert.equal(doc.querySelector(".request-scope-toggle").getAttribute("aria-pressed"), "false");
     assert.equal(doc.querySelector(".request-scope-toggle").textContent.trim(), "Per person");
-    assert.equal(form.querySelector('[name="budgetScope"][value="group"]'), null);
     assert.equal(field("budgetSlider").value, "2000000");
     assert.equal(field("budgetSlider").name, "");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
@@ -232,10 +245,6 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(apiCalls(), 0, "No API call before the final review");
     await click("Next");
-    assertStep(2, "Per person stays off until it is switched on");
-    assert.equal(doc.getElementById("budgetScope-error").textContent, "This field is required.");
-    await click("Per person");
-    await click("Next");
 
     // Optional travel style. Several can be chosen, and none is allowed.
     assertStep(3);
@@ -289,10 +298,11 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       "Going to": "Not chosen. We'll suggest destinations based on your trip.",
       When: `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`,
       Travelers: "7 travelers",
-      Budget: "7,654,000 VND · per person",
+      Budget: "7,654,000 VND · for the group",
       "Travel style": "Culture, Nature",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
     });
+    assert.equal(doc.querySelector(".request-thread"), null, "The chat thread is hidden on review");
     assert.equal(doc.querySelector(".request-draft-note, #request-review-draft-note"), null, "Draft-only note is removed");
     assert.equal(form.querySelector("details"), null, "Advanced options drawer is removed");
     for (const name of ["characteristics", "maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "transportation", "diningPreferred"]) assert.equal(field(name), null, name);
@@ -316,7 +326,18 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Back/Next keeps every earlier answer, including the draft.
     for (let index = 4; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
     assert.equal(field("departureLocation").value, "Hue");
-    for (let index = 1; index <= 5; index += 1) { await click("Next"); assertStep(index); }
+    await click("Next");
+    assertStep(1);
+    // Editing an earlier thread answer returns to the question we left, not to review or the next step.
+    const threadItem = [...doc.querySelectorAll(".request-thread-item")].find(node => node.textContent.includes("Where are you traveling"));
+    assert.ok(threadItem);
+    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Who is going")), false, "Later answers stay out of the thread");
+    await actOn(() => threadItem.click());
+    assertStep(0);
+    assert.equal(button("Back to review"), undefined);
+    await click("Next");
+    assertStep(1, "Thread edit returns to the dates question we left");
+    for (let index = 2; index <= 5; index += 1) { await click("Next"); assertStep(index); }
     assert.equal(field("budgetAmount").value, "7,654,000");
     assert.equal(field("budgetSlider").value, "7654000");
     assert.equal(field("tripDescription").value, "We love seafood and prefer taxis.");
@@ -394,7 +415,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       durationDays: MAX_TRIP_DAYS,
       departureLocation: "Hue",
       travelers: { count: 7 },
-      budget: { amount: 7654000, currency: "VND", scope: "perPerson" },
+      budget: { amount: 7654000, currency: "VND", scope: "group" },
       preferences: { interests: [{ type: "culture" }, { type: "nature" }] },
       additionalRequirements: "We love seafood and prefer taxis.",
     });
@@ -421,7 +442,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(clean.querySelector(".completion-label").textContent, "0% complete");
     assert.equal(button("Back"), undefined);
 
-    // A high custom amount on a dates trip. Budget is always per person.
+    // A high custom amount on a dates trip. Switching on Per person is optional.
     await fill("departureLocation", "Ha Noi");
     await click("Next");
     await fill("startDate", startCross);

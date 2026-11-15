@@ -13,7 +13,7 @@ const startSoon = today;
 const endSoon = addDaysIso(today, MAX_TRIP_DAYS - 1);
 
 // Per person is a switch. It stays off and hidden until the party has two or more travelers.
-test("M1 budget scope: per person appears for two or more travelers", async () => {
+test("M1 budget scope: groups default to a total budget; solo stays per person", async () => {
   const runtimeErrors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on("jsdomError", error => runtimeErrors.push(error.message));
@@ -77,17 +77,29 @@ test("M1 budget scope: per person appears for two or more travelers", async () =
     const toggle = () => doc.querySelector(".request-scope-toggle");
     assert.equal(toggle(), null, "The switch stays hidden until there are two travelers");
     await click("1 traveler");
-    assert.equal(toggle(), null);
+    assert.equal(toggle(), null, "The switch stays hidden for one traveler");
     assert.equal(field("budgetScope").value, "perPerson");
+    await fill("budgetAmount", "3000000");
+    await click("Next");
+    await click("Back");
     await click("4 travelers");
     assert.equal(toggle().textContent.trim(), "Per person");
     assert.equal(toggle().getAttribute("aria-pressed"), "false");
-    assert.equal(field("budgetScope").value, "");
-    assert.equal(doc.querySelector('[name="budgetScope"][value="group"]'), null);
-    await fill("budgetAmount", "3000000");
+    assert.equal(field("budgetScope").value, "group", "A group defaults to a total budget");
     await click("Next");
-    assert.deepEqual(visible(), [2]);
-    assert.equal(doc.getElementById("budgetScope-error").textContent, "This field is required.");
+    await click("Next");
+    await click("Next");
+    assert.deepEqual(visible(), [5]);
+    assert.match(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /for the group/);
+    assert.doesNotMatch(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /per person/);
+    await click("Create itinerary");
+    assert.equal(validateCalls().at(-1).payload.travelers.count, 4);
+    assert.equal(validateCalls().at(-1).payload.budget.scope, "group");
+
+    await mount();
+    await toParty();
+    await click("2 travelers");
+    await fill("budgetAmount", "3000000");
     await click("Per person");
     assert.equal(field("budgetScope").value, "perPerson");
     await click("Next");
@@ -95,9 +107,20 @@ test("M1 budget scope: per person appears for two or more travelers", async () =
     await click("Next");
     assert.deepEqual(visible(), [5]);
     assert.match(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /per person/);
-    assert.doesNotMatch(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /whole group/);
+    assert.doesNotMatch(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /for the group/);
     await click("Create itinerary");
-    assert.equal(validateCalls().at(-1).payload.travelers.count, 4);
+    assert.equal(validateCalls().at(-1).payload.budget.scope, "perPerson");
+
+    await mount();
+    await toParty();
+    await click("1 traveler");
+    await fill("budgetAmount", "3000000");
+    await click("Next");
+    await click("Next");
+    await click("Next");
+    assert.doesNotMatch(doc.querySelector(".request-review > div:nth-child(5) dd").textContent, /per person/);
+    await click("Create itinerary");
+    assert.equal(validateCalls().at(-1).payload.travelers.count, 1);
     assert.equal(validateCalls().at(-1).payload.budget.scope, "perPerson");
     assert.deepEqual(runtimeErrors, []);
   } finally {
