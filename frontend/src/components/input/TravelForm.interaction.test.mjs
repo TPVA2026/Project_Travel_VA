@@ -113,10 +113,14 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(button("Not sure yet"), undefined);
     await fill("destination", "Somewhere");
     await fill("destination", "");
+    assert.ok(doc.querySelector(".request-route-plane svg[aria-hidden='true']"), "Places has a decorative plane from departure to destination");
     await enter("departureLocation");
     assertStep(1, "Blank destination is allowed");
     assert.equal(field("destination").value, "");
-    assert.equal(doc.querySelector(".request-thread-a").textContent, "Hue → Not chosen. We'll suggest destinations based on your trip.");
+    const placesAnswer = doc.querySelector(".request-thread-a");
+    assert.equal(placesAnswer.textContent.replace(/\s+/g, " ").trim(), "Hue to Not chosen. We'll suggest destinations based on your trip.");
+    assert.ok(placesAnswer.querySelector("svg[aria-hidden='true']"), "The places history uses a plane instead of an arrow");
+    assert.equal(placesAnswer.textContent.includes("→"), false);
 
     // Start date picker plus 1..maxDays length cards; the end date is computed.
     assert.equal(field("startDate").type, "date");

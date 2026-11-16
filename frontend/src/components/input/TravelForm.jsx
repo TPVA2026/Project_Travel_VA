@@ -131,6 +131,26 @@ function CalendarIcon() {
   );
 }
 
+// Side-view plane that points to the destination. Decorative only (labels already describe the route).
+function RoutePlane({ className = "request-plane" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+      <path transform="rotate(90 12 12)" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+    </svg>
+  );
+}
+
+function RouteText({ from, to }) {
+  return (
+    <span className="request-route-text">
+      <span>{from}</span>
+      <RoutePlane className="request-thread-plane" />
+      <span className="visually-hidden"> to </span>
+      <span>{to}</span>
+    </span>
+  );
+}
+
 function ChoiceGroup({ labelledBy, label, describedBy, className, value, options, onChange, focusFirst }) {
   function onKeyDown(event) {
     const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
@@ -439,8 +459,10 @@ export default function TravelForm() {
   ];
   const hasDraft = descriptionDraft.trim() !== "";
   const nextLabel = returnStep === REVIEW ? "Back to review" : "Next";
+  const departure = values.departureLocation?.trim() || "";
+  const destination = values.destination?.trim() || NO_DESTINATION;
   const thread = [
-    { step: PLACES, question: "Where are you traveling?", answer: `${values.departureLocation?.trim() || ""} → ${values.destination?.trim() || NO_DESTINATION}` },
+    { step: PLACES, question: "Where are you traveling?", answer: <RouteText from={departure} to={destination} />, summary: `${departure} to ${destination}` },
     { step: DATES, question: "When are you going?", answer: when },
     { step: PARTY, question: "Who is going, and what's the budget?", answer: [travelers, budget].filter(Boolean).join(" · ") },
     { step: STYLE, question: "What kind of trip should we prioritize?", answer: styleText },
@@ -449,7 +471,7 @@ export default function TravelForm() {
   const canCollapseThread = thread.length > 1;
   const hiddenThread = canCollapseThread && !threadOpen ? thread.slice(0, -1) : [];
   const visibleThread = canCollapseThread && !threadOpen ? thread.slice(-1) : thread;
-  const threadSummary = hiddenThread.map(item => item.answer).filter(Boolean).join(" · ");
+  const threadSummary = hiddenThread.map(item => item.summary ?? item.answer).filter(Boolean).join(" · ");
 
   const question = (index, art, title, children, hint, optional = false) => (
     <section id={`request-step-${index}`} data-step={index} className="request-step request-question" hidden={step !== index} aria-labelledby={`request-step-${index}-title`}>
@@ -499,13 +521,20 @@ export default function TravelForm() {
       )}
 
       {question(PLACES, "departure", "Where are you traveling?", <>
-        <Field label="Leaving from" name="departureLocation" error={errors.departureLocation} bad={bad} required>
-          <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required data-step-focus popularHeading="Popular cities" onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
-        </Field>
-        <Field label="Going to" name="destination" error={errors.destination} bad={bad}>
-          <ProvinceInput id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} onPick={value => setControl("destination", value)} {...described("destination", "destination-hint", "request-tile-input")} />
-          <p className="request-question-hint" id="destination-hint">{DESTINATION_HINT}</p>
-        </Field>
+        <div className="request-route">
+          <Field label="Leaving from" name="departureLocation" error={errors.departureLocation} bad={bad} required>
+            <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required data-step-focus popularHeading="Popular cities" onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
+          </Field>
+          <div className="request-route-plane" aria-hidden="true">
+            <span className="request-route-line" />
+            <RoutePlane />
+            <span className="request-route-line" />
+          </div>
+          <Field label="Going to" name="destination" error={errors.destination} bad={bad}>
+            <ProvinceInput id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} onPick={value => setControl("destination", value)} {...described("destination", "destination-hint", "request-tile-input")} />
+            <p className="request-question-hint" id="destination-hint">{DESTINATION_HINT}</p>
+          </Field>
+        </div>
       </>)}
 
       {question(DATES, "calendar", "When are you going?", <>
