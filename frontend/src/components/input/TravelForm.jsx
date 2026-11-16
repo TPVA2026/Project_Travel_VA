@@ -509,10 +509,17 @@ export default function TravelForm() {
           )}
           <ol id="request-thread-list" className="request-thread">
             {visibleThread.map(item => (
-              <li key={item.step}>
-                <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })}>
+              <li key={item.step} className="request-thread-pair">
+                <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })} aria-label={`Edit answer: ${item.question}`}>
                   <span className="request-thread-q">{item.question}</span>
-                  <span className="request-thread-a">{item.answer}</span>
+                  <span className="request-thread-a">
+                    <span className="request-thread-a-text">{item.answer}</span>
+                    <span className="request-thread-edit" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="12" height="12" focusable="false">
+                        <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                      </svg>
+                    </span>
+                  </span>
                 </button>
               </li>
             ))}
