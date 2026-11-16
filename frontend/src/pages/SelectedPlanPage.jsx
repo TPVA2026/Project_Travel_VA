@@ -1,27 +1,33 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   fetchPlanById,
   getSelectedPlanId,
   selectPlan,
   clearSelectedPlan,
-  knownTotal,
   fmtMoney,
   collectPlaceIds,
   collectActivitySources,
   fetchPlaceCatalog,
   indexPlaces,
   createNameResolver,
-  formatReason,
-  groupEvaluationReasons,
 } from '../services/api.js'
+import {
+  formatMissingCostItem,
+  getPlanEstimate,
+  getTripChecklistItems,
+} from '../services/tripEstimate.js'
 import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
-import CostSummary from '../components/itinerary/CostSummary.jsx'
-import EvaluationChecks from '../components/itinerary/EvaluationChecks.jsx'
+import EstimatedTripTotal from '../components/itinerary/EstimatedTripTotal.jsx'
+import EstimateDetails from '../components/itinerary/EstimateDetails.jsx'
 import TripServices from '../components/itinerary/TripServices.jsx'
+import RouteOverview from '../components/itinerary/RouteOverview.jsx'
+import TripChecklist from '../components/itinerary/TripChecklist.jsx'
+import TripProgress from '../components/TripProgress.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
+import Fireworks from '../components/common/Fireworks.jsx'
 import {
   getDestinationImage,
   getDestinationLabel,
@@ -37,18 +43,35 @@ export default function SelectedPlanPage() {
   const [params] = useSearchParams()
   const queryId = params.get('id')
   const storedId = getSelectedPlanId()
+  const [activePlanId, setActivePlanId] = useState(
+    () => queryId || storedId || null
+  )
 
-  // Use URL query id, or fallback to stored selected plan
   const [plan, setPlan] = useState(null)
-  const activePlanId = queryId || storedId || plan?.id || plan?.planId
   const [loading, setLoading] = useState(Boolean(activePlanId))
   const [error, setError] = useState(null)
   const [isChosen, setIsChosen] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState(false)
   const [copyError, setCopyError] = useState('')
+  const [actionMessage, setActionMessage] = useState('')
+  const [banner, setBanner] = useState(null)
+
   const [activeScheduleDay, setActiveScheduleDay] = useState('all')
+  const [celebrate, setCelebrate] = useState(false)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
+  const [checkedChecklist, setCheckedChecklist] = useState({})
+  const checklistRef = useRef(null)
+
+  const estimate = useMemo(() => getPlanEstimate(plan), [plan])
+  const checklistItems = useMemo(() => getTripChecklistItems(plan), [plan])
+  const checklistStorageKey = plan?.planId || plan?.id
+    ? `tpva_trip_checklist:${plan.planId || plan.id}`
+    : null
+
+  useEffect(() => {
+    if (queryId && queryId !== activePlanId) setActivePlanId(queryId)
+  }, [queryId, activePlanId])
 
   useEffect(() => {
     let cancelled = false
@@ -64,6 +87,27 @@ export default function SelectedPlanPage() {
     return () => { cancelled = true }
   }, [plan])
 
+  useEffect(() => {
+    if (!checklistStorageKey) {
+      setCheckedChecklist({})
+      return
+    }
+    try {
+      const raw = window.localStorage.getItem(checklistStorageKey)
+      const parsed = raw ? JSON.parse(raw) : {}
+      const allowed = new Set(checklistItems.map((item) => item.key))
+      const next = {}
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        for (const [key, value] of Object.entries(parsed)) {
+          if (allowed.has(key) && value === true) next[key] = true
+        }
+      }
+      setCheckedChecklist(next)
+    } catch {
+      setCheckedChecklist({})
+    }
+  }, [checklistStorageKey, checklistItems])
+
   const loadPlan = useCallback(async () => {
     if (!activePlanId) {
       setLoading(false)
@@ -76,7 +120,7 @@ export default function SelectedPlanPage() {
     try {
       const response = await fetchPlanById(activePlanId)
       setPlan(response.data)
-      // Check if this plan is the user's chosen plan
+      setActiveScheduleDay('all')
       const currentSelected = getSelectedPlanId()
       setIsChosen(currentSelected === response.data.id || currentSelected === response.data.planId)
     } catch (err) {
@@ -85,36 +129,83 @@ export default function SelectedPlanPage() {
     } finally {
       setLoading(false)
     }
-  }, [activePlanId])
+  }, [activePlanId, queryId])
 
   useEffect(() => {
     loadPlan()
   }, [loadPlan])
 
-  // Handle plan selection toggle
+  useEffect(() => {
+    if (!banner) return undefined
+    const timer = window.setTimeout(() => setBanner(null), 5000)
+    return () => window.clearTimeout(timer)
+  }, [banner])
+
   const handleToggleChoose = async () => {
     if (!plan) return
-
-    if (isChosen) {
-      clearSelectedPlan()
-      setIsChosen(false)
-    } else {
+    setActionMessage('')
+    try {
       await selectPlan(plan)
       setIsChosen(true)
+      setCelebrate(true)
+      setBanner({ kind: 'saved' })
+    } catch {
+      setActionMessage('Could not save this plan in this browser.')
     }
   }
 
-  // Handle itinerary summary copy
+  const handleRemove = () => {
+    if (!plan) return
+    try {
+      clearSelectedPlan()
+      setIsChosen(false)
+      setActionMessage('')
+      setBanner({ kind: 'removed' })
+    } catch {
+      setActionMessage('Could not remove this plan from your trip.')
+    }
+  }
+
   const handleCopySummary = async () => {
     if (!plan) return
-    const { total } = knownTotal(plan)
+    const statusLabel = STATUS_LABEL[plan.status] || plan.status
+    const destinationLabel = getDestinationLabel(plan.destinationId, plan.destination, plan.title) ||
+      plan.destination ||
+      ''
+    const amount = (value, empty = 'Not included') => value == null ? empty : fmtMoney(value)
+    const missing = estimate.missingCombined
+      .map((item) => formatMissingCostItem(item, resolveName))
+      .filter(Boolean)
+    const doneCount = checklistItems.filter((item) => checkedChecklist[item.key]).length
     const summaryText = [
-      `Travel Plan: ${destinationLabel || plan.destination} (${plan.title})`,
-      `Status: ${plan.status}`,
-      `Duration: ${plan.days?.length || 0} days`,
-      `Estimated Known Cost: ${fmtMoney(total)}`,
-      `Key Highlights: ${plan.fit?.join('; ') || 'N/A'}`,
-    ].join('\n')
+      `Your trip to ${destinationLabel || 'your destination'}`,
+      `Plan: ${plan.title}`,
+      `Status: ${statusLabel}`,
+      `Duration: ${dayCount} ${dayCount === 1 ? 'day' : 'days'}`,
+      estimate.travelers != null
+        ? `Travelers: ${estimate.travelers} ${estimate.travelers === 1 ? 'person' : 'people'}`
+        : null,
+      '',
+      `Estimated trip total: ${estimate.estimatedTotal == null ? 'Estimate unavailable' : fmtMoney(estimate.estimatedTotal)}`,
+      'Planning estimate, not a confirmed price. Some costs may be excluded.',
+      '',
+      'Cost breakdown:',
+      `- Stay: ${amount(estimate.stay)}`,
+      `- Transport: ${amount(estimate.transport)}`,
+      `- ${estimate.diningLabel}: ${amount(estimate.dining)}`,
+      `- ${estimate.knownLabel}: ${amount(estimate.knownTotal, 'Not available')}`,
+      estimate.budget != null ? `- Your budget: ${fmtMoney(estimate.budget)}` : null,
+      '',
+      missing.length > 0 ? `Not included in the estimate: ${missing.join(', ')}.` : null,
+      missing.length > 0 ? 'Missing data is not the same as free.' : null,
+      '',
+      `Before you go checklist (${doneCount} of ${checklistItems.length} checked):`,
+      ...checklistItems.map(
+        (item) => `- [${checkedChecklist[item.key] ? 'x' : ' '}] ${item.title}`
+      ),
+      '',
+      'Your checkmarks track personal preparation only. They do not verify prices, schedules, or travel routes.',
+    ].filter((line) => line !== null).join('\n')
 
     try {
       await navigator.clipboard.writeText(summaryText)
@@ -127,7 +218,29 @@ export default function SelectedPlanPage() {
     }
   }
 
-  // View when no plan has been selected and no ?id was provided in URL
+  const handleViewChecklist = () => {
+    const node = checklistRef.current
+    if (!node) return
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    node.scrollIntoView?.({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+  }
+
+  const handleToggleChecklist = (itemKey) => {
+    setCheckedChecklist((previous) => {
+      const next = { ...previous }
+      if (next[itemKey]) delete next[itemKey]
+      else next[itemKey] = true
+      if (checklistStorageKey) {
+        try {
+          window.localStorage.setItem(checklistStorageKey, JSON.stringify(next))
+        } catch {
+          // Keep the in-memory state even when storage is unavailable.
+        }
+      }
+      return next
+    })
+  }
+
   if (!activePlanId && !loading) {
     return (
       <div className="empty-chosen-view">
@@ -173,26 +286,28 @@ export default function SelectedPlanPage() {
   const selectedScheduleDay = scheduleDayNumbers.includes(activeScheduleDay)
     ? activeScheduleDay
     : 'all'
-  const totalCost = plan ? knownTotal(plan).total : 0
-  const resolveName = createNameResolver(plan, placesById)
-  const activitySources = collectActivitySources(plan)
-  const verificationGroups = plan?.evaluation
-    ? groupEvaluationReasons(plan.evaluation, plan.ranking, plan.planId || plan.id)
-    : []
+  const segmentCount = scheduleDays.length + 1
+  const segmentIndex = selectedScheduleDay === 'all'
+    ? 0
+    : scheduleDayNumbers.indexOf(selectedScheduleDay) + 1
+  const resolveName = plan ? createNameResolver(plan, placesById) : null
+  const activitySources = plan ? collectActivitySources(plan) : new Map()
+  const checklistDone = checklistItems.filter((item) => checkedChecklist[item.key]).length
 
   return (
     <div className={`selected-page-container${isChosen ? ' is-chosen' : ''}`}>
+      <Fireworks active={celebrate} onDone={() => setCelebrate(false)} />
       <nav className="page-back no-print" aria-label="Breadcrumb">
         <Link to="/results" className="back-link">
           <Icon name="arrowLeft" size={16} />
-          All plans
+          Back to all plans
         </Link>
       </nav>
 
       <header className="selected-page-intro">
         <div className="results-intro-copy">
           <p className="page-eyebrow">Step 3 of 3 · Review</p>
-          <h1>{destinationLabel || 'Review your itinerary'}</h1>
+          <h1>Your trip to {destinationLabel || 'your destination'}</h1>
           <p className="selected-lead muted">
             {plan?.title || 'Loading your itinerary details…'}
           </p>
@@ -201,7 +316,7 @@ export default function SelectedPlanPage() {
               <span className={`badge badge-${plan.status}`}>{statusLabel}</span>
               <span className="muted small">
                 <Icon name="calendar" size={15} />
-                {dayCount} days
+                {dayCount} {dayCount === 1 ? 'day' : 'days'}
               </span>
               <span className="muted small">
                 <Icon name="landmark" size={15} />
@@ -212,7 +327,7 @@ export default function SelectedPlanPage() {
         </div>
 
         {plan && (
-          <div className="intro-actions no-print">
+          <div className="intro-actions selected-actions no-print">
             <button
               type="button"
               className="btn btn-outline"
@@ -231,18 +346,26 @@ export default function SelectedPlanPage() {
               <Icon name={copyFeedback ? 'check' : 'copy'} size={16} />
               {copyFeedback ? 'Copied' : 'Copy summary'}
             </button>
-            {(copyError || copyFeedback) && (
-              <span
-                className={`copy-feedback ${copyError ? 'copy-feedback--error' : ''}`}
-                role="status"
-                aria-live="polite"
-              >
-                {copyError || 'Summary copied.'}
-              </span>
-            )}
           </div>
         )}
+
+        {(copyError || copyFeedback) && (
+          <span
+            className={`copy-feedback ${copyError ? 'copy-feedback--error' : ''}`}
+            role="status"
+            aria-live="polite"
+          >
+            {copyError || 'Summary copied with the estimate and checklist status.'}
+          </span>
+        )}
+        {actionMessage && (
+          <span className="action-feedback" role="status" aria-live="polite">
+            {actionMessage}
+          </span>
+        )}
       </header>
+
+      <TripProgress currentStep={3} />
 
       {loading && (
         <Loading message="Loading daily activity timeline, attractions, and dining..." />
@@ -262,279 +385,262 @@ export default function SelectedPlanPage() {
 
       {!loading && !error && plan && (
         <>
-          {/* Chosen Plan Banner View */}
-          {isChosen && (
-            <div className="chosen-header-banner" role="status">
-              <div className="chosen-header-content">
-                <span className="chosen-badge-icon" aria-hidden="true">
-                  <Icon name="star" size={22} />
-                </span>
-                <div>
-                  <strong className="chosen-header-title">
-                    Saved to your trip
-                  </strong>
-                  <p className="chosen-header-sub">
-                    Your selection stays in this browser. You can compare the other plans at any time.
-                  </p>
+          {banner && (
+            <div className="trip-toast">
+              <div className={`chosen-header-banner${banner.kind === 'removed' ? ' is-removed' : ''}`} role="status">
+                <div className="chosen-header-content">
+                  <span className="chosen-badge-icon" aria-hidden="true">
+                    <Icon name={banner.kind === 'removed' ? 'info' : 'star'} size={22} />
+                  </span>
+                  <div>
+                    <strong className="chosen-header-title">
+                      {banner.kind === 'removed' ? 'Removed from your trip' : 'Saved to your trip'}
+                    </strong>
+                    <p className="chosen-header-sub">
+                      {banner.kind === 'removed'
+                        ? 'You can add this plan again from the trip card.'
+                        : 'Saved in this browser. Compare other plans whenever you like.'}
+                    </p>
+                  </div>
                 </div>
-              </div>
-
-              <div className="chosen-header-tools no-print">
-                <Link to="/results" className="tool-btn">
-                  <Icon name="swap" size={15} />
+                <Link to="/results" className="btn btn-outline chosen-compare-link">
+                  <Icon name="swap" size={16} />
                   Compare plans
                 </Link>
               </div>
             </div>
           )}
 
-          <div className="selected">
-            {/* Left Column: Overview, Fit Criteria, Selection Actions */}
-            <aside className="selected-left" aria-label="Trip overview">
-              <div className="img-wrap selected-img-wrap">
-                {planImage && (
-                  <img
-                    src={planImage}
-                    alt={`${destinationLabel} landscape`}
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none'
-                    }}
-                  />
-                )}
-                {isChosen && (
-                  <div className="card-selected-ribbon">
-                    <Icon name="check" size={14} />
-                    Chosen
-                  </div>
-                )}
+          <EstimatedTripTotal estimate={estimate} dayCount={dayCount} />
+
+          {checklistItems.length > 0 && (
+            <section className="checklist-prompt selected-wide" aria-labelledby="checklist-prompt-title">
+              <div className="checklist-prompt-icon" aria-hidden="true">
+                <Icon name="check" size={19} />
               </div>
-
-              <div className="selected-summary-body">
-                <div className="selected-summary-head">
-                  <span className={`badge badge-${plan.status}`}>{statusLabel}</span>
-                  <h2 className="selected-title">{plan.title}</h2>
-                </div>
-
-                <div className="selected-quick-facts" aria-label="Trip overview">
-                  <div>
-                    <Icon name="calendar" size={16} />
-                    <span>Duration</span>
-                    <strong>{dayCount} days</strong>
-                  </div>
-                  <div>
-                    <Icon name="landmark" size={16} />
-                    <span>Activities</span>
-                    <strong>{activityCount}</strong>
-                  </div>
-                  <div>
-                    <Icon name="wallet" size={16} />
-                    <span>Estimated</span>
-                    <strong>{fmtMoney(totalCost)}</strong>
-                  </div>
-                </div>
-
-                {plan.fit?.length > 0 && (
-                  <div className="reasons-block">
-                    <h3 className="reasons-title">
-                      <Icon name="sparkle" size={16} />
-                      Why this plan fits
-                    </h3>
-                    <ul className="reasons-list">
-                      {plan.fit.map((r) => (
-                        <li key={r}>
-                          <Icon name="check" size={15} />
-                          {r}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {plan.status === 'INFEASIBLE' && (
-                  <div className="plan-alert-box alert-infeasible">
-                    <Icon name="alert" size={16} />
-                    <span>
-                      <strong>Cannot be chosen:</strong> {plan.failReason || 'Breaks a trip constraint.'}
-                      <span className="small-tip">
-                        Adjust your budget or constraints and create a new plan.
-                      </span>
-                    </span>
-                  </div>
-                )}
-
-                {plan.status === 'UNVERIFIED' && (
-                  <div className="plan-alert-box alert-unverified">
-                    <Icon name="info" size={16} />
-                    <span>
-                      <strong>Not fully verified.</strong> See the checks below; missing amounts
-                      are not counted as zero.
-                    </span>
-                  </div>
-                )}
-
-                {/* Primary Selection Actions Block */}
-                <div className="actions-block no-print">
-                  <button
-                    type="button"
-                    className={`btn btn-choose ${
-                      isChosen
-                        ? 'btn-selected-active'
-                        : plan.status === 'INFEASIBLE'
-                        ? 'btn-disabled'
-                        : 'btn-primary'
-                    }`}
-                    disabled={plan.status === 'INFEASIBLE'}
-                    onClick={handleToggleChoose}
-                  >
-                    {isChosen ? (
-                      <>
-                        <Icon name="check" size={18} />
-                        Remove from your trip
-                      </>
-                    ) : (
-                      'Choose this plan'
-                    )}
-                  </button>
-
-                  {isChosen && (
-                    <p className="chosen-notice">
-                      <Icon name="check" size={15} />
-                      Saved as your trip. Find it again under Selected.
-                    </p>
-                  )}
-
-                  <Link to="/results" className="back-link">
-                    <Icon name="arrowLeft" size={15} />
-                    Back to all plans
-                  </Link>
-                </div>
-              </div>
-            </aside>
-
-            {/* Right Column: Timeline Schedule & Cost Breakdown */}
-            <div className="selected-right">
-              <div
-                className="selected-right-scroll"
-                role="region"
-                aria-label="Daily schedule and cost summary"
-              >
-                <div className="schedule-header">
-                  <div>
-                    <h2 className="itinerary-heading">Daily schedule</h2>
-                    <p className="muted small">
-                      Choose a day to focus on its stops.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline no-print print-schedule-btn"
-                    onClick={() => window.print()}
-                  >
-                    <Icon name="printer" size={15} />
-                    Print schedule
-                  </button>
-                </div>
-
-                {dayCount > 1 && (
-                  <div className="schedule-day-controls" role="group" aria-label="Filter schedule by day">
-                    <button
-                      type="button"
-                      className="schedule-day-button"
-                      data-testid="schedule-day-all"
-                      aria-pressed={selectedScheduleDay === 'all'}
-                      onClick={() => setActiveScheduleDay('all')}
-                    >
-                      All days
-                    </button>
-                    {scheduleDays.map((day, index) => {
-                      const dayNumber = scheduleDayNumbers[index]
-                      const stopCount = day.activities?.length || 0
-                      return (
-                        <button
-                          type="button"
-                          className="schedule-day-button"
-                          key={dayNumber}
-                          data-testid={`schedule-day-${dayNumber}`}
-                          aria-label={`Show day ${dayNumber}, ${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`}
-                          aria-pressed={selectedScheduleDay === dayNumber}
-                          onClick={() => setActiveScheduleDay(dayNumber)}
-                        >
-                          Day {dayNumber}
-                          <span>{stopCount}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
-
-                {placeCatalogError && <p role="status" className="muted small">{placeCatalogError}</p>}
-                <ItineraryTimeline
-                  days={
-                    selectedScheduleDay === 'all'
-                      ? scheduleDays
-                      : scheduleDays.filter(
-                          (_, index) => scheduleDayNumbers[index] === selectedScheduleDay
-                        )
-                  }
-                  placesById={placesById}
-                  activitySources={activitySources}
-                />
-                <CostSummary plan={plan} costEvaluation={plan.evaluation?.components?.cost} resolveName={resolveName} />
-              </div>
-            </div>
-          </div>
-
-          <TripServices plan={plan} placesById={placesById} />
-
-          <section
-            className="verification-panel selected-wide"
-            aria-labelledby="verification-heading"
-          >
-            <div className="verification-head">
-              <span className="verification-icon" aria-hidden="true">
-                <Icon name="info" size={18} />
-              </span>
-              <div>
-                <h2 id="verification-heading" className="verification-title">
-                  Backend checks
-                </h2>
-                <p className="muted small">
-                  Budget, schedule, and travel are scored exactly as returned, with no status
-                  upgrades.
+              <div className="checklist-prompt-copy">
+                <h2 id="checklist-prompt-title">Before you go, use your checklist</h2>
+                <p>
+                  Confirm prices, opening hours, and travel times. Tick each item after checking it.
                 </p>
               </div>
-            </div>
+              <div className="checklist-prompt-meta">
+                <span>{checklistDone} of {checklistItems.length} checked</span>
+                <button type="button" className="btn btn-primary" onClick={handleViewChecklist}>
+                  View checklist
+                </button>
+              </div>
+            </section>
+          )}
 
-            {plan.evaluation ? (
-              <>
-                <EvaluationChecks evaluation={plan.evaluation} />
-                {verificationGroups.length > 0 ? (
-                  <div className="verification-groups">
-                    {verificationGroups.map((group) => (
-                      <div key={group.key} className="verification-group">
-                        <h3 className="verification-group-label">{group.label}</h3>
-                        <ul className="reasons-list">
-                          {group.reasons.map((reason, index) => (
-                            <li key={`${group.key}-${index}`}>
-                              <Icon name="alert" size={15} />
-                              {formatReason(reason, { resolveName })}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+          <section
+            className="selected-itinerary selected-wide"
+            aria-label="Trip overview and daily schedule"
+          >
+            <div className="selected">
+              <aside className="selected-left" aria-label="Trip overview">
+                <div className="img-wrap selected-img-wrap">
+                  {planImage && (
+                    <img
+                      src={planImage}
+                      alt={`${destinationLabel} landscape`}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  )}
+                  {isChosen && (
+                    <div className="card-selected-ribbon">
+                      <Icon name="check" size={14} />
+                      Chosen
+                    </div>
+                  )}
+                </div>
+
+                <div className="selected-summary-body">
+                  <div className="selected-summary-head">
+                    <span className={`badge badge-${plan.status}`}>{statusLabel}</span>
+                    <h2 className="selected-title">{plan.title}</h2>
                   </div>
-                ) : (
-                  <p className="verification-ok">
-                    <Icon name="check" size={15} />
-                    No items need further checking.
-                  </p>
-                )}
-              </>
-            ) : (
-              <p className="muted small">This plan has no backend check data yet.</p>
-            )}
+
+                  <div className="selected-quick-facts" aria-label="Trip overview">
+                    <div>
+                      <Icon name="calendar" size={16} />
+                      <span>Duration</span>
+                      <strong>{dayCount} {dayCount === 1 ? 'day' : 'days'}</strong>
+                    </div>
+                    <div>
+                      <Icon name="landmark" size={16} />
+                      <span>Activities</span>
+                      <strong>{activityCount}</strong>
+                    </div>
+                    <div>
+                      <Icon name="wallet" size={16} />
+                      <span>Estimated</span>
+                      <strong>
+                        {estimate.estimatedTotal == null
+                          ? 'Unavailable'
+                          : fmtMoney(estimate.estimatedTotal)}
+                      </strong>
+                    </div>
+                  </div>
+
+                  {plan.fit?.length > 0 && (
+                    <div className="reasons-block">
+                      <h3 className="reasons-title">
+                        <Icon name="sparkle" size={16} />
+                        Why this plan fits
+                      </h3>
+                      <ul className="reasons-list">
+                        {plan.fit.map((reason) => (
+                          <li key={reason}>
+                            <Icon name="check" size={15} />
+                            {reason}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {plan.status === 'INFEASIBLE' && (
+                    <div className="plan-alert-box alert-infeasible">
+                      <Icon name="alert" size={16} />
+                      <span>
+                        <strong>Cannot be chosen:</strong> {plan.failReason || 'Breaks a trip constraint.'}
+                        <span className="small-tip">
+                          Adjust your budget or constraints and create a new plan.
+                        </span>
+                      </span>
+                    </div>
+                  )}
+
+                  {plan.status === 'UNVERIFIED' && (
+                    <div className="plan-alert-box alert-unverified">
+                      <Icon name="info" size={16} />
+                      <span>
+                        <strong>Not fully verified.</strong> Missing amounts stay unverified and are
+                        not counted as zero.
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="selected-summary-actions no-print">
+                    <button
+                      type="button"
+                      className={`btn ${isChosen ? 'btn-outline btn-remove' : 'btn-primary btn-choose'}`}
+                      disabled={!isChosen && plan.status === 'INFEASIBLE'}
+                      onClick={isChosen ? handleRemove : handleToggleChoose}
+                    >
+                      <Icon name={isChosen ? 'trash' : 'check'} size={16} />
+                      {isChosen ? 'Remove from your trip' : 'Save to your trip'}
+                    </button>
+
+                    {isChosen && (
+                      <p className="chosen-notice">
+                        <Icon name="check" size={15} />
+                        Saved as your trip. Find it again under Selected.
+                      </p>
+                    )}
+
+                    <Link to="/results" className="back-link selected-summary-back">
+                      <Icon name="arrowLeft" size={14} />
+                      Back to all plans
+                    </Link>
+                  </div>
+                </div>
+              </aside>
+
+              <div className="selected-right">
+                <div
+                  className="selected-right-scroll"
+                  role="region"
+                  aria-label="Daily schedule"
+                >
+                  <div className="schedule-header">
+                    <div>
+                      <h3 className="itinerary-heading">Daily schedule</h3>
+                      <p className="muted small">Choose a day to focus on its stops.</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline no-print print-schedule-btn"
+                      onClick={() => window.print()}
+                    >
+                      <Icon name="printer" size={15} />
+                      Print schedule
+                    </button>
+                  </div>
+
+                  {dayCount > 1 && (
+                    <div
+                      className="schedule-day-controls"
+                      role="group"
+                      aria-label="Filter schedule by day"
+                      style={{
+                        '--segment-count': segmentCount,
+                        '--segment-index': segmentIndex,
+                      }}
+                    >
+                      <span className="schedule-day-thumb" aria-hidden="true" />
+                      <button
+                        type="button"
+                        className="schedule-day-button"
+                        data-testid="schedule-day-all"
+                        aria-pressed={selectedScheduleDay === 'all'}
+                        onClick={() => setActiveScheduleDay('all')}
+                      >
+                        All days
+                      </button>
+                      {scheduleDays.map((day, index) => {
+                        const dayNumber = scheduleDayNumbers[index]
+                        const stopCount = day.activities?.length || 0
+                        return (
+                          <button
+                            type="button"
+                            className="schedule-day-button"
+                            key={dayNumber}
+                            data-testid={`schedule-day-${dayNumber}`}
+                            aria-label={`Show day ${dayNumber}, ${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`}
+                            aria-pressed={selectedScheduleDay === dayNumber}
+                            onClick={() => setActiveScheduleDay(dayNumber)}
+                          >
+                            Day {dayNumber}
+                            <span>{stopCount}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {placeCatalogError && <p role="status" className="muted small">{placeCatalogError}</p>}
+                  <ItineraryTimeline
+                    days={
+                      selectedScheduleDay === 'all'
+                        ? scheduleDays
+                        : scheduleDays.filter(
+                            (_, index) => scheduleDayNumbers[index] === selectedScheduleDay
+                          )
+                    }
+                    placesById={placesById}
+                    activitySources={activitySources}
+                  />
+                </div>
+              </div>
+            </div>
           </section>
+
+          <EstimateDetails plan={plan} estimate={estimate} resolveName={resolveName} />
+          <TripServices plan={plan} />
+          <RouteOverview plan={plan} placesById={placesById} />
+
+          {checklistItems.length > 0 && (
+            <TripChecklist
+              items={checklistItems}
+              checked={checkedChecklist}
+              onToggle={handleToggleChecklist}
+              sectionRef={checklistRef}
+            />
+          )}
         </>
       )}
     </div>

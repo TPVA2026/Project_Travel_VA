@@ -183,6 +183,20 @@ def _candidate_signature(plan: dict) -> tuple:
     )
 
 
+def _unique_plan_id(plan: dict, seen_ids: set[str]) -> None:
+    """Keep planId unique so ranking can compare every generated candidate."""
+    base = str(plan.get("planId") or "").strip()
+    if not base:
+        return
+    candidate = base
+    suffix = 2
+    while candidate in seen_ids:
+        candidate = f"{base}-{suffix}"
+        suffix += 1
+    plan["planId"] = candidate
+    seen_ids.add(candidate)
+
+
 
 
 def generate_candidates(
@@ -202,6 +216,7 @@ def generate_candidates(
 
     candidates = []
     seen = set()
+    seen_ids: set[str] = set()
     max_attempts = count * 3
 
     for _ in range(max_attempts):
@@ -227,6 +242,7 @@ def generate_candidates(
         if signature in seen:
             continue
 
+        _unique_plan_id(plan, seen_ids)
         seen.add(signature)
         candidates.append(plan)
 

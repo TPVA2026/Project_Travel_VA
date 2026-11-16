@@ -15,7 +15,7 @@ from app.schemas.candidate_plan import CandidatePlan
 from app.schemas.revision import RevisionRequest
 from app.services.ai.context_builder import build_context, supported_place_ids, valid_destination_ids
 from app.services.ai.gemini_client import GeminiError
-from app.services.ai.itinerary_generator import _candidate_signature, check_grounding, generate_candidate
+from app.services.ai.itinerary_generator import _candidate_signature, _unique_plan_id, check_grounding, generate_candidate
 from app.services.data_service import load_dataset
 from app.services.input_service import (
     request_problems,
@@ -333,8 +333,10 @@ def run_itinerary_pipeline(
     dataset = _load_planning_dataset(normalized_request)
     plans = []
     seen = set()
+    seen_ids: set[str] = set()
     warnings = []
     generation_error = None
+    consecutive_failures = 0
     for _ in range(count * 3):
         if len(plans) == count:
             break
@@ -346,13 +348,27 @@ def run_itinerary_pipeline(
             )
         except GeminiError as exc:
             generation_error = exc
+            if exc.code in {"MALFORMED", "INVALID_PLAN", "EMPTY"} and consecutive_failures < 2:
+                consecutive_failures += 1
+                continue
+            break
+
+        if not any(day.get("activities") for day in plan.get("days", [])):
+            generation_error = GeminiError(
+                "INVALID_PLAN", "Plan has no activities", 422
+            )
+            if consecutive_failures < 2:
+                consecutive_failures += 1
+                continue
             break
 
         signature = _candidate_signature(plan)
         if signature in seen:
             continue
+        _unique_plan_id(plan, seen_ids)
         seen.add(signature)
         plans.append(plan)
+        consecutive_failures = 0
 
     if not plans and generation_error:
         raise generation_error

@@ -36,7 +36,12 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
           const dateLabel = formatDate(d.date)
 
           return (
-            <div key={dayNumber} className="timeline-day-group">
+            <div
+              key={dayNumber}
+              className="timeline-day-group"
+              id={`trip-day-${dayNumber}`}
+              data-day-number={dayNumber}
+            >
               <div className="timeline-node" aria-hidden="true" />
 
               <div className="timeline-day-header">

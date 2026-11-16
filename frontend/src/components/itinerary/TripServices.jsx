@@ -1,9 +1,4 @@
-import {
-  collectTravelLegs,
-  displayPlaceName,
-  getPlanServiceItems,
-  safeSourceUrl,
-} from '../../services/api.js'
+import { getPlanServiceItems, safeSourceUrl } from '../../services/api.js'
 import { fmtMoney } from '../../services/mockData.js'
 import Icon from '../common/Icon.jsx'
 
@@ -12,6 +7,14 @@ const TRANSPORT_KINDS = [
   { tokens: ['flight', 'plane', 'máy bay', 'may bay', 'hàng không'], icon: 'plane', label: 'Flight' },
   { tokens: ['bus', 'coach', 'xe khách', 'xe khach'], icon: 'bus', label: 'Coach' },
 ]
+
+const EXCLUDED_LABELS = {
+  terminalTransfers: 'airport, station, or terminal transfers',
+  return: 'return travel',
+  meals: 'meals',
+  taxes: 'taxes',
+  fees: 'fees',
+}
 
 function transportKind(item) {
   const text = `${item?.name || ''} ${item?.kindOfTransport || ''}`.toLocaleLowerCase('vi')
@@ -35,6 +38,26 @@ function serviceTitle(name) {
 
 function money(value) {
   return value == null ? 'Not available' : fmtMoney(value)
+}
+
+function countLabel(value, singular, plural = `${singular}s`) {
+  if (value == null) return 'Not available'
+  return `${value} ${Number(value) === 1 ? singular : plural}`
+}
+
+function tripTypeLabel(value) {
+  if (!value) return 'Not specified'
+  const labels = {
+    oneWay: 'One way',
+    roundTrip: 'Round trip',
+    return: 'Return',
+  }
+  return labels[value] || String(value)
+}
+
+function excludedLabels(item) {
+  if (!Array.isArray(item?.excludedCosts)) return []
+  return item.excludedCosts.map((value) => EXCLUDED_LABELS[value] || String(value))
 }
 
 function Stat({ label, value }) {
@@ -70,24 +93,16 @@ function ServiceTitle({ id, title, sourceUrl, sourceLabel }) {
   )
 }
 
-function LegStatus({ verified }) {
-  return verified ? (
-    <span className="service-leg-status service-leg-status--verified">
-      <Icon name="check" size={12} />
-      Verified
-    </span>
-  ) : (
-    <span className="service-leg-status service-leg-status--unverified">
-      <Icon name="alert" size={12} />
-      Unverified
-    </span>
-  )
-}
-
 function StayCard({ item }) {
   const { title, room } = stayName(item?.name)
   const nights = Number(item?.nights)
   const isDayTrip = Number.isFinite(nights) && nights === 0
+  const taxNote = item?.taxesIncluded === true
+    ? 'Taxes and fees are included in this reference price.'
+    : item?.taxesIncluded === false
+      ? 'Taxes and fees are not included.'
+      : 'Taxes and fees are not confirmed.'
+
   return (
     <article className="service-card" aria-labelledby="trip-stay-heading">
       <div className="service-card-head">
@@ -116,35 +131,38 @@ function StayCard({ item }) {
       {item ? (
         <>
           <div className="service-stats">
-            <Stat label="Rooms" value={item.rooms == null ? 'Not available' : `${item.rooms} rooms`} />
-            <Stat label="Nights" value={item.nights == null ? 'Not available' : `${item.nights} nights`} />
+            <Stat label="Rooms" value={countLabel(item.rooms, 'room')} />
+            <Stat label="Nights" value={countLabel(item.nights, 'night')} />
             <Stat label="Price/night" value={money(item.unitPriceVnd)} />
-            <Stat label="Subtotal" value={money(item.amountVnd)} />
+            <Stat label="Estimated stay subtotal" value={money(item.amountVnd)} />
           </div>
           {isDayTrip && (
             <p className="service-hint">Day trip, so no overnight stay is added.</p>
           )}
           <p className="service-note">
-            Reference room price. Taxes and fees are not included, and availability is not
-            confirmed for your dates.
+            {taxNote} Availability is not confirmed for your travel dates.
           </p>
         </>
       ) : (
         <p className="service-note">
-          The backend did not return a matching stay for this plan. Stay costs are treated as
-          unverified, not zero.
+          No matching stay was found for this plan. Stay costs are not included; this is not treated
+          as free.
         </p>
       )}
     </article>
   )
 }
 
-function TransportCard({ item, legs, placesById }) {
+function TransportCard({ item }) {
   const kind = transportKind(item)
-  const verifiedLegs = legs.filter(
-    (leg) => leg.durationMin != null || leg.distanceKm != null
-  ).length
   const title = serviceTitle(item?.name)
+  const excluded = excludedLabels(item)
+  const fareNote = item?.serviceFeesIncluded === true
+    ? 'Service fees are included in this reference fare.'
+    : item?.serviceFeesIncluded === false
+      ? 'Service fees are not included.'
+      : 'Check whether service fees are included.'
+
   return (
     <article className="service-card" aria-labelledby="trip-transport-heading">
       <div className="service-card-head">
@@ -155,7 +173,7 @@ function TransportCard({ item, legs, placesById }) {
           <p className="service-kicker">Transport</p>
           <ServiceTitle
             id="trip-transport-heading"
-            title={item ? title : 'Travel legs in this plan'}
+            title={item ? title : 'No transport data'}
             sourceUrl={item?.sourceUrl}
             sourceLabel={item?.source}
           />
@@ -169,72 +187,30 @@ function TransportCard({ item, legs, placesById }) {
       {item ? (
         <>
           <div className="service-stats">
-            <Stat label="Travelers" value={item.travelers == null ? 'Not available' : `${item.travelers} people`} />
-            <Stat label="Direction" value="One way" />
+            <Stat label="Travelers" value={countLabel(item.travelers, 'person', 'people')} />
+            <Stat label="Direction" value={tripTypeLabel(item.tripType)} />
             <Stat label="Per person" value={money(item.perPersonVnd)} />
-            <Stat label="Subtotal" value={money(item.amountVnd)} />
+            <Stat label="Estimated transport subtotal" value={money(item.amountVnd)} />
           </div>
           <p className="service-note">
-            Reference fare including service fees; the return leg and airport, station, or
-            bus-terminal transfers are not included.
+            {fareNote}
+            {excluded.length > 0 ? ` Not included: ${excluded.join(', ')}.` : ''}
+            {' '}Availability is not confirmed for your travel dates.
           </p>
         </>
       ) : (
         <p className="service-note">
-          The backend did not return a primary fare for this plan. The legs below show daily
-          distance and travel time only, not fares.
+          No primary fare was found for this plan. Transport costs are not included; this is not
+          treated as free.
         </p>
       )}
-
-      <div className="service-legs-block">
-        <div className="service-legs-head">
-          <h4 className="service-legs-title">Travel legs by day</h4>
-          {legs.length > 0 && (
-            <span className="service-legs-count">
-              {verifiedLegs}/{legs.length} legs verified
-            </span>
-          )}
-        </div>
-
-        {legs.length === 0 ? (
-          <p className="service-note">
-            This plan has no travel legs between activities.
-          </p>
-        ) : (
-          <ul className="service-legs-list">
-            {legs.map((leg, index) => {
-              const verified = leg.durationMin != null || leg.distanceKm != null
-              const duration =
-                leg.durationMin != null ? `${leg.durationMin} min` : 'Time unknown'
-              const distance = leg.distanceKm != null ? `${leg.distanceKm} km` : null
-              return (
-                <li className="service-leg" key={`${leg.dayNumber || 'day'}-${index}`}>
-                  <div className="service-leg-copy">
-                    <span className="service-leg-route">
-                      {displayPlaceName(leg.fromPlaceId, placesById)}
-                      <span className="service-leg-arrow" aria-hidden="true">→</span>
-                      {displayPlaceName(leg.toPlaceId, placesById)}
-                    </span>
-                    <span className="service-leg-meta">
-                      {leg.dayNumber != null && `Day ${leg.dayNumber} · `}
-                      {[duration, distance].filter(Boolean).join(' · ')}
-                    </span>
-                  </div>
-                  <LegStatus verified={verified} />
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </div>
     </article>
   )
 }
 
-export default function TripServices({ plan, placesById }) {
+export default function TripServices({ plan }) {
   if (!plan) return null
   const { stay, transport } = getPlanServiceItems(plan)
-  const legs = collectTravelLegs(plan)
 
   return (
     <section className="trip-services selected-wide" aria-labelledby="trip-services-heading">
@@ -242,17 +218,17 @@ export default function TripServices({ plan, placesById }) {
         <div>
           <p className="page-eyebrow">Stay &amp; transport</p>
           <h2 id="trip-services-heading" className="services-title">
-            Where you stay and how you get around
+            Where you stay and how you get there
           </h2>
           <p className="muted small">
-            Returned by the backend for this exact plan. Prices and availability still need
-            confirming before you book.
+            These are reference details for this plan. Confirm prices and availability with the
+            provider before booking.
           </p>
         </div>
       </div>
       <div className="services-grid">
         <StayCard item={stay} />
-        <TransportCard item={transport} legs={legs} placesById={placesById} />
+        <TransportCard item={transport} />
       </div>
     </section>
   )

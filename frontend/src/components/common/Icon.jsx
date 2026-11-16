@@ -81,6 +81,11 @@ const PATHS = {
       <path d="M6 14h12v7H6z" />
     </>
   ),
+  trash: (
+    <>
+      <path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" />
+    </>
+  ),
   copy: (
     <>
       <rect x="9" y="9" width="12" height="12" rx="2" />

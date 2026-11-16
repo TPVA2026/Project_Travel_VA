@@ -51,7 +51,8 @@ RULES:
 - For ALWAYS openingHours, the dataset reports 24/7; do not claim independent verification.
 - For UNKNOWN openingHours, do not assume the place is open 24/7; report missing opening-hour information in missingData.
 - UNVERIFIED openingHours are provisional dataset values, not confirmed real-world operating hours.
-- Respect each place's durationMin when known; never invent a duration when missing.
+- Respect each place's durationMin when known. When it is missing, choose a realistic non-zero length and record that choice in assumptions.
+- Every activity must end later than it starts; every planned day must contain at least one activity.
 - Prioritize places matching the traveler's interests, dining preferences and additionalRequirements.
 - Prefer curated places with useful evidence over incomplete OpenTripMap records.
 - Do not invent opening hours, travel times, prices, place IDs or source evidence.
