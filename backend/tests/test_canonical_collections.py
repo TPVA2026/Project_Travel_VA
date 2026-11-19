@@ -26,8 +26,9 @@ def test_destination_folders_are_complete_and_correctly_partitioned():
     assert len(set(folders.values())) == 34
     for destination in destinations:
         folder = DATA_DIR / destination["dataFolder"]
-        assert {f.name for f in folder.iterdir()} == {"attractions.json", "restaurants.json", "accomodation.json"}
-        for file in folder.iterdir():
+        assert {f.name for f in folder.iterdir()} == {"attractions.json", "restaurants.json", "accomodation.json", "transport.json"}
+        assert isinstance(json.loads((folder / "transport.json").read_text(encoding="utf-8")), list)
+        for file in (folder / name for name in ("attractions.json", "restaurants.json", "accomodation.json")):
             rows = json.loads(file.read_text(encoding="utf-8"))
             assert isinstance(rows, list)
             assert all(p["destinationId"] == destination["id"] for p in rows)

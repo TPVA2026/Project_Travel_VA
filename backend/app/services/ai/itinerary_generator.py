@@ -59,6 +59,23 @@ def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> l
             "durationMin": None, "distanceKm": None,
         }
     errs: list[str] = []
+
+    hotel_id = plan.get("hotelId")
+
+    if hotel_id is not None:
+        matches = [
+            h for h in dataset.get("hotels", [])
+            if h.get("id") == hotel_id
+        ]
+
+        if len(matches) != 1:
+            errs.append(f"unknown or duplicate hotelId {hotel_id}")
+        elif matches[0].get("destinationId") != plan["destinationId"]:
+            errs.append(
+                f"hotelId {hotel_id} does not belong to "
+                f"destinationId {plan['destinationId']}"
+            )
+
     # Explicit dataset relationships are authoritative; absent mappings are not guessed.
     for day in plan["days"]:
         used_ids = {a["placeId"] for a in day["activities"]}
@@ -95,8 +112,9 @@ def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> l
                 if price is None and (a["estimatedCostVnd"] is not None or a["costStatus"] != "NO_DATA"):
                     errs.append(f"{a['activityId']}: dataset has no price for {a['placeId']}; must be null/NO_DATA")
                 expected_status = price_evidence_status(pl, dining=kind[a["placeId"]] == "dining")
+                # The dataset owns this label. A model that copies the price but writes KNOWN must not sink the plan.
                 if a["costStatus"] == "KNOWN" and expected_status == "UNVERIFIED":
-                    errs.append(f"{a['activityId']}: price evidence for {a['placeId']} is unverified; status must be UNVERIFIED")
+                    a["costStatus"] = "UNVERIFIED"
         errs.extend(_check_travel_legs(d, places, matrix))
     return errs
 
@@ -182,6 +200,20 @@ def _candidate_signature(plan: dict) -> tuple:
     )
 
 
+def _unique_plan_id(plan: dict, seen_ids: set[str]) -> None:
+    """Keep planId unique so ranking can compare every generated candidate."""
+    base = str(plan.get("planId") or "").strip()
+    if not base:
+        return
+    candidate = base
+    suffix = 2
+    while candidate in seen_ids:
+        candidate = f"{base}-{suffix}"
+        suffix += 1
+    plan["planId"] = candidate
+    seen_ids.add(candidate)
+
+
 
 
 def generate_candidates(
@@ -201,6 +233,7 @@ def generate_candidates(
 
     candidates = []
     seen = set()
+    seen_ids: set[str] = set()
     max_attempts = count * 3
 
     for _ in range(max_attempts):
@@ -226,6 +259,7 @@ def generate_candidates(
         if signature in seen:
             continue
 
+        _unique_plan_id(plan, seen_ids)
         seen.add(signature)
         candidates.append(plan)
 

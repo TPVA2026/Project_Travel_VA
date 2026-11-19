@@ -10,6 +10,7 @@ import {
   runItineraryPipeline,
   selectPlan,
   clearSelectedPlan,
+  candidateStatusLabel,
   PIPELINE_MAX_CANDIDATES,
 } from '../services/api.js'
 import {
@@ -17,8 +18,10 @@ import {
   getDestinationLabel,
 } from '../services/destinationImages.js'
 import CandidateComparison from '../components/comparison/CandidateComparison.jsx'
+import TripProgress from '../components/TripProgress.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
+import Fireworks from '../components/common/Fireworks.jsx'
 import Icon from '../components/common/Icon.jsx'
 import { useAuth } from '../auth/AuthContext.jsx'
 
@@ -50,42 +53,42 @@ function aiErrorCopy(error) {
   const code = error?.code
   if (code === 'NO_CANDIDATES') {
     return {
-      title: 'Không có lịch trình nào được tạo',
+      title: 'No itinerary was created',
       message:
         error?.message ||
-        'Trợ lý không trả về lịch trình nào dùng được. Không có dữ liệu mẫu nào được thay thế.',
+        'The assistant did not return a usable itinerary. No sample plan was substituted.',
     }
   }
   if (code === 'TIMEOUT') {
     return {
-      title: 'Trợ lý phản hồi quá lâu',
+      title: 'The assistant took too long',
       message:
-        'Yêu cầu tạo lịch trình đã quá thời gian chờ. Hãy thử lại; không có kết quả mẫu nào được hiển thị thay thế.',
+        'The itinerary request timed out. Try again; no sample result is shown in its place.',
     }
   }
   if (code === 'RATE_LIMIT' || code === 'AI_BUSY') {
     return {
-      title: 'Dịch vụ AI đang quá tải',
+      title: 'The AI service is busy',
       message:
-        'Nhà cung cấp AI đang giới hạn số yêu cầu hoặc đã hết hạn mức tạm thời. Hãy chờ một lúc rồi thử lại; không có dữ liệu mẫu nào được hiển thị thay thế.',
+        'The AI provider is limiting requests or has temporarily hit its quota. Wait a moment and try again; no sample data is shown in its place.',
     }
   }
   if (code === 'AI_UNAVAILABLE') {
     return {
-      title: 'Trợ lý AI tạm thời không khả dụng',
+      title: 'The AI assistant is unavailable',
       message:
-        'Không thể tạo lịch trình thật lúc này. Hãy thử lại sau; hệ thống không tự chuyển sang dữ liệu mẫu.',
+        'A real itinerary cannot be created right now. Try again later; the app never switches to sample data on its own.',
     }
   }
   if (code === 'INVALID_REQUEST') {
     return {
-      title: 'Yêu cầu chuyến đi không hợp lệ',
-      message: error?.message || 'Hãy kiểm tra lại thông tin chuyến đi và thử lại.',
+      title: 'The trip request is invalid',
+      message: error?.message || 'Check the trip details and try again.',
     }
   }
   return {
-    title: 'Trợ lý không trả về lịch trình',
-    message: error?.message || 'Không thể hoàn tất yêu cầu tạo lịch trình.',
+    title: 'The assistant returned no itinerary',
+    message: error?.message || 'The itinerary request could not be completed.',
   }
 }
 
@@ -94,15 +97,23 @@ function RequestSummary({ request }) {
 
   if (Array.isArray(request.notes)) {
     return (
-      <div className="trip-chips" aria-label="Your trip brief">
-        <span className="trip-chip">
-          <Icon name="sparkle" size={16} />
-          Described in your own words
-        </span>
-        <span className="trip-chip trip-chip--muted">
-          {request.notes.length} {request.notes.length === 1 ? 'answer' : 'answers'} received
-        </span>
-      </div>
+      <section className="trip-summary" aria-labelledby="trip-summary-heading">
+        <div className="trip-summary-head">
+          <span className="trip-summary-label" id="trip-summary-heading">
+            <Icon name="compass" size={16} />
+            Your trip
+          </span>
+        </div>
+        <div className="trip-chips" aria-label="Your trip brief">
+          <span className="trip-chip">
+            <Icon name="sparkle" size={16} />
+            Described in your own words
+          </span>
+          <span className="trip-chip trip-chip--muted">
+            {request.notes.length} {request.notes.length === 1 ? 'answer' : 'answers'} received
+          </span>
+        </div>
+      </section>
     )
   }
 
@@ -129,14 +140,23 @@ function RequestSummary({ request }) {
   if (chips.length === 0) return null
 
   return (
-    <div className="trip-chips" aria-label="Your trip details">
-      {chips.map((chip) => (
-        <span key={chip.label} className="trip-chip">
-          <Icon name={chip.icon} size={16} />
-          {chip.label}
+    <section className="trip-summary" aria-labelledby="trip-summary-heading">
+      <div className="trip-summary-head">
+        <span className="trip-summary-label" id="trip-summary-heading">
+          <Icon name="compass" size={16} />
+          Your trip
         </span>
-      ))}
-    </div>
+        <span className="trip-summary-note">From the details you entered</span>
+      </div>
+      <div className="trip-chips" aria-label="Your trip details">
+        {chips.map((chip) => (
+          <span key={chip.label} className="trip-chip">
+            <Icon name={chip.icon} size={16} />
+            {chip.label}
+          </span>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -144,14 +164,16 @@ function PartialResultsBanner({ pipeline }) {
   const warnings = Array.isArray(pipeline?.warnings) ? pipeline.warnings : []
   if (warnings.length === 0) return null
   const count = pipeline?.candidates?.length || 0
+  const hasFullSet = count >= PIPELINE_MAX_CANDIDATES
   return (
     <div className="plan-alert-box alert-unverified" role="status" data-testid="partial-results-banner">
       <Icon name="alert" size={16} />
       <div className="plan-alert-groups">
-        <strong>Kết quả chưa đầy đủ</strong>
+        <strong>{hasFullSet ? 'Some checks could not finish' : 'Partial results'}</strong>
         <p className="muted small">
-          Chỉ nhận được {count}/{PIPELINE_MAX_CANDIDATES} lịch trình. Không có lịch thay thế nào
-          được lấy từ dữ liệu mẫu; các trạng thái bên dưới vẫn là kết quả kiểm tra thật.
+          {hasFullSet
+            ? `${count} itineraries were returned, but some checks could not finish. The statuses below are real check results.`
+            : `Only ${count}/${PIPELINE_MAX_CANDIDATES} itineraries were returned. No replacement plan was taken from sample data; the statuses below are real check results.`}
         </p>
         <ul>
           {warnings.map((warning, index) => (
@@ -176,21 +198,23 @@ function SelectedCandidateBanner({ candidate, onClear }) {
           <Icon name="star" size={20} />
         </span>
         <div>
-          <strong>Đã lưu vào chuyến đi</strong>
+          <strong>Saved to your trip</strong>
           <span className="chosen-banner-destination">{plan.title}</span>
           <div className="muted small">
-            {plan.days?.length || 0} ngày · Trạng thái:{' '}
-            <span className={`badge badge-${candidate.status}`}>{candidate.status}</span>
+            {plan.days?.length || 0} days · Status:{' '}
+            <span className={`badge badge-${candidate.status}`}>
+              {candidateStatusLabel(candidate.status)}
+            </span>
           </div>
         </div>
       </div>
       <div className="chosen-banner-actions">
         <Link to={`/selected?id=${candidate.planId}`} className="btn btn-sm btn-primary">
-          Mở lịch đã chọn
+          Open saved plan
           <Icon name="arrowRight" size={15} />
         </Link>
         <button type="button" className="btn btn-sm btn-outline" onClick={onClear}>
-          Bỏ chọn
+          Remove
         </button>
       </div>
     </div>
@@ -235,6 +259,7 @@ export default function ResultsPage() {
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
   const [saveError, setSaveError] = useState(null)
+  const [celebrate, setCelebrate] = useState(false)
   const startedRequestRef = useRef(null)
 
   const loadAiPlan = useCallback(async () => {
@@ -271,14 +296,14 @@ export default function ResultsPage() {
         setPlacesById(byId)
         setPlaceCatalogError(
           missing.length > 0
-            ? `Không tìm thấy tên cho: ${missing.join(', ')}`
+            ? `Names not found for: ${missing.join(', ')}`
             : null
         )
       })
       .catch(() => {
         if (cancelled) return
         setPlacesById(new Map())
-        setPlaceCatalogError('Không đọc được danh mục tên địa điểm.')
+        setPlaceCatalogError('Could not read the place name catalog.')
       })
     return () => {
       cancelled = true
@@ -337,6 +362,7 @@ export default function ResultsPage() {
       id: plan.planId,
       status: candidate.status,
       evaluation: candidate.evaluation,
+      ranking: pipeline?.ranking || null,
       request: pendingRequest,
       destination,
       image:
@@ -354,6 +380,7 @@ export default function ResultsPage() {
       const result = await selectPlan(savedPlan)
       setSavedTripIds((current) => ({ ...current, [id]: result.trip.id }))
       setSelectedPlanId(id)
+      setCelebrate(true)
     } catch (err) {
       setSaveError(err?.message || 'Could not save this trip.')
     }
@@ -368,22 +395,32 @@ export default function ResultsPage() {
 
   return (
     <section className="results-page">
+      <Fireworks active={celebrate} onDone={() => setCelebrate(false)} />
       <header className="results-head">
         <div className="results-intro-copy">
           <p className="page-eyebrow">Step 2 of 3 · Results</p>
           <h1 className="results-title">Choose the itinerary that fits your trip</h1>
           <p className="results-subtitle muted">
-            Review the assistant draft and the backend checks behind it. Statuses are shown exactly as returned, never upgraded to verified.
+            Explore recommended destinations and itineraries. Compare the details and choose the
+            plan that fits your pace.
           </p>
         </div>
-
       </header>
+
       {saveError && <p className="plan-alert-box alert-infeasible" role="alert">{saveError}</p>}
+
+      <TripProgress currentStep={2} />
 
       <RequestSummary request={pendingRequest} />
 
       {pendingRequest && aiLoading && (
-        <Loading message="Waiting for the assistant to build your itineraries..." />
+        <div className="generating-panel">
+          <Loading message="Building your plans" />
+          <p className="generating-note muted small">
+            This usually takes 30–90 seconds. Each option is checked against your budget,
+            opening hours, and travel times before it appears.
+          </p>
+        </div>
       )}
 
       {pendingRequest && !aiLoading && aiError && (
@@ -400,13 +437,6 @@ export default function ResultsPage() {
             candidate={selectedCandidate}
             onClear={() => handleSelectCandidate(selectedCandidate)}
           />
-          <PartialResultsBanner pipeline={pipeline} />
-          {placeCatalogError && (
-            <p className="ai-plan-note ai-plan-note--warn">
-              <Icon name="alert" size={16} />
-              {placeCatalogError}. Đang hiển thị ID gốc cho các địa điểm này, không tự đoán tên.
-            </p>
-          )}
           {aiCandidates.length === 0 ? (
             <div className="empty-results-box">
               <span className="empty-icon" aria-hidden="true">
@@ -427,6 +457,18 @@ export default function ResultsPage() {
               selectedPlanId={selectedPlanId}
               placesById={placesById}
               onSelectPlan={handleSelectCandidate}
+              notice={
+                <>
+                  {placeCatalogError && (
+                    <p className="ai-plan-note ai-plan-note--warn">
+                      <Icon name="alert" size={16} />
+                      {placeCatalogError}. Showing the raw IDs for these places instead of
+                      guessing names.
+                    </p>
+                  )}
+                  <PartialResultsBanner pipeline={pipeline} />
+                </>
+              }
             />
           )}
         </>
@@ -439,8 +481,8 @@ export default function ResultsPage() {
           </span>
           <h2>Start with your trip details</h2>
           <p className="muted">
-            Lịch trình chỉ được tạo từ yêu cầu chuyến đi và backend AI, không dùng dữ liệu mẫu.
-            Hãy nhập ngày đi, ngân sách và điểm đến để xem các lịch trình thật.
+            Itineraries are created from the trip details you enter. No sample data is used.
+            Add your dates, budget, and destination to see real plans.
           </p>
           <Link to="/" className="btn btn-primary">
             Create your itinerary

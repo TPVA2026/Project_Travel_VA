@@ -170,6 +170,10 @@ def evaluate_candidate_costs(request: dict, plan: dict, dataset: dict,
         "dining": [],
         "activities": [],
     }
+    if travel_request.duration_days == 1 and "hotelId" in candidate:
+        if candidate["hotelId"] is None and costs["accommodation"] is None:
+            costs["accommodation"] = 0
+
     # Bảng tra cứu dùng tuple (loại, id) làm key để không nhầm loại địa điểm.
     places = {}
     for collection, kind in (("attractions", "sightseeing"), ("dining", "dining")):

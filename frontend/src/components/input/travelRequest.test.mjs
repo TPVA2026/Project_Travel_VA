@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors, localTodayIso, localYearMonth, addDaysIso, addYearsIso, addMonthsYm, startDateBounds, tripLimitHint, isValidTripDays, endDateFromLength, formatReturnLabel, resolveTripPeriod } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, MAX_TRAVELERS, REVIEW_STEP, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors, localTodayIso, localYearMonth, addDaysIso, addYearsIso, addMonthsYm, startDateBounds, tripLimitHint, isValidTripDays, endDateFromLength, formatReturnLabel, resolveTripPeriod } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -74,16 +74,32 @@ assert.equal(buildPayload(simple).limits, undefined);
 simple.delete("budgetScope");
 assert.equal(clientErrors(simple).budgetScope, "This field is required.");
 
-assert.equal(progressOf(form({})), 0);
-assert.equal(progressOf(form({ departureLocation: "Da Nang", travelerCount: "2", budgetAmount: "0" })), 50);
-assert.equal(progressOf(form(valid)), 100);
-assert.equal(progressOf(form({ startDate: today, endDate: validEnd })), 17);
-assert.equal(progressOf(form({ ...valid })), 100);
-assert.equal(progressOf(form({ destination: "Hoi An", interest: ["nature"] })), 0);
+assert.equal(progressOf(), 0);
+assert.equal(progressOf(0, 0), 0);
+assert.equal(progressOf(1, 1), 20);
+assert.equal(progressOf(2, 2), 40);
+assert.equal(progressOf(3, 3), 60);
+assert.equal(progressOf(4, 4), 80);
+assert.equal(progressOf(1, 5), 80, "Editing an earlier step after review stays below 100%");
+assert.equal(progressOf(REVIEW_STEP, 4), 100);
+assert.equal(progressOf(REVIEW_STEP, 5), 100);
 
 assert.equal(formatBudgetInput("5000000"), "5,000,000");
+assert.equal(formatBudgetInput("3987654"), "3,987,000");
+assert.equal(formatBudgetInput("500"), "500");
 assert.equal(normalizeBudgetInput("5,000,000"), "5000000");
+assert.equal(normalizeBudgetInput("5.000.000"), "5000000");
+assert.equal(normalizeBudgetInput("5 000 000"), "5000000");
+assert.equal(normalizeBudgetInput(" 5.000.000 "), "5000000");
+assert.equal(normalizeBudgetInput("5, 000, 000"), "5000000");
+assert.equal(buildPayload(form({ ...valid, budgetAmount: "5.000.000" })).budget.amount, 5000000);
+assert.equal(buildPayload(form({ ...valid, budgetAmount: "5 000 000" })).budget.amount, 5000000);
+assert.deepEqual(clientErrors(form({ ...valid, budgetAmount: "5.000.000" })), {});
 assert.equal(buildPayload(form({ ...valid, budgetAmount: "5,000,000" })).budget.amount, 5000000);
+assert.equal(buildPayload(form({ ...valid, budgetAmount: "3987654" })).budget.amount, 3987000);
+assert.equal(clientErrors(form({ ...valid, budgetAmount: "500" })).budgetAmount, "Enter at least 2,000,000 VND.");
+assert.equal(clientErrors(form({ ...valid, budgetAmount: "1999999" })).budgetAmount, "Enter at least 2,000,000 VND.");
+assert.deepEqual(clientErrors(form({ ...valid, budgetAmount: "2000000" })), {});
 assert.deepEqual(clientErrors(form({ ...valid, budgetAmount: "5,000,000" })), {});
 assert.equal(formatBudgetInput("0"), "0");
 for (const invalid of ["5,00,000", "-1", "1.5", "abc"]) {
@@ -93,6 +109,10 @@ for (const invalid of ["5,00,000", "-1", "1.5", "abc"]) {
 assert.equal(clientErrors(form({ ...valid, budgetAmount: "" })).budgetAmount, "This field is required.");
 
 assert.equal(clientErrors(form({ ...valid, budgetAmount: "   " })).budgetAmount, "This field is required.");
+
+assert.equal(valueErrors(form({ ...valid, travelerCount: "0" })).travelerCount, "Traveler count must be at least 1.");
+assert.equal(valueErrors(form({ ...valid, travelerCount: String(MAX_TRAVELERS + 1) })).travelerCount, `Traveler count must be ${MAX_TRAVELERS} or fewer.`);
+assert.equal(valueErrors(form({ ...valid, travelerCount: String(MAX_TRAVELERS) })).travelerCount, undefined);
 for (const value of ["0x10", "1e3", "+1", "9007199254740993"]) {
   assert.ok(clientErrors(form({ ...valid, budgetAmount: value })).budgetAmount);
 }

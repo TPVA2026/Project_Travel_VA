@@ -3,5 +3,7 @@
     "./",
     "./backend",
     "./backend/app/algorithms"
-  ]
+  ],
+  "git.enableSmartCommit": true,
+  "git.smartCommitChanges": "all"
 }

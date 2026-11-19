@@ -38,6 +38,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/results" element={<ResultsPage />} />
+        <Route path="/result" element={<Navigate to="/results" replace />} />
         <Route path="/selected" element={<SelectedPlanPage />} />
         <Route path="/my-trips" element={<MyTripsPage />} />
         <Route path="/describe" element={<Navigate to="/" replace />} />

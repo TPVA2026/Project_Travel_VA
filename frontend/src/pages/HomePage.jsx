@@ -4,6 +4,7 @@ import { TravelSkyIllustration } from '../components/common/Illustrations.jsx'
 import FlightIntro from '../components/intro/FlightIntro.jsx'
 import { INTRO_STORAGE_KEY } from '../components/intro/introAssets.js'
 import TravelForm from '../components/input/TravelForm.jsx'
+import TripProgress from '../components/TripProgress.jsx'
 
 export default function HomePage() {
   const [showIntro, setShowIntro] = useState(false)
@@ -46,7 +47,7 @@ export default function HomePage() {
     <div className="plan-page">
       {showIntro && <FlightIntro onDone={finishIntro} />}
       <header className="plan-intro">
-        <p className="page-eyebrow">Step 1 of 3 · Plan</p>
+        <p className="page-eyebrow">Plan a trip</p>
         <h1 className="plan-title">Tell us the trip. We’ll build the plan.</h1>
         <p className="plan-lead">
           Share your dates, budget, and travel style. Compare verified itineraries, then keep
@@ -68,6 +69,8 @@ export default function HomePage() {
         </ul>
       </header>
 
+      <TripProgress currentStep={1} />
+
       <div className="plan-layout">
         <div className="plan-workspace">
           <div id="trip-form-panel" className="input-panel plan-panel" ref={formPanelRef}>
@@ -86,7 +89,7 @@ export default function HomePage() {
               <ul className="plan-prep-list">
                 <li>
                   <Icon name="calendar" size={16} />
-                  <span><strong>Pick a rough date range</strong> Even a week or month is enough.</span>
+                  <span><strong>Pick a start date and length</strong> Trips can last 1 to 3 days.</span>
                 </li>
                 <li>
                   <Icon name="wallet" size={16} />
@@ -113,7 +116,7 @@ export default function HomePage() {
               </li>
               <li>
                 <Icon name="route" size={17} />
-                <span><strong>A plan you can revise</strong>, print, or copy.</span>
+                <span><strong>A plan you can save</strong>, print, or copy.</span>
               </li>
             </ul>
           </section>

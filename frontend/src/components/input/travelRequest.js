@@ -10,6 +10,8 @@ export const ADDITIONAL_REQUIREMENTS_MAX = 500;
 // Inclusive trip length the form allows. Backend schema only requires durationDays >= 1;
 // the MVP target is 1–3 days and is not yet enforced server-side.
 export const MAX_TRIP_DAYS = 3;
+// Frontend-only cap. The backend schema only requires count >= 1, with no upper bound.
+export const MAX_TRAVELERS = 99;
 export const TRIP_TIME_ZONE = "Asia/Bangkok";
 export const MAX_START_AHEAD_YEARS = 1;
 export const MAX_MONTHS_AHEAD = 12;
@@ -195,6 +197,8 @@ function filledWrong(value, bad) {
   return value !== "" && value != null && bad(Number(value));
 }
 
+export const MIN_BUDGET_VND = 2_000_000;
+
 export function valueErrors(data) {
   const errors = {};
   const start = data.get("startDate");
@@ -223,10 +227,14 @@ export function valueErrors(data) {
   if (departure !== "" && !departure.trim()) errors.departureLocation = REQUIRED;
   if (filledWrong(data.get("travelerCount"), (n) => n < 1 || !Number.isInteger(n))) {
     errors.travelerCount = "Traveler count must be at least 1.";
+  } else if (filledWrong(data.get("travelerCount"), (n) => n > MAX_TRAVELERS)) {
+    errors.travelerCount = `Traveler count must be ${MAX_TRAVELERS} or fewer.`;
   }
   const budget = normalizeBudgetInput(data.get("budgetAmount"));
   if (budget !== "" && (!/^\d+$/.test(budget) || !Number.isSafeInteger(Number(budget)))) {
-    errors.budgetAmount = "Budget must be a whole number of VND, from 0.";
+    errors.budgetAmount = "Budget must be a whole number of VND.";
+  } else if (/^\d+$/.test(budget) && Number(budget) < MIN_BUDGET_VND) {
+    errors.budgetAmount = "Enter at least 2,000,000 VND.";
   }
   for (const [type] of INTERESTS) {
     const priority = data.get(`${type}Priority`);
@@ -263,9 +271,8 @@ export function clientErrors(data) {
   if (data.get("travelerCount") === "" || data.get("travelerCount") == null) {
     errors.travelerCount = REQUIRED;
   }
-  if (normalizeBudgetInput(data.get("budgetAmount")) === "") {
-    errors.budgetAmount = REQUIRED;
-  }
+  const budgetRaw = normalizeBudgetInput(data.get("budgetAmount"));
+  if (budgetRaw === "") errors.budgetAmount = REQUIRED;
   if (!data.get("budgetScope")) errors.budgetScope = REQUIRED;
 
   const minutes = data.get("maxTravelTimeMinutes");
@@ -288,7 +295,7 @@ export function buildPayload(data, now = new Date()) {
     departureLocation: String(data.get("departureLocation")).trim(),
     travelers: { count: Number(data.get("travelerCount")) },
     budget: {
-      amount: Number(normalizeBudgetInput(data.get("budgetAmount"))),
+      amount: Number(thousandVnd(data.get("budgetAmount"))),
       currency: "VND",
       scope: isSoloTravelerCount(data.get("travelerCount")) ? "perPerson" : data.get("budgetScope"),
     },
@@ -371,20 +378,42 @@ export function mapServerErrors(errors) {
 }
 
 // UI completion only; this does not indicate API validation or trip feasibility.
-export function progressOf(data) {
-  const keys = ["startDate", "durationDays", "departureLocation", "travelerCount", "budgetAmount", "budgetScope"];
-  const filled = keys.filter(key => String(data.get(key) ?? "").trim()).length;
-  return Math.round(filled / keys.length * 100);
+// Six form steps (places … review). Progress follows questions left behind, so
+// it reaches 100% only on the review step, not as soon as required fields are filled.
+export const REVIEW_STEP = 5;
+
+export function progressOf(step = 0, reached = 0) {
+  if (Number(step) >= REVIEW_STEP) return 100;
+  const done = Math.max(Number(step) || 0, Number(reached) || 0);
+  if (!Number.isInteger(done) || done <= 0) return 0;
+  // Stay below 100% until the review step, even after earlier questions were answered.
+  return Math.round((Math.min(done, REVIEW_STEP - 1) / REVIEW_STEP) * 100);
 }
 
 // Only recognized thousands separators are removed. Invalid input stays invalid.
 export function normalizeBudgetInput(value) {
-  const text = String(value ?? "").trim();
-  return /^\d{1,3}(,\d{3})+$/.test(text) ? text.replaceAll(",", "") : text;
+  const text = String(value ?? "").trim().replace(/ /g, " ").replace(/ +/g, " ");
+  if (text === "") return "";
+  if (/^\d{1,3}(,\d{3})+$/.test(text)) return text.replaceAll(",", "");
+  if (/^\d{1,3}(\.\d{3})+$/.test(text)) return text.replaceAll(".", "");
+  if (/^\d{1,3}( \d{3})+$/.test(text)) return text.replaceAll(" ", "");
+  const noSpace = text.replace(/ /g, "");
+  if (/^\d{1,3}(,\d{3})+$/.test(noSpace) && !text.includes(".")) return noSpace.replaceAll(",", "");
+  if (/^\d{1,3}(\.\d{3})+$/.test(noSpace) && !text.includes(",")) return noSpace.replaceAll(".", "");
+  return text;
+}
+
+// Trip budgets ignore VND below 1,000. 3,987,654 is saved as 3,987,000.
+function thousandVnd(value) {
+  const raw = normalizeBudgetInput(value);
+  if (!/^\d+$/.test(raw)) return raw;
+  const amount = Number(raw);
+  if (!Number.isSafeInteger(amount) || amount < 1000) return raw;
+  return String(Math.floor(amount / 1000) * 1000);
 }
 
 export function formatBudgetInput(value) {
-  const raw = normalizeBudgetInput(value);
+  const raw = thousandVnd(value);
   return /^\d+$/.test(raw) ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : String(value ?? "");
 }
 

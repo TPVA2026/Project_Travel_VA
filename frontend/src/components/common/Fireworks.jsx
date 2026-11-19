@@ -58,7 +58,12 @@ export default function Fireworks({ active, onDone, duration = 5200 }) {
       return () => window.clearTimeout(timer)
     }
 
-    const ctx = canvas.getContext('2d')
+    let ctx = null
+    try {
+      ctx = canvas.getContext('2d')
+    } catch {
+      ctx = null
+    }
     if (!ctx) {
       onDoneRef.current?.()
       return undefined

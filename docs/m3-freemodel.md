@@ -14,7 +14,7 @@ AI_PROVIDER=freemodel
 FREEMODEL_BASE_URL=https://freemodel.in/v1
 FREEMODEL_API_KEY=
 FREEMODEL_MODEL=gemini-3.7-flash
-FREEMODEL_TIMEOUT_MS=30000
+FREEMODEL_TIMEOUT_MS=180000
 FREEMODEL_MAX_RETRIES=1
 ```
 
@@ -25,12 +25,23 @@ variable. Missing model configuration falls back to `gemini-3.7-flash`.
 
 When `AI_PROVIDER` is unset, the legacy `gemini` path remains the default for
 backward compatibility. Set `AI_PROVIDER=gemini` to use the existing Google SDK
-and its `GEMINI_*` settings. Unknown providers fail with `CONFIG`; a failed
+and its `GEMINI_*` settings. Set `AI_PROVIDER=codex` to use the same chat
+completions client against the CCPro gateway:
+
+```dotenv
+AI_PROVIDER=codex
+CODEX_BASE_URL=https://api.ccpro.cn/v1
+CODEX_MODEL=gpt-5.6-sol
+CODEX_API_KEY=
+```
+
+Put that key in `backend/.env` only. Unknown providers fail with `CONFIG`; a failed
 FreeModel request never silently switches providers or generates sample data.
 
-The default per-operation HTTP timeout is 30 seconds, consistent with the
-existing backend default. This PR does not add the previously proposed
-180-second timeout, frontend 13-minute timeout, or a new output-token limit.
+Each FreeModel call waits up to `FREEMODEL_TIMEOUT_MS` (180 seconds in the
+example env). The results page waits 10 minutes for the whole pipeline, which
+covers three calls at that limit. A timeout is still not retried, and there is
+no new output-token limit.
 
 ## Protocol
 

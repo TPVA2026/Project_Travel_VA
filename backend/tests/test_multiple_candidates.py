@@ -45,6 +45,28 @@ def test_generate_three_distinct_candidates():
     assert mock_generate.call_count == 4
 
 
+def test_duplicate_plan_ids_are_made_unique():
+    plan_a = {**make_plan("place-a"), "planId": "duplicate"}
+    plan_b = {**make_plan("place-b"), "planId": "duplicate"}
+    plan_c = {**make_plan("place-c"), "planId": "duplicate"}
+
+    with patch(
+        "app.services.ai.itinerary_generator.generate_candidate",
+        side_effect=[plan_a, plan_b, plan_c],
+    ):
+        result = generate_candidates(
+            request={},
+            dataset={},
+            count=3,
+        )
+
+    assert [plan["planId"] for plan in result] == [
+        "duplicate",
+        "duplicate-2",
+        "duplicate-3",
+    ]
+
+
 def test_insufficient_distinct_candidates():
     duplicate = make_plan("place-a")
     warnings = []

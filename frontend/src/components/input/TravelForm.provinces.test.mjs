@@ -4,7 +4,7 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import { build } from "esbuild";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import React, { act } from "react";
 import { localTodayIso, addDaysIso, MAX_TRIP_DAYS } from "./travelRequest.js";
 import { allProvincesSorted, POPULAR_PROVINCES } from "./provinces.js";
@@ -62,7 +62,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
   const listShown = name => !doc.getElementById(`${name}-suggestions`).hidden;
   const noWards = labels => assert.equal(labels.some(label => /phường|xã|đặc khu/i.test(label)), false, "No ward suggestions");
   try {
-    const { default: TravelForm } = await import(output);
+    const { default: TravelForm } = await import(pathToFileURL(output).href);
     const { createRoot } = await import("react-dom/client");
     const { MemoryRouter, Routes, Route } = await import("react-router-dom");
     const mount = async () => {
@@ -95,7 +95,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await clickField("departureLocation");
     assert.equal(departure.getAttribute("aria-expanded"), "true");
     assert.equal(listShown("departureLocation"), true);
-    assert.equal(heading("departureLocation", "popular"), "Popular destinations");
+    assert.equal(heading("departureLocation", "popular"), "Popular cities");
     assert.deepEqual(sectionNames("departureLocation", "popular"), [...POPULAR_PROVINCES]);
     assert.equal(heading("departureLocation", "all"), "All provinces & cities");
     assert.deepEqual(sectionNames("departureLocation", "all"), allProvincesSorted());
@@ -159,19 +159,21 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.equal(listShown("departureLocation"), false);
     assert.equal(departure.value, "da");
 
-    // Free text that matches nothing is kept as typed; Next works with no highlighted option.
+    // Free text that matches nothing is kept as typed. Destination is on this same step.
     await fill("departureLocation", "Sa Pa town");
-    assert.equal(listShown("departureLocation"), false);
-    await click("Next");
-    assert.deepEqual(visible(), [1]);
+    assert.equal(listShown("departureLocation"), true, "The panel stays open to say there is no match");
+    assert.equal(doc.querySelector("#departureLocation-suggestions .request-city-empty")?.textContent, "No matching cities — you can keep what you typed.");
+    assert.equal(departure.value, "Sa Pa town");
+    assert.deepEqual(visible(), [0]);
 
-    // Destination: arriving at the step (autofocus) does not open the panel; a click does.
+    // Focusing the destination does not open its panel; a click does.
     const destination = field("destination");
     assert.equal(destination.placeholder, "e.g. Da Nang, Da Lat");
     await actOn(() => destination.focus());
-    assert.equal(listShown("destination"), false, "Step autofocus does not open the destination panel");
+    assert.equal(listShown("destination"), false, "Focus does not open the destination panel");
     await clickField("destination");
     assert.equal(listShown("destination"), true);
+    assert.equal(heading("destination", "popular"), "Popular destinations");
     assert.deepEqual(sectionNames("destination", "popular"), [...POPULAR_PROVINCES]);
     assert.equal(sectionNames("destination", "all").length, 34);
 
@@ -193,19 +195,20 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     assert.equal(destination.value, "Lâm Đồng");
 
     await fill("destination", "Da Lat town");
-    assert.equal(listShown("destination"), false, "No match: no list and no error");
+    assert.equal(listShown("destination"), true, "No match still shows a keep-what-you-typed message");
+    assert.equal(doc.querySelector("#destination-suggestions .request-city-empty")?.textContent, "No matching cities — you can keep what you typed.");
     assert.equal(doc.getElementById("destination-error"), null);
     await click("Next");
-    assert.deepEqual(visible(), [2]);
+    assert.deepEqual(visible(), [1]);
     await fill("startDate", startSoon);
     await fill("endDate", endSoon);
     await click("Next");
     await click("2 travelers");
-    await click("Next");
     await fill("budgetAmount", "9000000");
-    await radio("budgetScope", "group");
+    await click("Per person");
     await click("Next");
-    await click("Skip for now");
+    await click("Next");
+    await click("Next");
     await click("Create itinerary");
     const sent = validateCalls().at(-1).payload;
     assert.equal(sent.departureLocation, "Sa Pa town", "Free text is sent as typed");
@@ -217,7 +220,6 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await fill("departureLocation", "hanoi");
     assert.deepEqual(optionNames("departureLocation"), ["Hà Nội"]);
     await actOn(() => doc.getElementById("departureLocation-suggestions-0").click());
-    await click("Next");
     await fill("destination", "da lat");
     assert.deepEqual(optionNames("destination"), ["Lâm Đồng"]);
     await actOn(() => doc.getElementById("destination-suggestions-0").click());
@@ -226,11 +228,11 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await fill("endDate", endSoon);
     await click("Next");
     await click("2 travelers");
-    await click("Next");
     await fill("budgetAmount", "9000000");
-    await radio("budgetScope", "group");
+    await click("Per person");
     await click("Next");
-    await click("Skip for now");
+    await click("Next");
+    await click("Next");
     await click("Create itinerary");
     const selected = validateCalls().at(-1).payload;
     assert.equal(selected.departureLocation, "Hà Nội");
@@ -252,4 +254,18 @@ test("M1 city picker CSS does not hover-tint the whole panel", async () => {
   assert.match(css, /\.request-city-option:hover/);
   assert.match(css, /\.request-picker:hover/);
   assert.match(css, /\.request-picker:focus-visible/);
+});
+
+test("M1 answer history CSS shows the full answer without ellipsis", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../../index.css", import.meta.url), "utf8");
+  const question = css.match(/\.question-form \.request-thread-q\s*\{[^}]+\}/)?.[0] ?? "";
+  const answer = css.match(/\.question-form \.request-thread-a\s*\{[^}]+\}/)?.[0] ?? "";
+  assert.match(question, /request-thread-q/);
+  assert.match(answer, /request-thread-a/);
+  assert.doesNotMatch(question, /text-overflow:\s*ellipsis/);
+  assert.doesNotMatch(answer, /text-overflow:\s*ellipsis/);
+  assert.doesNotMatch(question, /white-space:\s*nowrap/);
+  assert.doesNotMatch(answer, /white-space:\s*nowrap/);
+  assert.equal(css.includes(".request-step-count"), false, "The n of 6 step counter styles are removed");
 });

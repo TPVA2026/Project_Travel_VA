@@ -14,7 +14,9 @@ test('estimated lodging remains separate from verified candidate totals', () => 
 
 import {
   candidateStatusLabel,
+  collectActivitySources,
   collectPlaceIds,
+  collectTravelLegs,
   createNameResolver,
   displayPlaceName,
   evaluateItinerary,
@@ -26,11 +28,13 @@ import {
   getCandidateRanking,
   getCandidateWarnings,
   getCheckStatus,
+  getPlanServiceItems,
   getRoutingEvidence,
   groupEvaluationReasons,
   indexPlaces,
   normalizeCandidateStatus,
   planSignature,
+  safeSourceUrl,
   rankItineraries,
   runItineraryPipeline,
   VERIFICATION_CHECKS,
@@ -46,7 +50,8 @@ const plan = {
   missingData: [], assumptions: [],
 }
 
-function candidatePlan(planId, placeId) {
+function candidatePlan(planId, placeId, placeIds = null) {
+  const ids = Array.isArray(placeIds) ? placeIds : [placeId]
   return {
     planId,
     title: `Trip ${planId}`,
@@ -56,7 +61,16 @@ function candidatePlan(planId, placeId) {
     days: [{
       dayNumber: 1,
       date: '2026-12-01',
-      activities: [{ activityId: `${planId}-a1`, placeId, type: 'sightseeing', startTime: '09:00', endTime: '10:00', estimatedCostVnd: 0, costStatus: 'KNOWN', reason: 'Visit' }],
+      activities: ids.map((id, index) => ({
+        activityId: `${planId}-a${index + 1}`,
+        placeId: id,
+        type: index === 1 ? 'dining' : 'sightseeing',
+        startTime: `${String(9 + index).padStart(2, '0')}:00`,
+        endTime: `${String(10 + index).padStart(2, '0')}:00`,
+        estimatedCostVnd: 0,
+        costStatus: 'KNOWN',
+        reason: 'Visit',
+      })),
       travelLegs: [],
     }],
   }
@@ -78,6 +92,49 @@ function evaluation(planId, status = 'UNVERIFIED', reasons = []) {
     },
   }
 }
+
+test('activity sources and trip services are read from backend fields safely', () => {
+  assert.equal(safeSourceUrl('javascript:alert(1)'), null)
+  assert.equal(safeSourceUrl('not a url'), null)
+  assert.equal(safeSourceUrl('https://example.com/a'), 'https://example.com/a')
+
+  const plan = {
+    days: [
+      {
+        dayNumber: 1,
+        activities: [{ activityId: 'a1', placeId: 'ATTR_H_01' }],
+        travelLegs: [{ fromPlaceId: 'ATTR_H_01', toPlaceId: 'REST_H_01', durationMin: 12, distanceKm: 3.4 }],
+      },
+      { dayNumber: 2, activities: [], travelLegs: [{}] },
+    ],
+    evaluation: {
+      components: {
+        cost: {
+          costEvidence: [{ activityId: 'a1', source: 'https://example.com/place' }],
+          projection: {
+            items: [
+              { category: 'accommodation', name: 'Hotel demo — Deluxe', rooms: 1, nights: 2 },
+              { category: 'transport', name: 'Hà Nội → Huế (bus)', travelers: 2 },
+            ],
+          },
+        },
+      },
+    },
+  }
+
+  const sources = collectActivitySources(plan)
+  assert.equal(sources.get('a1').url, 'https://example.com/place')
+  assert.equal(sources.get('a1').label, 'example.com')
+
+  const services = getPlanServiceItems(plan)
+  assert.equal(services.stay.name, 'Hotel demo — Deluxe')
+  assert.equal(services.transport.name, 'Hà Nội → Huế (bus)')
+
+  const legs = collectTravelLegs(plan)
+  assert.equal(legs.length, 2)
+  assert.equal(legs[0].dayNumber, 1)
+  assert.equal(legs[1].dayNumber, 2)
+})
 
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -248,7 +305,7 @@ test('comparison helpers separate known vs unknown costs and routing evidence', 
   assert.equal(routing.verified, 1)
   assert.equal(routing.unverified, 1)
 
-  assert.equal(candidateStatusLabel('SUCCESS'), 'Chưa xác minh')
+  assert.equal(candidateStatusLabel('SUCCESS'), 'Unverified')
   assert.equal(normalizeCandidateStatus('FEASIBLE'), 'FEASIBLE')
   assert.equal(normalizeCandidateStatus('nope'), 'UNVERIFIED')
 
@@ -342,7 +399,7 @@ test('place lookup sends the selected destination to avoid loading other folders
 })
 
 
-test('Results helpers group backend reasons into Vietnamese topics', () => {
+test('Results helpers group backend reasons into topics', () => {
   const evaluation = {
     reasons: [
       { status: 'UNVERIFIED', code: 'BUDGET', message: 'Known costs exceed budget.' },
@@ -361,7 +418,7 @@ test('Results helpers group backend reasons into Vietnamese topics', () => {
   const groups = groupEvaluationReasons(evaluation, ranking, 'p1')
 
   assert.deepEqual(groups.map((group) => group.key), ['budget', 'travelTime', 'routing', 'plan'])
-  assert.deepEqual(groups.map((group) => group.label), ['Ngân sách', 'Thời gian di chuyển', 'Đường đi chưa xác minh', 'Thông tin chuyến đi'])
+  assert.deepEqual(groups.map((group) => group.label), ['Budget', 'Travel time', 'Unverified route', 'Trip details'])
   assert.equal(groups[2].reasons.length, 1)
 })
 
@@ -386,12 +443,12 @@ test('Results helpers map ids to names, resolve activity ids and keep unknown id
   assert.equal(createNameResolver(plan, placesById)('act-002'), 'Bún bò mệ Kéo')
   assert.equal(
     formatReason({ code: 'TRANSFER_GAP', status: 'INFEASIBLE', message: 'Thời gian giữa act-001 và act-002.' }, { plan, placesById }),
-    'Không đủ thời gian di chuyển giữa Đại Nội và Bún bò mệ Kéo.'
+    'Not enough travel time between Đại Nội and Bún bò mệ Kéo.'
   )
 })
 
-test('Evaluation checks use Vietnamese labels and never invent a status', () => {
-  assert.deepEqual(VERIFICATION_CHECKS.map((check) => check.label), ['Ngân sách', 'Lịch trình', 'Di chuyển'])
+test('Evaluation checks use clear labels and never invent a status', () => {
+  assert.deepEqual(VERIFICATION_CHECKS.map((check) => check.label), ['Budget', 'Schedule', 'Travel'])
   assert.equal(getCheckStatus({ components: { cost: { status: 'UNVERIFIED' } } }, 'cost'), 'UNVERIFIED')
   assert.equal(getCheckStatus({ components: { cost: { status: 'SUCCESS' } } }, 'cost'), null)
   assert.equal(getCheckStatus(null, 'cost'), null)
@@ -506,7 +563,7 @@ test('SelectedPlanPage resolves saved place IDs from the backend after reopening
   }
 })
 
-test('CandidateComparison shows estimated lodging without promoting candidate status', async () => {
+test('CandidateComparison keeps projected estimates off the compact card without promoting status', async () => {
   const result = evaluation('hotel-demo')
   result.components.cost.projection = {
     subtotalVnd: 2400000, totalVnd: null, uncovered: ['transport'],
@@ -516,23 +573,199 @@ test('CandidateComparison shows estimated lodging without promoting candidate st
     { planId: 'hotel-demo', status: 'UNVERIFIED', plan: candidatePlan('hotel-demo', 'ATTR_H_01'), evaluation: result },
   ], { ranked: [], unscored: [], excluded: [] })
   try {
-    assert.match(dom.window.document.body.textContent, /Dự toán tham khảo/)
-    assert.match(dom.window.document.body.textContent, /1 phòng × 2 đêm/)
-    assert.match(dom.window.document.body.textContent, /transport/)
+    const body = dom.window.document.body.textContent
+    assert.doesNotMatch(body, /Estimated total/)
+    assert.match(body, /Unverified 1 cost item/)
     assert.equal(dom.window.document.querySelector('[data-testid="candidate-recommended-hotel-demo"]'), null)
   } finally {
     await cleanup()
   }
 })
 
-test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', async () => {
+test('CandidateComparison keeps transport projection details for the detail page', async () => {
+  const result = evaluation('transport-demo')
+  result.components.cost.projection = {
+    subtotalVnd: 800000, totalVnd: null, uncovered: [],
+    items: [{ category: 'transport', name: 'Hà Nội → Huế (bus)', travelers: 2,
+      perPersonVnd: 400000, amountVnd: 800000, status: 'ESTIMATED', sourceUrl: null }],
+  }
+  const { dom, cleanup } = await renderCandidateComparison([
+    { planId: 'transport-demo', status: 'UNVERIFIED', plan: candidatePlan('transport-demo', 'ATTR_H_01'), evaluation: result },
+  ], { ranked: [], unscored: [], excluded: [] })
+  try {
+    const body = dom.window.document.body.textContent
+    assert.doesNotMatch(body, /2 people/)
+    assert.doesNotMatch(body, /One way/)
+    assert.match(body, /Unverified 1 cost item/)
+  } finally { await cleanup() }
+})
+
+test('SelectedPlanPage shows projections and verification details for a plan', async () => {
+  const result = evaluation('hotel-detail', 'UNVERIFIED', [
+    { code: 'BUDGET', status: 'UNVERIFIED', message: 'Budget is missing or invalid.' },
+  ])
+  result.components.cost.costEvidence = [
+    { activityId: 'hotel-detail-a1', category: 'activities', source: 'https://example.com/place' },
+  ]
+  result.components.cost.projection = {
+    subtotalVnd: 3200000, totalVnd: null, uncovered: [],
+    items: [
+      {
+        category: 'accommodation', name: 'Hotel demo — Deluxe', rooms: 1, nights: 2,
+        unitPriceVnd: 1100000, amountVnd: 2200000, status: 'ESTIMATED',
+        sourceUrl: 'https://example.com/hotel',
+      },
+      {
+        category: 'transport', name: 'Hà Nội → Huế (bus)', travelers: 2,
+        perPersonVnd: 400000, amountVnd: 800000, status: 'ESTIMATED',
+        sourceUrl: 'https://example.com/bus',
+      },
+    ],
+  }
+  const selected = {
+    ...candidatePlan('hotel-detail', 'ATTR_H_01'),
+    days: [
+      ...candidatePlan('hotel-detail', 'ATTR_H_01').days,
+      {
+        dayNumber: 2,
+        date: '2026-12-02',
+        activities: [{
+          activityId: 'hotel-detail-a2',
+          placeId: 'ATTR_H_02',
+          type: 'sightseeing',
+          startTime: '09:00',
+          endTime: '10:00',
+        }],
+        travelLegs: [],
+      },
+    ],
+    id: 'hotel-detail',
+    status: 'UNVERIFIED',
+    evaluation: result,
+    missing: [],
+  }
+  const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
+  try {
+    const body = dom.window.document.body.textContent
+    assert.match(body, /Estimated trip total/)
+    assert.match(body, /3,200,000/)
+    assert.match(body, /Stay/)
+    assert.match(body, /1 room/)
+    assert.match(body, /2 nights/)
+    assert.match(body, /Hotel demo/)
+    assert.match(body, /Transport/)
+    assert.match(body, /Hà Nội → Huế/)
+    assert.match(body, /2 people/)
+    assert.match(body, /800,000 VND/)
+    assert.match(body, /Travel legs by day/)
+    const serviceSources = dom.window.document.querySelectorAll('.service-card .source-name-link')
+    assert.equal(serviceSources.length, 2)
+    assert.equal(serviceSources[0].getAttribute('href'), 'https://example.com/hotel')
+    assert.equal(serviceSources[1].getAttribute('href'), 'https://example.com/bus')
+    const activitySource = dom.window.document.querySelector('.activity-card .source-name-link')
+    assert.equal(activitySource.getAttribute('href'), 'https://example.com/place')
+    assert.equal(activitySource.getAttribute('target'), '_blank')
+    assert.match(activitySource.getAttribute('rel'), /noopener/)
+    assert.equal(dom.window.document.querySelector('.activity-name-row .source-link'), null)
+    assert.equal(dom.window.document.querySelector('.cost-row .source-link'), null)
+    assert.doesNotMatch(body, /Request a change/)
+    assert.match(body, /Verification checks/)
+    assert.match(body, /Budget/)
+    assert.equal(dom.window.document.querySelectorAll('.intro-actions button').length, 2)
+    assert.ok(dom.window.document.querySelector('.selected-summary-actions'))
+    assert.ok(dom.window.document.querySelector('.selected-summary-back'))
+    assert.equal(dom.window.document.querySelectorAll('.chosen-header-tools button').length, 0)
+    const { act } = await import('react')
+    assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 2)
+    await act(async () => {
+      dom.window.document.querySelector('[data-testid="schedule-day-2"]').click()
+    })
+    assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 1)
+    assert.match(dom.window.document.querySelector('.timeline-day-group').textContent, /Day 2/)
+    await act(async () => {
+      dom.window.document.querySelector('[data-testid="schedule-day-all"]').click()
+    })
+    assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 2)
+    const checklistInput = dom.window.document.querySelector('.trip-checklist .checklist-input')
+    assert.ok(checklistInput)
+    assert.equal(dom.window.localStorage.getItem('tpva_trip_checklist:hotel-detail'), null)
+    await act(async () => {
+      checklistInput.click()
+    })
+    assert.deepEqual(
+      JSON.parse(dom.window.localStorage.getItem('tpva_trip_checklist:hotel-detail')),
+      { 'room-transport-prices': true }
+    )
+
+    assert.equal(dom.window.document.querySelector('.chosen-header-banner'), null)
+    const removeButton = dom.window.document.querySelector('.selected-summary-actions .btn-remove')
+    assert.match(removeButton.textContent, /Remove from your trip/)
+    assert.match(
+      dom.window.document.querySelector('.chosen-notice').textContent,
+      /Saved as your trip\. Find it again under Selected\./
+    )
+    await act(async () => {
+      removeButton.click()
+    })
+    assert.equal(dom.window.document.querySelector('.chosen-notice'), null)
+    assert.match(
+      dom.window.document.querySelector('.chosen-header-banner').textContent,
+      /Removed from your trip/
+    )
+    const saveButton = dom.window.document.querySelector('.selected-summary-actions .btn-choose')
+    assert.match(saveButton.textContent, /Save to your trip/)
+    await act(async () => {
+      saveButton.click()
+    })
+    assert.ok(dom.window.document.querySelector('.chosen-header-banner'))
+    assert.match(
+      dom.window.document.querySelector('.chosen-header-banner').textContent,
+      /Saved to your trip/
+    )
+    assert.match(
+      dom.window.document.querySelector('.chosen-notice').textContent,
+      /Saved as your trip\. Find it again under Selected\./
+    )
+    assert.match(
+      dom.window.document.querySelector('.selected-summary-actions .btn-remove').textContent,
+      /Remove from your trip/
+    )
+  } finally {
+    await cleanup()
+  }
+})
+
+test('CandidateComparison renders 0-3 candidates and compares same-destination plans', async () => {
   for (const count of [0, 1, 2, 3]) {
+    const routeSets = [
+      ['ATTR_H_01', 'ATTR_H_02', 'ATTR_H_03'],
+      ['ATTR_H_01', 'ATTR_H_03', 'ATTR_H_02'],
+      ['ATTR_H_01', 'ATTR_H_04', 'ATTR_H_05'],
+    ]
     const candidates = Array.from({ length: count }, (_, index) => {
       const id = `p-${count}-${index + 1}`
+      const plan = candidatePlan(
+        id,
+        'ATTR_H_01',
+        count === 3 ? routeSets[index] : null
+      )
+      if (count === 3) {
+        plan.days.push({
+          dayNumber: 2,
+          date: '2026-12-02',
+          activities: [{
+            activityId: `${id}-day-2`,
+            placeId: 'ATTR_H_06',
+            type: 'sightseeing',
+            startTime: '09:00',
+            endTime: '10:00',
+          }],
+        })
+      }
       return {
         planId: id,
         status: 'UNVERIFIED',
-        plan: candidatePlan(id, 'ATTR_H_01'),
+        plan,
         evaluation: evaluation(id),
       }
     })
@@ -545,13 +778,100 @@ test('CandidateComparison renders exactly 0, 1, 2 or 3 supplied candidates', asy
       const cards = dom.window.document.querySelectorAll('.plan-card')
       assert.equal(cards.length, count)
       if (count === 0) {
-        assert.match(dom.window.document.body.textContent, /Không có lịch trình nào/)
+        assert.match(dom.window.document.body.textContent, /No itineraries to compare/)
       } else {
-        assert.match(
-          dom.window.document.querySelector('#candidate-results-heading').textContent,
-          new RegExp(`${count} lịch trình từ trợ lý`)
+        const sectionHeading = dom.window.document.querySelector('#candidate-results-heading')
+        assert.equal(sectionHeading.textContent.trim(), 'Find the plan that feels like you')
+        assert.equal(
+          sectionHeading.nextElementSibling.textContent.trim(),
+          'Compare recommended destinations, stops, and daily pace to find your best fit.'
         )
         assert.doesNotMatch(dom.window.document.body.textContent, /3 plan comparison/i)
+
+        if (count === 1) {
+          assert.equal(dom.window.document.querySelector('.compare-matrix'), null)
+          assert.equal(dom.window.document.querySelector('.route-compare'), null)
+          assert.equal(dom.window.document.querySelector('.same-destination-note'), null)
+          assert.equal(dom.window.document.querySelector('.card-difference'), null)
+          assert.doesNotMatch(
+            dom.window.document.body.textContent,
+            /1 itineraries|unique stop|Only here|Only in this plan|different mix of stops/i
+          )
+        }
+
+        if (count === 3) {
+          const doc = dom.window.document
+          assert.match(doc.body.textContent, /3 plans · Huế/)
+          assert.match(doc.body.textContent, /Same destination, different plans/)
+          assert.match(
+            doc.body.textContent,
+            /Adds 2 stops no other plan includes: ATTR_H_04, ATTR_H_05\./
+          )
+          assert.match(
+            doc.body.textContent,
+            /Uses the same stops as Option 1, but in a different order\./
+          )
+          assert.ok(doc.querySelector('.compare-matrix'))
+          assert.ok(doc.querySelector('.route-compare'))
+          assert.equal(
+            doc.querySelector('.compare-matrix-head h3').textContent,
+            'Compare details'
+          )
+          const firstCard = doc.querySelector('.plan-card')
+          assert.ok(
+            firstCard.compareDocumentPosition(doc.querySelector('.compare-matrix-block')) &
+              dom.window.Node.DOCUMENT_POSITION_FOLLOWING
+          )
+          assert.ok(
+            doc.querySelector('.compare-matrix-block').compareDocumentPosition(
+              doc.querySelector('.route-compare')
+            ) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING
+          )
+          assert.ok(doc.querySelector('th[scope="row"] .compare-row-label'))
+          assert.ok(
+            [...doc.querySelectorAll('.compare-row-label')].some(
+              (label) => label.textContent === 'Route difference'
+            )
+          )
+          assert.match(doc.body.textContent, /Day 1: 3 stops · Day 2: 1 stop/)
+          assert.equal(doc.querySelectorAll('.route-compare-column').length, 3)
+          assert.equal(doc.querySelectorAll('.route-stop-list li').length, 9)
+          assert.ok(doc.querySelectorAll('.compare-row--differs').length >= 1)
+
+          const { act } = await import('react')
+          const matrixRows = doc.querySelectorAll('.compare-matrix tbody tr')
+          assert.equal(matrixRows.length, 6)
+          assert.ok(doc.querySelector('.compare-view-thumb'))
+          assert.equal(doc.querySelectorAll('.compare-view-toggle button').length, 2)
+          await act(async () => {
+            doc.querySelector('[data-testid="compare-differences-only"]').click()
+          })
+          assert.equal(
+            doc.querySelector('[data-testid="compare-differences-only"]').getAttribute('aria-pressed'),
+            'true'
+          )
+          assert.equal(doc.querySelectorAll('.compare-matrix tbody tr').length, 1)
+
+          await act(async () => {
+            doc.querySelectorAll('.compare-view-toggle button')[0].click()
+          })
+          assert.equal(doc.querySelectorAll('.compare-matrix tbody tr').length, 6)
+          await act(async () => {
+            doc.querySelector('[data-testid="compare-differences-only"]').click()
+          })
+          assert.equal(doc.querySelectorAll('.compare-matrix tbody tr').length, 1)
+          assert.ok(doc.querySelector('.compare-view-thumb'))
+
+          await act(async () => {
+            doc.querySelector('[data-day-number="2"]').click()
+          })
+          assert.equal(doc.querySelectorAll('.route-stop-list li').length, 3)
+          assert.match(doc.querySelector('.route-compare-day-title').textContent, /Day 2/)
+          await act(async () => {
+            doc.querySelector('[data-day-number="1"]').click()
+          })
+          assert.equal(doc.querySelectorAll('.route-stop-list li').length, 9)
+        }
       }
     } finally {
       await cleanup()
@@ -625,9 +945,9 @@ test('CandidateComparison UI separates FEASIBLE, UNVERIFIED and INFEASIBLE candi
   const { dom, cleanup } = await renderCandidateComparison(candidates, ranking)
   const doc = dom.window.document
   try {
-    assert.equal(doc.querySelector('[data-testid="candidate-status-p-feasible"]').textContent, 'Đủ điều kiện')
-    assert.equal(doc.querySelector('[data-testid="candidate-status-p-unverified"]').textContent, 'Chưa xác minh')
-    assert.equal(doc.querySelector('[data-testid="candidate-status-p-infeasible"]').textContent, 'Không khả thi')
+    assert.equal(doc.querySelector('[data-testid="candidate-status-p-feasible"]').textContent, 'Feasible')
+    assert.equal(doc.querySelector('[data-testid="candidate-status-p-unverified"]').textContent, 'Unverified')
+    assert.equal(doc.querySelector('[data-testid="candidate-status-p-infeasible"]').textContent, 'Not feasible')
 
     // Only the ranked FEASIBLE candidate carries a verified recommendation tag.
     assert.ok(doc.querySelector('[data-testid="candidate-recommended-p-feasible"]'))
@@ -635,19 +955,19 @@ test('CandidateComparison UI separates FEASIBLE, UNVERIFIED and INFEASIBLE candi
     assert.equal(doc.querySelector('[data-testid="candidate-recommended-p-infeasible"]'), null)
 
     // Known vs unknown costs are never conflated.
-    assert.match(doc.body.textContent, /Tổng chi phí/)
-    assert.match(doc.body.textContent, /Tổng đã biết/)
-    assert.match(doc.body.textContent, /Chưa xác minh 1 mục \(không tính là 0\): transport/)
+    assert.match(doc.body.textContent, /Total cost/)
+    assert.match(doc.body.textContent, /Known costs · partial/)
+    assert.match(doc.body.textContent, /Unverified 1 cost item/)
 
-    // Routing evidence is shown per candidate.
-    assert.match(doc.body.textContent, /Lộ trình: 2\/2 chặng đã xác minh/)
-    assert.match(doc.body.textContent, /Chưa có bằng chứng lộ trình/)
+    // Routing evidence is summarised per candidate on the card.
+    assert.match(doc.body.textContent, /Route: 2\/2 legs verified/)
 
     // INFEASIBLE cannot be selected and is never called verified/recommended.
-    const infeasibleCard = [...doc.querySelectorAll('.plan-card')].find((node) => node.textContent.includes('p-infeasible'))
-    const selectButton = [...infeasibleCard.querySelectorAll('button')].find((node) => node.textContent.includes('Chọn lịch này'))
+    const infeasibleCard = [...doc.querySelectorAll('.plan-card')].find((node) => node.textContent.includes('Not feasible'))
+    const selectButton = [...infeasibleCard.querySelectorAll('button')].find((node) => node.textContent.includes('Choose this plan'))
     assert.equal(selectButton.disabled, true)
-    assert.equal(infeasibleCard.textContent.includes('Đề xuất đã xếp hạng'), false)
+    assert.equal(infeasibleCard.textContent.includes('Suggested'), false)
+    assert.match(infeasibleCard.textContent, /Breaks trip constraints/)
   } finally {
     await cleanup()
   }

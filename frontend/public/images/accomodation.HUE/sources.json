@@ -1,0 +1,845 @@
+{
+  "images": [
+    {
+      "propertyId": "HOTEL_H_EMM",
+      "placeIds": [
+        "HOTEL_H_EMM_DELUXE",
+        "HOTEL_H_EMM_FAMILY"
+      ],
+      "placeName": "ÊMM Hotel Hue",
+      "files": [
+        "HOTEL_H_EMM_01.jpg",
+        "HOTEL_H_EMM_02.jpg",
+        "HOTEL_H_EMM_03.jpg"
+      ],
+      "description": "Ảnh cho thấy hồ bơi ngoài trời được bao quanh bởi cây xanh và ghế nằm. Không gian nhà hàng và sảnh dùng tông sáng điểm màu tím, với cửa kính lớn và nhiều chỗ ngồi.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/HOTEL_H_EMM_01.jpg",
+          "/images/accomodation.HUE/HOTEL_H_EMM_02.jpg",
+          "/images/accomodation.HUE/HOTEL_H_EMM_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/festival-hue.da.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "HOTEL_H_EMM_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "ÊMM Hotel Hue — Hồ bơi ngoài trời với cây xanh và ghế nằm",
+          "caption": "Hồ bơi ngoài trời với cây xanh và ghế nằm",
+          "roomType": null
+        },
+        {
+          "file": "HOTEL_H_EMM_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "ÊMM Hotel Hue — Không gian nhà hàng với bàn ăn và cửa kính lớn",
+          "caption": "Không gian nhà hàng với bàn ăn và cửa kính lớn",
+          "roomType": null
+        },
+        {
+          "file": "HOTEL_H_EMM_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "ÊMM Hotel Hue — Khu vực sảnh với ghế ngồi tông tím",
+          "caption": "Khu vực sảnh với ghế ngồi tông tím",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "HOTEL_H_ROSALEEN_SUPERIOR",
+      "placeIds": [
+        "HOTEL_H_ROSALEEN_SUPERIOR"
+      ],
+      "placeName": "Rosaleen Boutique Hotel",
+      "files": [
+        "HOTEL_H_ROSALEEN_SUPERIOR_01.jpg",
+        "HOTEL_H_ROSALEEN_SUPERIOR_02.jpg",
+        "HOTEL_H_ROSALEEN_SUPERIOR_03.jpg"
+      ],
+      "description": "Phòng trong ảnh dùng tông màu kem và gỗ, với giường đôi, rèm lớn và bàn trang điểm. Các ảnh khác ghi lại quầy đồ ăn và hồ bơi ngoài trời có ghế nằm, ô che nắng.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/HOTEL_H_ROSALEEN_SUPERIOR_01.jpg",
+          "/images/accomodation.HUE/HOTEL_H_ROSALEEN_SUPERIOR_02.jpg",
+          "/images/accomodation.HUE/HOTEL_H_ROSALEEN_SUPERIOR_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/new-star.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "HOTEL_H_ROSALEEN_SUPERIOR_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Rosaleen Boutique Hotel — Phòng ngủ với giường đôi và cửa sổ",
+          "caption": "Phòng ngủ với giường đôi và cửa sổ",
+          "roomType": null
+        },
+        {
+          "file": "HOTEL_H_ROSALEEN_SUPERIOR_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Rosaleen Boutique Hotel — Quầy trưng bày các món ăn",
+          "caption": "Quầy trưng bày các món ăn",
+          "roomType": null
+        },
+        {
+          "file": "HOTEL_H_ROSALEEN_SUPERIOR_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Rosaleen Boutique Hotel — Hồ bơi ngoài trời với ghế nằm và ô che nắng",
+          "caption": "Hồ bơi ngoài trời với ghế nằm và ô che nắng",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_01",
+      "placeIds": [
+        "ACCOM_H_01"
+      ],
+      "placeName": "Magnolia Boutique Hotel",
+      "files": [
+        "ACCOM_H_01_01.jpg",
+        "ACCOM_H_01_02.jpg",
+        "ACCOM_H_01_03.jpg"
+      ],
+      "description": "Ảnh phòng cho thấy giường đôi, nội thất gỗ và nền gạch hoa văn xanh trắng, với cửa mở ra ban công. Khu ngồi riêng có ghế sofa; phòng tắm dùng vách kính và mảng tường xanh làm điểm nhấn.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_01_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_01_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_01_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/magnolia-boutique-hue.vi.html",
+        "identityStatus": "user_confirmed_identity",
+        "sourceType": "web_search_and_user_confirmation",
+        "checkedOn": "2026-11-19",
+        "note": "Người dùng xác nhận đúng cơ sở Magnolia tại số 10 Trần Hữu Dực, Huế. Giữ khác biệt địa chỉ hiển thị trên Booking (2 Hoàng Văn Thụ 22) làm ghi chú nguồn; không coi là địa chỉ thay thế đã xác minh.",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_01_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Magnolia Boutique Hotel — Phòng giường đôi với cửa ra ban công và gạch hoa văn",
+          "caption": "Phòng giường đôi với cửa ra ban công và gạch hoa văn",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_01_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Magnolia Boutique Hotel — Khu ghế sofa với kệ gỗ và tivi",
+          "caption": "Khu ghế sofa với kệ gỗ và tivi",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_01_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Magnolia Boutique Hotel — Phòng tắm có vách kính và gạch tông xanh",
+          "caption": "Phòng tắm có vách kính và gạch tông xanh",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_02",
+      "placeIds": [
+        "ACCOM_H_02"
+      ],
+      "placeName": "Bailey Hotel Hue",
+      "files": [
+        "ACCOM_H_02_01.jpg",
+        "ACCOM_H_02_02.jpg",
+        "ACCOM_H_02_03.jpg"
+      ],
+      "description": "Bộ ảnh cho thấy hồ bơi dạng dài trong không gian có mái che và cửa kính. Nội thất phòng có tông sáng, chi tiết vàng và đỏ; một ảnh khác thể hiện khu bàn ăn nhỏ cạnh cửa kính.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_02_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_02_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_02_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/bailey-hue.pt-br.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_02_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Bailey Hotel Hue — Hồ bơi dài trong không gian có mái che",
+          "caption": "Hồ bơi dài trong không gian có mái che",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_02_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Bailey Hotel Hue — Khu bàn ăn nhỏ cạnh cửa kính",
+          "caption": "Khu bàn ăn nhỏ cạnh cửa kính",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_02_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Bailey Hotel Hue — Phòng với hai giường và điểm nhấn màu đỏ",
+          "caption": "Phòng với hai giường và điểm nhấn màu đỏ",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_03",
+      "placeIds": [
+        "ACCOM_H_03"
+      ],
+      "placeName": "Lumiere Boutique Vỹ Dạ",
+      "files": [
+        "ACCOM_H_03_01.jpg",
+        "ACCOM_H_03_02.jpg",
+        "ACCOM_H_03_03.jpg"
+      ],
+      "description": "Phòng trong ảnh kết hợp sàn và nội thất gỗ với mảng đầu giường màu cam hoặc khung cửa vòm cao. Không gian ăn uống có bàn ghế gỗ, quầy bar và những ô cửa nhìn ra cây xanh.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_03_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_03_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_03_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/lumiere-boutique-vy-da.fr.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_03_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Lumiere Boutique Vỹ Dạ — Phòng với đầu giường màu cam và khu ghế ngồi",
+          "caption": "Phòng với đầu giường màu cam và khu ghế ngồi",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_03_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Lumiere Boutique Vỹ Dạ — Phòng hai giường với khung cửa vòm cao",
+          "caption": "Phòng hai giường với khung cửa vòm cao",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_03_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Lumiere Boutique Vỹ Dạ — Không gian ăn uống với bàn ghế gỗ và quầy bar",
+          "caption": "Không gian ăn uống với bàn ghế gỗ và quầy bar",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_04",
+      "placeIds": [
+        "ACCOM_H_04"
+      ],
+      "placeName": "Century Riverside Hotel Hue",
+      "files": [
+        "ACCOM_H_04_01.jpg",
+        "ACCOM_H_04_02.jpg",
+        "ACCOM_H_04_03.jpg"
+      ],
+      "description": "Phòng trong ảnh có hai giường, sàn gỗ và cửa sổ lớn nhìn về phía mặt nước. Một ảnh ghi lại bàn ăn đặt trên khoảng hiên thoáng, với hàng dừa và sông ở phía trước.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_04_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_04_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_04_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/century-riverside-hue.id.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_04_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Century Riverside Hotel Hue — Phòng hai giường với cửa sổ lớn",
+          "caption": "Phòng hai giường với cửa sổ lớn",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_04_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Century Riverside Hotel Hue — Bàn ăn ngoài hiên hướng ra sông",
+          "caption": "Bàn ăn ngoài hiên hướng ra sông",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_04_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Century Riverside Hotel Hue — Góc ngồi và bàn làm việc cạnh cửa sổ",
+          "caption": "Góc ngồi và bàn làm việc cạnh cửa sổ",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_05",
+      "placeIds": [
+        "ACCOM_H_05"
+      ],
+      "placeName": "Deluxe Villa Hue",
+      "files": [
+        "ACCOM_H_05_01.jpg",
+        "ACCOM_H_05_02.jpg",
+        "ACCOM_H_05_03.jpg"
+      ],
+      "description": "Không gian bếp và bàn ăn trong ảnh dùng tông trắng kết hợp tủ tối màu. Sân hiên có cây xanh, bàn ghế ngoài trời; phòng ngủ có giường đôi, cửa kính lớn và góc phòng tắm có vách kính.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_05_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_05_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_05_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/deluxe-villa-thanh-pho-hue.vi.html",
+        "identityStatus": "name_and_street_address_match",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "Booking ghi 20 Lý Tự Trọng, Huế, khớp địa chỉ dataset. Không suy ra số phòng ngủ/giường do thông tin listing chưa thống nhất.",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_05_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Deluxe Villa Hue — Bếp và bàn ăn với nội thất sáng màu",
+          "caption": "Bếp và bàn ăn với nội thất sáng màu",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_05_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Deluxe Villa Hue — Sân hiên có bàn ghế và cây xanh",
+          "caption": "Sân hiên có bàn ghế và cây xanh",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_05_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Deluxe Villa Hue — Phòng giường đôi cạnh cửa kính lớn",
+          "caption": "Phòng giường đôi cạnh cửa kính lớn",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_06",
+      "placeIds": [
+        "ACCOM_H_06"
+      ],
+      "placeName": "Sankofa Village Hill Resort & Spa",
+      "files": [
+        "ACCOM_H_06_01.jpg",
+        "ACCOM_H_06_02.jpg",
+        "ACCOM_H_06_03.jpg"
+      ],
+      "description": "Ảnh ghi lại hồ bơi ngoài trời rộng được bao quanh bởi cây dừa và ghế nằm. Phòng dùng nhiều gỗ ở sàn, tường và trần; lối đi ven sông có cây xanh tạo cảm giác gần gũi thiên nhiên.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_06_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_06_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_06_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/sankofa-village-hill-resort-spa.html",
+        "identityStatus": "name_and_street_address_match",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "Booking ghi 8 Ngoc Ho, Huong Ho, Huong Tra, Hue; khớp số nhà và đường Ngọc Hồ với dataset. Không tự thay tên đơn vị hành chính cũ/mới.",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_06_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Sankofa Village Hill Resort & Spa — Hồ bơi ngoài trời với hàng dừa và ghế nằm",
+          "caption": "Hồ bơi ngoài trời với hàng dừa và ghế nằm",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_06_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Sankofa Village Hill Resort & Spa — Phòng hai giường với sàn tường trần gỗ",
+          "caption": "Phòng hai giường với sàn tường trần gỗ",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_06_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Sankofa Village Hill Resort & Spa — Lối đi ven sông có hàng dừa và cây cảnh",
+          "caption": "Lối đi ven sông có hàng dừa và cây cảnh",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_07",
+      "placeIds": [
+        "ACCOM_H_07"
+      ],
+      "placeName": "La Vela Hue Hotel",
+      "files": [
+        "ACCOM_H_07_01.jpg",
+        "ACCOM_H_07_02.jpg",
+        "ACCOM_H_07_03.jpg"
+      ],
+      "description": "Ảnh phòng cho thấy hai giường, đầu giường bọc đệm và cửa kính lớn mở tầm nhìn ra thành phố. Các ảnh nhà hàng thể hiện quầy buffet cùng không gian bàn ăn tông tối với điểm nhấn màu xanh.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_07_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_07_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_07_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/la-vela-hue.vi.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_07_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "La Vela Hue Hotel — Phòng hai giường với cửa kính nhìn ra thành phố",
+          "caption": "Phòng hai giường với cửa kính nhìn ra thành phố",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_07_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "La Vela Hue Hotel — Quầy buffet với các khay có nắp",
+          "caption": "Quầy buffet với các khay có nắp",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_07_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "La Vela Hue Hotel — Không gian nhà hàng tông tối với điểm nhấn màu xanh",
+          "caption": "Không gian nhà hàng tông tối với điểm nhấn màu xanh",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_08",
+      "placeIds": [
+        "ACCOM_H_08"
+      ],
+      "placeName": "Indochine Palace",
+      "files": [
+        "ACCOM_H_08_01.jpg",
+        "ACCOM_H_08_02.jpg",
+        "ACCOM_H_08_03.jpg"
+      ],
+      "description": "Phòng có nội thất gỗ, tông vàng kem và giường đôi đặt trong không gian rộng với bàn ghế riêng. Khu nhà hàng trong ảnh dùng ghế gỗ, đèn trang trí và vách ngăn hoa văn, kèm quầy trưng bày nhiều món ăn.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_08_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_08_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_08_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/indochine-palace.fr.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_08_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Indochine Palace — Phòng giường đôi với nội thất gỗ và khu ghế ngồi",
+          "caption": "Phòng giường đôi với nội thất gỗ và khu ghế ngồi",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_08_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Indochine Palace — Bàn ăn trong nhà hàng có vách ngăn trang trí",
+          "caption": "Bàn ăn trong nhà hàng có vách ngăn trang trí",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_08_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Indochine Palace — Quầy trưng bày món ăn trong nhà hàng",
+          "caption": "Quầy trưng bày món ăn trong nhà hàng",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_09",
+      "placeIds": [
+        "ACCOM_H_09"
+      ],
+      "placeName": "Melia Vinpearl Hue",
+      "files": [
+        "ACCOM_H_09_01.jpg",
+        "ACCOM_H_09_02.jpg",
+        "ACCOM_H_09_03.jpg"
+      ],
+      "description": "Bộ ảnh nổi bật với hồ bơi có mái che, cửa kính lớn và ghế nằm hướng ra thành phố lúc hoàng hôn. Các phòng dùng nội thất hiện đại, thảm hoa văn và những mảng màu xanh, tím hoặc cam làm điểm nhấn.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_09_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_09_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_09_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/melia-vinpearl-hue-hotel.en-gb.html",
+        "identityStatus": "name_and_street_address_match",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "Booking: 50A Hùng Vương, khớp số nhà/đường dataset.",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_09_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Melia Vinpearl Hue — Hồ bơi có mái che và ghế nằm nhìn ra thành phố",
+          "caption": "Hồ bơi có mái che và ghế nằm nhìn ra thành phố",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_09_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Melia Vinpearl Hue — Phòng giường đôi với thảm hoa văn màu xanh",
+          "caption": "Phòng giường đôi với thảm hoa văn màu xanh",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_09_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Melia Vinpearl Hue — Phòng hai giường với điểm nhấn màu cam",
+          "caption": "Phòng hai giường với điểm nhấn màu cam",
+          "roomType": null
+        }
+      ]
+    },
+    {
+      "propertyId": "ACCOM_H_10",
+      "placeIds": [
+        "ACCOM_H_10"
+      ],
+      "placeName": "Azerai La Residence Hue",
+      "files": [
+        "ACCOM_H_10_01.jpg",
+        "ACCOM_H_10_02.jpg",
+        "ACCOM_H_10_03.jpg"
+      ],
+      "description": "Khu nhà sáng màu có mặt đứng uốn cong, ban công và hành lang nhìn ra khu vườn nhiều cây xanh. Ảnh phòng ghi lại giường đôi, nội thất gỗ sẫm và cửa kính ra ban công; ảnh toàn cảnh buổi tối cho thấy mặt sông phía sau khu nhà.",
+      "descriptionReviewStatus": "draft_visual_description",
+      "descriptionProvenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/accomodation.HUE/ACCOM_H_10_01.jpg",
+          "/images/accomodation.HUE/ACCOM_H_10_02.jpg",
+          "/images/accomodation.HUE/ACCOM_H_10_03.jpg"
+        ]
+      },
+      "bookingComReference": {
+        "url": "https://www.booking.com/hotel/vn/azerai-la-residence-hue.vi.html",
+        "identityStatus": "name_match_address_review_required",
+        "sourceType": "web_search_index",
+        "checkedOn": "2026-11-19",
+        "note": "",
+        "liveAvailabilityVerified": false,
+        "quote": null
+      },
+      "note": "Tên cơ sở ánh xạ theo tên file người dùng. Ảnh mô tả cơ sở, chưa xác nhận loại phòng hoặc tiện ích có sẵn theo ngày. Link Booking là tham chiếu cơ sở, không tự coi là nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ACCOM_H_10_01.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Azerai La Residence Hue — Hồ bơi ngoài trời cạnh khu vườn và nhà sáng màu",
+          "caption": "Hồ bơi ngoài trời cạnh khu vườn và nhà sáng màu",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_10_02.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Azerai La Residence Hue — Phòng giường đôi với nội thất gỗ và cửa ra ban công",
+          "caption": "Phòng giường đôi với nội thất gỗ và cửa ra ban công",
+          "roomType": null
+        },
+        {
+          "file": "ACCOM_H_10_03.jpg",
+          "sourceType": "unknown",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "missing_source",
+          "alt": "Azerai La Residence Hue — Toàn cảnh khu nhà lên đèn cạnh mặt sông lúc hoàng hôn",
+          "caption": "Toàn cảnh khu nhà lên đèn cạnh mặt sông lúc hoàng hôn",
+          "roomType": null
+        }
+      ]
+    }
+  ]
+}

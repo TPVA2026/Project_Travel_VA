@@ -247,6 +247,18 @@ def build_context(request: dict, dataset: dict, *, limit_places: bool = True) ->
 
     dining = _rank_places(dining, request)
 
+    hotels = _unique(
+        _parse(_Record, dataset.get("hotels"), "hotel"),
+        seen,
+        "hotel",
+    )
+
+    destination_ids = {d.id for d in destinations}
+    hotels = [
+        h for h in hotels
+        if _destination_of(h) in destination_ids
+    ]
+
     ids = {p.id for p in attractions} | {p.id for p in dining}
     matrix_raw = dataset.get("travel_matrix", dataset.get("travelMatrix"))
     modes = (request.get("preferences") or {}).get("transportation") or []
@@ -266,6 +278,7 @@ def build_context(request: dict, dataset: dict, *, limit_places: bool = True) ->
         "attractions": [_planning_place(p) for p in attractions],
         "dining": [_planning_place(p) for p in dining],
         "travelMatrix": [leg.model_dump(by_alias=True) for leg in legs],
+        **({"hotels": [h.model_dump() for h in hotels]} if hotels else {}),
     }
 
 

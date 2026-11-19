@@ -4,7 +4,7 @@ from app.services.data_service import _apply_routing_points, load_dataset, norma
 
 
 def test_dataset_has_expected_keys():
-    assert set(load_dataset()) == {"destinations", "attractions", "dining", "travel_matrix", "hotels", "demoCostPolicy"}
+    assert set(load_dataset()) == {"destinations", "attractions", "dining", "travel_matrix", "hotels", "transport", "demoCostPolicy"}
 
 
 def test_production_dataset_has_canonical_relationships_and_flat_matrix():

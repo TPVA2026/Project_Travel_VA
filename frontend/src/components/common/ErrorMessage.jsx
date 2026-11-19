@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Icon from './Icon.jsx'
 
 export default function ErrorMessage({
   title = 'Something went wrong',
@@ -15,7 +16,9 @@ export default function ErrorMessage({
       role="alert"
       className={`error-box ${compact ? 'error-box-compact' : ''}`}
     >
-      <div className="error-icon" aria-hidden="true">⚠️</div>
+      <span className="error-icon" aria-hidden="true">
+        <Icon name="alert" size={22} />
+      </span>
       <div className="error-content">
         {title && <h4 className="error-title">{title}</h4>}
         <p className="error-message">{message}</p>

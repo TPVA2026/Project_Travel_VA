@@ -20,4 +20,6 @@ specs/
 .specify/
 .grok/
 awesome-design-md/
-.agents/skills/design-taste-frontend/
+**/.agents/skills/
+# Playwright CLI output (may contain credentials)
+.playwright-cli/

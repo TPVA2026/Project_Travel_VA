@@ -5,18 +5,18 @@ function formatDate(value) {
   if (!value) return null
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString('vi-VN', {
+  return date.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
   })
 }
 
-export default function ItineraryTimeline({ days, placesById }) {
+export default function ItineraryTimeline({ days, placesById, activitySources, editMode, onEditStop }) {
   if (!days || days.length === 0) {
     return (
       <div className="empty-timeline-box">
-        <p className="muted">Chưa có chi tiết lịch trình.</p>
+        <p className="muted">No schedule details yet.</p>
       </div>
     )
   }
@@ -36,12 +36,17 @@ export default function ItineraryTimeline({ days, placesById }) {
           const dateLabel = formatDate(d.date)
 
           return (
-            <div key={dayNumber} className="timeline-day-group">
+            <div
+              key={dayNumber}
+              className="timeline-day-group"
+              id={`trip-day-${dayNumber}`}
+              data-day-number={dayNumber}
+            >
               <div className="timeline-node" aria-hidden="true" />
 
               <div className="timeline-day-header">
                 <div className="tl-day-wrap">
-                  <span className="tl-day">Ngày {dayNumber}</span>
+                  <span className="tl-day">Day {dayNumber}</span>
                   {dateLabel && (
                     <>
                       <span className="tl-date-separator" aria-hidden="true">—</span>
@@ -54,7 +59,7 @@ export default function ItineraryTimeline({ days, placesById }) {
                   {attractionsCount > 0 && (
                     <span
                       className="tl-badge tl-badge-attraction"
-                      title={`${attractionsCount} điểm tham quan`}
+                      title={`${attractionsCount} sightseeing stops`}
                     >
                       <Icon name="landmark" size={14} />
                       {attractionsCount}
@@ -63,7 +68,7 @@ export default function ItineraryTimeline({ days, placesById }) {
                   {diningCount > 0 && (
                     <span
                       className="tl-badge tl-badge-dining"
-                      title={`${diningCount} điểm ăn uống`}
+                      title={`${diningCount} dining stops`}
                     >
                       <Icon name="utensils" size={14} />
                       {diningCount}
@@ -74,7 +79,7 @@ export default function ItineraryTimeline({ days, placesById }) {
 
               <div className="timeline-activities">
                 {activities.length === 0 ? (
-                  <p className="muted small">Ngày này chưa có hoạt động nào.</p>
+                  <p className="muted small">No activities for this day.</p>
                 ) : (
                   activities.map((act, idx) => {
                     const leg =
@@ -85,6 +90,11 @@ export default function ItineraryTimeline({ days, placesById }) {
                       placesById?.get?.(String(act.placeId)) ||
                       placesById?.[act.placeId] ||
                       null
+                    const placeSource = place?.sourceUrl
+                      ? { url: place.sourceUrl, label: place.source }
+                      : null
+                    const source =
+                      placeSource || activitySources?.get?.(String(act.activityId)) || null
 
                     return (
                       <ActivityCard
@@ -92,6 +102,13 @@ export default function ItineraryTimeline({ days, placesById }) {
                         activity={act}
                         place={place}
                         travelLeg={idx > 0 ? leg : null}
+                        source={source}
+                        editMode={editMode}
+                        onEditStop={
+                          onEditStop
+                            ? (activity) => onEditStop(dayNumber, activity)
+                            : undefined
+                        }
                       />
                     )
                   })
