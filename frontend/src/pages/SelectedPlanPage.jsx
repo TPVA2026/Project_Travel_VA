@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   fetchPlanById,
+  fetchSavedTrip,
   getSelectedPlanId,
   selectPlan,
   clearSelectedPlan,
@@ -35,6 +36,7 @@ import {
   getDestinationImage,
   getDestinationLabel,
 } from '../services/destinationImages.js'
+import { useAuth } from '../auth/AuthContext.jsx'
 
 const STATUS_LABEL = {
   FEASIBLE: 'Feasible',
@@ -51,11 +53,13 @@ function orderScheduleDays(days) {
 }
 
 export default function SelectedPlanPage() {
+  const { user, requestSignIn } = useAuth()
   const [params] = useSearchParams()
   const queryId = params.get('id')
+  const savedTripId = params.get('trip')
   const storedId = getSelectedPlanId()
   const [activePlanId, setActivePlanId] = useState(
-    () => queryId || storedId || null
+    () => savedTripId || queryId || storedId || null
   )
 
   const [plan, setPlan] = useState(null)
@@ -88,8 +92,9 @@ export default function SelectedPlanPage() {
     : null
 
   useEffect(() => {
-    if (queryId && queryId !== activePlanId) setActivePlanId(queryId)
-  }, [queryId, activePlanId])
+    const requestedId = savedTripId || queryId
+    if (requestedId && requestedId !== activePlanId) setActivePlanId(requestedId)
+  }, [savedTripId, queryId, activePlanId])
 
   useEffect(() => {
     let cancelled = false
@@ -136,18 +141,26 @@ export default function SelectedPlanPage() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetchPlanById(activePlanId)
+      if (savedTripId && !user) {
+        requestSignIn()
+        setPlan(null)
+        setError('Sign in to open this saved trip.')
+        return
+      }
+      const response = savedTripId
+        ? await fetchSavedTrip(savedTripId).then((trip) => ({ data: { ...trip.itinerary, savedTripId: trip.id } }))
+        : await fetchPlanById(activePlanId)
       setPlan(response.data)
       setActiveScheduleDay('all')
       const currentSelected = getSelectedPlanId()
-      setIsChosen(currentSelected === response.data.id || currentSelected === response.data.planId)
+      setIsChosen(Boolean(savedTripId) || currentSelected === response.data.id || currentSelected === response.data.planId)
     } catch (err) {
       setError(err?.message || `Failed to load itinerary details for ID "${activePlanId}".`)
       setPlan(null)
     } finally {
       setLoading(false)
     }
-  }, [activePlanId, queryId])
+  }, [activePlanId, requestSignIn, savedTripId, user])
 
   useEffect(() => {
     loadPlan()
@@ -174,14 +187,19 @@ export default function SelectedPlanPage() {
 
   const handleToggleChoose = async () => {
     if (!plan) return
+    if (!user) {
+      requestSignIn()
+      return
+    }
     setActionMessage('')
     try {
-      await selectPlan(plan)
+      const selection = await selectPlan(plan)
+      setPlan((current) => ({ ...current, savedTripId: selection.trip.id }))
       setIsChosen(true)
       setCelebrate(true)
       setBanner({ kind: 'saved' })
-    } catch {
-      setActionMessage('Could not save this plan in this browser.')
+    } catch (err) {
+      setActionMessage(err?.message || 'Could not save this trip.')
     }
   }
 
@@ -314,15 +332,16 @@ export default function SelectedPlanPage() {
         setEditToast({ kind: 'error', message: result.error })
         return
       }
-      setPlan(result.plan)
+      const updatedPlan = { ...result.plan, savedTripId: plan.savedTripId }
+      setPlan(updatedPlan)
       setPlacesById((previous) => {
         const next = new Map(previous)
         next.set(String(alternative.id), alternative)
         return next
       })
       if (isChosen) {
-        selectPlan(result.plan).catch(() => {
-          // The edit is still applied in this view even if persistence fails.
+        selectPlan(updatedPlan).catch((err) => {
+          setActionMessage(err?.message || 'The edit was applied but could not be saved.')
         })
       }
       setEditTarget(null)
@@ -514,7 +533,7 @@ export default function SelectedPlanPage() {
                     <p className="chosen-header-sub">
                       {banner.kind === 'removed'
                         ? 'You can add this plan again from the trip card.'
-                        : 'Saved in this browser. Compare other plans whenever you like.'}
+                        : 'Saved to My Trips. Compare other plans whenever you like.'}
                     </p>
                   </div>
                 </div>

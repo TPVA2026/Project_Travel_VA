@@ -1823,6 +1823,22 @@ body {
   }
 }
 
+/* TPVA-66 account and My Trips additions */
+.header-account { display: flex; align-items: center; gap: .55rem; margin-left: auto; }
+.header-account-link, .header-account-button { font: inherit; color: inherit; background: transparent; border: 0; padding: .55rem .7rem; cursor: pointer; text-decoration: none; }
+.header-account-link.active { color: var(--primary, #1f6f5f); font-weight: 700; }
+.mobile-account { display: flex; gap: .75rem; padding: 1rem; }
+.mobile-account a, .mobile-account button { font: inherit; color: inherit; background: transparent; border: 0; cursor: pointer; }
+.auth-dialog-backdrop { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1rem; background: rgb(15 23 42 / .58); }
+.auth-dialog { position: relative; width: min(420px, 100%); padding: 2rem; border-radius: 1rem; background: white; box-shadow: 0 24px 70px rgb(0 0 0 / .25); }
+.auth-dialog-close { position: absolute; top: .65rem; right: .8rem; border: 0; background: transparent; font-size: 1.7rem; cursor: pointer; }
+.google-signin-button { min-height: 44px; margin-top: 1.25rem; }
+.my-trips-page { width: min(1100px, calc(100% - 2rem)); margin: 2rem auto 4rem; }
+.my-trips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.my-trip-card { display: flex; flex-direction: column; align-items: flex-start; gap: .7rem; padding: 1.4rem; }
+.my-trip-card .btn { margin-top: auto; }
+@media (max-width: 860px) { .header-account { display: none; } }
+
 /* Compact input form: existing page layout is unchanged. */
 .compact-form { gap: 12px; }
 .compact-form .card { padding: 18px; gap: 14px; border: 1px solid #c9d9ec; }
@@ -10227,4 +10243,3 @@ body {
     display: none !important;
   }
 }
-

@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage.jsx'
 import ResultsPage from './pages/ResultsPage.jsx'
 import SelectedPlanPage from './pages/SelectedPlanPage.jsx'
 import WelcomePage from './pages/WelcomePage.jsx'
+import MyTripsPage from './pages/MyTripsPage.jsx'
 
 function ScrollToTop() {
   const { pathname, search } = useLocation()
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/result" element={<Navigate to="/results" replace />} />
         <Route path="/selected" element={<SelectedPlanPage />} />
+        <Route path="/my-trips" element={<MyTripsPage />} />
         <Route path="/describe" element={<Navigate to="/" replace />} />
         <Route path="/describe/*" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

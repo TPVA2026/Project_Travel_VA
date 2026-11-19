@@ -75,6 +75,18 @@ export function clearSelectedPlan() {
   }
 }
 
+/** Reset only the in-progress draft. Saved trips live on the server and are untouched. */
+export function resetCurrentTrip() {
+  try {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      window.sessionStorage.removeItem('tpva-travel-request')
+      window.sessionStorage.removeItem('tpva-ai-plan')
+    }
+  } finally {
+    clearSelectedPlan()
+  }
+}
+
 /**
  * Check if a plan ID matches the currently selected plan.
  * @param {string} id
