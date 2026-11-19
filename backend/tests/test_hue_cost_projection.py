@@ -80,3 +80,83 @@ def test_canonical_dataset_evaluate_api_returns_lodging_projection(monkeypatch):
     assert hotel["nights"] == 2
     assert hotel["amountVnd"] == 2380952
     assert response.json()["status"] != "FEASIBLE"
+
+
+def test_selected_hotel_overrides_default():
+    request, plan, dataset, cost = projection_case()
+    dataset["demoCostPolicy"] = {"status": "ESTIMATED"}
+
+    dataset["hotels"] = [
+        {
+            "id": "HOTEL_DEFAULT",
+            "destinationId": "H",
+            "demoDefault": True,
+            "capacityAdults": 2,
+            "pricePerRoomNightVnd": 1000000,
+            "name": "Default Hotel",
+            "roomType": "Double",
+            "priceStatus": "ESTIMATED",
+            "currency": "VND",
+            "sourceUrl": "https://example.org/default",
+            "note": "from-price"
+        },
+        {
+            "id": "HOTEL_SELECTED",
+            "destinationId": "H",
+            "demoDefault": False,
+            "capacityAdults": 4,
+            "pricePerRoomNightVnd": 1500000,
+            "name": "Selected Hotel",
+            "roomType": "Family",
+            "priceStatus": "ESTIMATED",
+            "currency": "VND",
+            "sourceUrl": "https://example.org/selected",
+            "note": "from-price"
+        }
+    ]
+
+    plan["hotelId"] = "HOTEL_SELECTED"
+
+    result = project_hue_costs(request, plan, dataset, cost)
+
+    stays = [
+        item for item in result["items"]
+        if item["category"] == "accommodation"
+    ]
+
+    assert len(stays) == 1
+    assert stays[0]["hotelId"] == "HOTEL_SELECTED"
+    assert stays[0]["rooms"] == 1
+    assert stays[0]["nights"] == 2
+    assert stays[0]["amountVnd"] == 3000000
+    assert stays[0]["status"] == "ESTIMATED"
+
+
+def test_missing_hotel_does_not_use_default():
+    request, plan, dataset, cost = projection_case()
+    dataset["demoCostPolicy"] = {"status": "ESTIMATED"}
+
+    dataset["hotels"] = [
+        {
+            "id": "HOTEL_DEFAULT",
+            "destinationId": "H",
+            "demoDefault": True,
+            "capacityAdults": 2,
+            "pricePerRoomNightVnd": 1000000,
+            "name": "Default Hotel",
+            "roomType": "Double",
+            "priceStatus": "ESTIMATED",
+            "currency": "VND",
+            "sourceUrl": "https://example.org/default",
+            "note": "from-price"
+        }
+    ]
+
+    plan["hotelId"] = None
+    result = project_hue_costs(request, plan, dataset, cost)
+
+    assert not any(
+        i["category"] == "accommodation"
+        for i in result["items"]
+    )
+    assert "accommodation" in result["uncovered"]

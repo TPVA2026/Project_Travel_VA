@@ -59,6 +59,23 @@ def check_grounding(plan: dict, dataset: dict, *, check_hours: bool = True) -> l
             "durationMin": None, "distanceKm": None,
         }
     errs: list[str] = []
+
+    hotel_id = plan.get("hotelId")
+
+    if hotel_id is not None:
+        matches = [
+            h for h in dataset.get("hotels", [])
+            if h.get("id") == hotel_id
+        ]
+
+        if len(matches) != 1:
+            errs.append(f"unknown or duplicate hotelId {hotel_id}")
+        elif matches[0].get("destinationId") != plan["destinationId"]:
+            errs.append(
+                f"hotelId {hotel_id} does not belong to "
+                f"destinationId {plan['destinationId']}"
+            )
+
     # Explicit dataset relationships are authoritative; absent mappings are not guessed.
     for day in plan["days"]:
         used_ids = {a["placeId"] for a in day["activities"]}
