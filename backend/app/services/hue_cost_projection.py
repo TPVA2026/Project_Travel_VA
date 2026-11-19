@@ -36,17 +36,36 @@ def project_hue_costs(request, plan, dataset, cost):
         return None
     count = request["travelers"]["count"]
     nights = max(0, request["durationDays"] - 1)
-    hotels = [h for h in dataset.get("hotels", []) if h.get("destinationId") == "H"
-              and h.get("demoDefault") and h.get("pricePerRoomNightVnd") is not None]
+    hotel_id = plan.get("hotelId")
+
+    hotels = [
+        h for h in dataset.get("hotels", [])
+        if h.get("destinationId") == plan["destinationId"]
+        and (
+            h.get("id") == hotel_id
+            if "hotelId" in plan
+            else h.get("demoDefault")
+        )
+        and h.get("pricePerRoomNightVnd") is not None
+        and (
+            "hotelId" not in plan
+            or (
+                h.get("priceStatus") == "ESTIMATED"
+                and h.get("currency") == "VND"
+            )
+        )
+        and isinstance(h.get("capacityAdults"), int)
+        and h["capacityAdults"] > 0
+    ]
     items, uncovered = [], list(cost.get("missing_costs", []))
     breakdown = cost.get("breakdown", {})
     hotel = hotels[0] if len(hotels) == 1 else None
     if breakdown.get("accommodation") is None:
-        if hotel is not None:
+        if hotel is not None and (nights > 0 or "hotelId" not in plan):
             rooms = (count + hotel["capacityAdults"] - 1) // hotel["capacityAdults"]
             items.append({"category": "accommodation", "name": hotel["name"] + " — " + hotel["roomType"],
                           "amountVnd": rooms * nights * hotel["pricePerRoomNightVnd"],
-                          "rooms": rooms, "nights": nights, "unitPriceVnd": hotel["pricePerRoomNightVnd"],
+                          **({"hotelId": hotel["id"]} if "id" in hotel else {}), "rooms": rooms, "nights": nights, "unitPriceVnd": hotel["pricePerRoomNightVnd"],
                           "sourceUrl": hotel["sourceUrl"], "status": "ESTIMATED",
                           "note": hotel["note"]})
             uncovered = [x for x in uncovered if x != "accommodation"]
