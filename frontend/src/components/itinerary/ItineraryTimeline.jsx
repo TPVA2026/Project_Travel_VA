@@ -12,7 +12,7 @@ function formatDate(value) {
   })
 }
 
-export default function ItineraryTimeline({ days, placesById, activitySources }) {
+export default function ItineraryTimeline({ days, placesById, activitySources, editMode, onEditStop }) {
   if (!days || days.length === 0) {
     return (
       <div className="empty-timeline-box">
@@ -103,6 +103,12 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
                         place={place}
                         travelLeg={idx > 0 ? leg : null}
                         source={source}
+                        editMode={editMode}
+                        onEditStop={
+                          onEditStop
+                            ? (activity) => onEditStop(dayNumber, activity)
+                            : undefined
+                        }
                       />
                     )
                   })

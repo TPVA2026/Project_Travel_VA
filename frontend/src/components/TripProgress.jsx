@@ -1,24 +1,94 @@
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+
 const TRIP_STEPS = [
   {
     title: 'Trip details',
     description: 'Add your travel preferences',
+    to: '/',
   },
   {
     title: 'Build itinerary',
     description: 'Choose activities and routes',
+    to: '/results',
   },
   {
     title: 'Review & save',
     description: 'Review and save your trip',
+    to: '/selected',
   },
 ]
 
 export function TripProgress({ currentStep }) {
+  const slotRef = useRef(null)
+  const [floating, setFloating] = useState(false)
+  const [box, setBox] = useState({ left: 0, width: 0, height: 0 })
   const progressPercentage = (currentStep / TRIP_STEPS.length) * 100
   const currentStepData = TRIP_STEPS[currentStep - 1]
 
+  useLayoutEffect(() => {
+    const slot = slotRef.current
+    if (!slot) return
+
+    const measure = () => {
+      const bar = slot.firstElementChild
+      const rect = slot.getBoundingClientRect()
+      const height = bar ? bar.offsetHeight : rect.height
+      setBox((prev) =>
+        prev.left === rect.left && prev.width === rect.width && prev.height === height
+          ? prev
+          : { left: rect.left, width: rect.width, height },
+      )
+    }
+
+    measure()
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null
+    observer?.observe(slot)
+    window.addEventListener('resize', measure)
+
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', measure)
+    }
+  }, [])
+
+  useEffect(() => {
+    const slot = slotRef.current
+    if (!slot) return
+
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const bar = slot.firstElementChild
+      const offset = bar ? parseFloat(window.getComputedStyle(bar).top) || 0 : 0
+      setFloating(slot.getBoundingClientRect().top <= offset)
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [])
+
   return (
-    <section className="trip-progress" aria-label="Trip planning progress">
+    <div
+      className="trip-progress-slot"
+      ref={slotRef}
+      style={floating ? { height: `${box.height}px` } : undefined}
+    >
+      <section
+        className={`trip-progress${floating ? ' is-floating' : ''}`}
+        style={floating ? { left: `${box.left}px`, width: `${box.width}px` } : undefined}
+        aria-label="Trip planning progress"
+      >
       <div className="progress-summary">
         <div>
           <span>YOUR PROGRESS</span>
@@ -66,19 +136,26 @@ export function TripProgress({ currentStep }) {
               className={[isComplete ? 'complete' : '', isCurrent ? 'current' : '']
                 .filter(Boolean)
                 .join(' ')}
-              aria-current={isCurrent ? 'step' : undefined}
             >
-              <span>{stepNumber}</span>
+              <Link
+                to={step.to}
+                className="progress-step"
+                title={step.description}
+                aria-current={isCurrent ? 'step' : undefined}
+              >
+                <span>{stepNumber}</span>
 
-              <div>
-                <small>{status}</small>
-                <strong>{step.title}</strong>
-              </div>
+                <div>
+                  <small>{status}</small>
+                  <strong>{step.title}</strong>
+                </div>
+              </Link>
             </li>
           )
         })}
       </ol>
-    </section>
+      </section>
+    </div>
   )
 }
 

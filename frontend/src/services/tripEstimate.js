@@ -18,7 +18,19 @@ function asNumber(value) {
 
 function sum(items, key = 'amountVnd') {
   if (!items.length) return null
-  return items.reduce((total, item) => total + (asNumber(item?.[key]) ?? 0), 0)
+  const values = items.map((item) => asNumber(item?.[key]))
+  if (values.some((value) => value == null)) return null
+  return values.reduce((total, value) => total + value, 0)
+}
+
+function resolveCategory(items, breakdownValue) {
+  if (items.length) {
+    const amount = sum(items)
+    return { amount, source: amount == null ? 'missing' : 'estimate' }
+  }
+  const known = asNumber(breakdownValue)
+  if (known != null) return { amount: known, source: 'known' }
+  return { amount: null, source: 'missing' }
 }
 
 function unique(values) {
@@ -65,12 +77,12 @@ export function getPlanEstimate(plan) {
   const stayItems = projectionItems.filter((item) => item?.category === 'accommodation')
   const transportItems = projectionItems.filter((item) => item?.category === 'transport')
   const diningItems = projectionItems.filter((item) => item?.category === 'dining')
-  const stayEstimate = sum(stayItems)
-  const transportEstimate = sum(transportItems)
-  const diningEstimate = sum(diningItems)
-  const stay = stayEstimate ?? asNumber(breakdown.accommodation)
-  const transport = transportEstimate ?? asNumber(breakdown.transport)
-  const dining = diningItems.length ? diningEstimate : asNumber(breakdown.dining)
+  const stayInfo = resolveCategory(stayItems, breakdown.accommodation)
+  const transportInfo = resolveCategory(transportItems, breakdown.transport)
+  const diningInfo = resolveCategory(diningItems, breakdown.dining)
+  const stay = stayInfo.amount
+  const transport = transportInfo.amount
+  const dining = diningInfo.amount
   const subtotal = asNumber(projection?.subtotalVnd)
   const projectedTotal = asNumber(projection?.totalVnd)
   const estimatedTotal = projection
@@ -96,8 +108,11 @@ export function getPlanEstimate(plan) {
     knownTotal: known,
     knownLabel: complete ? 'Known costs' : 'Known costs · partial',
     stay,
+    staySource: stayInfo.source,
     transport,
+    transportSource: transportInfo.source,
     dining,
+    diningSource: diningInfo.source,
     diningItems,
     diningLabel: diningItems.length ? 'Dining estimates' : 'Dining',
     budget: asNumber(cost?.budget),

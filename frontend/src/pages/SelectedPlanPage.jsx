@@ -9,6 +9,7 @@ import {
   collectPlaceIds,
   collectActivitySources,
   fetchPlaceCatalog,
+  getPlaceCatalog,
   indexPlaces,
   createNameResolver,
 } from '../services/api.js'
@@ -17,7 +18,9 @@ import {
   getPlanEstimate,
   getTripChecklistItems,
 } from '../services/tripEstimate.js'
+import { applyStopChange, getValidAlternatives } from '../services/itineraryEdit.js'
 import ItineraryTimeline from '../components/itinerary/ItineraryTimeline.jsx'
+import StopAlternativesDialog from '../components/itinerary/StopAlternativesDialog.jsx'
 import EstimatedTripTotal from '../components/itinerary/EstimatedTripTotal.jsx'
 import EstimateDetails from '../components/itinerary/EstimateDetails.jsx'
 import TripServices from '../components/itinerary/TripServices.jsx'
@@ -37,6 +40,14 @@ const STATUS_LABEL = {
   FEASIBLE: 'Feasible',
   INFEASIBLE: 'Not feasible',
   UNVERIFIED: 'Unverified',
+}
+
+function orderScheduleDays(days) {
+  if (!Array.isArray(days)) return []
+  return days
+    .map((day, index) => ({ day, order: Number(day?.day ?? day?.dayNumber) || index + 1 }))
+    .sort((a, b) => a.order - b.order)
+    .map((entry, index) => ({ ...entry.day, day: index + 1, dayNumber: index + 1 }))
 }
 
 export default function SelectedPlanPage() {
@@ -62,6 +73,13 @@ export default function SelectedPlanPage() {
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
   const [checkedChecklist, setCheckedChecklist] = useState({})
   const checklistRef = useRef(null)
+
+  const [editMode, setEditMode] = useState(false)
+  const [editTarget, setEditTarget] = useState(null)
+  const [editStatus, setEditStatus] = useState('idle')
+  const [editError, setEditError] = useState('')
+  const [editToast, setEditToast] = useState(null)
+  const editTimerRef = useRef(null)
 
   const estimate = useMemo(() => getPlanEstimate(plan), [plan])
   const checklistItems = useMemo(() => getTripChecklistItems(plan), [plan])
@@ -140,6 +158,19 @@ export default function SelectedPlanPage() {
     const timer = window.setTimeout(() => setBanner(null), 5000)
     return () => window.clearTimeout(timer)
   }, [banner])
+
+  useEffect(() => {
+    if (!editToast || editToast.kind === 'updating') return undefined
+    const timer = window.setTimeout(() => setEditToast(null), 4000)
+    return () => window.clearTimeout(timer)
+  }, [editToast])
+
+  useEffect(
+    () => () => {
+      if (editTimerRef.current) window.clearTimeout(editTimerRef.current)
+    },
+    []
+  )
 
   const handleToggleChoose = async () => {
     if (!plan) return
@@ -241,25 +272,88 @@ export default function SelectedPlanPage() {
     })
   }
 
+  const handleEditStop = (dayNumber, activity) => {
+    if (!plan || !activity) return
+    const currentName = resolveName?.(activity.placeId) || activity.name || 'Unknown place'
+    const alternatives = getValidAlternatives(
+      plan,
+      dayNumber,
+      activity.activityId,
+      getPlaceCatalog()
+    )
+    setEditError('')
+    setEditStatus('idle')
+    setEditTarget({
+      dayNumber,
+      activityId: activity.activityId,
+      activity,
+      currentName,
+      alternatives,
+    })
+  }
+
+  const handleCloseEdit = () => {
+    if (editStatus === 'updating') return
+    setEditTarget(null)
+    setEditError('')
+    setEditStatus('idle')
+  }
+
+  const handleConfirmStopChange = (alternative) => {
+    if (!plan || !editTarget || !alternative) return
+    const { dayNumber, activityId } = editTarget
+    setEditStatus('updating')
+    setEditError('')
+    setEditToast({ kind: 'updating' })
+    if (editTimerRef.current) window.clearTimeout(editTimerRef.current)
+    editTimerRef.current = window.setTimeout(() => {
+      const result = applyStopChange(plan, dayNumber, activityId, alternative)
+      if (!result.ok) {
+        setEditStatus('error')
+        setEditError(result.error)
+        setEditToast({ kind: 'error', message: result.error })
+        return
+      }
+      setPlan(result.plan)
+      setPlacesById((previous) => {
+        const next = new Map(previous)
+        next.set(String(alternative.id), alternative)
+        return next
+      })
+      if (isChosen) {
+        selectPlan(result.plan).catch(() => {
+          // The edit is still applied in this view even if persistence fails.
+        })
+      }
+      setEditTarget(null)
+      setEditStatus('idle')
+      setEditError('')
+      setEditToast({ kind: 'updated', name: alternative.name })
+    }, 450)
+  }
+
   if (!activePlanId && !loading) {
     return (
-      <div className="empty-chosen-view">
-        <span className="empty-chosen-icon" aria-hidden="true">
-          <Icon name="compass" size={34} />
-        </span>
-        <p className="page-eyebrow">Step 3 of 3 · Review</p>
-        <h1>Your next trip starts here</h1>
-        <p className="muted">
-          Choose an itinerary to see its day-by-day schedule, review the estimated costs, and make it your own.
-        </p>
-        <div className="empty-actions">
-          <Link to="/results" className="btn btn-primary">
-            Explore recommended plans
-            <Icon name="arrowRight" size={16} />
-          </Link>
-          <Link to="/" className="btn btn-outline">
-            Create a new trip
-          </Link>
+      <div className="selected-page-container">
+        <TripProgress currentStep={3} />
+        <div className="empty-chosen-view">
+          <span className="empty-chosen-icon" aria-hidden="true">
+            <Icon name="compass" size={34} />
+          </span>
+          <p className="page-eyebrow">Step 3 of 3 · Review</p>
+          <h1>Your next trip starts here</h1>
+          <p className="muted">
+            Choose an itinerary to see its day-by-day schedule, review the estimated costs, and make it your own.
+          </p>
+          <div className="empty-actions">
+            <Link to="/results" className="btn btn-primary">
+              Explore recommended plans
+              <Icon name="arrowRight" size={16} />
+            </Link>
+            <Link to="/" className="btn btn-outline">
+              Create a new trip
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -279,10 +373,21 @@ export default function SelectedPlanPage() {
   const dayCount = plan?.days?.length || 0
   const activityCount =
     plan?.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
-  const scheduleDays = Array.isArray(plan?.days) ? plan.days : []
-  const scheduleDayNumbers = scheduleDays.map(
-    (day, index) => Number(day.day || day.dayNumber) || index + 1
-  )
+  const editableStopCount =
+    plan?.days?.reduce(
+      (count, day) =>
+        count +
+        (day.activities || []).filter(
+          (activity) =>
+            activity.type === 'sightseeing' ||
+            activity.type === 'attraction' ||
+            activity.type === 'dining' ||
+            activity.type === 'meal'
+        ).length,
+      0
+    ) || 0
+  const scheduleDays = orderScheduleDays(plan?.days)
+  const scheduleDayNumbers = scheduleDays.map((_, index) => index + 1)
   const selectedScheduleDay = scheduleDayNumbers.includes(activeScheduleDay)
     ? activeScheduleDay
     : 'all'
@@ -330,21 +435,31 @@ export default function SelectedPlanPage() {
           <div className="intro-actions selected-actions no-print">
             <button
               type="button"
-              className="btn btn-outline"
+              className="action-chip"
               onClick={() => window.print()}
               title="Print or save as PDF"
             >
-              <Icon name="printer" size={16} />
-              Print
+              <span className="action-chip-icon" aria-hidden="true">
+                <Icon name="printer" size={15} />
+              </span>
+              <span className="action-chip-text">
+                <strong>Print</strong>
+                <small>Save the plan as PDF</small>
+              </span>
             </button>
             <button
               type="button"
-              className="btn btn-outline"
+              className="action-chip"
               onClick={handleCopySummary}
               title="Copy a text summary to your clipboard"
             >
-              <Icon name={copyFeedback ? 'check' : 'copy'} size={16} />
-              {copyFeedback ? 'Copied' : 'Copy summary'}
+              <span className="action-chip-icon" aria-hidden="true">
+                <Icon name={copyFeedback ? 'check' : 'copy'} size={15} />
+              </span>
+              <span className="action-chip-text">
+                <strong>{copyFeedback ? 'Copied' : 'Copy summary'}</strong>
+                <small>{copyFeedback ? 'On your clipboard' : 'Share the plan as text'}</small>
+              </span>
             </button>
           </div>
         )}
@@ -411,7 +526,7 @@ export default function SelectedPlanPage() {
             </div>
           )}
 
-          <EstimatedTripTotal estimate={estimate} dayCount={dayCount} />
+          <EstimatedTripTotal estimate={estimate} dayCount={dayCount} resolveName={resolveName} />
 
           {checklistItems.length > 0 && (
             <section className="checklist-prompt selected-wide" aria-labelledby="checklist-prompt-title">
@@ -559,16 +674,56 @@ export default function SelectedPlanPage() {
                   <div className="schedule-header">
                     <div>
                       <h3 className="itinerary-heading">Daily schedule</h3>
-                      <p className="muted small">Choose a day to focus on its stops.</p>
+                      <p className="muted small">
+                        {editMode
+                          ? 'Pick “Change stop” on a card to swap it for a valid alternative.'
+                          : 'Choose a day to focus on its stops.'}
+                      </p>
                     </div>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline no-print print-schedule-btn"
-                      onClick={() => window.print()}
-                    >
-                      <Icon name="printer" size={15} />
-                      Print schedule
-                    </button>
+                    <div className="schedule-header-actions no-print">
+                      <button
+                        type="button"
+                        className={`action-chip action-chip--primary edit-mode-btn${editMode ? ' is-active' : ''}`}
+                        aria-pressed={editMode}
+                        title={
+                          editMode
+                            ? 'Finish editing and keep your changes'
+                            : 'Swap any stop for a valid alternative'
+                        }
+                        onClick={() => {
+                          setEditTarget(null)
+                          setEditError('')
+                          setEditStatus('idle')
+                          setEditMode((value) => !value)
+                        }}
+                      >
+                        <span className="action-chip-icon" aria-hidden="true">
+                          <Icon name={editMode ? 'check' : 'edit'} size={16} />
+                        </span>
+                        <span className="action-chip-text">
+                          <strong>{editMode ? 'Done editing' : 'Edit stops'}</strong>
+                          <small>
+                            {editMode
+                              ? 'Tap “Change stop” on a card'
+                              : `${editableStopCount} ${editableStopCount === 1 ? 'stop' : 'stops'} you can change`}
+                          </small>
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        className="action-chip print-schedule-btn"
+                        onClick={() => window.print()}
+                        title="Print or save the daily schedule as PDF"
+                      >
+                        <span className="action-chip-icon" aria-hidden="true">
+                          <Icon name="printer" size={15} />
+                        </span>
+                        <span className="action-chip-text">
+                          <strong>Print</strong>
+                          <small>Save schedule as PDF</small>
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   {dayCount > 1 && (
@@ -623,6 +778,8 @@ export default function SelectedPlanPage() {
                     }
                     placesById={placesById}
                     activitySources={activitySources}
+                    editMode={editMode}
+                    onEditStop={handleEditStop}
                   />
                 </div>
               </div>
@@ -639,6 +796,43 @@ export default function SelectedPlanPage() {
               checked={checkedChecklist}
               onToggle={handleToggleChecklist}
               sectionRef={checklistRef}
+            />
+          )}
+
+          {editToast && (
+            <div className="edit-toast" role="status" aria-live="polite">
+              <span className={`edit-toast-icon is-${editToast.kind}`} aria-hidden="true">
+                <Icon
+                  name={
+                    editToast.kind === 'error'
+                      ? 'alert'
+                      : editToast.kind === 'updated'
+                        ? 'check'
+                        : 'refresh'
+                  }
+                  size={18}
+                  className={editToast.kind === 'updating' ? 'spin' : ''}
+                />
+              </span>
+              <span className="edit-toast-text">
+                {editToast.kind === 'updating' && 'Updating your itinerary…'}
+                {editToast.kind === 'updated' && `Changed this stop to ${editToast.name}.`}
+                {editToast.kind === 'error' &&
+                  `Could not change the stop. ${editToast.message || ''}`.trim()}
+              </span>
+            </div>
+          )}
+
+          {editTarget && (
+            <StopAlternativesDialog
+              dayNumber={editTarget.dayNumber}
+              activity={editTarget.activity}
+              currentName={editTarget.currentName}
+              alternatives={editTarget.alternatives}
+              status={editStatus}
+              error={editError}
+              onConfirm={handleConfirmStopChange}
+              onClose={handleCloseEdit}
             />
           )}
         </>

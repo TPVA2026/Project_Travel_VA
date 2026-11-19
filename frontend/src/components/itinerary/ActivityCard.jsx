@@ -26,11 +26,12 @@ function travelLegLabel(travelLeg) {
   return [duration, distance].filter(Boolean).join(' · ')
 }
 
-export default function ActivityCard({ activity, place, travelLeg, source }) {
+export default function ActivityCard({ activity, place, travelLeg, source, editMode, onEditStop }) {
   if (!activity) return null
 
   const isSightseeing = activity.type === 'sightseeing' || activity.type === 'attraction'
   const isDining = activity.type === 'dining' || activity.type === 'meal'
+  const canEdit = Boolean(editMode && onEditStop && (isSightseeing || isDining))
   const rawCost = activity.cost ?? activity.estimatedCostVnd
   const costStatus = activity.costStatus || (rawCost == null ? 'NO_DATA' : 'KNOWN')
   const costStatusLabel = COST_STATUS_LABEL[costStatus] || costStatus
@@ -74,7 +75,7 @@ export default function ActivityCard({ activity, place, travelLeg, source }) {
       )}
 
       <div
-        className={`activity-card ${cardTypeClass}`}
+        className={`activity-card ${cardTypeClass}${canEdit ? ' is-editable' : ''}`}
         data-place-id={activity.placeId}
       >
         <div className="activity-header">
@@ -121,6 +122,19 @@ export default function ActivityCard({ activity, place, travelLeg, source }) {
             </span>
           </span>
         </div>
+
+        {canEdit && (
+          <div className="activity-edit-row">
+            <button
+              type="button"
+              className="activity-edit-btn"
+              onClick={() => onEditStop(activity)}
+            >
+              <Icon name="swap" size={14} />
+              Change stop
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
