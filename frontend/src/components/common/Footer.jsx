@@ -5,6 +5,7 @@ const TRIP_LINKS = [
   { to: '/', label: 'Plan a trip' },
   { to: '/results', label: 'Compare plans' },
   { to: '/selected', label: 'Review your trip' },
+  { to: '/my-trips', label: 'My Trips' },
 ]
 
 const NOTES = [
@@ -14,7 +15,7 @@ const NOTES = [
   },
   {
     icon: 'check',
-    text: 'Your trip stays in this browser. No account or sign-in is needed.',
+    text: 'Sign in to keep selected itineraries in My Trips across sessions.',
   },
   {
     icon: 'clock',

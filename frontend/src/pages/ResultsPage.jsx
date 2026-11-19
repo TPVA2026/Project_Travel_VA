@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   collectPlaceIds,
   fetchPlaceCatalog,
+  getSelectedPlan,
   getSelectedPlanId,
   indexPlaces,
   resolveDestinationName,
@@ -19,6 +20,7 @@ import CandidateComparison from '../components/comparison/CandidateComparison.js
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Icon from '../components/common/Icon.jsx'
+import { useAuth } from '../auth/AuthContext.jsx'
 
 const REQUEST_KEY = 'tpva-travel-request'
 const PLAN_KEY = 'tpva-ai-plan'
@@ -219,13 +221,20 @@ function migrateCachedPipeline(saved) {
 }
 
 export default function ResultsPage() {
+  const { user, requestSignIn } = useAuth()
   const [selectedPlanId, setSelectedPlanId] = useState(() => getSelectedPlanId())
+  const [savedTripIds, setSavedTripIds] = useState(() => {
+    const selected = getSelectedPlan()
+    const planId = selected?.planId || selected?.id
+    return planId && selected?.savedTripId ? { [planId]: selected.savedTripId } : {}
+  })
   const [pendingRequest] = useState(readPendingRequest)
   const [pipeline, setPipeline] = useState(null)
   const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
   const [aiError, setAiError] = useState(null)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
+  const [saveError, setSaveError] = useState(null)
   const startedRequestRef = useRef(null)
 
   const loadAiPlan = useCallback(async () => {
@@ -313,6 +322,10 @@ export default function ResultsPage() {
       setSelectedPlanId(null)
       return
     }
+    if (!user) {
+      requestSignIn()
+      return
+    }
     const plan = candidate.plan || {}
     const resolvedDestination = resolveDestinationName(plan.destinationId, placesById)
     const destination =
@@ -334,9 +347,16 @@ export default function ResultsPage() {
         (reason) => reason.message || reason.code
       ),
       fit: [],
+      savedTripId: savedTripIds[id],
     }
-    await selectPlan(savedPlan)
-    setSelectedPlanId(id)
+    setSaveError(null)
+    try {
+      const result = await selectPlan(savedPlan)
+      setSavedTripIds((current) => ({ ...current, [id]: result.trip.id }))
+      setSelectedPlanId(id)
+    } catch (err) {
+      setSaveError(err?.message || 'Could not save this trip.')
+    }
   }
 
   const selectedCandidate = aiCandidates.find(
@@ -358,6 +378,7 @@ export default function ResultsPage() {
         </div>
 
       </header>
+      {saveError && <p className="plan-alert-box alert-infeasible" role="alert">{saveError}</p>}
 
       <RequestSummary request={pendingRequest} />
 

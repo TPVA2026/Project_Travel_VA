@@ -153,6 +153,22 @@ npm run dev
 
 Frontend: http://localhost:5173
 
+### Google Sign-In and My Trips
+
+1. In Google Cloud Console, create an OAuth 2.0 **Web application** client. Add
+   `http://localhost:5173` to Authorized JavaScript origins. No client secret is
+   used by this app.
+2. Copy `backend/.env.example` to `backend/.env` and set `GOOGLE_CLIENT_ID`.
+3. Copy `frontend/.env.example` to `frontend/.env` and set
+   `VITE_GOOGLE_CLIENT_ID` to the same client ID, then restart Vite.
+4. Set `TRIPS_DATABASE_PATH` to a path on persistent storage for a deployed
+   instance. The local default is `backend/data/travel-va.sqlite3`.
+
+The browser sends the Google ID token as `Authorization: Bearer <token>` only to
+the Travel VA API. FastAPI validates its signature, issuer, expiry and audience,
+then derives ownership from Google's stable `sub` claim. Tokens and secrets are
+not logged or stored in the trips database.
+
 ## Rules
 
 - Branch per task: `feat/<member>-<topic>`; merge through a reviewed pull request; one GitHub issue per task.

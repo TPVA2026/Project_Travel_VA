@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   fetchPlanById,
+  fetchSavedTrip,
   getSelectedPlanId,
   selectPlan,
   clearSelectedPlan,
@@ -24,6 +25,7 @@ import {
   getDestinationImage,
   getDestinationLabel,
 } from '../services/destinationImages.js'
+import { useAuth } from '../auth/AuthContext.jsx'
 
 const STATUS_LABEL = {
   FEASIBLE: 'Fits your trip',
@@ -32,12 +34,14 @@ const STATUS_LABEL = {
 }
 
 export default function SelectedPlanPage() {
+  const { user, requestSignIn } = useAuth()
   const [params] = useSearchParams()
   const queryId = params.get('id')
+  const savedTripId = params.get('trip')
   const storedId = getSelectedPlanId()
 
   // Use URL query id, or fallback to stored selected plan
-  const activePlanId = queryId || storedId
+  const activePlanId = savedTripId || queryId || storedId
 
   const [plan, setPlan] = useState(null)
   const [loading, setLoading] = useState(Boolean(activePlanId))
@@ -47,6 +51,7 @@ export default function SelectedPlanPage() {
   const [copyFeedback, setCopyFeedback] = useState(false)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
+  const [saveError, setSaveError] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -72,18 +77,26 @@ export default function SelectedPlanPage() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetchPlanById(activePlanId)
+      if (savedTripId && !user) {
+        requestSignIn()
+        setPlan(null)
+        setError('Sign in to open this saved trip.')
+        return
+      }
+      const response = savedTripId
+        ? await fetchSavedTrip(savedTripId).then((trip) => ({ data: { ...trip.itinerary, savedTripId: trip.id } }))
+        : await fetchPlanById(activePlanId)
       setPlan(response.data)
       // Check if this plan is the user's chosen plan
       const currentSelected = getSelectedPlanId()
-      setIsChosen(currentSelected === response.data.id || currentSelected === response.data.planId)
+      setIsChosen(Boolean(savedTripId) || currentSelected === response.data.id || currentSelected === response.data.planId)
     } catch (err) {
       setError(err?.message || `Failed to load itinerary details for ID "${activePlanId}".`)
       setPlan(null)
     } finally {
       setLoading(false)
     }
-  }, [activePlanId])
+  }, [activePlanId, requestSignIn, savedTripId, user])
 
   useEffect(() => {
     loadPlan()
@@ -98,10 +111,19 @@ export default function SelectedPlanPage() {
       setIsChosen(false)
       setCelebrate(false)
     } else {
-      const selection = selectPlan(plan)
-      setIsChosen(true)
-      setCelebrate(true)
-      await selection
+      if (!user) {
+        requestSignIn()
+        return
+      }
+      setSaveError(null)
+      try {
+        const selection = await selectPlan(plan)
+        setPlan((current) => ({ ...current, savedTripId: selection.trip.id }))
+        setIsChosen(true)
+        setCelebrate(true)
+      } catch (err) {
+        setSaveError(err?.message || 'Could not save this trip.')
+      }
     }
   }
 
@@ -128,10 +150,11 @@ export default function SelectedPlanPage() {
 
   // When a revision is applied from RevisionForm
   const handlePlanRevised = (revisedPlan) => {
-    setPlan(revisedPlan)
+    const updatedPlan = { ...plan, ...revisedPlan, savedTripId: plan?.savedTripId }
+    setPlan(updatedPlan)
     // If this revised plan was chosen, update the stored data as well
     if (isChosen) {
-      selectPlan(revisedPlan)
+      selectPlan(updatedPlan).catch((err) => setSaveError(err?.message || 'The revision was applied but could not be saved.'))
     }
   }
 
@@ -264,6 +287,7 @@ export default function SelectedPlanPage() {
 
       {!loading && !error && plan && (
         <>
+          {saveError && <p className="plan-alert-box alert-infeasible" role="alert">{saveError}</p>}
           {/* Chosen Plan Banner View */}
           {isChosen && (
             <div className="chosen-header-banner" role="status">

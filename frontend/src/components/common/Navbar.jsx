@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { clearSelectedPlan } from '../../services/api.js'
+import { resetCurrentTrip } from '../../services/api.js'
 import Icon from './Icon.jsx'
+import { useAuth } from '../../auth/AuthContext.jsx'
 
 const STEPS = [
   { to: '/', end: true, step: '1', label: 'Plan a trip', hint: 'Dates, budget and style' },
@@ -10,6 +11,7 @@ const STEPS = [
 ]
 
 export default function Navbar() {
+  const { user, requestSignIn, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [open, setOpen] = useState(false)
@@ -65,9 +67,7 @@ export default function Navbar() {
   }, [open])
 
   const startNewTrip = () => {
-    sessionStorage.removeItem('tpva-travel-request')
-    sessionStorage.removeItem('tpva-ai-plan')
-    clearSelectedPlan()
+    resetCurrentTrip()
     setOpen(false)
     navigate('/')
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -108,6 +108,15 @@ export default function Navbar() {
               </NavLink>
             ))}
           </nav>
+
+          <div className="header-account">
+            <NavLink to="/my-trips" className="header-account-link">My Trips</NavLink>
+            {user ? (
+              <button type="button" className="header-account-button" onClick={signOut}>Sign out</button>
+            ) : (
+              <button type="button" className="header-account-button" onClick={requestSignIn}>Sign in</button>
+            )}
+          </div>
 
           {showCta && (
             <button
@@ -158,6 +167,14 @@ export default function Navbar() {
               </NavLink>
             ))}
           </nav>
+          <div className="mobile-account">
+            <NavLink to="/my-trips" onClick={() => setOpen(false)}>My Trips</NavLink>
+            {user ? (
+              <button type="button" onClick={() => { signOut(); setOpen(false) }}>Sign out</button>
+            ) : (
+              <button type="button" onClick={() => { requestSignIn(); setOpen(false) }}>Sign in</button>
+            )}
+          </div>
 
           {showCta && (
             <button type="button" className="mobile-cta" onClick={startNewTrip}>
