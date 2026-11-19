@@ -9,7 +9,7 @@ import {
 
 const anonymousAuth = {
   user: null,
-  requestSignIn: () => window.dispatchEvent(new CustomEvent('tpva-auth-required')),
+  requestSignIn: () => window.dispatchEvent(new window.CustomEvent('tpva-auth-required')),
   signOut: () => {},
 }
 const AuthContext = createContext(anonymousAuth)

@@ -58,7 +58,7 @@ export async function selectPlan(planOrId) {
 async function authenticatedRequest(path, options = {}) {
   const token = getAuthToken();
   if (!token) {
-    window.dispatchEvent(new CustomEvent('tpva-auth-required'));
+    window.dispatchEvent(new window.CustomEvent('tpva-auth-required'));
     const error = new Error('Sign in with Google to save or open My Trips.');
     error.status = 401;
     throw error;
@@ -69,7 +69,7 @@ async function authenticatedRequest(path, options = {}) {
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (response.status === 401) window.dispatchEvent(new CustomEvent('tpva-auth-required'));
+    if (response.status === 401) window.dispatchEvent(new window.CustomEvent('tpva-auth-required'));
     const error = new Error(typeof body.detail === 'string' ? body.detail : 'Could not access saved trips.');
     error.status = response.status;
     throw error;
