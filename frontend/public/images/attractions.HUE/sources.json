@@ -1,0 +1,395 @@
+{
+  "images": [
+    {
+      "placeId": "ATTR_H_01",
+      "files": [
+        "ATTR_H_01_01.jpg",
+        "ATTR_H_01_02.jpg",
+        "ATTR_H_01_03.jpg"
+      ],
+      "sourceType": "user_original_photo",
+      "credit": "Ảnh tự chụp do người dùng cung cấp",
+      "sourceUrl": null,
+      "authorName": null,
+      "license": null,
+      "note": "Người dùng xác nhận tự chụp các ảnh Lăng Khải Định trong hội thoại. Chưa cung cấp tên ghi công, ngày chụp hoặc giấy phép công khai.",
+      "placeName": "lăng Khải Định",
+      "placeUrl": "https://maps.app.goo.gl/LoJRg49Sxx9JhV2i9",
+      "placeUrlNote": "Link địa điểm do người dùng cung cấp, không phải nguồn ảnh."
+    },
+    {
+      "placeId": "ATTR_H_02",
+      "sourceType": "user_supplied_web_sources",
+      "credit": null,
+      "sourceUrl": "https://eticket.hueworldheritage.org.vn/diem-den/cung-an-dinh",
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn từng ảnh do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép.",
+      "files": [
+        "ATTR_H_02_01.png",
+        "ATTR_H_02_02.png",
+        "ATTR_H_02_03.png"
+      ],
+      "placeName": "Cung An Định",
+      "fileSources": [
+        {
+          "file": "ATTR_H_02_01.png",
+          "sourceType": "web",
+          "sourceUrl": "https://eticket.hueworldheritage.org.vn/diem-den/cung-an-dinh",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_02_02.png",
+          "sourceType": "web",
+          "sourceUrl": "https://eticket.hueworldheritage.org.vn/diem-den/cung-an-dinh",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_02_03.png",
+          "sourceType": "web",
+          "sourceUrl": "https://eticket.hueworldheritage.org.vn/diem-den/cung-an-dinh",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        }
+      ]
+    },
+    {
+      "placeId": "ATTR_H_03",
+      "files": [
+        "ATTR_H_03_01.jpg",
+        "ATTR_H_03_02.jpg",
+        "ATTR_H_03_03.jpg"
+      ],
+      "sourceType": "user_original_photo",
+      "credit": "Ảnh tự chụp do người dùng cung cấp",
+      "sourceUrl": null,
+      "authorName": null,
+      "license": null,
+      "note": "Người dùng xác nhận tự chụp các ảnh Đại Nội trong hội thoại. Chưa cung cấp tên ghi công, ngày chụp hoặc giấy phép công khai.",
+      "placeName": "Đại Nội",
+      "placeUrl": "https://maps.app.goo.gl/4CmYruGYt4LMAnMU9",
+      "placeUrlNote": "Link địa điểm do người dùng cung cấp, không phải nguồn ảnh."
+    },
+    {
+      "placeId": "ATTR_H_04",
+      "sourceType": "user_supplied_web_sources",
+      "credit": null,
+      "sourceUrl": null,
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn từng ảnh do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép.",
+      "files": [
+        "ATTR_H_04_01.jpeg",
+        "ATTR_H_04_02.jpg"
+      ],
+      "placeName": "Bến Xưa Vỹ Dạ",
+      "fileSources": [
+        {
+          "file": "ATTR_H_04_01.jpeg",
+          "sourceType": "web",
+          "sourceUrl": "https://nangtrip.com/activities/ben-xua-vy-da",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_04_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.threads.com/@haanhpham.1806/post/DOWeiFJEnMT/media",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        }
+      ]
+    },
+    {
+      "placeId": "ATTR_H_05",
+      "sourceType": "user_supplied_web_sources",
+      "credit": null,
+      "sourceUrl": null,
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn từng ảnh do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép.",
+      "files": [
+        "ATTR_H_05_01.jpg",
+        "ATTR_H_05_02.jpg",
+        "ATTR_H_05_03.jpg"
+      ],
+      "placeName": "chợ Đông Ba",
+      "placeUrl": "https://maps.app.goo.gl/sWjDPqcFDs5ttHiy9",
+      "placeUrlNote": "Link địa điểm do người dùng cung cấp, không phải nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ATTR_H_05_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/kham-pha-cho-dong-ba-khu-cho-phon-hoa-bac-nhat-xu-kinh-ky-2251",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_05_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://travel.com.vn/tin-tuc-du-lich/cho-dong-ba-hue-co-gi-hap-dan-v16168.aspx",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_05_03.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Thuong-thuc-am-thuc-dem-tai-Cho-Dong-Ba-Hue.html/pid/14738/cid/383",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        }
+      ]
+    },
+    {
+      "placeId": "ATTR_H_06",
+      "sourceType": "user_supplied_web_sources",
+      "credit": null,
+      "sourceUrl": null,
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn từng ảnh do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép.",
+      "files": [
+        "ATTR_H_06_01.jpg",
+        "ATTR_H_06_02.png",
+        "ATTR_H_06_03.jpg"
+      ],
+      "placeName": "làng nón bài thơ Tây Hồ",
+      "fileSources": [
+        {
+          "file": "ATTR_H_06_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/nghieng-minh-truoc-que-huong-cua-nhung-chiec-non-bai-tho-lang-tay-ho-2525",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_06_02.png",
+          "sourceType": "web",
+          "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Lang-nghe-non-la-xu-Hue.html/pid/8543/cid/323",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_06_03.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://cdn3.ivivu.com/2014/05/lang-tay-ho-noi-xuat-xu-non-bai-tho-xu-hue-8-ivivu.jpg",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "direct_image",
+          "note": "Link ảnh trực tiếp; chưa có link bài viết chứa ảnh."
+        }
+      ]
+    },
+    {
+      "placeId": "ATTR_H_07",
+      "sourceType": "user_supplied_web_sources",
+      "credit": null,
+      "sourceUrl": "https://mia.vn/cam-nang-du-lich/truong-quoc-hoc-hue-chiem-nguong-ve-dep-dam-chat-troi-au-tai-co-do-2448",
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn từng ảnh do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép. Một link Quốc Học được áp dụng cho cả ba ảnh theo nhóm người dùng cung cấp; cần đối chiếu từng ảnh.",
+      "files": [
+        "ATTR_H_07_01.jpg",
+        "ATTR_H_07_02.jpg",
+        "ATTR_H_07_03.jpg"
+      ],
+      "placeName": "Quốc Học Huế",
+      "fileSources": [
+        {
+          "file": "ATTR_H_07_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/truong-quoc-hoc-hue-chiem-nguong-ve-dep-dam-chat-troi-au-tai-co-do-2448",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_07_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/truong-quoc-hoc-hue-chiem-nguong-ve-dep-dam-chat-troi-au-tai-co-do-2448",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_07_03.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/truong-quoc-hoc-hue-chiem-nguong-ve-dep-dam-chat-troi-au-tai-co-do-2448",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        }
+      ]
+    },
+    {
+      "placeId": "ATTR_H_08",
+      "sourceType": "user_supplied_web_sources",
+      "credit": null,
+      "sourceUrl": null,
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn từng ảnh do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép.",
+      "files": [
+        "ATTR_H_08_01.jpeg",
+        "ATTR_H_08_02.jpg",
+        "ATTR_H_08_03.jpg"
+      ],
+      "placeName": "Làng Hương Thủy Xuân",
+      "placeUrl": "https://maps.app.goo.gl/aG7DpyQf9atYK3t97",
+      "placeUrlNote": "Link địa điểm do người dùng cung cấp, không phải nguồn ảnh.",
+      "fileSources": [
+        {
+          "file": "ATTR_H_08_01.jpeg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/alo-o-day-co-tat-tan-tat-kinh-nghiem-di-lang-huong-thuy-xuan-ne-ban-oi-2542",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_08_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.lagunalangco.com/vi/lang-huong-thuy-xuan-lang-nghe-700-tuoi-giua-long-co-do/",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        },
+        {
+          "file": "ATTR_H_08_03.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.lagunalangco.com/vi/lang-huong-thuy-xuan-lang-nghe-700-tuoi-giua-long-co-do/",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        }
+      ]
+    },
+    {
+      "placeId": "ATTR_H_09",
+      "sourceType": "mixed",
+      "credit": null,
+      "sourceUrl": null,
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn từng ảnh do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép.",
+      "files": [
+        "ATTR_H_09_01.jpg",
+        "ATTR_H_09_02.jpg",
+        "ATTR_H_09_03.jpg"
+      ],
+      "placeName": "Chùa Thiên Mụ",
+      "fileSources": [
+        {
+          "file": "ATTR_H_09_01.jpg",
+          "sourceType": "user_original_photo",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": "Ảnh tự chụp do người dùng cung cấp",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "ATTR_H_09_02.jpg",
+          "sourceType": "user_original_photo",
+          "sourceUrl": null,
+          "authorName": null,
+          "license": null,
+          "credit": "Ảnh tự chụp do người dùng cung cấp",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "ATTR_H_09_03.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://vietluxtour.com/kham-pha/chua-thien-mu-hue.html?srsltid=AYCX9vIQkTUIyWktreG7mcbOM53qzJPZi1aPy1fm_dzydF0ltX38WVq5",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported",
+          "sourceKind": "web_page"
+        }
+      ]
+    },
+    {
+      "placeId": "ATTR_H_10",
+      "sourceType": "user_supplied_web_sources",
+      "credit": null,
+      "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Cau-Truong-Tien.html/pid/10594/cid/81",
+      "authorName": null,
+      "license": null,
+      "note": "Nguồn cho hai ảnh Cầu Trường Tiền do người dùng cung cấp; chưa đối chiếu độc lập nội dung trang, tác giả hoặc giấy phép.",
+      "files": [
+        "ATTR_H_10_01.jpg",
+        "ATTR_H_10_02.jpg"
+      ],
+      "placeName": "Cầu Trường Tiền",
+      "fileSources": [
+        {
+          "file": "ATTR_H_10_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Cau-Truong-Tien.html/pid/10594/cid/81",
+          "sourceKind": "web_page",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "ATTR_H_10_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Cau-Truong-Tien.html/pid/10594/cid/81",
+          "sourceKind": "web_page",
+          "authorName": null,
+          "license": null,
+          "credit": null,
+          "verificationStatus": "user_reported"
+        }
+      ]
+    }
+  ]
+}

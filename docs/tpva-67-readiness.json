@@ -1,0 +1,323 @@
+{
+  "status": "INCOMPLETE",
+  "attractionsWithImages": 10,
+  "restaurantsWithImages": 10,
+  "hotelRecords": 13,
+  "hotelProperties": 12,
+  "hotelRecordsMissingImages": [],
+  "hotelRecordsMissingDescriptions": [],
+  "missingImageSources": [
+    {
+      "placeId": "HOTEL_H_EMM_DELUXE",
+      "image": "/images/accomodation.HUE/HOTEL_H_EMM_01.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_EMM_DELUXE",
+      "image": "/images/accomodation.HUE/HOTEL_H_EMM_02.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_EMM_DELUXE",
+      "image": "/images/accomodation.HUE/HOTEL_H_EMM_03.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_EMM_FAMILY",
+      "image": "/images/accomodation.HUE/HOTEL_H_EMM_01.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_EMM_FAMILY",
+      "image": "/images/accomodation.HUE/HOTEL_H_EMM_02.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_EMM_FAMILY",
+      "image": "/images/accomodation.HUE/HOTEL_H_EMM_03.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_ROSALEEN_SUPERIOR",
+      "image": "/images/accomodation.HUE/HOTEL_H_ROSALEEN_SUPERIOR_01.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_ROSALEEN_SUPERIOR",
+      "image": "/images/accomodation.HUE/HOTEL_H_ROSALEEN_SUPERIOR_02.jpg"
+    },
+    {
+      "placeId": "HOTEL_H_ROSALEEN_SUPERIOR",
+      "image": "/images/accomodation.HUE/HOTEL_H_ROSALEEN_SUPERIOR_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_01",
+      "image": "/images/accomodation.HUE/ACCOM_H_01_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_01",
+      "image": "/images/accomodation.HUE/ACCOM_H_01_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_01",
+      "image": "/images/accomodation.HUE/ACCOM_H_01_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_02",
+      "image": "/images/accomodation.HUE/ACCOM_H_02_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_02",
+      "image": "/images/accomodation.HUE/ACCOM_H_02_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_02",
+      "image": "/images/accomodation.HUE/ACCOM_H_02_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_03",
+      "image": "/images/accomodation.HUE/ACCOM_H_03_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_03",
+      "image": "/images/accomodation.HUE/ACCOM_H_03_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_03",
+      "image": "/images/accomodation.HUE/ACCOM_H_03_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_04",
+      "image": "/images/accomodation.HUE/ACCOM_H_04_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_04",
+      "image": "/images/accomodation.HUE/ACCOM_H_04_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_04",
+      "image": "/images/accomodation.HUE/ACCOM_H_04_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_05",
+      "image": "/images/accomodation.HUE/ACCOM_H_05_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_05",
+      "image": "/images/accomodation.HUE/ACCOM_H_05_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_05",
+      "image": "/images/accomodation.HUE/ACCOM_H_05_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_06",
+      "image": "/images/accomodation.HUE/ACCOM_H_06_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_06",
+      "image": "/images/accomodation.HUE/ACCOM_H_06_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_06",
+      "image": "/images/accomodation.HUE/ACCOM_H_06_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_07",
+      "image": "/images/accomodation.HUE/ACCOM_H_07_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_07",
+      "image": "/images/accomodation.HUE/ACCOM_H_07_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_07",
+      "image": "/images/accomodation.HUE/ACCOM_H_07_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_08",
+      "image": "/images/accomodation.HUE/ACCOM_H_08_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_08",
+      "image": "/images/accomodation.HUE/ACCOM_H_08_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_08",
+      "image": "/images/accomodation.HUE/ACCOM_H_08_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_09",
+      "image": "/images/accomodation.HUE/ACCOM_H_09_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_09",
+      "image": "/images/accomodation.HUE/ACCOM_H_09_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_09",
+      "image": "/images/accomodation.HUE/ACCOM_H_09_03.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_10",
+      "image": "/images/accomodation.HUE/ACCOM_H_10_01.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_10",
+      "image": "/images/accomodation.HUE/ACCOM_H_10_02.jpg"
+    },
+    {
+      "placeId": "ACCOM_H_10",
+      "image": "/images/accomodation.HUE/ACCOM_H_10_03.jpg"
+    }
+  ],
+  "bookingIdentityNeedsReview": [
+    {
+      "placeId": "HOTEL_H_EMM_DELUXE",
+      "name": "ÊMM Hotel Hue",
+      "datasetAddress": "15 Ly Thuong Kiet, Hue",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/festival-hue.da.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "HOTEL_H_EMM_FAMILY",
+      "name": "ÊMM Hotel Hue",
+      "datasetAddress": "15 Ly Thuong Kiet, Hue",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/festival-hue.da.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "HOTEL_H_ROSALEEN_SUPERIOR",
+      "name": "Rosaleen Boutique Hotel",
+      "datasetAddress": "34–36 Chu Van An, Hue",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/new-star.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "ACCOM_H_02",
+      "name": "Bailey Hotel Hue",
+      "datasetAddress": "5/28 Võ Thị Sáu, Phú Hội, Huế",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/bailey-hue.pt-br.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "ACCOM_H_03",
+      "name": "Lumiere Boutique Vỹ Dạ",
+      "datasetAddress": "98 Phạm Văn Đồng, Vỹ Dạ, Huế",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/lumiere-boutique-vy-da.fr.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "ACCOM_H_04",
+      "name": "Century Riverside Hotel Hue",
+      "datasetAddress": "49 Lê Lợi, Phú Hội, Huế",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/century-riverside-hue.id.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "ACCOM_H_07",
+      "name": "La Vela Hue Hotel",
+      "datasetAddress": "17, đường số 22, Đông Nam Thủy An, phường Thanh Thủy, thành phố Huế",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/la-vela-hue.vi.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "ACCOM_H_08",
+      "name": "Indochine Palace",
+      "datasetAddress": "105A Hùng Vương, phường Thuận Hóa, thành phố Huế",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/indochine-palace.fr.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    },
+    {
+      "placeId": "ACCOM_H_10",
+      "name": "Azerai La Residence Hue",
+      "datasetAddress": "05 Lê Lợi, Vĩnh Ninh, Huế",
+      "bookingCandidateUrl": "https://www.booking.com/hotel/vn/azerai-la-residence-hue.vi.html",
+      "identityStatus": "name_match_address_review_required",
+      "note": "",
+      "searchedOn": "2026-11-19",
+      "evidenceType": "web_search_index",
+      "liveAvailabilityVerified": false,
+      "priceVnd": null,
+      "checkIn": null,
+      "checkOut": null,
+      "adults": null,
+      "childrenAges": null,
+      "rooms": null
+    }
+  ],
+  "note": "Dated quotes remain unknown. Candidate links are not verified identity or availability. Images/descriptions supplied for 20 curated places; hotel assets and unresolved property identities remain outstanding."
+}
