@@ -1,6 +1,8 @@
 // TODO(M6): API client for the backend. The browser must never hold third-party API credentials.
 export const API_BASE = import.meta.env?.VITE_API_BASE ?? "/api";
 
+import { MOCK_PLANS } from "./mockData.js";
+
 export { knownTotal, fmtMoney } from "./mockData.js";
 
 export {
@@ -11,7 +13,25 @@ export {
   isPlanSelected,
 } from "./planSelection.js";
 
-import { getSelectedPlan, setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
+import { getSelectedPlan, getSelectedPlanId, setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
+
+const SAMPLE_PLAN_IDS = new Set(
+  MOCK_PLANS.flatMap((plan) => [plan.id, plan.planId])
+    .filter(Boolean)
+    .map(String)
+);
+
+/**
+ * One-time cleanup for the removed sample plan. Earlier builds could save the
+ * bundled demo itinerary as the user's selected trip, which then kept appearing
+ * on the review page. Drop any stored selection that points at that sample so the
+ * review page only ever shows a plan generated in this session.
+ */
+export function purgeSampleSelection() {
+  const stored = getSelectedPlan();
+  const id = stored?.id || stored?.planId || getSelectedPlanId();
+  if (id && SAMPLE_PLAN_IDS.has(String(id))) clearSelectedPlan();
+}
 
 function apiUrl(path) {
   if (!API_BASE || API_BASE === "/api") return path;

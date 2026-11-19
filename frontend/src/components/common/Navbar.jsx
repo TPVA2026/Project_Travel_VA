@@ -3,12 +3,6 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { clearSelectedPlan } from '../../services/api.js'
 import Icon from './Icon.jsx'
 
-const STEPS = [
-  { to: '/', end: true, step: '1', label: 'Plan a trip', hint: 'Dates, budget and style' },
-  { to: '/results', step: '2', label: 'Compare', hint: 'Verified plans side by side' },
-  { to: '/selected', step: '3', label: 'Your trip', hint: 'Schedule, costs and changes' },
-]
-
 export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -91,24 +85,6 @@ export default function Navbar() {
             </span>
           </NavLink>
 
-          <nav className="header-nav" aria-label="Trip steps">
-            {STEPS.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) =>
-                  `header-nav-link${isActive ? ' is-active' : ''}`
-                }
-              >
-                <span className="nav-step" aria-hidden="true">
-                  {item.step}
-                </span>
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-
           {showCta && (
             <button
               type="button"
@@ -121,51 +97,34 @@ export default function Navbar() {
             </button>
           )}
 
-          <button
-            type="button"
-            ref={toggleRef}
-            className="menu-toggle"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            onClick={() => setOpen((value) => !value)}
-          >
-            <Icon name={open ? 'close' : 'menu'} size={22} />
-          </button>
-        </div>
-
-        <div id="mobile-menu" className={`mobile-menu${open ? ' is-open' : ''}`}>
-          <nav className="mobile-nav" aria-label="Trip steps">
-            {STEPS.map((item, index) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                ref={index === 0 ? firstLinkRef : undefined}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `mobile-nav-link${isActive ? ' is-active' : ''}`
-                }
-              >
-                <span className="nav-step" aria-hidden="true">
-                  {item.step}
-                </span>
-                <span className="mobile-nav-copy">
-                  <strong>{item.label}</strong>
-                  <span>{item.hint}</span>
-                </span>
-                <Icon name="arrowRight" size={17} />
-              </NavLink>
-            ))}
-          </nav>
-
           {showCta && (
-            <button type="button" className="mobile-cta" onClick={startNewTrip}>
-              <Icon name="refresh" size={17} />
-              Start a new trip
+            <button
+              type="button"
+              ref={toggleRef}
+              className="menu-toggle"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              onClick={() => setOpen((value) => !value)}
+            >
+              <Icon name={open ? 'close' : 'menu'} size={22} />
             </button>
           )}
         </div>
+
+        {showCta && (
+          <div id="mobile-menu" className={`mobile-menu${open ? ' is-open' : ''}`}>
+            <button
+              type="button"
+              ref={firstLinkRef}
+              className="mobile-cta"
+              onClick={startNewTrip}
+            >
+              <Icon name="refresh" size={17} />
+              Start a new trip
+            </button>
+          </div>
+        )}
       </header>
     </>
   )

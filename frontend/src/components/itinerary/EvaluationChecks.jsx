@@ -27,29 +27,38 @@ function travelDaySummary(day) {
     .join(' · ')
 }
 
-export default function EvaluationChecks({ evaluation }) {
+export default function EvaluationChecks({ evaluation, compact = false }) {
   if (!evaluation) return null
 
   const totals = evaluation?.components?.travel?.dailyTotals
   const showTotals = Array.isArray(totals) && totals.length > 0
+  const chips = VERIFICATION_CHECKS.map(({ key, label }) => {
+    const status = getCheckStatus(evaluation, key) || 'UNVERIFIED'
+    return (
+      <div key={key} className="check-chip" role="listitem">
+        <span className="check-chip-icon" aria-hidden="true">
+          <Icon name={CHECK_ICONS[key]} size={15} />
+        </span>
+        <span className="check-chip-label">{label}</span>
+        <span className={`badge badge-${status}`}>
+          {CHECK_STATUS_LABEL[status] || status}
+        </span>
+      </div>
+    )
+  })
+
+  if (compact) {
+    return (
+      <div className="check-chips check-chips--compact" role="list" aria-label="Checks at a glance">
+        {chips}
+      </div>
+    )
+  }
 
   return (
     <div className="check-panel" aria-label="Verification status by check">
       <div className="check-chips" role="list">
-        {VERIFICATION_CHECKS.map(({ key, label }) => {
-          const status = getCheckStatus(evaluation, key) || 'UNVERIFIED'
-          return (
-            <div key={key} className="check-chip" role="listitem">
-              <span className="check-chip-icon" aria-hidden="true">
-                <Icon name={CHECK_ICONS[key]} size={15} />
-              </span>
-              <span className="check-chip-label">{label}</span>
-              <span className={`badge badge-${status}`}>
-                {CHECK_STATUS_LABEL[status] || status}
-              </span>
-            </div>
-          )
-        })}
+        {chips}
       </div>
 
       {showTotals && (

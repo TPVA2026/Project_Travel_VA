@@ -4,6 +4,7 @@ import { TravelSkyIllustration } from '../components/common/Illustrations.jsx'
 import FlightIntro from '../components/intro/FlightIntro.jsx'
 import { INTRO_STORAGE_KEY } from '../components/intro/introAssets.js'
 import TravelForm from '../components/input/TravelForm.jsx'
+import TripProgress from '../components/TripProgress.jsx'
 
 export default function HomePage() {
   const [showIntro, setShowIntro] = useState(false)
@@ -67,6 +68,8 @@ export default function HomePage() {
           </li>
         </ul>
       </header>
+
+      <TripProgress currentStep={1} />
 
       <div className="plan-layout">
         <div className="plan-workspace">

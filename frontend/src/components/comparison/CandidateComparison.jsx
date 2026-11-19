@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   candidateStatusLabel,
@@ -28,6 +28,76 @@ function statusClass(status) {
 
 function countLabel(count, singular, plural = `${singular}s`) {
   return `${count} ${count === 1 ? singular : plural}`
+}
+
+function columnClass(index, activeIndex) {
+  if (activeIndex == null) return ''
+  return index === activeIndex ? 'compare-col--active' : 'compare-col--dim'
+}
+
+function ComparisonViewControl({ differencesOnly, onChange, disabled }) {
+  const containerRef = useRef(null)
+  const buttonsRef = useRef([])
+  const [thumb, setThumb] = useState({ left: 0, width: 0 })
+
+  useLayoutEffect(() => {
+    const container = containerRef.current
+    const activeButton = buttonsRef.current[differencesOnly ? 1 : 0]
+    if (!container || !activeButton) return undefined
+
+    const updateThumb = () => {
+      setThumb({
+        left: activeButton.offsetLeft,
+        width: activeButton.offsetWidth,
+      })
+    }
+
+    updateThumb()
+    if (typeof ResizeObserver === 'function') {
+      const observer = new ResizeObserver(updateThumb)
+      observer.observe(container)
+      return () => observer.disconnect()
+    }
+    window.addEventListener('resize', updateThumb)
+    return () => window.removeEventListener('resize', updateThumb)
+  }, [differencesOnly, disabled])
+
+  return (
+    <div
+      ref={containerRef}
+      className="compare-view-toggle"
+      role="group"
+      aria-label="Comparison details"
+    >
+      <span
+        className="compare-view-thumb"
+        aria-hidden="true"
+        style={{ width: `${thumb.width}px`, transform: `translateX(${thumb.left}px)` }}
+      />
+      <button
+        ref={(node) => {
+          buttonsRef.current[0] = node
+        }}
+        type="button"
+        aria-pressed={!differencesOnly}
+        onClick={() => onChange(false)}
+      >
+        All details
+      </button>
+      <button
+        ref={(node) => {
+          buttonsRef.current[1] = node
+        }}
+        type="button"
+        data-testid="compare-differences-only"
+        aria-pressed={differencesOnly}
+        disabled={disabled}
+        onClick={() => onChange(true)}
+      >
+        Differences only
+      </button>
+    </div>
+  )
 }
 
 function RankingLine({ ranking }) {
@@ -65,7 +135,9 @@ function CostLine({ cost }) {
   return (
     <>
       <div className="card-cost-row">
-        <span className="cost-label">{cost.complete ? 'Total cost' : 'Known total'}</span>
+        <span className="cost-label">
+          {cost.complete ? 'Total cost' : 'Known costs · partial'}
+        </span>
         <strong className="card-cost">{money(cost.knownTotal)}</strong>
       </div>
       {cost.missing.length > 0 && (
@@ -131,6 +203,10 @@ function CandidateCard({
   placesById,
   onSelect,
   showDifference,
+  active,
+  focused,
+  onHover,
+  onToggleFocus,
 }) {
   const status = normalizeCandidateStatus(candidate.status)
   const plan = candidate.plan || {}
@@ -157,7 +233,19 @@ function CandidateCard({
   const detailUrl = `/selected?id=${encodeURIComponent(candidate.planId || plan.planId)}`
 
   return (
-    <article className={`card plan-card ${selected ? 'plan-card--selected' : ''}`}>
+    <article
+      className={`card plan-card ${selected ? 'plan-card--selected' : ''} ${
+        active ? 'plan-card--active' : ''
+      } ${active === false ? 'plan-card--dim' : ''}`}
+      id={`compare-card-${entry.index + 1}`}
+      data-testid={`plan-card-${entry.index + 1}`}
+      onMouseEnter={() => onHover?.(entry.index)}
+      onMouseLeave={() => onHover?.(null)}
+      onFocusCapture={() => onHover?.(entry.index)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) onHover?.(null)
+      }}
+    >
       <div className="img-wrap candidate-img-wrap">
         {image && (
           <img
@@ -189,7 +277,19 @@ function CandidateCard({
       </div>
 
       <div className="card-body">
-        <span className="card-index-label">Option {entry.index + 1}</span>
+        <div className="card-index-row">
+          <span className="card-index-label">Option {entry.index + 1}</span>
+          <button
+            type="button"
+            className={`card-focus-button ${focused ? 'is-focused' : ''}`}
+            data-testid={`card-focus-${entry.index + 1}`}
+            aria-pressed={focused}
+            onClick={() => onToggleFocus?.(entry.index)}
+          >
+            <Icon name={focused ? 'check' : 'eye'} size={12} />
+            {focused ? 'Focused' : 'Focus'}
+          </button>
+        </div>
         <h3 className="card-destination">{destination || plan.destinationId}</h3>
         {plan.title && <p className="card-title">{plan.title}</p>}
 
@@ -273,7 +373,13 @@ function CandidateCard({
   )
 }
 
-function ComparisonMatrix({ entries }) {
+function ComparisonMatrix({
+  entries,
+  activeIndex,
+  focusedIndex,
+  onHover,
+  onToggleFocus,
+}) {
   const [differencesOnly, setDifferencesOnly] = useState(false)
   const rows = useMemo(() => {
     const status = entries.map((entry) =>
@@ -359,7 +465,7 @@ function ComparisonMatrix({ entries }) {
         'Status',
         status.map((label) => ({ display: label, detail: '', key: label }))
       ),
-      makeRow('cost', 'Known cost', costValues),
+      makeRow('cost', 'Known costs', costValues),
       makeRow('stops', 'Stops', stopValues),
       makeRow('mix', 'Sights & meals', mixValues),
       makeRow('legs', 'Route check', legValues),
@@ -371,34 +477,38 @@ function ComparisonMatrix({ entries }) {
     ? rows.filter((row) => row.differs)
     : rows
 
+  useEffect(() => {
+    if (differentRowCount === 0) setDifferencesOnly(false)
+  }, [differentRowCount])
+
   return (
     <div className="compare-matrix-block">
       <div className="compare-matrix-head">
-        <h3>At a glance</h3>
+        <h3>Compare details</h3>
         <div className="compare-matrix-tools">
           <p className="muted small" aria-live="polite">
-            {differentRowCount === 1
-              ? '1 row differs.'
-              : `${differentRowCount} rows differ.`}
+            {focusedIndex != null
+              ? `Focused on Option ${focusedIndex + 1} · ${differentRowCount} ${
+                  differentRowCount === 1 ? 'row differs' : 'rows differ'
+                }.`
+              : differentRowCount === 1
+                ? '1 row differs.'
+                : `${differentRowCount} rows differ.`}
           </p>
-          <div className="compare-view-toggle" role="group" aria-label="Comparison details">
+          {focusedIndex != null && (
             <button
               type="button"
-              aria-pressed={!differencesOnly}
-              onClick={() => setDifferencesOnly(false)}
+              className="compare-focus-clear"
+              onClick={() => onToggleFocus?.(focusedIndex)}
             >
-              All details
+              Clear focus
             </button>
-            <button
-              type="button"
-              data-testid="compare-differences-only"
-              aria-pressed={differencesOnly}
-              disabled={differentRowCount === 0}
-              onClick={() => setDifferencesOnly(true)}
-            >
-              Differences only
-            </button>
-          </div>
+          )}
+          <ComparisonViewControl
+            differencesOnly={differencesOnly}
+            onChange={setDifferencesOnly}
+            disabled={differentRowCount === 0}
+          />
         </div>
       </div>
       <div
@@ -412,11 +522,31 @@ function ComparisonMatrix({ entries }) {
             <tr>
               <th scope="col">Compare</th>
               {entries.map((entry) => (
-                <th scope="col" key={entry.id}>
-                  Option {entry.index + 1}
-                  <span className="compare-matrix-title">
-                    {entry.plan.title || entry.plan.destinationId}
-                  </span>
+                <th
+                  scope="col"
+                  key={`${entry.id}-${entry.index}`}
+                  className={columnClass(entry.index, activeIndex)}
+                >
+                  <button
+                    type="button"
+                    className="compare-plan-focus"
+                    data-testid={`compare-focus-${entry.index + 1}`}
+                    aria-pressed={focusedIndex === entry.index}
+                    title={`Focus Option ${entry.index + 1}`}
+                    onMouseEnter={() => onHover?.(entry.index)}
+                    onMouseLeave={() => onHover?.(null)}
+                    onFocus={() => onHover?.(entry.index)}
+                    onBlur={() => onHover?.(null)}
+                    onClick={() => onToggleFocus?.(entry.index)}
+                  >
+                    <span>Option {entry.index + 1}</span>
+                    <span className="compare-matrix-title">
+                      {entry.plan.title || entry.plan.destinationId}
+                    </span>
+                    <span className="compare-plan-focus-hint">
+                      {focusedIndex === entry.index ? 'Focused' : 'Focus'}
+                    </span>
+                  </button>
                 </th>
               ))}
             </tr>
@@ -432,7 +562,10 @@ function ComparisonMatrix({ entries }) {
                   {row.differs && <span className="compare-diff-tag">Differs</span>}
                 </th>
                 {row.values.map((value, index) => (
-                  <td key={`${entries[index].id}-${row.key}`}>
+                  <td
+                    key={`${entries[index].id}-${entries[index].index}-${row.key}`}
+                    className={columnClass(entries[index].index, activeIndex)}
+                  >
                     <span className="compare-value">{value.display}</span>
                     {value.detail && (
                       <span className="compare-value-detail">{value.detail}</span>
@@ -445,13 +578,13 @@ function ComparisonMatrix({ entries }) {
         </table>
       </div>
       <p className="compare-matrix-hint muted small">
-        Swipe to compare every option.
+        Hover a plan to highlight its column. Swipe to compare every option.
       </p>
     </div>
   )
 }
 
-function DayByDayComparison({ entries }) {
+function DayByDayComparison({ entries, activeIndex, onHover }) {
   const dayNumbers = [
     ...new Set(entries.flatMap((entry) => entry.dayStats.map((day) => day.dayNumber))),
   ].sort((a, b) => a - b)
@@ -519,7 +652,15 @@ function DayByDayComparison({ entries }) {
               {entries.map((entry) => {
                 const route = entry.routes.find((day) => day.dayNumber === selectedDay)
                 return (
-                  <div className="route-compare-column" key={`${entry.id}-${selectedDay}`}>
+                  <div
+                    className={`route-compare-column ${columnClass(
+                      entry.index,
+                      activeIndex
+                    )}`}
+                    key={`${entry.id}-${entry.index}-${selectedDay}`}
+                    onMouseEnter={() => onHover?.(entry.index)}
+                    onMouseLeave={() => onHover?.(null)}
+                  >
                     <span className="route-compare-column-label">
                       Option {entry.index + 1}
                     </span>
@@ -528,7 +669,7 @@ function DayByDayComparison({ entries }) {
                         {route.stops.map((stop) => (
                           <li
                             className={stop.unique ? 'route-stop route-stop--unique' : 'route-stop'}
-                            key={`${entry.id}-${stop.activityId}`}
+                            key={`${entry.id}-${entry.index}-${stop.activityId}`}
                           >
                             <span className="route-stop-time">{stop.startTime}</span>
                             <span className="route-stop-name">{stop.name}</span>
@@ -558,11 +699,36 @@ export default function CandidateComparison({
   selectedPlanId,
   placesById,
   onSelectPlan,
+  notice,
 }) {
   const entries = useMemo(
     () => compareCandidatePlans(candidates, placesById),
     [candidates, placesById]
   )
+  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [focusedIndex, setFocusedIndex] = useState(null)
+
+  useEffect(() => {
+    setHoveredIndex(null)
+    setFocusedIndex(null)
+  }, [candidates])
+
+  const safeFocusedIndex =
+    focusedIndex != null && entries[focusedIndex] ? focusedIndex : null
+  const activeIndex = hoveredIndex ?? safeFocusedIndex
+  const toggleFocus = (index) => {
+    setFocusedIndex((previous) => (previous === index ? null : index))
+    setHoveredIndex(null)
+    if (safeFocusedIndex !== index) {
+      const scroll = () => {
+        document
+          .getElementById(`compare-card-${index + 1}`)
+          ?.scrollIntoView?.({ behavior: 'smooth', block: 'center' })
+      }
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(scroll)
+      else setTimeout(scroll, 0)
+    }
+  }
 
   if (entries.length === 0) {
     return <p className="muted">No itineraries to compare.</p>
@@ -573,21 +739,15 @@ export default function CandidateComparison({
     ? getDestinationLabel(sameDestination) || sameDestination
     : ''
   const sameDestinationPlans = sameDestination && entries.length > 1
-  const heading = sameDestinationPlans
-    ? `${entries.length} ways to see ${destinationName}`
-    : entries.length === 1
-      ? '1 itinerary from the assistant'
-      : `${entries.length} itineraries to compare`
-  const subcopy = sameDestinationPlans
-    ? 'Every option covers the same destination. Compare the stops, route order, and pace to see how they differ.'
-    : 'Choose a plan and open its details to see the full backend checks and warnings.'
 
   return (
     <section className="results-list" aria-labelledby="candidate-results-heading">
       <div className="section-head">
         <div>
-          <h2 id="candidate-results-heading">{heading}</h2>
-          <p className="muted">{subcopy}</p>
+          <h2 id="candidate-results-heading">Find the plan that feels like you</h2>
+          <p className="muted">
+            Compare recommended destinations, stops, and daily pace to find your best fit.
+          </p>
         </div>
         <span className="count-pill">
           <Icon name="route" size={15} />
@@ -606,17 +766,21 @@ export default function CandidateComparison({
         </p>
       )}
 
-      {entries.length > 1 && (
-        <>
-          <ComparisonMatrix entries={entries} />
-          <DayByDayComparison entries={entries} />
-        </>
-      )}
+      <div className="results-verification">
+        <p className="results-verification-note">
+          <Icon name="info" size={15} />
+          <span>
+            Statuses, costs, and route checks reflect the verification results available for
+            each plan. Unverified details stay labeled and are never counted as confirmed.
+          </span>
+        </p>
+        {notice}
+      </div>
 
       <div className="cards plan-comparison-grid">
         {entries.map((entry) => (
           <CandidateCard
-            key={entry.id}
+            key={`${entry.id}-${entry.index}`}
             candidate={entry.candidate}
             entry={entry}
             ranking={ranking}
@@ -624,9 +788,30 @@ export default function CandidateComparison({
             placesById={placesById}
             onSelect={onSelectPlan}
             showDifference={entries.length > 1}
+            active={activeIndex == null ? null : activeIndex === entry.index}
+            focused={safeFocusedIndex === entry.index}
+            onHover={setHoveredIndex}
+            onToggleFocus={toggleFocus}
           />
         ))}
       </div>
+
+      {entries.length > 1 && (
+        <>
+          <ComparisonMatrix
+            entries={entries}
+            activeIndex={activeIndex}
+            focusedIndex={safeFocusedIndex}
+            onHover={setHoveredIndex}
+            onToggleFocus={toggleFocus}
+          />
+          <DayByDayComparison
+            entries={entries}
+            activeIndex={activeIndex}
+            onHover={setHoveredIndex}
+          />
+        </>
+      )}
     </section>
   )
 }

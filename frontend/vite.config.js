@@ -6,5 +6,11 @@ import react from "@vitejs/plugin-react";
 const apiTarget = process.env.TRAVEL_API_ORIGIN || "http://localhost:3001";
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5173, proxy: { "/api": { target: apiTarget }, "/itineraries": { target: apiTarget } } }
+  server: {
+    port: 5173,
+    proxy: { "/api": { target: apiTarget }, "/itineraries": { target: apiTarget } },
+    // WSL mounts on /mnt/* do not emit inotify events, so Vite must poll for
+    // changes or it keeps serving stale CSS/JS after edits.
+    watch: { usePolling: true, interval: 300 },
+  },
 });

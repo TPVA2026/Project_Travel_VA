@@ -17,8 +17,10 @@ import {
   getDestinationLabel,
 } from '../services/destinationImages.js'
 import CandidateComparison from '../components/comparison/CandidateComparison.jsx'
+import TripProgress from '../components/TripProgress.jsx'
 import Loading from '../components/common/Loading.jsx'
 import ErrorMessage from '../components/common/ErrorMessage.jsx'
+import Fireworks from '../components/common/Fireworks.jsx'
 import Icon from '../components/common/Icon.jsx'
 
 const REQUEST_KEY = 'tpva-travel-request'
@@ -93,15 +95,23 @@ function RequestSummary({ request }) {
 
   if (Array.isArray(request.notes)) {
     return (
-      <div className="trip-chips" aria-label="Your trip brief">
-        <span className="trip-chip">
-          <Icon name="sparkle" size={16} />
-          Described in your own words
-        </span>
-        <span className="trip-chip trip-chip--muted">
-          {request.notes.length} {request.notes.length === 1 ? 'answer' : 'answers'} received
-        </span>
-      </div>
+      <section className="trip-summary" aria-labelledby="trip-summary-heading">
+        <div className="trip-summary-head">
+          <span className="trip-summary-label" id="trip-summary-heading">
+            <Icon name="compass" size={16} />
+            Your trip
+          </span>
+        </div>
+        <div className="trip-chips" aria-label="Your trip brief">
+          <span className="trip-chip">
+            <Icon name="sparkle" size={16} />
+            Described in your own words
+          </span>
+          <span className="trip-chip trip-chip--muted">
+            {request.notes.length} {request.notes.length === 1 ? 'answer' : 'answers'} received
+          </span>
+        </div>
+      </section>
     )
   }
 
@@ -128,14 +138,23 @@ function RequestSummary({ request }) {
   if (chips.length === 0) return null
 
   return (
-    <div className="trip-chips" aria-label="Your trip details">
-      {chips.map((chip) => (
-        <span key={chip.label} className="trip-chip">
-          <Icon name={chip.icon} size={16} />
-          {chip.label}
+    <section className="trip-summary" aria-labelledby="trip-summary-heading">
+      <div className="trip-summary-head">
+        <span className="trip-summary-label" id="trip-summary-heading">
+          <Icon name="compass" size={16} />
+          Your trip
         </span>
-      ))}
-    </div>
+        <span className="trip-summary-note">From the details you entered</span>
+      </div>
+      <div className="trip-chips" aria-label="Your trip details">
+        {chips.map((chip) => (
+          <span key={chip.label} className="trip-chip">
+            <Icon name={chip.icon} size={16} />
+            {chip.label}
+          </span>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -143,14 +162,16 @@ function PartialResultsBanner({ pipeline }) {
   const warnings = Array.isArray(pipeline?.warnings) ? pipeline.warnings : []
   if (warnings.length === 0) return null
   const count = pipeline?.candidates?.length || 0
+  const hasFullSet = count >= PIPELINE_MAX_CANDIDATES
   return (
     <div className="plan-alert-box alert-unverified" role="status" data-testid="partial-results-banner">
       <Icon name="alert" size={16} />
       <div className="plan-alert-groups">
-        <strong>Partial results</strong>
+        <strong>{hasFullSet ? 'Some checks could not finish' : 'Partial results'}</strong>
         <p className="muted small">
-          Only {count}/{PIPELINE_MAX_CANDIDATES} itineraries were returned. No replacement plan
-          was taken from sample data; the statuses below are real check results.
+          {hasFullSet
+            ? `${count} itineraries were returned, but some checks could not finish. The statuses below are real check results.`
+            : `Only ${count}/${PIPELINE_MAX_CANDIDATES} itineraries were returned. No replacement plan was taken from sample data; the statuses below are real check results.`}
         </p>
         <ul>
           {warnings.map((warning, index) => (
@@ -229,6 +250,7 @@ export default function ResultsPage() {
   const [aiError, setAiError] = useState(null)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
+  const [celebrate, setCelebrate] = useState(false)
   const startedRequestRef = useRef(null)
 
   const loadAiPlan = useCallback(async () => {
@@ -341,6 +363,7 @@ export default function ResultsPage() {
     }
     await selectPlan(savedPlan)
     setSelectedPlanId(id)
+    setCelebrate(true)
   }
 
   const selectedCandidate = aiCandidates.find(
@@ -352,16 +375,19 @@ export default function ResultsPage() {
 
   return (
     <section className="results-page">
+      <Fireworks active={celebrate} onDone={() => setCelebrate(false)} />
       <header className="results-head">
         <div className="results-intro-copy">
           <p className="page-eyebrow">Step 2 of 3 · Results</p>
           <h1 className="results-title">Choose the itinerary that fits your trip</h1>
           <p className="results-subtitle muted">
-            Compare the options the assistant generated alongside the backend check results.
-            Choose a plan or open its details to see the full checks and warnings.
+            Explore recommended destinations and itineraries. Compare the details and choose the
+            plan that fits your pace.
           </p>
         </div>
       </header>
+
+      <TripProgress currentStep={2} />
 
       <RequestSummary request={pendingRequest} />
 
@@ -389,13 +415,6 @@ export default function ResultsPage() {
             candidate={selectedCandidate}
             onClear={() => handleSelectCandidate(selectedCandidate)}
           />
-          <PartialResultsBanner pipeline={pipeline} />
-          {placeCatalogError && (
-            <p className="ai-plan-note ai-plan-note--warn">
-              <Icon name="alert" size={16} />
-              {placeCatalogError}. Showing the raw IDs for these places instead of guessing names.
-            </p>
-          )}
           {aiCandidates.length === 0 ? (
             <div className="empty-results-box">
               <span className="empty-icon" aria-hidden="true">
@@ -416,6 +435,18 @@ export default function ResultsPage() {
               selectedPlanId={selectedPlanId}
               placesById={placesById}
               onSelectPlan={handleSelectCandidate}
+              notice={
+                <>
+                  {placeCatalogError && (
+                    <p className="ai-plan-note ai-plan-note--warn">
+                      <Icon name="alert" size={16} />
+                      {placeCatalogError}. Showing the raw IDs for these places instead of
+                      guessing names.
+                    </p>
+                  )}
+                  <PartialResultsBanner pipeline={pipeline} />
+                </>
+              }
             />
           )}
         </>
@@ -428,8 +459,8 @@ export default function ResultsPage() {
           </span>
           <h2>Start with your trip details</h2>
           <p className="muted">
-            Itineraries are created from your trip request by the backend AI only; no sample
-            data is used. Enter your dates, budget, and destination to see real plans.
+            Itineraries are created from the trip details you enter. No sample data is used.
+            Add your dates, budget, and destination to see real plans.
           </p>
           <Link to="/" className="btn btn-primary">
             Create your itinerary

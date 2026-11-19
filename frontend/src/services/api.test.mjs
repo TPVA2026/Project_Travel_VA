@@ -647,9 +647,10 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
   const { dom, cleanup } = await renderCandidateComparison([], {}, selected)
   try {
     const body = dom.window.document.body.textContent
-    assert.match(body, /Estimated total/)
+    assert.match(body, /Estimated trip total/)
+    assert.match(body, /3,200,000/)
     assert.match(body, /Stay/)
-    assert.match(body, /1 rooms/)
+    assert.match(body, /1 room/)
     assert.match(body, /2 nights/)
     assert.match(body, /Hotel demo/)
     assert.match(body, /Transport/)
@@ -668,9 +669,11 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
     assert.equal(dom.window.document.querySelector('.activity-name-row .source-link'), null)
     assert.equal(dom.window.document.querySelector('.cost-row .source-link'), null)
     assert.doesNotMatch(body, /Request a change/)
-    assert.match(body, /Backend checks/)
+    assert.match(body, /Verification checks/)
     assert.match(body, /Budget/)
     assert.equal(dom.window.document.querySelectorAll('.intro-actions button').length, 2)
+    assert.ok(dom.window.document.querySelector('.selected-summary-actions'))
+    assert.ok(dom.window.document.querySelector('.selected-summary-back'))
     assert.equal(dom.window.document.querySelectorAll('.chosen-header-tools button').length, 0)
     const { act } = await import('react')
     assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 2)
@@ -683,20 +686,48 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
       dom.window.document.querySelector('[data-testid="schedule-day-all"]').click()
     })
     assert.equal(dom.window.document.querySelectorAll('.timeline-day-group').length, 2)
+    const checklistInput = dom.window.document.querySelector('.trip-checklist .checklist-input')
+    assert.ok(checklistInput)
+    assert.equal(dom.window.localStorage.getItem('tpva_trip_checklist:hotel-detail'), null)
     await act(async () => {
-      dom.window.document.querySelector('.actions-block .btn-choose').click()
+      checklistInput.click()
     })
+    assert.deepEqual(
+      JSON.parse(dom.window.localStorage.getItem('tpva_trip_checklist:hotel-detail')),
+      { 'room-transport-prices': true }
+    )
+
     assert.equal(dom.window.document.querySelector('.chosen-header-banner'), null)
+    const removeButton = dom.window.document.querySelector('.selected-summary-actions .btn-remove')
+    assert.match(removeButton.textContent, /Remove from your trip/)
     assert.match(
-      dom.window.document.querySelector('.actions-block .btn-choose').textContent,
-      /Choose this plan/
+      dom.window.document.querySelector('.chosen-notice').textContent,
+      /Saved as your trip\. Find it again under Selected\./
     )
     await act(async () => {
-      dom.window.document.querySelector('.actions-block .btn-choose').click()
+      removeButton.click()
+    })
+    assert.equal(dom.window.document.querySelector('.chosen-notice'), null)
+    assert.match(
+      dom.window.document.querySelector('.chosen-header-banner').textContent,
+      /Removed from your trip/
+    )
+    const saveButton = dom.window.document.querySelector('.selected-summary-actions .btn-choose')
+    assert.match(saveButton.textContent, /Save to your trip/)
+    await act(async () => {
+      saveButton.click()
     })
     assert.ok(dom.window.document.querySelector('.chosen-header-banner'))
     assert.match(
-      dom.window.document.querySelector('.actions-block .btn-choose').textContent,
+      dom.window.document.querySelector('.chosen-header-banner').textContent,
+      /Saved to your trip/
+    )
+    assert.match(
+      dom.window.document.querySelector('.chosen-notice').textContent,
+      /Saved as your trip\. Find it again under Selected\./
+    )
+    assert.match(
+      dom.window.document.querySelector('.selected-summary-actions .btn-remove').textContent,
       /Remove from your trip/
     )
   } finally {
@@ -749,14 +780,11 @@ test('CandidateComparison renders 0-3 candidates and compares same-destination p
       if (count === 0) {
         assert.match(dom.window.document.body.textContent, /No itineraries to compare/)
       } else {
-        const heading = dom.window.document
-          .querySelector('#candidate-results-heading')
-          .textContent.trim()
-        assert.match(
-          heading,
-          count === 1
-            ? /^1 itinerary from the assistant$/
-            : new RegExp(`${count} ways to see|${count} itineraries`)
+        const sectionHeading = dom.window.document.querySelector('#candidate-results-heading')
+        assert.equal(sectionHeading.textContent.trim(), 'Find the plan that feels like you')
+        assert.equal(
+          sectionHeading.nextElementSibling.textContent.trim(),
+          'Compare recommended destinations, stops, and daily pace to find your best fit.'
         )
         assert.doesNotMatch(dom.window.document.body.textContent, /3 plan comparison/i)
 
@@ -773,7 +801,7 @@ test('CandidateComparison renders 0-3 candidates and compares same-destination p
 
         if (count === 3) {
           const doc = dom.window.document
-          assert.match(doc.body.textContent, /3 ways to see Huế/)
+          assert.match(doc.body.textContent, /3 plans · Huế/)
           assert.match(doc.body.textContent, /Same destination, different plans/)
           assert.match(
             doc.body.textContent,
@@ -785,6 +813,20 @@ test('CandidateComparison renders 0-3 candidates and compares same-destination p
           )
           assert.ok(doc.querySelector('.compare-matrix'))
           assert.ok(doc.querySelector('.route-compare'))
+          assert.equal(
+            doc.querySelector('.compare-matrix-head h3').textContent,
+            'Compare details'
+          )
+          const firstCard = doc.querySelector('.plan-card')
+          assert.ok(
+            firstCard.compareDocumentPosition(doc.querySelector('.compare-matrix-block')) &
+              dom.window.Node.DOCUMENT_POSITION_FOLLOWING
+          )
+          assert.ok(
+            doc.querySelector('.compare-matrix-block').compareDocumentPosition(
+              doc.querySelector('.route-compare')
+            ) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING
+          )
           assert.ok(doc.querySelector('th[scope="row"] .compare-row-label'))
           assert.ok(
             [...doc.querySelectorAll('.compare-row-label')].some(
@@ -799,6 +841,8 @@ test('CandidateComparison renders 0-3 candidates and compares same-destination p
           const { act } = await import('react')
           const matrixRows = doc.querySelectorAll('.compare-matrix tbody tr')
           assert.equal(matrixRows.length, 6)
+          assert.ok(doc.querySelector('.compare-view-thumb'))
+          assert.equal(doc.querySelectorAll('.compare-view-toggle button').length, 2)
           await act(async () => {
             doc.querySelector('[data-testid="compare-differences-only"]').click()
           })
@@ -807,6 +851,16 @@ test('CandidateComparison renders 0-3 candidates and compares same-destination p
             'true'
           )
           assert.equal(doc.querySelectorAll('.compare-matrix tbody tr').length, 1)
+
+          await act(async () => {
+            doc.querySelectorAll('.compare-view-toggle button')[0].click()
+          })
+          assert.equal(doc.querySelectorAll('.compare-matrix tbody tr').length, 6)
+          await act(async () => {
+            doc.querySelector('[data-testid="compare-differences-only"]').click()
+          })
+          assert.equal(doc.querySelectorAll('.compare-matrix tbody tr').length, 1)
+          assert.ok(doc.querySelector('.compare-view-thumb'))
 
           await act(async () => {
             doc.querySelector('[data-day-number="2"]').click()
@@ -902,7 +956,7 @@ test('CandidateComparison UI separates FEASIBLE, UNVERIFIED and INFEASIBLE candi
 
     // Known vs unknown costs are never conflated.
     assert.match(doc.body.textContent, /Total cost/)
-    assert.match(doc.body.textContent, /Known total/)
+    assert.match(doc.body.textContent, /Known costs · partial/)
     assert.match(doc.body.textContent, /Unverified 1 cost item/)
 
     // Routing evidence is summarised per candidate on the card.

@@ -12,7 +12,7 @@ function formatDate(value) {
   })
 }
 
-export default function ItineraryTimeline({ days, placesById, activitySources }) {
+export default function ItineraryTimeline({ days, placesById, activitySources, editMode, onEditStop }) {
   if (!days || days.length === 0) {
     return (
       <div className="empty-timeline-box">
@@ -36,7 +36,12 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
           const dateLabel = formatDate(d.date)
 
           return (
-            <div key={dayNumber} className="timeline-day-group">
+            <div
+              key={dayNumber}
+              className="timeline-day-group"
+              id={`trip-day-${dayNumber}`}
+              data-day-number={dayNumber}
+            >
               <div className="timeline-node" aria-hidden="true" />
 
               <div className="timeline-day-header">
@@ -98,6 +103,12 @@ export default function ItineraryTimeline({ days, placesById, activitySources })
                         place={place}
                         travelLeg={idx > 0 ? leg : null}
                         source={source}
+                        editMode={editMode}
+                        onEditStop={
+                          onEditStop
+                            ? (activity) => onEditStop(dayNumber, activity)
+                            : undefined
+                        }
                       />
                     )
                   })

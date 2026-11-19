@@ -50,7 +50,9 @@ export default function CostSummary({ plan, costEvaluation, resolveName }) {
       </h3>
 
       <div className="total-box">
-        <span className="cost-total-label">{complete ? 'Total' : 'Known total'}</span>
+        <span className="cost-total-label">
+          {complete ? 'Total' : 'Known costs · partial'}
+        </span>
         <strong className="cost-total-value">
           {total == null ? (
             'Unverified'

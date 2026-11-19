@@ -147,6 +147,54 @@ def test_pipeline_endpoint_returns_zero_to_three_candidates(
         )
 
 
+def test_pipeline_makes_duplicate_candidate_ids_unique(pipeline, monkeypatch):
+    request, plan, _, _, _, _ = pipeline
+    place_ids = ["ATTR_H_01", "ATTR_H_02", "ATTR_H_03"]
+    plans = []
+    for place_id in place_ids:
+        candidate = deepcopy(plan)
+        candidate["planId"] = "same-id"
+        candidate["days"][0]["activities"][0]["placeId"] = place_id
+        plans.append(candidate)
+
+    calls = {"count": 0}
+
+    def generate(_request, _dataset, *, previous_plans):
+        result = plans[calls["count"]]
+        calls["count"] += 1
+        return result
+
+    monkeypatch.setattr(planning, "generate_candidate", generate)
+    monkeypatch.setattr(
+        planning,
+        "evaluate_plan",
+        lambda _request, candidate, **_kwargs: {
+            "planId": candidate["planId"],
+            "status": "UNVERIFIED",
+            "reasons": [],
+            "components": {},
+        },
+    )
+    captured = {}
+
+    def rank(_request, candidates, **_kwargs):
+        captured["ids"] = [candidate["planId"] for candidate in candidates]
+        return {"ranked": [], "unscored": [], "excluded": []}
+
+    monkeypatch.setattr(planning, "rank_candidate_plans", rank)
+
+    response = client.post(
+        "/itineraries/pipeline",
+        json={"request": request, "count": 3},
+    )
+
+    assert response.status_code == 200
+    result = response.json()
+    ids = [candidate["planId"] for candidate in result["candidates"]]
+    assert ids == ["same-id", "same-id-2", "same-id-3"]
+    assert captured["ids"] == ids
+
+
 def test_pipeline_preserves_upstream_rate_limit_status(pipeline, monkeypatch):
     request, _, _, _, _, _ = pipeline
     monkeypatch.setattr(
