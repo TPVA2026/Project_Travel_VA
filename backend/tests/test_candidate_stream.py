@@ -1,4 +1,5 @@
 import json
+from threading import Lock, Barrier
 from fastapi.testclient import TestClient
 from app.main import app
 from app.api import itineraries
@@ -9,9 +10,14 @@ def test_streams_complete_candidates_before_final(monkeypatch):
     monkeypatch.setattr(itineraries, 'validate_travel_request', lambda x: type('R', (), {'model_dump': lambda self, **kwargs: request})())
     monkeypatch.setattr('app.services.planning_service._load_planning_dataset', lambda req: {})
     calls = []
+    lock = Lock()
+    barrier = Barrier(2, timeout=5)
     def generate(req, ds, previous_plans=None):
-        calls.append(len(previous_plans or []))
-        i = len(calls)
+        with lock:
+            calls.append(len(previous_plans or []))
+            i = len(calls)
+        if i <= 2:
+            barrier.wait()
         return {'planId': f'p{i}', 'days': [{'dayNumber': n} for n in range(1, 4)]}
     monkeypatch.setattr(itineraries, 'generate_candidate', generate)
     monkeypatch.setattr('app.services.ai.itinerary_generator._candidate_signature', lambda plan: plan['planId'])
@@ -23,7 +29,7 @@ def test_streams_complete_candidates_before_final(monkeypatch):
     events = [json.loads(line) for line in response.text.splitlines()]
     assert [e['type'] for e in events] == ['progress', 'candidate', 'progress', 'candidate', 'progress', 'candidate', 'complete']
     assert [len(e['candidate']['plan']['days']) for e in events if e['type'] == 'candidate'] == [3, 3, 3]
-    assert calls == [0, 1, 2]
+    assert calls == [0, 0, 1]
     assert events[-1]['result']['pipelineStatus'] == 'COMPLETE'
 
 
@@ -33,9 +39,12 @@ def test_stream_keeps_first_candidate_on_gemini_error(monkeypatch):
     monkeypatch.setattr(itineraries, 'validate_travel_request', lambda x: type('R', (), {'model_dump': lambda self, **kwargs: request})())
     monkeypatch.setattr('app.services.planning_service._load_planning_dataset', lambda req: {})
     calls = []
+    lock = Lock()
     def generate(req, ds, previous_plans=None):
-        calls.append(1)
-        if len(calls) > 1:
+        with lock:
+            calls.append(1)
+            i = len(calls)
+        if i > 1:
             raise GeminiError('API_ERROR', 'Gemini returned HTTP 503')
         return {'planId': 'p1', 'days': [{'dayNumber': 1}, {'dayNumber': 2}]}
     monkeypatch.setattr(itineraries, 'generate_candidate', generate)

@@ -252,39 +252,107 @@ def pipeline_stream(body: PipelineBody):
         def emit(kind, **fields):
             return json.dumps({'type': kind, **fields}, ensure_ascii=False) + '\n'
 
+        from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
+        import time
+        from app.services.ai.itinerary_generator import _unique_plan_id
+
         plans, candidates, warnings, seen = [], [], [], set()
-        # Match the original pipeline's duplicate handling (up to 3 attempts per candidate).
+        seen_ids = set()
         attempts = 0
-        while len(candidates) < body.count and attempts < body.count * 3:
-            attempts += 1
-            yield emit('progress', candidateIndex=len(candidates) + 1, requestedCount=body.count)
-            try:
-                plan = generate_candidate(request, dataset, previous_plans=plans.copy())
-                signature = _candidate_signature(plan)
-                if signature in seen:
-                    continue
-                seen.add(signature)
-                plans.append(plan)
+        max_attempts = body.count * 3
+        concurrency = min(2, body.count)
+        rate_limit_hits = 0
+        cooldown_until = 0.0
+        pool = ThreadPoolExecutor(max_workers=concurrency)
+        pending = set()
+
+        def refill():
+            nonlocal attempts
+            while (
+                len(pending) < concurrency
+                and len(pending) + len(candidates) < body.count
+                and attempts < max_attempts
+                and time.monotonic() >= cooldown_until
+            ):
+                pending.add(pool.submit(generate_candidate, request, dataset,
+                                        previous_plans=plans.copy()))
+                attempts += 1
+
+        try:
+            refill()
+            yield emit('progress', candidateIndex=1, requestedCount=body.count)
+            while pending or (
+                len(candidates) < body.count
+                and attempts < max_attempts
+            ):
+                refill()
+
+                if not pending:
+                    delay = cooldown_until - time.monotonic()
+                    if delay > 0:
+                        time.sleep(delay)
+                    refill()
+
+                if not pending:
+                    break
+
+                done, _ = wait(pending, return_when=FIRST_COMPLETED)
+                # Process one completed future at a time; retain the other futures.
+                future = next(iter(done))
+                pending.remove(future)
                 try:
-                    evaluation = evaluate_plan(request, plan)
-                    status = evaluation.get('status', 'UNVERIFIED')
-                    if status not in {'FEASIBLE', 'UNVERIFIED', 'INFEASIBLE'}:
-                        status = 'UNVERIFIED'
+                    plan = future.result()
+                    signature = _candidate_signature(plan)
+                    if signature in seen:
+                        refill()
+                        continue
+                    _unique_plan_id(plan, seen_ids)
+                    seen.add(signature)
+                    plans.append(plan)
+                    try:
+                        evaluation = evaluate_plan(request, plan)
+                        status = evaluation.get('status', 'UNVERIFIED')
+                        if status not in {'FEASIBLE', 'UNVERIFIED', 'INFEASIBLE'}:
+                            status = 'UNVERIFIED'
+                    except PlanningError as exc:
+                        evaluation, status = None, 'UNVERIFIED'
+                        warnings.append({'code': 'EVALUATION_UNAVAILABLE', 'planId': plan['planId'], 'message': exc.message})
+                    candidate = {'planId': plan['planId'], 'plan': plan, 'status': status, 'evaluation': evaluation}
+                    candidates.append(candidate)
+                    yield emit('candidate', candidateIndex=len(candidates), requestedCount=body.count, candidate=candidate)
+                    if len(candidates) < body.count and pending:
+                        yield emit('progress', candidateIndex=len(candidates) + 1, requestedCount=body.count)
+                except GeminiError as exc:
+                    message = str(exc.message)
+                    rate_limited = (
+                        '429' in message
+                        or 'RESOURCE_EXHAUSTED' in message.upper()
+                        or exc.code in {'RATE_LIMIT', 'RATE_LIMITED', 'RESOURCE_EXHAUSTED'}
+                    )
+
+                    if rate_limited:
+                        rate_limit_hits += 1
+                        concurrency = 1
+                        delay = min(30, 5 * (2 ** (rate_limit_hits - 1)))
+                        cooldown_until = time.monotonic() + delay
+
+                        if attempts >= max_attempts:
+                            warnings.append({
+                                'code': 'PARTIAL_GENERATION',
+                                'message': message
+                            })
+                    else:
+                        warnings.append({
+                            'code': 'PARTIAL_GENERATION',
+                            'message': message
+                        })
+                    # Do not cancel other in-flight requests on a provider error.
                 except PlanningError as exc:
-                    evaluation, status = None, 'UNVERIFIED'
-                    warnings.append({'code': 'EVALUATION_UNAVAILABLE', 'planId': plan['planId'], 'message': exc.message})
-                candidate = {'planId': plan['planId'], 'plan': plan, 'status': status, 'evaluation': evaluation}
-                candidates.append(candidate)
-                yield emit('candidate', candidateIndex=len(candidates), requestedCount=body.count, candidate=candidate)
-            except GeminiError as exc:
-                warnings.append({'code': 'PARTIAL_GENERATION', 'message': exc.message})
-                break
-            except PlanningError as exc:
-                warnings.append({'code': exc.code, 'message': exc.message})
-                break
-            except Exception:
-                warnings.append({'code': 'INTERNAL', 'message': 'Unexpected generation error'})
-                break
+                    warnings.append({'code': exc.code, 'message': exc.message})
+                except Exception:
+                    warnings.append({'code': 'INTERNAL', 'message': 'Unexpected generation error'})
+        finally:
+            pool.shutdown(wait=False, cancel_futures=True)
 
         if len(candidates) < body.count:
             warnings.append({'code': 'INSUFFICIENT_CANDIDATES',
