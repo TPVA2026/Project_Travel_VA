@@ -1,0 +1,289 @@
+{
+  "places": [
+    {
+      "placeId": "ATTR_H_01",
+      "name": "lăng Khải Định",
+      "description": "Những bậc thang đá rộng dẫn qua các cổng và trụ trang trí cầu kỳ. Sân có hàng tượng người và ngựa bằng đá, phía xa là đồi cây xanh.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_01_01.jpg",
+          "/images/attractions.HUE/ATTR_H_01_02.jpg",
+          "/images/attractions.HUE/ATTR_H_01_03.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_02",
+      "name": "Cung An Định",
+      "description": "Cổng và đình nhỏ có nhiều chi tiết trang trí nổi bật giữa hàng cây. Ảnh nội thất cho thấy cầu thang uốn cong hai phía, tông vàng và các mảng tường hoa văn.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_02_01.png",
+          "/images/attractions.HUE/ATTR_H_02_02.png",
+          "/images/attractions.HUE/ATTR_H_02_03.png"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_03",
+      "name": "Đại Nội",
+      "description": "Bộ ảnh ghi lại cổng thành nhiều tầng mái, súng thần công trưng bày dưới mái che và Kỳ Đài nhìn từ khoảng sân cỏ rộng. Đây là các góc trong khu di sản và vùng phụ cận, cần phân biệt với phạm vi tham quan bên trong Đại Nội.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_03_01.jpg",
+          "/images/attractions.HUE/ATTR_H_03_02.jpg",
+          "/images/attractions.HUE/ATTR_H_03_03.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_04",
+      "name": "Bến Xưa Vỹ Dạ",
+      "description": "Lối đi có cây xanh, hoa và những bộ bàn ghế nhỏ. Một góc khác mở ra mặt nước, với bóng cây phủ xuống tạo cảm giác gần gũi và yên tĩnh trong ảnh.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_04_01.jpeg",
+          "/images/attractions.HUE/ATTR_H_04_02.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_05",
+      "name": "chợ Đông Ba",
+      "description": "Cổng chợ nổi bật với dòng chữ đỏ Chợ Đông Ba và khu vực phía trước nhộn nhịp xe cộ. Bộ ảnh còn có hàng đặc sản đóng gói và quầy ăn dưới ánh đèn buổi tối.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_05_01.jpg",
+          "/images/attractions.HUE/ATTR_H_05_02.jpg",
+          "/images/attractions.HUE/ATTR_H_05_03.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_06",
+      "name": "làng nón bài thơ Tây Hồ",
+      "description": "Những chiếc nón lá xếp thành chồng và treo thành cụm tạo nét nhận diện của nghề làm nón. Ảnh còn thể hiện người làm nghề thao tác thủ công cùng các mẫu nón có hình trang trí.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_06_01.jpg",
+          "/images/attractions.HUE/ATTR_H_06_02.png",
+          "/images/attractions.HUE/ATTR_H_06_03.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_07",
+      "name": "Quốc Học Huế",
+      "description": "Cổng trường và dãy nhà nổi bật với tông đỏ sẫm, đường viền sáng màu và mái ngói. Sân trường rộng có cây xanh, tạo nhiều góc nhìn vào mặt đứng kiến trúc.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_07_01.jpg",
+          "/images/attractions.HUE/ATTR_H_07_02.jpg",
+          "/images/attractions.HUE/ATTR_H_07_03.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_08",
+      "name": "Làng Hương Thủy Xuân",
+      "description": "Các bó hương nhiều màu được xòe thành hình quạt và xếp thành những mảng màu bắt mắt. Một ảnh cận cảnh ghi lại thao tác se hương bằng tay trên bàn gỗ.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_08_01.jpeg",
+          "/images/attractions.HUE/ATTR_H_08_02.jpg",
+          "/images/attractions.HUE/ATTR_H_08_03.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_09",
+      "name": "Chùa Thiên Mụ",
+      "description": "Tòa tháp nhiều tầng nổi bật giữa cây xanh, với các ô cửa vòm và chi tiết trang trí trên thân tháp. Ảnh toàn cảnh cho thấy khuôn viên nhiều cây nằm cạnh sông và bến thuyền.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_09_01.jpg",
+          "/images/attractions.HUE/ATTR_H_09_02.jpg",
+          "/images/attractions.HUE/ATTR_H_09_03.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "ATTR_H_10",
+      "name": "Cầu Trường Tiền",
+      "description": "Nhịp cầu bằng thép chạy ngang mặt sông tạo đường nét dễ nhận diện khi nhìn từ bờ. Ảnh buổi tối ghi lại ánh sáng nhiều màu phản chiếu trên mặt nước trong thời điểm chụp.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/attractions.HUE/ATTR_H_10_01.jpg",
+          "/images/attractions.HUE/ATTR_H_10_02.jpg"
+        ],
+        "sourceManifest": "/images/attractions.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_01",
+      "name": "Quán bánh O Lé",
+      "description": "Các phần bánh được bày trên đĩa nhỏ, ăn kèm những chén nước chấm riêng. Ảnh không gian cho thấy sân lát gạch có mái che, bàn ghế thấp và cây xanh.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_01_01.jpg",
+          "/images/restaurants.HUE/REST_H_01_02.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_02",
+      "name": "Bánh ướt - Bún thịt nướng Huyền Anh",
+      "description": "Ảnh món ăn cho thấy đĩa bún với rau, dưa leo và phần topping phủ phía trên, kèm các chén nước chấm. Không gian quán có bàn dài và ghế nhựa thấp, cách bài trí giản dị.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_02_01.jpg",
+          "/images/restaurants.HUE/REST_H_02_02.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_03",
+      "name": "Bún giấm nuốc Gia Hội",
+      "description": "Tô bún có phần topping trong, rau xanh và nước dùng hoặc nước trộn ở đáy tô. Ảnh mặt tiền cho thấy biển Bún giấm nuốc cùng bàn ghế thấp sát khu vực lối vào.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_03_01.jpg",
+          "/images/restaurants.HUE/REST_H_03_02.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_04",
+      "name": "Quán hến Hoa Đông",
+      "description": "Mặt tiền nhỏ có biển Hoa Đông và tên các món hến. Ảnh món ăn ghi lại những tô có rau, hến và các phần ăn kèm phủ phía trên.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_04_01.jpg",
+          "/images/restaurants.HUE/REST_H_04_02.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_05",
+      "name": "Bún bò mệ Kéo",
+      "description": "Các tô bún có nước dùng màu cam đỏ, phần thịt và rau thơm phủ trên mặt. Ảnh ghi lại cách phục vụ với rau và chén gia vị hoặc nước chấm đặt bên cạnh.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_05_01.jpg",
+          "/images/restaurants.HUE/REST_H_05_02.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_06",
+      "name": "Cơm niêu chạn",
+      "description": "Mặt tiền có cửa vòm, biển Chạn và các chậu cây hai bên. Mâm cơm trong ảnh được bày với niêu, bát và đĩa thức ăn dùng chung, tạo cảm giác bữa cơm gia đình.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_06_01.jpg",
+          "/images/restaurants.HUE/REST_H_06_02.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_07",
+      "name": "Bánh mì O Tho",
+      "description": "Quầy bánh mì có tủ kính phía trước và biển Bánh mì Trường Tiền. Ảnh cận cảnh ghi lại người bán chuẩn bị bánh ngay tại quầy với nhiều khay nguyên liệu.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_07_01.jpg",
+          "/images/restaurants.HUE/REST_H_07_02.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_08",
+      "name": "Cháo Vịt Thuận",
+      "description": "Quán có mặt tiền mở, biển Đặc sản vịt Thuận và khu vực để xe máy phía trước. Từ ảnh có thể thấy bàn ghế được bố trí sâu vào bên trong quán.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_08_01.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_09",
+      "name": "Chè Cầm",
+      "description": "Ảnh cho thấy không gian quán nhỏ với bàn ghế thấp, sàn hoa văn và khách ngồi bên trong. Bộ ảnh hiện chưa có ảnh cận cảnh chè để mô tả riêng các món.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_09_01.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    },
+    {
+      "placeId": "REST_H_10",
+      "name": "Bánh canh Nam Phổ - Thúy",
+      "description": "Mặt tiền quán mở ra đường với biển Thúy và tên món bánh canh Nam Phổ. Bên trong có bàn ghế thấp; ảnh hiện chưa có cận cảnh tô bánh canh.",
+      "provenance": {
+        "method": "visual_observation_of_user_supplied_images",
+        "images": [
+          "/images/restaurants.HUE/REST_H_10_01.jpg"
+        ],
+        "sourceManifest": "/images/restaurants.HUE/sources.json"
+      },
+      "reviewStatus": "draft_visual_description"
+    }
+  ]
+}

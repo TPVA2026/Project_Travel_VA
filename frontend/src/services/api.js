@@ -11,9 +11,11 @@ export {
   setSelectedPlan,
   clearSelectedPlan,
   isPlanSelected,
+  resetCurrentTrip,
 } from "./planSelection.js";
 
 import { getSelectedPlan, getSelectedPlanId, setSelectedPlan, clearSelectedPlan } from "./planSelection.js";
+import { getAuthToken } from "./authSession.js";
 
 const SAMPLE_PLAN_IDS = new Set(
   MOCK_PLANS.flatMap((plan) => [plan.id, plan.planId])
@@ -39,13 +41,58 @@ function apiUrl(path) {
 }
 
 /**
- * Select a plan as the chosen trip itinerary (TPVA-31 M5).
- * Saves to local persistence for the no-account MVP.
+ * Save a selected itinerary to the signed-in account (TPVA-66).
  */
 export async function selectPlan(planOrId) {
-  setSelectedPlan(planOrId);
-  const id = typeof planOrId === 'string' ? planOrId : planOrId.id || planOrId.planId;
-  return { status: "SUCCESS", planId: id, storage: "localStorage" };
+  if (!planOrId || typeof planOrId !== 'object') throw new Error('A complete itinerary is required.');
+  const savedTripId = planOrId.savedTripId;
+  const body = await authenticatedRequest(savedTripId ? `/api/trips/${savedTripId}` : '/api/trips', {
+    method: savedTripId ? 'PUT' : 'POST',
+    body: JSON.stringify({ itinerary: planOrId }),
+  });
+  const saved = { ...body.trip.itinerary, savedTripId: body.trip.id };
+  setSelectedPlan(saved);
+  return { status: "SUCCESS", planId: saved.planId || saved.id, trip: body.trip };
+}
+
+async function authenticatedRequest(path, options = {}) {
+  const token = getAuthToken();
+  if (!token) {
+    window.dispatchEvent(new window.CustomEvent('tpva-auth-required'));
+    const error = new Error('Sign in with Google to save or open My Trips.');
+    error.status = 401;
+    throw error;
+  }
+  const response = await fetch(apiUrl(path), {
+    ...options,
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...options.headers },
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    if (response.status === 401) window.dispatchEvent(new window.CustomEvent('tpva-auth-required'));
+    const error = new Error(typeof body.detail === 'string' ? body.detail : 'Could not access saved trips.');
+    error.status = response.status;
+    throw error;
+  }
+  return body;
+}
+
+export async function fetchMyTrips() {
+  const body = await authenticatedRequest('/api/trips');
+  return body.trips;
+}
+
+export async function fetchSavedTrip(id) {
+  const body = await authenticatedRequest(`/api/trips/${encodeURIComponent(id)}`);
+  return body.trip;
+}
+
+export async function updateSavedTrip(id, itinerary) {
+  const body = await authenticatedRequest(`/api/trips/${encodeURIComponent(id)}`, {
+    method: 'PUT',
+    body: JSON.stringify({ itinerary }),
+  });
+  return body.trip;
 }
 
 /**

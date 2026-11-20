@@ -4,7 +4,7 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import { build } from "esbuild";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import React, { act } from "react";
 import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, buildPayload, clientErrors, localTodayIso, localYearMonth, addDaysIso, addMonthsYm, addYearsIso, tripLimitHint, formatReturnLabel } from "./travelRequest.js";
 
@@ -63,14 +63,14 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const assertStep = (index, message) => {
     assert.deepEqual(visible(), [index], message);
-    assert.equal(doc.querySelector(".request-step-count").textContent, `Question ${index + 1} of 7`);
+    assert.equal(doc.querySelector(".request-step-count"), null, "The n of 6 step counter is removed");
   };
   const active = () => doc.activeElement?.id || doc.activeElement?.textContent;
   const apiCalls = () => fetchCalls.filter(call => call.url === "/api/v1/requests/validate").length;
   try {
     const { createRoot } = await import("react-dom/client");
     const { MemoryRouter } = await import("react-router-dom");
-    const { default: HomePage } = await import(output);
+    const { default: HomePage } = await import(pathToFileURL(output).href);
     root = createRoot(doc.querySelector("#root"));
     await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(HomePage))));
     const form = doc.querySelector("form");
@@ -78,6 +78,9 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.ok(doc.querySelector(".plan-intro"));
     assert.ok(doc.querySelector(".plan-layout .plan-aside"));
     assert.equal(doc.querySelector("#plan-prep-title").textContent, "Three things make the first draft easier.");
+    assert.match(doc.querySelector(".plan-prep-list").textContent, /Trips can last 1 to 3 days/);
+    assert.doesNotMatch(doc.querySelector(".plan-prep-list").textContent, /week or month/);
+    assert.equal(doc.querySelector(".page-eyebrow")?.textContent, "Plan a trip");
     assert.equal(doc.querySelector(".plan-outcomes h2").textContent, "What you get");
     assert.equal(doc.querySelector(".entry-choice"), null, "Chooser is not rendered");
     assert.equal(doc.querySelector("#trip-describe-panel"), null, "Describe-the-trip panel is not rendered");
@@ -88,10 +91,10 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.querySelector("#trip-form-panel").hidden, false);
 
     // Six screens, one visible question, Back only after the first.
-    assert.equal(form.querySelectorAll(".request-step").length, 7);
+    assert.equal(form.querySelectorAll(".request-step").length, 6);
     assertStep(0);
     assert.equal(active(), "departureLocation");
-    assert.equal(doc.querySelector("#request-step-0 h2").textContent, "Where are you leaving from?");
+    assert.equal(doc.querySelector("#request-step-0 h2").textContent, "Where are you traveling?");
     assert.equal(button("Back"), undefined);
     assert.equal(button("Next").type, "submit");
 
@@ -102,34 +105,34 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.getElementById("departureLocation-error").textContent, "This field is required.");
     assert.equal(doc.querySelector("#travelerCount-error"), null, "Later steps are not validated yet");
     await fill("departureLocation", "Hue");
-    await enter("departureLocation");
-    assertStep(1, "Enter acts as Next");
-    assert.equal(active(), "destination");
     assert.equal(field("destination").placeholder, "e.g. Da Nang, Da Lat");
     assert.equal(field("destination").hasAttribute("list"), false, "No supported-city dropdown on the destination input");
     assert.equal(doc.querySelector("datalist"), null);
-
-    // Destination is optional and can be skipped on purpose.
-    assert.equal(doc.getElementById("request-step-1-hint").textContent, "Optional. Skip it and we'll suggest destinations based on your trip.");
+    assert.equal(doc.getElementById("destination-hint").textContent, "Skip it and we'll suggest destinations based on your trip.");
     assert.doesNotMatch(form.textContent, /we will suggest places/i, "Old destination copy is gone");
+    assert.equal(button("Not sure yet"), undefined);
     await fill("destination", "Somewhere");
-    await click("Not sure yet");
-    assertStep(2);
+    await fill("destination", "");
+    assert.ok(doc.querySelector(".request-route-plane svg[aria-hidden='true']"), "Places has a decorative plane from departure to destination");
+    await enter("departureLocation");
+    assertStep(1, "Blank destination is allowed");
     assert.equal(field("destination").value, "");
-    await click("Back");
-    assertStep(1);
-    await click("Next");
-    assertStep(2, "Blank destination is allowed");
+    const placesAnswer = doc.querySelector(".request-thread-a");
+    assert.equal(placesAnswer.textContent.replace(/\s+/g, " ").trim(), "Hue to Not chosen. We'll suggest destinations based on your trip.");
+    assert.ok(placesAnswer.querySelector("svg[aria-hidden='true']"), "The places history uses a plane instead of an arrow");
+    assert.equal(placesAnswer.textContent.includes("→"), false);
 
     // Start date picker plus 1..maxDays length cards; the end date is computed.
     assert.equal(field("startDate").type, "date");
+    assert.equal(field("startDate").lang, "en-GB");
+    assert.ok(doc.querySelector("#request-step-1 .request-date-grid > .request-span"));
     assert.equal(field("endDate").type, "hidden");
     assert.equal(doc.querySelector('label[for="startDate"]').textContent.replace("*", ""), "Start date");
     assert.equal(doc.querySelector('[name="periodMode"]'), null, "The By month option is removed");
     assert.equal(field("month"), null);
     assert.equal(field("startDate").min, today);
     assert.equal(field("startDate").max, startMax);
-    assert.equal(doc.getElementById("request-step-2-hint").textContent, tripLimitHint());
+    assert.equal(doc.getElementById("request-step-1-hint").textContent, tripLimitHint());
     assert.equal(active(), "startDate");
     let pickerCalls = 0;
     field("startDate").showPicker = () => { pickerCalls += 1; };
@@ -137,18 +140,25 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(pickerCalls, 1);
     assert.equal(active(), "startDate");
     await click("Next");
-    assertStep(2);
+    assertStep(1);
     assert.equal(doc.getElementById("startDate-error").textContent, "This field is required.");
     await fill("startDate", startCross);
     await click("Next");
-    assertStep(2, "Trip length is required");
+    assertStep(1, "Trip length is required");
     assert.equal(doc.getElementById("durationDays-error").textContent, "This field is required.");
-    const dayCards = [...doc.querySelectorAll("#request-step-2 .request-choice")];
+    const dayCards = [...doc.querySelectorAll("#request-step-1 .request-choice")];
+    assert.equal(doc.querySelector("#request-step-1 [role='radiogroup']").getAttribute("aria-labelledby"), "durationDays-label");
+    assert.deepEqual(dayCards.map(node => node.getAttribute("role")), ["radio", "radio", "radio"]);
     assert.deepEqual(dayCards.map(node => node.textContent.replace(/\s+/g, " ").trim()), ["1 day", "2 days", "3 days"]);
     await actOn(() => dayCards[MAX_TRIP_DAYS - 1].click());
     assert.equal(field("durationDays").value, String(MAX_TRIP_DAYS));
+    await actOn(() => dayCards[MAX_TRIP_DAYS - 1].dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true, cancelable: true })));
+    assert.equal(field("durationDays").value, String(MAX_TRIP_DAYS - 1));
+    assert.equal(dayCards[MAX_TRIP_DAYS - 2].getAttribute("aria-checked"), "true");
+    await actOn(() => dayCards[MAX_TRIP_DAYS - 2].click());
+    await actOn(() => dayCards[MAX_TRIP_DAYS - 1].click());
     assert.equal(field("endDate").value, endCross, "End date is start + (n-1) days");
-    assert.equal(doc.querySelector("#request-step-2 .request-question-hint.request-span").textContent, formatReturnLabel(endCross));
+    assert.equal(doc.querySelector("#request-step-1 .request-question-hint.request-span").textContent, formatReturnLabel(endCross));
     // Changing the start date keeps the chosen length and recomputes the end date.
     const laterStart = addDaysIso(startCross, 1);
     await fill("startDate", laterStart);
@@ -157,47 +167,50 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await fill("startDate", startCross);
     assert.equal(field("endDate").value, endCross);
     await click("Next");
-    assertStep(3);
+    assertStep(2);
 
     // Travelers: no default, quick picks and any other whole number.
     assert.equal(field("travelerCount").value, "");
-    assert.deepEqual([...doc.querySelectorAll("#request-step-3 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.equal(doc.querySelector("#request-step-2 [role='radiogroup']").getAttribute("aria-labelledby"), "travelerCount-label");
+    assert.deepEqual([...doc.querySelectorAll("#request-step-2 .request-choice")].map(node => node.getAttribute("aria-checked")), ["false", "false", "false", "false"]);
     await click("Next");
-    assertStep(3);
+    assertStep(2);
     assert.equal(active(), "travelerCount");
-    await actOn(() => [...doc.querySelectorAll("#request-step-3 .request-choice")][1].click());
+    await actOn(() => [...doc.querySelectorAll("#request-step-2 .request-choice")][1].click());
     assert.equal(field("travelerCount").value, "2");
-    assert.equal([...doc.querySelectorAll("#request-step-3 .request-choice")][1].getAttribute("aria-pressed"), "true");
+    assert.equal([...doc.querySelectorAll("#request-step-2 .request-choice")][1].getAttribute("aria-checked"), "true");
     await fill("travelerCount", "7");
-    assert.deepEqual([...doc.querySelectorAll("#request-step-3 .request-choice")].map(node => node.getAttribute("aria-pressed")), ["false", "false", "false", "false"]);
+    assert.deepEqual([...doc.querySelectorAll("#request-step-2 .request-choice")].map(node => node.getAttribute("aria-checked")), ["false", "false", "false", "false"]);
     await click("Next");
-    assertStep(4);
+    assertStep(2);
     assert.equal(active(), "budgetAmount");
 
-    // Budget: unset vs zero, exact typed amounts, slider both ways, explicit scope.
+    // Budget: unset vs zero, exact typed amounts, slider both ways. Groups default to a total budget.
     assert.equal(field("budgetAmount").value, "");
-    assert.equal(field("budgetScope").checked, false);
-    assert.equal(field("budgetSlider").value, "0");
+    assert.equal(field("budgetScope").value, "group");
+    assert.equal(doc.querySelector(".request-scope-toggle").getAttribute("aria-pressed"), "false");
+    assert.equal(doc.querySelector(".request-scope-toggle").textContent.trim(), "Per person");
+    assert.equal(field("budgetSlider").value, "2000000");
     assert.equal(field("budgetSlider").name, "");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
     assert.equal(new FormData(form).has("budgetSlider"), false);
     await click("Next");
-    assertStep(4);
+    assertStep(2);
     assert.equal(doc.getElementById("budgetAmount-error").textContent, "This field is required.");
     await actOn(() => field("budgetSlider").dispatchEvent(new dom.window.KeyboardEvent("keyup", { key: "Home", bubbles: true })));
-    assert.equal(field("budgetAmount").value, "0");
+    assert.equal(field("budgetAmount").value, "2,000,000");
     await fill("budgetAmount", "");
     await actOn(() => field("budgetSlider").dispatchEvent(new dom.window.Event("pointerup", { bubbles: true })));
-    assert.equal(field("budgetAmount").value, "0");
+    assert.equal(field("budgetAmount").value, "2,000,000");
     await fill("budgetSlider", "7500000");
     assert.equal(field("budgetAmount").value, "7,500,000");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "7,500,000 VND");
-    await fill("budgetAmount", "1234567");
-    assert.equal(field("budgetSlider").value, "1234000");
-    // Standard slider range is 0..80,000,000 VND.
-    assert.equal(field("budgetSlider").min, "0");
+    await fill("budgetAmount", "2234567");
+    assert.equal(field("budgetSlider").value, "2234000");
+    // Standard slider range is 2,000,000..80,000,000 VND.
+    assert.equal(field("budgetSlider").min, "2000000");
     assert.equal(field("budgetSlider").max, "80000000");
-    assert.equal(doc.querySelector(".budget-range-labels").textContent, "0 VND80,000,000 VND");
+    assert.equal(doc.querySelector(".budget-range-labels").textContent, "2,000,000 VND80,000,000 VND");
     await fill("budgetAmount", "45,678,901");
     assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(field("budgetSlider").value, "45678000");
@@ -223,26 +236,63 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       assert.ok(clientErrors(new FormData(form)).budgetAmount);
     }
     await click("Next");
-    assertStep(4, "Invalid budget blocks Next");
-    await fill("budgetAmount", "0");
-    assert.equal(field("budgetSlider").value, "0");
-    assert.equal(clientErrors(new FormData(form)).budgetAmount, undefined);
+    assertStep(2, "Invalid budget blocks Next");
+    await fill("budgetAmount", "1999000");
+    assert.equal(clientErrors(new FormData(form)).budgetAmount, "Enter at least 2,000,000 VND.");
     await click("Next");
-    assertStep(4, "Scope must be chosen");
-    assert.equal(doc.getElementById("budgetScope-error").textContent, "This field is required.");
-    assert.equal(doc.activeElement, form.querySelector('[name="budgetScope"][value="group"]'));
+    assertStep(2, "Budget below 2,000,000 stays on this question");
+    await fill("budgetAmount", "2000000");
     await fill("budgetAmount", "7654000");
     await actOn(() => { field("budgetAmount").focus(); field("budgetAmount").blur(); });
     assert.equal(field("budgetAmount").value, "7,654,000", "Formatting happens on blur");
     assert.equal(field("budgetSlider").max, "80000000");
-    await radio("budgetScope", "perPerson");
     assert.equal(apiCalls(), 0, "No API call before the final review");
     await click("Next");
 
+    // Optional travel style. Several can be chosen, and none is allowed.
+    assertStep(3);
+    assert.equal(doc.querySelector("#request-step-3 h2").textContent, "What kind of trip should we prioritize?");
+    assert.equal(doc.querySelector("#request-step-3 .request-optional").textContent, "Optional");
+    await click("Next");
+    assertStep(4, "No travel style is allowed");
+    await click("Back");
+    assertStep(3);
+    await actOn(() => {
+      doc.querySelector('[name="interest"][value="culture"]').click();
+      doc.querySelector('[name="interest"][value="nature"]').click();
+    });
+    await click("Next");
+
     // Optional describe step: message icon, white textarea with example placeholder, sent when non-empty.
-    assertStep(5);
-    assert.equal(doc.querySelector("#request-step-5 h2").textContent, "Is there anything else you’d like to describe?");
-    assert.ok(doc.querySelector("#request-step-5 svg.request-art"));
+    assertStep(4);
+    assert.equal(doc.querySelector("#request-step-4 h2").textContent, "Is there anything else you’d like to describe?");
+    // Older answers collapse so the current question stays on screen.
+    const threadToggle = doc.querySelector(".request-thread-toggle");
+    assert.ok(threadToggle);
+    assert.equal(threadToggle.getAttribute("aria-expanded"), "false");
+    assert.equal(threadToggle.getAttribute("aria-controls"), "request-thread-list");
+    assert.equal(threadToggle.textContent.trim(), "Show all answers");
+    assert.match(doc.querySelector(".request-thread-summary").textContent, /Hue/);
+    assert.equal(doc.querySelectorAll(".request-thread-item").length, 1, "Only the latest answer stays visible");
+    assert.match(doc.querySelector(".request-thread-item").textContent, /What kind of trip should we prioritize/);
+    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Where are you traveling")), false);
+    await click("Show all answers");
+    assert.equal(threadToggle.getAttribute("aria-expanded"), "true");
+    assert.equal(threadToggle.textContent.trim(), "Hide");
+    assert.equal(doc.querySelector(".request-thread-summary"), null);
+    const expandedItems = [...doc.querySelectorAll(".request-thread-item")];
+    assert.equal(expandedItems.length, 4);
+    assert.ok(expandedItems.some(node => node.textContent.includes("Where are you traveling")));
+    const placesItem = expandedItems.find(node => node.textContent.includes("Where are you traveling"));
+    await actOn(() => placesItem.click());
+    assertStep(0, "An expanded thread item still opens that answer for editing");
+    await click("Next");
+    assertStep(4, "Thread edit from the describe step returns to describe");
+    assert.equal(doc.querySelector(".request-thread-toggle").getAttribute("aria-expanded"), "false", "The thread collapses again on the returned step");
+    assert.equal(doc.querySelector("#request-step-4 .request-optional").textContent, "Optional");
+    assert.equal(doc.getElementById("request-step-4-hint").textContent, "Food, transport, interests, your group or travel limits.");
+    assert.equal(button("Skip for now"), undefined);
+    assert.ok(doc.querySelector("#request-step-4 svg.request-art"));
     const draft = field("tripDescription");
     assert.equal(draft.tagName, "TEXTAREA");
     assert.equal(active(), "tripDescription");
@@ -253,40 +303,15 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     for (const hint of ["seafood", "spicy", "taxis", "culture", "older adult", "50 km", "per day"]) assert.ok(draft.placeholder.includes(hint), hint);
     assert.equal(doc.querySelector(".request-draft-note"), null, "No draft-only note");
     await click("Next");
-    assertStep(6, "Empty description is allowed");
+    assertStep(5, "Empty description is allowed");
     await click("Back");
-    assertStep(5);
+    assertStep(4);
     await fill("tripDescription", "We love seafood.\nOne of us is an older adult.");
     assert.equal(doc.getElementById("request-describe-count").textContent, `${"We love seafood.\nOne of us is an older adult.".length}/${ADDITIONAL_REQUIREMENTS_MAX}`);
     assert.ok(draft.getAttribute("aria-describedby").includes("request-describe-count"));
     assert.equal(doc.querySelector(".request-draft-note"), null);
-    await click("Skip for now");
-    assertStep(6, "Skip goes to review");
-    assert.equal(field("tripDescription").value, "", "Skip discards typed text");
-    assert.equal(doc.activeElement, doc.querySelector("#request-step-6 h2"));
-    assert.equal(doc.querySelector(".request-draft-note"), null, "No draft-only note after skip");
-    const skippedRow = () => [...doc.querySelectorAll(".request-review > div")].find(row => row.querySelector("dt").textContent === "Extra description").querySelector("dd").textContent;
-    assert.equal(skippedRow(), "Nothing added");
-    // Back and Edit do not bring skipped text back.
-    await click("Back");
+    await click("Next");
     assertStep(5);
-    assert.equal(field("tripDescription").value, "");
-    assert.equal(doc.querySelector(".request-draft-note"), null);
-    assert.equal(doc.getElementById("request-describe-count").textContent, `0/${ADDITIONAL_REQUIREMENTS_MAX}`);
-    await click("Next");
-    assertStep(6);
-    assert.equal(skippedRow(), "Nothing added");
-    await click("Edit description");
-    assert.equal(field("tripDescription").value, "");
-    // Regular Next keeps the text; skipping while editing clears it again.
-    await fill("tripDescription", "Typed by mistake");
-    await click("Skip for now");
-    assertStep(6, "Skip while editing returns to review");
-    assert.equal(skippedRow(), "Nothing added");
-    await click("Back");
-    await fill("tripDescription", "We love seafood.\nOne of us is an older adult.");
-    await click("Next");
-    assertStep(6);
     assert.equal(field("tripDescription").value, "We love seafood.\nOne of us is an older adult.", "Next keeps the draft");
     await click("Back");
     assert.equal(field("tripDescription").value, "We love seafood.\nOne of us is an older adult.", "Back keeps the draft");
@@ -299,33 +324,46 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       "Going to": "Not chosen. We'll suggest destinations based on your trip.",
       When: `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`,
       Travelers: "7 travelers",
-      Budget: "7,654,000 VND · per person",
+      Budget: "7,654,000 VND · for the group",
+      "Travel style": "Culture, Nature",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
     });
+    assert.equal(doc.querySelector(".request-thread, .request-thread-wrap"), null, "The chat thread is hidden on review");
     assert.equal(doc.querySelector(".request-draft-note, #request-review-draft-note"), null, "Draft-only note is removed");
     assert.equal(form.querySelector("details"), null, "Advanced options drawer is removed");
-    for (const name of ["characteristics", "maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "interest", "transportation", "diningPreferred"]) assert.equal(field(name), null, name);
+    for (const name of ["characteristics", "maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "transportation", "diningPreferred"]) assert.equal(field(name), null, name);
     assert.equal(form.querySelector("[name='description'], [name='prompt'], [name='tripDescription']"), null);
     assert.equal(new FormData(form).get("additionalRequirements"), "We love seafood.\nOne of us is an older adult.");
     await click("Edit description");
-    assertStep(5);
+    assertStep(4);
     await fill("tripDescription", "We love seafood and prefer taxis.");
     await click("Back to review");
-    assertStep(6);
+    assertStep(5);
     assert.equal(rows()["Extra description"], "We love seafood and prefer taxis.");
     await click("Edit travelers");
-    assertStep(3);
+    assertStep(2);
     assert.equal(field("travelerCount").value, "7");
     assert.equal(button("Back to review").type, "submit");
     await click("Back to review");
-    assertStep(6);
+    assertStep(5);
     await click("Edit dates");
     await click("Back to review");
     assert.equal(rows().When, `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`);
     // Back/Next keeps every earlier answer, including the draft.
-    for (let index = 5; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
+    for (let index = 4; index >= 0; index -= 1) { await click("Back"); assertStep(index); }
     assert.equal(field("departureLocation").value, "Hue");
-    for (let index = 1; index <= 6; index += 1) { await click("Next"); assertStep(index); }
+    await click("Next");
+    assertStep(1);
+    // Editing an earlier thread answer returns to the question we left, not to review or the next step.
+    const threadItem = [...doc.querySelectorAll(".request-thread-item")].find(node => node.textContent.includes("Where are you traveling"));
+    assert.ok(threadItem);
+    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Who is going")), false, "Later answers stay out of the thread");
+    await actOn(() => threadItem.click());
+    assertStep(0);
+    assert.equal(button("Back to review"), undefined);
+    await click("Next");
+    assertStep(1, "Thread edit returns to the dates question we left");
+    for (let index = 2; index <= 5; index += 1) { await click("Next"); assertStep(index); }
     assert.equal(field("budgetAmount").value, "7,654,000");
     assert.equal(field("budgetSlider").value, "7654000");
     assert.equal(field("tripDescription").value, "We love seafood and prefer taxis.");
@@ -340,7 +378,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(field("departureLocation").getAttribute("aria-invalid"), "true");
     await fill("departureLocation", "Hue");
     await click("Back to review");
-    assertStep(6);
+    assertStep(5);
     assert.equal(apiCalls(), 0);
 
     // A destination 422 stays on review with one short message: no field error, no city list.
@@ -351,7 +389,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     await click("Back to review");
     await click("Create itinerary");
     assert.equal(apiCalls(), 1);
-    assertStep(6, "Unsupported destination stays on review");
+    assertStep(5, "Unsupported destination stays on review");
     assert.equal(doc.getElementById("destination-error"), null, "No destination error under the field");
     assert.equal(field("destination").hasAttribute("aria-invalid"), false);
     assert.equal(doc.getElementById("request-form-error").textContent, "We couldn't plan a trip to that destination. Edit it or skip it to get suggestions.");
@@ -359,38 +397,39 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.doesNotMatch(form.textContent, /Choose one of/, "The supported-city list is never rendered");
     assert.equal(active(), "request-form-error");
     await click("Edit destination");
-    await click("Not sure yet");
-    assertStep(6, "Skipping while editing returns to review");
+    await fill("destination", "");
+    await click("Back to review");
+    assertStep(5, "Clearing the destination while editing returns to review");
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["body", "budget", "amount"], msg: "Budget too large." }] } }) });
     await click("Create itinerary");
-    assertStep(4);
+    assertStep(2);
     assert.equal(active(), "budgetAmount");
     await click("Back to review");
 
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { missing: ["travelers.count"] } }) });
     await click("Create itinerary");
-    assertStep(3, "Server-missing traveler count returns to travelers");
+    assertStep(2, "Server-missing traveler count returns to travelers");
     assert.equal(active(), "travelerCount");
     await click("Back to review");
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { messages: ["Dates conflict with the destination season."] } }) });
     await click("Create itinerary");
-    assertStep(6, "Form-level errors stay on review");
+    assertStep(5, "Form-level errors stay on review");
     assert.equal(active(), "request-form-error");
     assert.equal(doc.getElementById("request-form-error").textContent, "Dates conflict with the destination season.");
     fetchImpl = async () => { throw new TypeError("network down"); };
     await click("Create itinerary");
-    assertStep(6);
+    assertStep(5);
     assert.equal(doc.getElementById("request-form-error").textContent, "Could not send the request.");
     // Server errors for fields the form does not show become a visible request-level message.
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["body", "limits", "maxDistanceKm"], msg: "Distance must be positive." }] } }) });
     await click("Create itinerary");
-    assertStep(6);
+    assertStep(5);
     assert.equal(doc.getElementById("request-form-error").textContent, "Distance must be positive.");
     assert.equal(active(), "request-form-error");
 
     fetchImpl = async () => ({ ok: false, status: 422, json: async () => ({ detail: { errors: [{ loc: ["body", "additionalRequirements"], msg: "Extra description must be 500 characters or fewer." }] } }) });
     await click("Create itinerary");
-    assertStep(5, "additionalRequirements errors return to the describe question");
+    assertStep(4, "additionalRequirements errors return to the describe question");
     assert.equal(doc.getElementById("additionalRequirements-error").textContent, "Extra description must be 500 characters or fewer.");
     assert.equal(active(), "tripDescription");
     await click("Back to review");
@@ -402,7 +441,8 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       durationDays: MAX_TRIP_DAYS,
       departureLocation: "Hue",
       travelers: { count: 7 },
-      budget: { amount: 7654000, currency: "VND", scope: "perPerson" },
+      budget: { amount: 7654000, currency: "VND", scope: "group" },
+      preferences: { interests: [{ type: "culture" }, { type: "nature" }] },
       additionalRequirements: "We love seafood and prefer taxis.",
     });
     fetchImpl = async () => ({ ok: true, json: async () => ({ valid: true, data: payload }) });
@@ -419,7 +459,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assertStep(0);
     assert.equal(active(), "departureLocation");
     for (const name of ["departureLocation", "destination", "startDate", "endDate", "durationDays", "travelerCount", "budgetAmount", "tripDescription"]) assert.equal(field(name).value, "", name);
-    assert.equal(field("budgetSlider").value, "0");
+    assert.equal(field("budgetSlider").value, "2000000");
     assert.equal(field("budgetSlider").max, "80000000");
     assert.equal(field("budgetSlider").getAttribute("aria-valuetext"), "Budget not set");
     assert.equal(clean.querySelector('[name="periodMode"]'), null);
@@ -428,22 +468,21 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(clean.querySelector(".completion-label").textContent, "0% complete");
     assert.equal(button("Back"), undefined);
 
-    // Group scope and a high custom amount on a dates trip.
+    // A high custom amount on a dates trip. Switching on Per person is optional.
     await fill("departureLocation", "Ha Noi");
     await click("Next");
-    await click("Next");
     await fill("startDate", startCross);
-    await actOn(() => [...doc.querySelectorAll("#request-step-2 .request-choice")][MAX_TRIP_DAYS - 1].click());
+    await actOn(() => [...doc.querySelectorAll("#request-step-1 .request-choice")][MAX_TRIP_DAYS - 1].click());
     await click("Next");
     await fill("travelerCount", "6");
-    await click("Next");
     await fill("budgetAmount", "70123456");
-    await radio("budgetScope", "group");
+    await click("Per person");
     await click("Next");
     await click("Next");
-    assertStep(6);
+    await click("Next");
+    assertStep(5);
     const custom = buildPayload(new FormData(clean));
-    assert.deepEqual(custom, { travelPeriod: { startDate: startCross, endDate: endCross }, durationDays: MAX_TRIP_DAYS, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123000, currency: "VND", scope: "group" } });
+    assert.deepEqual(custom, { travelPeriod: { startDate: startCross, endDate: endCross }, durationDays: MAX_TRIP_DAYS, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123000, currency: "VND", scope: "perPerson" } });
     assert.equal(custom.preferences?.destination, undefined, "Skipped destination is omitted, never filled in");
     assert.equal(field("budgetSlider").value, "70123000");
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
@@ -486,7 +525,7 @@ test("Start planning goes straight to the first form question; old describe rout
   const tick = () => new Promise(resolve => setTimeout(resolve, 10));
   const actOn = async callback => { await act(async () => { callback(); await tick(); }); };
   try {
-    const { default: App } = await import(output);
+    const { default: App } = await import(pathToFileURL(output).href);
     const { createRoot } = await import("react-dom/client");
     const { MemoryRouter } = await import("react-router-dom");
     root = createRoot(doc.querySelector("#root"));
@@ -499,7 +538,7 @@ test("Start planning goes straight to the first form question; old describe rout
     assert.equal(doc.querySelector(".entry-choice"), null, "Chooser is not rendered after Start planning");
     assert.equal(doc.querySelector("#trip-describe-panel"), null);
     assert.ok(doc.getElementById("departureLocation"), "First form question is visible");
-    assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you leaving from?");
+    assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you traveling?");
     assert.equal(doc.activeElement?.id, "departureLocation");
 
     for (const path of ["/describe", "/describe/anything"]) {
@@ -507,7 +546,7 @@ test("Start planning goes straight to the first form question; old describe rout
       assert.equal(doc.querySelector(".welcome-page"), null, `${path} does not 404 or stay on welcome`);
       assert.equal(doc.querySelector(".entry-choice"), null, `${path} does not show the chooser`);
       assert.ok(doc.getElementById("departureLocation"), `${path} redirects to the form`);
-      assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you leaving from?");
+      assert.equal(doc.querySelector("#request-step-0 h2")?.textContent, "Where are you traveling?");
     }
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {

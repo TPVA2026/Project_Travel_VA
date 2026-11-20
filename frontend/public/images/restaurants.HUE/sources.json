@@ -1,0 +1,351 @@
+{
+  "images": [
+    {
+      "placeId": "REST_H_01",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://www.foody.vn/hue/banh-beo-o-le",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Quán bánh O Lé",
+      "files": [
+        "REST_H_01_01.jpg",
+        "REST_H_01_02.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_01_01.jpg": "quanbanhole.jpg",
+        "REST_H_01_02.jpg": "quanbanholeee.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_01_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.foody.vn/hue/banh-beo-o-le",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "REST_H_01_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.foody.vn/hue/banh-beo-o-le",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_02",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://www.bachhoaxanh.com/kinh-nghiem-hay/quan-banh-uot-cuon-thit-nuong-3-the-he-noi-tieng-dong-khach-o-hue-1548402",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Bánh ướt - Bún thịt nướng Huyền Anh",
+      "files": [
+        "REST_H_02_01.jpg",
+        "REST_H_02_02.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_02_01.jpg": "banhuot1.jpg",
+        "REST_H_02_02.jpg": "anhuot2.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_02_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.bachhoaxanh.com/kinh-nghiem-hay/quan-banh-uot-cuon-thit-nuong-3-the-he-noi-tieng-dong-khach-o-hue-1548402",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "REST_H_02_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.bachhoaxanh.com/kinh-nghiem-hay/quan-banh-uot-cuon-thit-nuong-3-the-he-noi-tieng-dong-khach-o-hue-1548402",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_03",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Bún giấm nuốc Gia Hội",
+      "files": [
+        "REST_H_03_01.jpg",
+        "REST_H_03_02.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_03_01.jpg": "bungiamnuoc.jpg",
+        "REST_H_03_02.jpg": "bungiamnuoc1.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_03_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "REST_H_03_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_04",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://www.foody.vn/hue/quan-hoa-dong",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Quán hến Hoa Đông",
+      "files": [
+        "REST_H_04_01.jpg",
+        "REST_H_04_02.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_04_01.jpg": "hoadong.jpg",
+        "REST_H_04_02.jpg": "hoadong1.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_04_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.foody.vn/hue/quan-hoa-dong",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "REST_H_04_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://www.foody.vn/hue/quan-hoa-dong",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_05",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Bún bò mệ Kéo",
+      "files": [
+        "REST_H_05_01.jpg",
+        "REST_H_05_02.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_05_01.jpg": "bunbo1.jpg",
+        "REST_H_05_02.jpg": "bunbo2.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_05_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "REST_H_05_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_06",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Chan-Nha-hang-com-nieu-mon-Hue-287595",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Cơm niêu chạn",
+      "files": [
+        "REST_H_06_01.jpg",
+        "REST_H_06_02.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_06_01.jpg": "com.jpg",
+        "REST_H_06_02.jpg": "comchan.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_06_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Chan-Nha-hang-com-nieu-mon-Hue-287595",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "REST_H_06_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Chan-Nha-hang-com-nieu-mon-Hue-287595",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_07",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://hues.vn/dia-diem/tiem-banh-mi-truong-tien-o-tho/",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Bánh mì O Tho",
+      "files": [
+        "REST_H_07_01.jpg",
+        "REST_H_07_02.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_07_01.jpg": "banhmi.jpg",
+        "REST_H_07_02.jpg": "banhmi1.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_07_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://hues.vn/dia-diem/tiem-banh-mi-truong-tien-o-tho/",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        },
+        {
+          "file": "REST_H_07_02.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://hues.vn/dia-diem/tiem-banh-mi-truong-tien-o-tho/",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_08",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Vit-Thuan-Huong-vi-dan-da-trong-am-thuc-Hue-570907",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Cháo Vịt Thuận",
+      "files": [
+        "REST_H_08_01.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_08_01.jpg": "vitthuan1.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_08_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Vit-Thuan-Huong-vi-dan-da-trong-am-thuc-Hue-570907",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_09",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://huetripo.hue.gov.vn/co-so-an-uong/quan-an/che-cam-742890",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Chè Cầm",
+      "files": [
+        "REST_H_09_01.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_09_01.jpg": "checam.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_09_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://huetripo.hue.gov.vn/co-so-an-uong/quan-an/che-cam-742890",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "web_page",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép."
+    },
+    {
+      "placeId": "REST_H_10",
+      "sourceType": "user_supplied_web_sources",
+      "sourceUrl": "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QT5JpJbQ5e9rWL2UgSxPr-3h8BOpJ78SUJoXqur3WAjEN0P_Er2uVeMSC6edE2-DJS6HM3lM13QA45ib6DXcPYViUf2bScU3FuQTSrkBxLCwmRDJaugjB2nPms7me0LOHdepa1W6FuNegy=s1360-w1360-h1020-rw",
+      "credit": null,
+      "authorName": null,
+      "license": null,
+      "placeName": "Bánh canh Nam Phổ - Thúy",
+      "files": [
+        "REST_H_10_01.jpg"
+      ],
+      "originalFiles": {
+        "REST_H_10_01.jpg": "thuybanhcanh.jpg"
+      },
+      "fileSources": [
+        {
+          "file": "REST_H_10_01.jpg",
+          "sourceType": "web",
+          "sourceUrl": "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QT5JpJbQ5e9rWL2UgSxPr-3h8BOpJ78SUJoXqur3WAjEN0P_Er2uVeMSC6edE2-DJS6HM3lM13QA45ib6DXcPYViUf2bScU3FuQTSrkBxLCwmRDJaugjB2nPms7me0LOHdepa1W6FuNegy=s1360-w1360-h1020-rw",
+          "authorName": null,
+          "license": null,
+          "sourceKind": "direct_image",
+          "verificationStatus": "user_reported"
+        }
+      ],
+      "note": "Nguồn do người dùng cung cấp trong hội thoại, áp dụng cho nhóm ảnh của quán; chưa đối chiếu độc lập từng ảnh hoặc giấy phép. Link Googleusercontent là ảnh trực tiếp, chưa có trang nguồn và tên tác giả."
+    }
+  ]
+}

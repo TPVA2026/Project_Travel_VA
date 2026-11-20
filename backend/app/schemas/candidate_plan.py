@@ -1,3 +1,4 @@
+from pydantic import model_serializer
 """Pydantic models for the CandidatePlan contract (M3).
 
 Mirrors `candidate_plan.schema.json` (the contract shared with M4/M5/M6) and is the gate every
@@ -91,6 +92,15 @@ class CandidatePlan(_Strict):
     planId: Id
     title: StrictStr
     destinationId: Id
+    hotelId: Id | None = None
+
+    @model_serializer(mode="wrap")
+    def serialize_plan(self, handler):
+        data = handler(self)
+        if "hotelId" not in self.model_fields_set:
+            data.pop("hotelId", None)
+        return data
+
     days: Annotated[list[Day], Field(min_length=1)]
     missingData: list[StrictStr]
     assumptions: list[StrictStr]

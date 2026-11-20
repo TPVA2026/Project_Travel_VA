@@ -264,7 +264,50 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://vinpearl.com/vi/lang-khai-dinh-hue-dinh-cao-kien-truc-lang-tam-thoi-nguyen"
-    }
+    },
+    "description": "Những bậc thang đá rộng dẫn qua các cổng và trụ trang trí cầu kỳ. Sân có hàng tượng người và ngựa bằng đá, phía xa là đồi cây xanh.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_01_01.jpg",
+        "/images/attractions.HUE/ATTR_H_01_02.jpg",
+        "/images/attractions.HUE/ATTR_H_01_03.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_01_01.jpg",
+        "alt": "lăng Khải Định",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_01_02.jpg",
+        "alt": "lăng Khải Định",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_01_03.jpg",
+        "alt": "lăng Khải Định",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "ATTR_H_02",
@@ -542,6 +585,49 @@
           "priceScope": "perPerson"
         }
       }
+    ],
+    "description": "Cổng và đình nhỏ có nhiều chi tiết trang trí nổi bật giữa hàng cây. Ảnh nội thất cho thấy cầu thang uốn cong hai phía, tông vàng và các mảng tường hoa văn.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_02_01.png",
+        "/images/attractions.HUE/ATTR_H_02_02.png",
+        "/images/attractions.HUE/ATTR_H_02_03.png"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_02_01.png",
+        "alt": "Cung An Định",
+        "sourceUrl": "https://eticket.hueworldheritage.org.vn/diem-den/cung-an-dinh",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_02_02.png",
+        "alt": "Cung An Định",
+        "sourceUrl": "https://eticket.hueworldheritage.org.vn/diem-den/cung-an-dinh",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_02_03.png",
+        "alt": "Cung An Định",
+        "sourceUrl": "https://eticket.hueworldheritage.org.vn/diem-den/cung-an-dinh",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
     ]
   },
   {
@@ -808,7 +894,50 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://vinpearl.com/vi/dai-noi-hue-huong-dan-tham-quan-tim-ve-dau-an-lich-su-co-do"
-    }
+    },
+    "description": "Bộ ảnh ghi lại cổng thành nhiều tầng mái, súng thần công trưng bày dưới mái che và Kỳ Đài nhìn từ khoảng sân cỏ rộng. Đây là các góc trong khu di sản và vùng phụ cận, cần phân biệt với phạm vi tham quan bên trong Đại Nội.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_03_01.jpg",
+        "/images/attractions.HUE/ATTR_H_03_02.jpg",
+        "/images/attractions.HUE/ATTR_H_03_03.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_03_01.jpg",
+        "alt": "Đại Nội",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_03_02.jpg",
+        "alt": "Đại Nội",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_03_03.jpg",
+        "alt": "Đại Nội",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "ATTR_H_04",
@@ -1049,7 +1178,39 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://nangtrip.com/activities/ben-xua-vy-da"
-    }
+    },
+    "description": "Lối đi có cây xanh, hoa và những bộ bàn ghế nhỏ. Một góc khác mở ra mặt nước, với bóng cây phủ xuống tạo cảm giác gần gũi và yên tĩnh trong ảnh.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_04_01.jpeg",
+        "/images/attractions.HUE/ATTR_H_04_02.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_04_01.jpeg",
+        "alt": "Bến Xưa Vỹ Dạ",
+        "sourceUrl": "https://nangtrip.com/activities/ben-xua-vy-da",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_04_02.jpg",
+        "alt": "Bến Xưa Vỹ Dạ",
+        "sourceUrl": "https://www.threads.com/@haanhpham.1806/post/DOWeiFJEnMT/media",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "ATTR_H_05",
@@ -1288,7 +1449,50 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://vinpearl.com/vi/cho-dong-ba-hue-trai-nghiem-tron-ven-mot-vong-mua-sam-an-uong"
-    }
+    },
+    "description": "Cổng chợ nổi bật với dòng chữ đỏ Chợ Đông Ba và khu vực phía trước nhộn nhịp xe cộ. Bộ ảnh còn có hàng đặc sản đóng gói và quầy ăn dưới ánh đèn buổi tối.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_05_01.jpg",
+        "/images/attractions.HUE/ATTR_H_05_02.jpg",
+        "/images/attractions.HUE/ATTR_H_05_03.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_05_01.jpg",
+        "alt": "chợ Đông Ba",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/kham-pha-cho-dong-ba-khu-cho-phon-hoa-bac-nhat-xu-kinh-ky-2251",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_05_02.jpg",
+        "alt": "chợ Đông Ba",
+        "sourceUrl": "https://travel.com.vn/tin-tuc-du-lich/cho-dong-ba-hue-co-gi-hap-dan-v16168.aspx",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_05_03.jpg",
+        "alt": "chợ Đông Ba",
+        "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Thuong-thuc-am-thuc-dem-tai-Cho-Dong-Ba-Hue.html/pid/14738/cid/383",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "ATTR_H_06",
@@ -1563,6 +1767,49 @@
           "recommendedVisitWindow": null
         }
       }
+    ],
+    "description": "Những chiếc nón lá xếp thành chồng và treo thành cụm tạo nét nhận diện của nghề làm nón. Ảnh còn thể hiện người làm nghề thao tác thủ công cùng các mẫu nón có hình trang trí.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_06_01.jpg",
+        "/images/attractions.HUE/ATTR_H_06_02.png",
+        "/images/attractions.HUE/ATTR_H_06_03.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_06_01.jpg",
+        "alt": "làng nón bài thơ Tây Hồ",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/nghieng-minh-truoc-que-huong-cua-nhung-chiec-non-bai-tho-lang-tay-ho-2525",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_06_02.png",
+        "alt": "làng nón bài thơ Tây Hồ",
+        "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Lang-nghe-non-la-xu-Hue.html/pid/8543/cid/323",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_06_03.jpg",
+        "alt": "làng nón bài thơ Tây Hồ",
+        "sourceUrl": "https://cdn3.ivivu.com/2014/05/lang-tay-ho-noi-xuat-xu-non-bai-tho-xu-hue-8-ivivu.jpg",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
     ]
   },
   {
@@ -1810,7 +2057,50 @@
       "field": "openingHours",
       "reason": "Active school, visitor permission and precise weekday/weekend windows not confirmed. Do not infer exact hours from 'afternoon'.",
       "sourceUrl": "https://khamphahue.com.vn/Hue-24h/Chi-tiet/tid/Tam-nay-di-Hue-dep-nhat-nam.html/pid/16849/cid/242"
-    }
+    },
+    "description": "Cổng trường và dãy nhà nổi bật với tông đỏ sẫm, đường viền sáng màu và mái ngói. Sân trường rộng có cây xanh, tạo nhiều góc nhìn vào mặt đứng kiến trúc.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_07_01.jpg",
+        "/images/attractions.HUE/ATTR_H_07_02.jpg",
+        "/images/attractions.HUE/ATTR_H_07_03.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_07_01.jpg",
+        "alt": "Quốc Học Huế",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/truong-quoc-hoc-hue-chiem-nguong-ve-dep-dam-chat-troi-au-tai-co-do-2448",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_07_02.jpg",
+        "alt": "Quốc Học Huế",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/truong-quoc-hoc-hue-chiem-nguong-ve-dep-dam-chat-troi-au-tai-co-do-2448",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_07_03.jpg",
+        "alt": "Quốc Học Huế",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/truong-quoc-hoc-hue-chiem-nguong-ve-dep-dam-chat-troi-au-tai-co-do-2448",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "ATTR_H_08",
@@ -2049,7 +2339,50 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://vinpearl.com/vi/lang-huong-thuy-xuan-hue-kham-pha-lang-nghe-700-nam-tuoi-giua-long-co-do"
-    }
+    },
+    "description": "Các bó hương nhiều màu được xòe thành hình quạt và xếp thành những mảng màu bắt mắt. Một ảnh cận cảnh ghi lại thao tác se hương bằng tay trên bàn gỗ.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_08_01.jpeg",
+        "/images/attractions.HUE/ATTR_H_08_02.jpg",
+        "/images/attractions.HUE/ATTR_H_08_03.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_08_01.jpeg",
+        "alt": "Làng Hương Thủy Xuân",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/alo-o-day-co-tat-tan-tat-kinh-nghiem-di-lang-huong-thuy-xuan-ne-ban-oi-2542",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_08_02.jpg",
+        "alt": "Làng Hương Thủy Xuân",
+        "sourceUrl": "https://www.lagunalangco.com/vi/lang-huong-thuy-xuan-lang-nghe-700-tuoi-giua-long-co-do/",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_08_03.jpg",
+        "alt": "Làng Hương Thủy Xuân",
+        "sourceUrl": "https://www.lagunalangco.com/vi/lang-huong-thuy-xuan-lang-nghe-700-tuoi-giua-long-co-do/",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "ATTR_H_09",
@@ -2293,7 +2626,50 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://www.klook.com/vi/blog/chua-thien-mu/"
-    }
+    },
+    "description": "Tòa tháp nhiều tầng nổi bật giữa cây xanh, với các ô cửa vòm và chi tiết trang trí trên thân tháp. Ảnh toàn cảnh cho thấy khuôn viên nhiều cây nằm cạnh sông và bến thuyền.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_09_01.jpg",
+        "/images/attractions.HUE/ATTR_H_09_02.jpg",
+        "/images/attractions.HUE/ATTR_H_09_03.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_09_01.jpg",
+        "alt": "Chùa Thiên Mụ",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_09_02.jpg",
+        "alt": "Chùa Thiên Mụ",
+        "sourceUrl": null,
+        "sourceType": "user_original_photo",
+        "credit": "Ảnh tự chụp do người dùng cung cấp",
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_09_03.jpg",
+        "alt": "Chùa Thiên Mụ",
+        "sourceUrl": "https://vietluxtour.com/kham-pha/chua-thien-mu-hue.html?srsltid=AYCX9vIQkTUIyWktreG7mcbOM53qzJPZi1aPy1fm_dzydF0ltX38WVq5",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "ATTR_H_10",
@@ -2530,7 +2906,39 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://vinpearl.com/vi/cau-trang-tien-hue-chung-nhan-lich-su-dep-mai-theo-thoi-gian"
-    }
+    },
+    "description": "Nhịp cầu bằng thép chạy ngang mặt sông tạo đường nét dễ nhận diện khi nhìn từ bờ. Ảnh buổi tối ghi lại ánh sáng nhiều màu phản chiếu trên mặt nước trong thời điểm chụp.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/attractions.HUE/ATTR_H_10_01.jpg",
+        "/images/attractions.HUE/ATTR_H_10_02.jpg"
+      ],
+      "sourceManifest": "/images/attractions.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/attractions.HUE/ATTR_H_10_01.jpg",
+        "alt": "Cầu Trường Tiền",
+        "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Cau-Truong-Tien.html/pid/10594/cid/81",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/attractions.HUE/ATTR_H_10_02.jpg",
+        "alt": "Cầu Trường Tiền",
+        "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Cau-Truong-Tien.html/pid/10594/cid/81",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "OTM_H_N3833216995",

@@ -717,18 +717,10 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
     await act(async () => {
       saveButton.click()
     })
-    assert.ok(dom.window.document.querySelector('.chosen-header-banner'))
+    assert.equal(dom.window.document.querySelector('.chosen-notice'), null)
     assert.match(
-      dom.window.document.querySelector('.chosen-header-banner').textContent,
-      /Saved to your trip/
-    )
-    assert.match(
-      dom.window.document.querySelector('.chosen-notice').textContent,
-      /Saved as your trip\. Find it again under Selected\./
-    )
-    assert.match(
-      dom.window.document.querySelector('.selected-summary-actions .btn-remove').textContent,
-      /Remove from your trip/
+      dom.window.document.querySelector('.selected-summary-actions .btn-choose').textContent,
+      /Save to your trip/
     )
   } finally {
     await cleanup()

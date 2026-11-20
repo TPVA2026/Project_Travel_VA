@@ -1,0 +1,13 @@
+﻿Tên cơ sở,IDs,Địa chỉ theo dataset,Ảnh đại diện,Nguồn ảnh,Link Booking.com,Nét đặc trưng / nguồn,Ngày kiểm tra,Link Booking.com ứng viên,Trạng thái đối chiếu,Ghi chú đối chiếu
+ÊMM Hotel Hue,HOTEL_H_EMM_DELUXE; HOTEL_H_EMM_FAMILY,"15 Ly Thuong Kiet, Hue",,,,,,https://www.booking.com/hotel/vn/festival-hue.da.html,name_match_address_review_required,
+Rosaleen Boutique Hotel,HOTEL_H_ROSALEEN_SUPERIOR,"34–36 Chu Van An, Hue",,,,,,https://www.booking.com/hotel/vn/new-star.html,name_match_address_review_required,
+Magnolia Boutique Hotel,ACCOM_H_01,"10 Trần Hữu Dực, Huế",,,,,,https://www.booking.com/hotel/vn/magnolia-boutique-hue.vi.html,user_confirmed_identity,"Người dùng xác nhận đúng cơ sở Magnolia tại số 10 Trần Hữu Dực, Huế. Giữ khác biệt địa chỉ hiển thị trên Booking (2 Hoàng Văn Thụ 22) làm ghi chú nguồn; không coi là địa chỉ thay thế đã xác minh."
+Bailey Hotel Hue,ACCOM_H_02,"5/28 Võ Thị Sáu, Phú Hội, Huế",,,,,,https://www.booking.com/hotel/vn/bailey-hue.pt-br.html,name_match_address_review_required,
+Lumiere Boutique Vỹ Dạ,ACCOM_H_03,"98 Phạm Văn Đồng, Vỹ Dạ, Huế",,,,,,https://www.booking.com/hotel/vn/lumiere-boutique-vy-da.fr.html,name_match_address_review_required,
+Century Riverside Hotel Hue,ACCOM_H_04,"49 Lê Lợi, Phú Hội, Huế",,,,,,https://www.booking.com/hotel/vn/century-riverside-hue.id.html,name_match_address_review_required,
+Deluxe Villa Hue,ACCOM_H_05,"20 Lý Tự Trọng, Xuân Phú, Huế",,,,,,https://www.booking.com/hotel/vn/deluxe-villa-thanh-pho-hue.vi.html,name_and_street_address_match,"Booking ghi 20 Lý Tự Trọng, Huế, khớp địa chỉ dataset. Không suy ra số phòng ngủ/giường do thông tin listing chưa thống nhất."
+Sankofa Village Hill Resort & Spa,ACCOM_H_06,"08 Ngọc Hồ, phường Kim Long, thành phố Huế",,,,,,https://www.booking.com/hotel/vn/sankofa-village-hill-resort-spa.html,name_and_street_address_match,"Booking ghi 8 Ngoc Ho, Huong Ho, Huong Tra, Hue; khớp số nhà và đường Ngọc Hồ với dataset. Không tự thay tên đơn vị hành chính cũ/mới."
+La Vela Hue Hotel,ACCOM_H_07,"17, đường số 22, Đông Nam Thủy An, phường Thanh Thủy, thành phố Huế",,,,,,https://www.booking.com/hotel/vn/la-vela-hue.vi.html,name_match_address_review_required,
+Indochine Palace,ACCOM_H_08,"105A Hùng Vương, phường Thuận Hóa, thành phố Huế",,,,,,https://www.booking.com/hotel/vn/indochine-palace.fr.html,name_match_address_review_required,
+Melia Vinpearl Hue,ACCOM_H_09,"50A Hùng Vương, Phú Nhuận, Huế",,,,,,https://www.booking.com/hotel/vn/melia-vinpearl-hue-hotel.en-gb.html,name_and_street_address_match,"Booking: 50A Hùng Vương, khớp số nhà/đường dataset."
+Azerai La Residence Hue,ACCOM_H_10,"05 Lê Lợi, Vĩnh Ninh, Huế",,,,,,https://www.booking.com/hotel/vn/azerai-la-residence-hue.vi.html,name_match_address_review_required,

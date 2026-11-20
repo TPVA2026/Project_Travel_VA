@@ -4,7 +4,7 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import { build } from "esbuild";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import React, { act } from "react";
 import {
   MAX_TRIP_DAYS, buildPayload, localTodayIso, localYearMonth, addDaysIso, addMonthsYm, addYearsIso,
@@ -68,35 +68,34 @@ test("M1 date limits: start date, 1–3 day cards, computed return date, start c
   const radio = async (name, value) => actOn(() => doc.querySelector(`[name="${name}"][value="${value}"]`).click());
   const visible = () => [...doc.querySelectorAll(".request-step")].filter(node => !node.hidden).map(node => Number(node.dataset.step));
   const when = () => [...doc.querySelectorAll(".request-review > div")].find(row => row.querySelector("dt").textContent === "When").querySelector("dd").textContent;
-  const dayCards = () => [...doc.querySelectorAll("#request-step-2 .request-choice")];
+  const dayCards = () => [...doc.querySelectorAll("#request-step-1 .request-choice")];
   try {
-    const { default: TravelForm } = await import(output);
+    const { default: TravelForm } = await import(pathToFileURL(output).href);
     const { createRoot } = await import("react-dom/client");
     const { MemoryRouter } = await import("react-router-dom");
     root = createRoot(doc.querySelector("#root"));
     await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(TravelForm))));
     await fill("departureLocation", "Hue");
     await click("Next");
-    await click("Not sure yet");
-    assert.deepEqual(visible(), [2]);
-    assert.equal(doc.getElementById("request-step-2-hint").textContent, tripLimitHint());
+    assert.deepEqual(visible(), [1]);
+    assert.equal(doc.getElementById("request-step-1-hint").textContent, tripLimitHint());
     assert.equal(doc.querySelector('[name="periodMode"]'), null);
     assert.equal(doc.body.textContent.includes("By month"), false);
     assert.equal(field("month"), null);
     assert.equal(field("startDate").min, today);
     assert.equal(field("startDate").max, startMax);
     assert.equal(field("endDate").type, "hidden");
-    assert.equal(doc.querySelector('#request-step-2 input[type="number"]'), null);
+    assert.equal(doc.querySelector('#request-step-1 input[type="number"]'), null);
 
     await fill("startDate", yesterday);
     await actOn(() => dayCards()[0].click());
     await click("Next");
-    assert.deepEqual(visible(), [2]);
+    assert.deepEqual(visible(), [1]);
     assert.equal(doc.getElementById("startDate-error").textContent, "Start date can't be in the past.");
 
     await fill("startDate", addDaysIso(startMax, 1));
     await click("Next");
-    assert.deepEqual(visible(), [2]);
+    assert.deepEqual(visible(), [1]);
     assert.equal(doc.getElementById("startDate-error").textContent, "Start date must be within 1 year from today.");
 
     // Length cards compute the end date. Changing start keeps the chosen length.
@@ -104,30 +103,30 @@ test("M1 date limits: start date, 1–3 day cards, computed return date, start c
     await actOn(() => dayCards()[0].click());
     assert.equal(field("durationDays").value, "1");
     assert.equal(field("endDate").value, today);
-    assert.equal(doc.querySelector("#request-step-2 .request-question-hint.request-span").textContent, formatReturnLabel(today));
+    assert.equal(doc.querySelector("#request-step-1 .request-question-hint.request-span").textContent, formatReturnLabel(today));
     await actOn(() => dayCards()[2].click());
     assert.equal(field("durationDays").value, "3");
     assert.equal(field("endDate").value, addDaysIso(today, 2));
     await fill("startDate", addDaysIso(today, 5));
     assert.equal(field("durationDays").value, "3", "Chosen length is kept when the start date changes");
     assert.equal(field("endDate").value, addDaysIso(today, 7));
-    assert.equal(doc.querySelector("#request-step-2 .request-question-hint.request-span").textContent, formatReturnLabel(addDaysIso(today, 7)));
+    assert.equal(doc.querySelector("#request-step-1 .request-question-hint.request-span").textContent, formatReturnLabel(addDaysIso(today, 7)));
 
     // A trip may cross a month boundary.
     await fill("startDate", startCross);
     await actOn(() => dayCards()[MAX_TRIP_DAYS - 1].click());
     assert.ok(startCross.slice(0, 7) !== endCross.slice(0, 7));
     assert.equal(field("endDate").value, endCross);
-    assert.equal(doc.querySelector("#request-step-2 .request-question-hint.request-span").textContent, formatReturnLabel(endCross));
+    assert.equal(doc.querySelector("#request-step-1 .request-question-hint.request-span").textContent, formatReturnLabel(endCross));
     await click("Next");
-    assert.deepEqual(visible(), [3]);
+    assert.deepEqual(visible(), [2]);
     await fill("travelerCount", "2");
+    await fill("budgetAmount", "2000000");
+    await click("Per person");
     await click("Next");
-    await fill("budgetAmount", "1000000");
-    await radio("budgetScope", "group");
     await click("Next");
-    await click("Skip for now");
-    assert.deepEqual(visible(), [6]);
+    await click("Next");
+    assert.deepEqual(visible(), [5]);
     assert.equal(when(), `${showDate(startCross)} – ${showDate(endCross)} · ${MAX_TRIP_DAYS} days`);
     const payload = buildPayload(new FormData(doc.querySelector("form")));
     assert.deepEqual(payload.travelPeriod, { startDate: startCross, endDate: endCross });

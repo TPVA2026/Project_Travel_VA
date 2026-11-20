@@ -284,7 +284,39 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://www.traveloka.com/vi-vn/explore/culinary/gns-quan-banh-hue/188015"
-    }
+    },
+    "description": "Các phần bánh được bày trên đĩa nhỏ, ăn kèm những chén nước chấm riêng. Ảnh không gian cho thấy sân lát gạch có mái che, bàn ghế thấp và cây xanh.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_01_01.jpg",
+        "/images/restaurants.HUE/REST_H_01_02.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_01_01.jpg",
+        "alt": "Quán bánh O Lé",
+        "sourceUrl": "https://www.foody.vn/hue/banh-beo-o-le",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/restaurants.HUE/REST_H_01_02.jpg",
+        "alt": "Quán bánh O Lé",
+        "sourceUrl": "https://www.foody.vn/hue/banh-beo-o-le",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_02",
@@ -609,7 +641,39 @@
           "sourceUrl": "https://www.vietnamgo.net/places/banh-uot-huyen-anh-hue"
         }
       ]
-    }
+    },
+    "description": "Ảnh món ăn cho thấy đĩa bún với rau, dưa leo và phần topping phủ phía trên, kèm các chén nước chấm. Không gian quán có bàn dài và ghế nhựa thấp, cách bài trí giản dị.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_02_01.jpg",
+        "/images/restaurants.HUE/REST_H_02_02.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_02_01.jpg",
+        "alt": "Bánh ướt - Bún thịt nướng Huyền Anh",
+        "sourceUrl": "https://www.bachhoaxanh.com/kinh-nghiem-hay/quan-banh-uot-cuon-thit-nuong-3-the-he-noi-tieng-dong-khach-o-hue-1548402",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/restaurants.HUE/REST_H_02_02.jpg",
+        "alt": "Bánh ướt - Bún thịt nướng Huyền Anh",
+        "sourceUrl": "https://www.bachhoaxanh.com/kinh-nghiem-hay/quan-banh-uot-cuon-thit-nuong-3-the-he-noi-tieng-dong-khach-o-hue-1548402",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_03",
@@ -934,7 +998,39 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383"
-    }
+    },
+    "description": "Tô bún có phần topping trong, rau xanh và nước dùng hoặc nước trộn ở đáy tô. Ảnh mặt tiền cho thấy biển Bún giấm nuốc cùng bàn ghế thấp sát khu vực lối vào.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_03_01.jpg",
+        "/images/restaurants.HUE/REST_H_03_02.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_03_01.jpg",
+        "alt": "Bún giấm nuốc Gia Hội",
+        "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/restaurants.HUE/REST_H_03_02.jpg",
+        "alt": "Bún giấm nuốc Gia Hội",
+        "sourceUrl": "https://khamphahue.com.vn/Du-lich/Chi-tiet/tid/Bun-Giam-Nuoc-chan-cau-Gia-Hoi.html/pid/3957/cid/383",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_04",
@@ -1257,7 +1353,39 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://mia.vn/cam-nang-du-lich/dung-chan-tai-com-hen-hoa-dong-quan-ngon-khong-the-bo-qua-khi-den-hue-2377"
-    }
+    },
+    "description": "Mặt tiền nhỏ có biển Hoa Đông và tên các món hến. Ảnh món ăn ghi lại những tô có rau, hến và các phần ăn kèm phủ phía trên.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_04_01.jpg",
+        "/images/restaurants.HUE/REST_H_04_02.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_04_01.jpg",
+        "alt": "Quán hến Hoa Đông",
+        "sourceUrl": "https://www.foody.vn/hue/quan-hoa-dong",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/restaurants.HUE/REST_H_04_02.jpg",
+        "alt": "Quán hến Hoa Đông",
+        "sourceUrl": "https://www.foody.vn/hue/quan-hoa-dong",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_05",
@@ -1577,7 +1705,39 @@
       "source": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
       "status": "ESTIMATED",
       "note": "Preserved M2 published range; not a confirmed order or per-person meal total."
-    }
+    },
+    "description": "Các tô bún có nước dùng màu cam đỏ, phần thịt và rau thơm phủ trên mặt. Ảnh ghi lại cách phục vụ với rau và chén gia vị hoặc nước chấm đặt bên cạnh.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_05_01.jpg",
+        "/images/restaurants.HUE/REST_H_05_02.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_05_01.jpg",
+        "alt": "Bún bò mệ Kéo",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/restaurants.HUE/REST_H_05_02.jpg",
+        "alt": "Bún bò mệ Kéo",
+        "sourceUrl": "https://mia.vn/cam-nang-du-lich/quan-me-keo-kham-pha-quan-bun-bo-hue-70-nam-luon-dong-nghet-khach-o-vung-dat-co-do-2322",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_06",
@@ -1902,7 +2062,39 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://mia.vn/cam-nang-du-lich/ghe-ngay-quan-com-chan-de-thuong-thuc-com-nieu-mang-huong-vi-ky-uc-2391"
-    }
+    },
+    "description": "Mặt tiền có cửa vòm, biển Chạn và các chậu cây hai bên. Mâm cơm trong ảnh được bày với niêu, bát và đĩa thức ăn dùng chung, tạo cảm giác bữa cơm gia đình.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_06_01.jpg",
+        "/images/restaurants.HUE/REST_H_06_02.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_06_01.jpg",
+        "alt": "Cơm niêu chạn",
+        "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Chan-Nha-hang-com-nieu-mon-Hue-287595",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/restaurants.HUE/REST_H_06_02.jpg",
+        "alt": "Cơm niêu chạn",
+        "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Chan-Nha-hang-com-nieu-mon-Hue-287595",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_07",
@@ -2231,7 +2423,39 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://mia.vn/cam-nang-du-lich/top-quan-banh-mi-hue-ngon-21438"
-    }
+    },
+    "description": "Quầy bánh mì có tủ kính phía trước và biển Bánh mì Trường Tiền. Ảnh cận cảnh ghi lại người bán chuẩn bị bánh ngay tại quầy với nhiều khay nguyên liệu.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_07_01.jpg",
+        "/images/restaurants.HUE/REST_H_07_02.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_07_01.jpg",
+        "alt": "Bánh mì O Tho",
+        "sourceUrl": "https://hues.vn/dia-diem/tiem-banh-mi-truong-tien-o-tho/",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      },
+      {
+        "url": "/images/restaurants.HUE/REST_H_07_02.jpg",
+        "alt": "Bánh mì O Tho",
+        "sourceUrl": "https://hues.vn/dia-diem/tiem-banh-mi-truong-tien-o-tho/",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_08",
@@ -2574,7 +2798,28 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://thanhphohue.net/dia-diem-hue/chao-vit-thuan"
-    }
+    },
+    "description": "Quán có mặt tiền mở, biển Đặc sản vịt Thuận và khu vực để xe máy phía trước. Từ ảnh có thể thấy bàn ghế được bố trí sâu vào bên trong quán.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_08_01.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_08_01.jpg",
+        "alt": "Cháo Vịt Thuận",
+        "sourceUrl": "https://hue.gov.vn/Du-khach/Thong-tin-du-khach/Thong-tin-can-biet/tb/Vit-Thuan-Huong-vi-dan-da-trong-am-thuc-Hue-570907",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_09",
@@ -2914,7 +3159,28 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://www.ivivu.com/blog/2026/06/ban-do-che-hue-10-quan-che-hue-ngon-noi-tieng-nen-thu-mot-lan/"
-    }
+    },
+    "description": "Ảnh cho thấy không gian quán nhỏ với bàn ghế thấp, sàn hoa văn và khách ngồi bên trong. Bộ ảnh hiện chưa có ảnh cận cảnh chè để mô tả riêng các món.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_09_01.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_09_01.jpg",
+        "alt": "Chè Cầm",
+        "sourceUrl": "https://huetripo.hue.gov.vn/co-so-an-uong/quan-an/che-cam-742890",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   },
   {
     "id": "REST_H_10",
@@ -3228,6 +3494,27 @@
       "method": "Manual MVP taxonomy based on the named attraction/food experience and M2 source descriptions; not an external rating or a verified travel measurement.",
       "reviewedOn": "2026-11-12",
       "sourceUrl": "https://nangtrip.com/activities/thuy-banh-canh-nam-pho"
-    }
+    },
+    "description": "Mặt tiền quán mở ra đường với biển Thúy và tên món bánh canh Nam Phổ. Bên trong có bàn ghế thấp; ảnh hiện chưa có cận cảnh tô bánh canh.",
+    "descriptionProvenance": {
+      "method": "visual_observation_of_user_supplied_images",
+      "images": [
+        "/images/restaurants.HUE/REST_H_10_01.jpg"
+      ],
+      "sourceManifest": "/images/restaurants.HUE/sources.json"
+    },
+    "descriptionReviewStatus": "draft_visual_description",
+    "images": [
+      {
+        "url": "/images/restaurants.HUE/REST_H_10_01.jpg",
+        "alt": "Bánh canh Nam Phổ - Thúy",
+        "sourceUrl": "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QT5JpJbQ5e9rWL2UgSxPr-3h8BOpJ78SUJoXqur3WAjEN0P_Er2uVeMSC6edE2-DJS6HM3lM13QA45ib6DXcPYViUf2bScU3FuQTSrkBxLCwmRDJaugjB2nPms7me0LOHdepa1W6FuNegy=s1360-w1360-h1020-rw",
+        "sourceType": "web",
+        "credit": null,
+        "authorName": null,
+        "license": null,
+        "verificationStatus": "user_reported"
+      }
+    ]
   }
 ]

@@ -647,3 +647,21 @@ FastAPI must expose:
 - `/openapi.json`
 
 Generated OpenAPI documentation should match the implemented endpoint behavior and this agreed contract.
+
+## 9. Google Sign-In and My Trips (TPVA-66)
+
+All `/api/trips` routes require a Google ID token in
+`Authorization: Bearer <id-token>`. The API verifies the token against
+`GOOGLE_CLIENT_ID` and derives the owner from the verified `sub` claim; no owner
+identifier is accepted in request bodies. A missing or invalid token returns
+401. Access to another owner's ID is returned as 404.
+
+- `POST /api/trips` with `{ "itinerary": { ...complete selected plan... } }`
+  creates a new UUID and returns HTTP 201 `{ "trip": Trip }`.
+- `GET /api/trips` returns `{ "trips": TripSummary[] }`, ordered by `updatedAt`
+  newest first; summaries omit the itinerary payload.
+- `GET /api/trips/{trip_id}` returns `{ "trip": Trip }` including its snapshot.
+- `PUT /api/trips/{trip_id}` accepts the create body and updates that owned trip.
+
+`Trip` contains `id`, `title`, `destination`, `createdAt`, `updatedAt`, and
+`itinerary`. SQLite storage is configured by `TRIPS_DATABASE_PATH`.

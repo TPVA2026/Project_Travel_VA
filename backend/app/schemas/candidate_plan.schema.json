@@ -152,6 +152,14 @@
       "items": {
         "type": "string"
       }
+    },
+    "hotelId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "One main hotel ID from the dataset for the entire trip, or null when no hotel is selected."
     }
   }
 }
