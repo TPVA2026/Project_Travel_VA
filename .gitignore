@@ -20,3 +20,11 @@ awesome-design-md/
 **/.agents/skills/
 # Playwright CLI output (may contain credentials)
 .playwright-cli/
+
+# Local-only AI/agent tooling (not part of the repo structure in README)
+/.claude/
+/.qwen/
+/.playwright/
+/frontend/.taste-skill/
+/UI_SKILL_TONG_HOP.md
+/VERCEL_DESIGN_SKILL_TONG_HOP.md
