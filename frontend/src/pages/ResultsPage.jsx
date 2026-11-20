@@ -7,7 +7,7 @@ import {
   getSelectedPlanId,
   indexPlaces,
   resolveDestinationName,
-  runItineraryPipeline,
+  streamItineraryPipeline,
   selectPlan,
   clearSelectedPlan,
   candidateStatusLabel,
@@ -256,6 +256,7 @@ export default function ResultsPage() {
   const [pipeline, setPipeline] = useState(null)
   const [aiLoading, setAiLoading] = useState(Boolean(readPendingRequest()))
   const [aiError, setAiError] = useState(null)
+  const [streamProgress, setStreamProgress] = useState(null)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
   const [saveError, setSaveError] = useState(null)
@@ -267,15 +268,35 @@ export default function ResultsPage() {
     const requestKey = JSON.stringify(pendingRequest)
     setAiLoading(true)
     setAiError(null)
+    setStreamProgress(null)
     try {
-      const body = await runItineraryPipeline(pendingRequest, { count: PIPELINE_MAX_CANDIDATES })
+      const body = await streamItineraryPipeline(pendingRequest, {
+        count: PIPELINE_MAX_CANDIDATES,
+        onEvent: (event) => {
+          if (event.type === 'progress') setStreamProgress({
+            candidateIndex: event.candidateIndex,
+            requestedCount: event.requestedCount,
+          })
+          if (event.type === 'candidate') {
+            setPipeline((current) => ({
+              pipelineStatus: 'GENERATING',
+              generator: 'ai',
+              request: pendingRequest,
+              candidates: [...(current?.candidates || []), event.candidate],
+              ranking: { ranked: [], unscored: [], excluded: [] },
+              warnings: [],
+            }))
+          }
+        },
+      })
       sessionStorage.setItem(PLAN_KEY, JSON.stringify({ requestKey, pipeline: body }))
       setPipeline(body)
     } catch (err) {
       setAiError(err)
-      setPipeline(null)
+      // Preserve already generated candidates if a later request fails.
     } finally {
       setAiLoading(false)
+      setStreamProgress(null)
     }
   }, [pendingRequest])
 
@@ -415,7 +436,9 @@ export default function ResultsPage() {
 
       {pendingRequest && aiLoading && (
         <div className="generating-panel">
-          <Loading message="Building your plans" />
+          <Loading message={streamProgress
+                ? `Generating itinerary ${streamProgress.candidateIndex} of ${streamProgress.requestedCount}…`
+                : 'Building your plans'} />
           <p className="generating-note muted small">
             This usually takes 30–90 seconds. Each option is checked against your budget,
             opening hours, and travel times before it appears.
@@ -431,7 +454,7 @@ export default function ResultsPage() {
         />
       )}
 
-      {pendingRequest && !aiLoading && !aiError && pipeline && (
+      {pendingRequest && pipeline && (
         <>
           <SelectedCandidateBanner
             candidate={selectedCandidate}
