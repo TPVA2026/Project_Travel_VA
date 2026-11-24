@@ -168,7 +168,7 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
 
     // Focusing the destination does not open its panel; a click does.
     const destination = field("destination");
-    assert.equal(destination.placeholder, "e.g. Da Nang, Da Lat");
+    assert.equal(destination.placeholder, "e.g. Huế");
     await actOn(() => destination.focus());
     assert.equal(listShown("destination"), false, "Focus does not open the destination panel");
     await clickField("destination");

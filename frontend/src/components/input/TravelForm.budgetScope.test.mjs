@@ -65,6 +65,7 @@ test("M1 budget scope: groups default to a total budget; solo stays per person",
     const { MemoryRouter, Routes, Route } = await import("react-router-dom");
     const mount = async () => {
       if (root) await act(async () => root.unmount());
+      sessionStorage.clear();
       root = createRoot(doc.querySelector("#root"));
       await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(Routes, null,
         React.createElement(Route, { path: "/", element: React.createElement(TravelForm) }),

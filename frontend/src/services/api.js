@@ -208,6 +208,9 @@ export function saveTripForResults(payload) {
   sessionStorage.setItem("tpva-travel-request", JSON.stringify(payload));
   sessionStorage.removeItem("tpva-ai-plan");
   clearSelectedPlan();
+  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+    window.dispatchEvent(new window.CustomEvent("tpva-trip-saved"));
+  }
 }
 
 export async function fetchDestinations() {

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Icon from '../components/common/Icon.jsx'
-import { TravelSkyIllustration } from '../components/common/Illustrations.jsx'
 import FlightIntro from '../components/intro/FlightIntro.jsx'
 import { INTRO_STORAGE_KEY } from '../components/intro/introAssets.js'
 import TravelForm from '../components/input/TravelForm.jsx'
@@ -53,51 +52,28 @@ export default function HomePage() {
           Share your dates, budget, and travel style. Compare verified itineraries, then keep
           the one that fits.
         </p>
-        <ul className="plan-facts">
-          <li>
-            <Icon name="check" size={15} />
-            No account needed
-          </li>
-          <li>
-            <Icon name="check" size={15} />
-            Saved in this browser
-          </li>
-          <li>
-            <Icon name="check" size={15} />
-            Unverified costs excluded
-          </li>
-        </ul>
       </header>
 
-      <TripProgress currentStep={1} />
-
       <div className="plan-layout">
-        <div className="plan-workspace">
-          <div id="trip-form-panel" className="input-panel plan-panel" ref={formPanelRef}>
-            <TravelForm />
-          </div>
-        </div>
-
         <aside className="plan-aside" aria-label="Planning help">
+          <TripProgress currentStep={1} variant="sidebar" />
+
           <section className="plan-prep" aria-labelledby="plan-prep-title">
-            <div className="plan-prep-sky">
-              <TravelSkyIllustration />
-            </div>
             <div className="plan-prep-body">
               <p className="preview-kicker">Before you start</p>
-              <h2 id="plan-prep-title">Three things make the first draft easier.</h2>
+              <h2 id="plan-prep-title">Three quick basics</h2>
               <ul className="plan-prep-list">
                 <li>
                   <Icon name="calendar" size={16} />
-                  <span><strong>Pick a start date and length</strong> Trips can last 1 to 3 days.</span>
+                  <span>Pick dates (1 to 3 days)</span>
                 </li>
                 <li>
                   <Icon name="wallet" size={16} />
-                  <span><strong>Set a comfortable budget</strong> We flag missing prices instead of guessing.</span>
+                  <span>Set a budget in VND</span>
                 </li>
                 <li>
                   <Icon name="clock" size={16} />
-                  <span><strong>Choose your pace</strong> Slow mornings or full days; change it later.</span>
+                  <span>Adjust your pace anytime</span>
                 </li>
               </ul>
             </div>
@@ -107,20 +83,26 @@ export default function HomePage() {
             <h2>What you get</h2>
             <ul>
               <li>
-                <Icon name="calendar" size={17} />
-                <span><strong>Day-by-day schedule</strong> with travel times between stops.</span>
+                <Icon name="calendar" size={16} />
+                <span>Day-by-day route &amp; timings</span>
               </li>
               <li>
-                <Icon name="wallet" size={17} />
-                <span><strong>Known costs</strong>, with missing prices flagged, not counted as zero.</span>
+                <Icon name="wallet" size={16} />
+                <span>Verified costs, no guessing</span>
               </li>
               <li>
-                <Icon name="route" size={17} />
-                <span><strong>A plan you can save</strong>, print, or copy.</span>
+                <Icon name="route" size={16} />
+                <span>Save, print, or copy</span>
               </li>
             </ul>
           </section>
         </aside>
+
+        <div className="plan-workspace">
+          <div id="trip-form-panel" className="input-panel plan-panel" ref={formPanelRef}>
+            <TravelForm />
+          </div>
+        </div>
       </div>
     </div>
   )

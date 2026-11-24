@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Icon from "../common/Icon.jsx";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
@@ -182,7 +183,7 @@ function ChoiceGroup({ labelledBy, label, describedBy, className, value, options
             data-step-focus={focusFirst && index === 0 ? true : undefined}
             onClick={() => onChange(option.value)}
           >
-            <strong>{option.value}</strong> {option.label}
+            <span>{option.value} {option.label}</span>
           </button>
         );
       })}
@@ -190,26 +191,69 @@ function ChoiceGroup({ labelledBy, label, describedBy, className, value, options
   );
 }
 
+function readSavedTripRequest() {
+  try {
+    if (typeof window === "undefined" || !window.sessionStorage) return null;
+    const raw = window.sessionStorage.getItem("tpva-travel-request");
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || !parsed.departureLocation || !parsed.travelPeriod?.startDate) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function hydrateFromSaved(saved) {
+  if (!saved) return null;
+  const countStr = saved.travelers?.count != null ? String(saved.travelers.count) : "";
+  const rawAmount = saved.budget?.amount;
+  const validAmount = Number.isSafeInteger(Number(rawAmount)) && Number(rawAmount) > 0;
+  const amountNum = validAmount ? Number(rawAmount) : 0;
+  const snapped = validAmount ? Math.max(MIN_BUDGET_VND, Math.floor(amountNum / 1000) * 1000) : MIN_BUDGET_VND;
+  return {
+    values: {
+      departureLocation: String(saved.departureLocation ?? ""),
+      destination: String(saved.preferences?.destination ?? ""),
+      startDate: String(saved.travelPeriod?.startDate ?? ""),
+      endDate: String(saved.travelPeriod?.endDate ?? ""),
+      durationDays: saved.durationDays != null ? String(saved.durationDays) : "",
+      travelerCount: countStr,
+      budgetAmount: validAmount ? formatBudgetInput(String(amountNum)) : "",
+      budgetScope: saved.budget?.scope ?? (isSoloTravelerCount(countStr) ? "perPerson" : "group"),
+      interests: Array.isArray(saved.preferences?.interests)
+        ? saved.preferences.interests.map(item => item?.type).filter(Boolean)
+        : [],
+    },
+    budgetSliderValue: snapped,
+    budgetSliderMax: Math.max(BUDGET_SLIDER_MAX, amountNum),
+    budgetIsSet: validAmount,
+    descriptionDraft: String(saved.additionalRequirements ?? ""),
+  };
+}
+
 export default function TravelForm() {
   const navigate = useNavigate();
   const formRef = useRef(null);
-  const [step, setStep] = useState(0);
+  const [initialData, setInitialData] = useState(() => hydrateFromSaved(readSavedTripRequest()));
+  const [step, setStep] = useState(() => (initialData ? REVIEW : 0));
   const [editing, setEditing] = useState(false);
-  const [values, setValues] = useState(INITIAL_VALUES);
-  const [budgetSliderValue, setBudgetSliderValue] = useState(MIN_BUDGET_VND);
-  const [budgetSliderMax, setBudgetSliderMax] = useState(BUDGET_SLIDER_MAX);
-  const [budgetIsSet, setBudgetIsSet] = useState(false);
+  const [values, setValues] = useState(() => initialData?.values ?? INITIAL_VALUES);
+  const [budgetSliderValue, setBudgetSliderValue] = useState(() => initialData?.budgetSliderValue ?? MIN_BUDGET_VND);
+  const [budgetSliderMax, setBudgetSliderMax] = useState(() => initialData?.budgetSliderMax ?? BUDGET_SLIDER_MAX);
+  const [budgetIsSet, setBudgetIsSet] = useState(() => initialData?.budgetIsSet ?? false);
   const [formKey, setFormKey] = useState(0);
   const [errors, setErrors] = useState({});
   const [bad, setBad] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
-  const [descriptionDraft, setDescriptionDraft] = useState("");
-  const [reached, setReached] = useState(() => new Set());
+  const [descriptionDraft, setDescriptionDraft] = useState(() => initialData?.descriptionDraft ?? "");
+  const [reached, setReached] = useState(() => (initialData ? new Set([PLACES, DATES, PARTY, STYLE, DESCRIBE]) : new Set()));
   const [returnStep, setReturnStep] = useState(null);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
-  const [threadOpen, setThreadOpen] = useState(false);
 
   // Runs after the alert renders, so a request-level error is announced and focusable.
   useEffect(() => {
@@ -229,10 +273,14 @@ export default function TravelForm() {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
-  // Keep the current question on screen: collapse older answers when the step changes.
   useEffect(() => {
-    setThreadOpen(false);
-  }, [step]);
+    const form = formRef.current;
+    if (!form || !initialData) return;
+    const durationEl = form.elements.namedItem("durationDays");
+    const endEl = form.elements.namedItem("endDate");
+    if (durationEl && initialData.values.durationDays) durationEl.value = initialData.values.durationDays;
+    if (endEl && initialData.values.endDate) endEl.value = initialData.values.endDate;
+  }, [formKey, initialData]);
 
   // One traveler is always per person, with no switch. Two or more default to a group total.
   function syncBudgetScope(form) {
@@ -371,6 +419,14 @@ export default function TravelForm() {
   }
 
   function clearForm() {
+    try {
+      window.sessionStorage?.removeItem("tpva-travel-request");
+      window.sessionStorage?.removeItem("tpva-ai-plan");
+    } catch {}
+    if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+      window.dispatchEvent(new window.CustomEvent("tpva-trip-saved"));
+    }
+    setInitialData(null);
     setFormKey((key) => key + 1);
     setStep(0);
     setEditing(false);
@@ -384,7 +440,6 @@ export default function TravelForm() {
     setDescriptionDraft("");
     setReached(new Set());
     setReturnStep(null);
-    setThreadOpen(false);
   }
 
   async function onSubmit(event) {
@@ -461,17 +516,13 @@ export default function TravelForm() {
   const nextLabel = returnStep === REVIEW ? "Back to review" : "Next";
   const departure = values.departureLocation?.trim() || "";
   const destination = values.destination?.trim() || NO_DESTINATION;
-  const thread = [
+  const summaryItems = [
     { step: PLACES, question: "Where are you traveling?", answer: <RouteText from={departure} to={destination} />, summary: `${departure} to ${destination}` },
     { step: DATES, question: "When are you going?", answer: when },
     { step: PARTY, question: "Who is going, and what's the budget?", answer: [travelers, budget].filter(Boolean).join(" · ") },
     { step: STYLE, question: "What kind of trip should we prioritize?", answer: styleText },
     { step: DESCRIBE, question: "Is there anything else you’d like to describe?", answer: hasDraft ? descriptionDraft.trim() : "Nothing added" },
-  ].filter(item => reached.has(item.step) && item.step < step);
-  const canCollapseThread = thread.length > 1;
-  const hiddenThread = canCollapseThread && !threadOpen ? thread.slice(0, -1) : [];
-  const visibleThread = canCollapseThread && !threadOpen ? thread.slice(-1) : thread;
-  const threadSummary = hiddenThread.map(item => item.summary ?? item.answer).filter(Boolean).join(" · ");
+  ];
 
   const question = (index, art, title, children, hint, optional = false) => (
     <section id={`request-step-${index}`} data-step={index} className="request-step request-question" hidden={step !== index} aria-labelledby={`request-step-${index}-title`}>
@@ -485,170 +536,181 @@ export default function TravelForm() {
 
   return (
     <form ref={formRef} key={formKey} className="planner compact-form simple-request-form question-form" onSubmit={onSubmit} onInput={onInput} noValidate>
-      <div className="request-topbar">
-        {step > 0
-          ? <button className="request-back" type="button" onClick={back}><span aria-hidden="true">‹</span> Back</button>
-          : <span />}
-      </div>
-
-      {thread.length > 0 && step !== REVIEW && (
-        <div className="request-thread-wrap">
-          {canCollapseThread && (
-            <div className="request-thread-toolbar">
-              <button
-                type="button"
-                className="request-thread-toggle"
-                aria-expanded={threadOpen}
-                aria-controls="request-thread-list"
-                onClick={() => setThreadOpen(open => !open)}
-              >
-                {threadOpen ? "Hide" : "Show all answers"}
-              </button>
-              {!threadOpen && threadSummary ? <p className="request-thread-summary">{threadSummary}</p> : null}
+      <div className="wizard-stage">
+        <div className="wizard-main">
+          {step > 0 && (
+            <div className="request-topbar">
+              <button className="request-back" type="button" onClick={back}><span aria-hidden="true">‹</span> Back</button>
             </div>
           )}
-          <ol id="request-thread-list" className="request-thread">
-            {visibleThread.map(item => (
-              <li key={item.step} className="request-thread-pair">
-                <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })} aria-label={`Edit answer: ${item.question}`}>
-                  <span className="request-thread-q">{item.question}</span>
-                  <span className="request-thread-a">
-                    <span className="request-thread-a-text">{item.answer}</span>
-                    <span className="request-thread-edit" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" width="12" height="12" focusable="false">
-                        <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                      </svg>
-                    </span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
 
-      {question(PLACES, "departure", "Where are you traveling?", <>
-        <div className="request-route">
-          <Field label="Leaving from" name="departureLocation" error={errors.departureLocation} bad={bad} required>
-            <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} placeholder="e.g. Ho Chi Minh City" required data-step-focus popularHeading="Popular cities" onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
-          </Field>
-          <div className="request-route-plane" aria-hidden="true">
-            <span className="request-route-line" />
-            <RoutePlane />
-            <span className="request-route-line" />
-          </div>
-          <Field label="Going to" name="destination" error={errors.destination} bad={bad}>
-            <ProvinceInput id="destination" name="destination" placeholder="e.g. Da Nang, Da Lat" maxLength={200} onPick={value => setControl("destination", value)} {...described("destination", "destination-hint", "request-tile-input")} />
-            <p className="request-question-hint" id="destination-hint">{DESTINATION_HINT}</p>
-          </Field>
-        </div>
-      </>)}
-
-      {question(DATES, "calendar", "When are you going?", <>
-        <div className="request-date-grid">
-          <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required className="request-span">
-            <div className="request-date-control">
-              <input id="startDate" name="startDate" type="date" lang="en-GB" min={startMin} max={startMax} required data-step-focus onClick={() => openPicker("startDate")} {...described("startDate")} />
-              <button type="button" className="request-picker" aria-label="Open calendar for Start date" onClick={() => openPicker("startDate")}><CalendarIcon /></button>
+          {question(PLACES, "describe", "Where are you traveling?", <>
+            <div className="request-route">
+              <Field label="Departing from" name="departureLocation" error={errors.departureLocation} bad={bad}>
+                <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} defaultValue={initialData?.values.departureLocation ?? ""} placeholder="e.g. Hồ Chí Minh" required data-step-focus popularHeading="Popular cities" onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
+              </Field>
+              <Field label="Destination" name="destination" error={errors.destination} bad={bad}>
+                <ProvinceInput id="destination" name="destination" defaultValue={initialData?.values.destination ?? ""} placeholder="e.g. Huế" maxLength={200} onPick={value => setControl("destination", value)} {...described("destination", "destination-hint", "request-tile-input")} />
+                <p className="visually-hidden" id="destination-hint">{DESTINATION_HINT}</p>
+              </Field>
             </div>
-          </Field>
-          <div className="field request-span">
-            <span id="durationDays-label">How many days?<span className="req" aria-hidden="true">*</span></span>
-            <ChoiceGroup
-              labelledBy="durationDays-label"
-              describedBy={errors.durationDays ? "durationDays-error" : undefined}
-              className="request-choices request-choices-days"
-              value={values.durationDays}
-              onChange={count => setControl("durationDays", count)}
-              options={Array.from({ length: MAX_TRIP_DAYS }, (_, index) => ({ value: String(index + 1), label: index === 0 ? "day" : "days" }))}
-            />
-            <input id="durationDays" name="durationDays" type="hidden" required />
-            <input id="endDate" name="endDate" type="hidden" />
-            <StepError name="durationDays" error={errors.durationDays} />
-            <StepError name="endDate" error={errors.endDate} />
-          </div>
-          {isIsoDate(values.startDate) && isValidTripDays(values.durationDays) && (
-            <p className="request-question-hint request-span" aria-live="polite">{formatReturnLabel(endDateFromLength(values.startDate, values.durationDays))}</p>
-          )}
-        </div>
-      </>, tripLimitHint())}
+          </>, "Tell us where you're starting from and where you'd like to go.")}
 
-      {question(PARTY, "travelers", "Who is going, and what's the budget?", <>
-        <div className="field">
-          <label id="travelerCount-label" htmlFor="travelerCount">How many travelers?<span className="req" aria-hidden="true">*</span></label>
-          <ChoiceGroup
-            labelledBy="travelerCount-label"
-            className="request-choices"
-            value={QUICK_TRAVELERS.some(count => values.travelerCount === String(count)) ? values.travelerCount : ""}
-            onChange={count => setControl("travelerCount", count)}
-            focusFirst
-            options={QUICK_TRAVELERS.map(count => ({ value: String(count), label: count === 1 ? "traveler" : "travelers" }))}
-          />
-          <input id="travelerCount" name="travelerCount" type="number" min="1" max={MAX_TRAVELERS} step="1" placeholder="Other number" required {...described("travelerCount", null, "request-tile-input")} />
-          <StepError name="travelerCount" error={errors.travelerCount} />
-        </div>
-        <div className="simple-budget request-budget">
-          <label htmlFor="budgetAmount">What is your budget?<span className="req" aria-hidden="true">*</span></label>
-          <input id="budgetAmount" name="budgetAmount" type="text" inputMode="numeric" placeholder="e.g. 5,000,000" onBlur={event => { const shown = formatBudgetInput(event.currentTarget.value); if (shown !== event.currentTarget.value) setControl("budgetAmount", shown); }} required data-step-focus {...described("budgetAmount", null, "request-tile-input")} />
-          <StepError name="budgetAmount" error={errors.budgetAmount} />
-          <input id="budgetSlider" type="range" min={MIN_BUDGET_VND} max={budgetSliderMax} step="1000" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
-          <div className="budget-range-labels" aria-hidden="true"><span>{formatBudgetInput(MIN_BUDGET_VND)} VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
-          {showPerPerson && (
-            <button type="button" className="request-scope-toggle" aria-pressed={perPerson} aria-label={perPerson ? "Per person budget" : "Budget for the group"} data-error-for="budgetScope" onClick={() => setControl("budgetScope", perPerson ? "group" : "perPerson")}>
-              <span className="request-scope-knob" aria-hidden="true" />
-              Per person
-            </button>
-          )}
-          <input type="hidden" name="budgetScope" value={isSoloTravelerCount(values.travelerCount) || perPerson ? "perPerson" : "group"} readOnly />
-          {showPerPerson && <StepError name="budgetScope" error={errors.budgetScope} />}
-        </div>
-      </>)}
-
-      {question(STYLE, "style", "What kind of trip should we prioritize?", <>
-        <div className="request-choices request-choices-style" role="group" aria-labelledby={`request-step-${STYLE}-title`}>
-          {INTERESTS.map(([type, label], index) => (
-            <label key={type} className="request-choice-check">
-              <input type="checkbox" name="interest" value={type} data-step-focus={index === 0 ? true : undefined} />
-              <strong>{label}</strong>
-            </label>
-          ))}
-        </div>
-      </>, "Choose any that fit. We'll treat them equally.", true)}
-
-      {question(DESCRIBE, "describe", <label htmlFor="tripDescription">Is there anything else you’d like to describe?</label>, <>
-        <textarea id="tripDescription" name="additionalRequirements" className="request-describe" rows="7" maxLength={ADDITIONAL_REQUIREMENTS_MAX} value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus {...described("additionalRequirements", `request-step-${DESCRIBE}-hint request-describe-count`, "request-describe")} />
-        <p className="request-char-count" id="request-describe-count">{descriptionDraft.length}/{ADDITIONAL_REQUIREMENTS_MAX}</p>
-        <StepError name="additionalRequirements" error={errors.additionalRequirements} />
-      </>, "Food, transport, interests, your group or travel limits.", true)}
-
-      <section id={`request-step-${REVIEW}`} data-step={REVIEW} className="request-step request-question" hidden={step !== REVIEW} aria-labelledby={`request-step-${REVIEW}-title`}>
-        <StepArt name="review" />
-        <h2 id={`request-step-${REVIEW}-title`} className="request-question-title" tabIndex={-1} data-step-focus>Your trip, ready to review.</h2>
-        <div className="request-question-body">
-          <dl className="request-review">
-            {review.map(([label, value, target, key]) => (
-              <div key={key} className={value ? undefined : "missing"}>
-                <dt>{label}</dt>
-                <dd>{value || "Not set yet"}</dd>
-                <button type="button" className="request-edit" aria-label={`Edit ${key}`} onClick={() => goToStep(target, { edit: true, returnTo: REVIEW })}>Edit</button>
+          {question(DATES, "calendar", "When are you going?", <>
+            <div className="request-date-grid">
+              <Field label="Start date" name="startDate" error={errors.startDate} bad={bad} required className="request-span">
+                <div className="request-date-control">
+                  <input id="startDate" name="startDate" type="date" lang="en-GB" min={startMin} max={startMax} defaultValue={initialData?.values.startDate ?? ""} required data-step-focus onClick={() => openPicker("startDate")} {...described("startDate")} />
+                  <button type="button" className="request-picker" aria-label="Open calendar for Start date" onClick={() => openPicker("startDate")}><CalendarIcon /></button>
+                </div>
+              </Field>
+              <div className="field request-span">
+                <span id="durationDays-label">How many days?<span className="req" aria-hidden="true">*</span></span>
+                <ChoiceGroup
+                  labelledBy="durationDays-label"
+                  describedBy={errors.durationDays ? "durationDays-error" : undefined}
+                  className="request-choices request-choices-days"
+                  value={values.durationDays}
+                  onChange={count => setControl("durationDays", count)}
+                  options={Array.from({ length: MAX_TRIP_DAYS }, (_, index) => ({ value: String(index + 1), label: index === 0 ? "day" : "days" }))}
+                />
+                <input id="durationDays" name="durationDays" type="hidden" required />
+                <input id="endDate" name="endDate" type="hidden" />
+                <StepError name="durationDays" error={errors.durationDays} />
+                <StepError name="endDate" error={errors.endDate} />
               </div>
-            ))}
-            <div className="request-review-draft">
-              <dt>Extra description</dt>
-              <dd>{hasDraft ? descriptionDraft.trim() : "Nothing added"}</dd>
-              <button type="button" className="request-edit" aria-label="Edit description" onClick={() => goToStep(DESCRIBE, { edit: true, returnTo: REVIEW })}>Edit</button>
+              {isIsoDate(values.startDate) && isValidTripDays(values.durationDays) && (
+                <p className="request-question-hint request-span" aria-live="polite">{formatReturnLabel(endDateFromLength(values.startDate, values.durationDays))}</p>
+              )}
             </div>
-          </dl>
+          </>, tripLimitHint())}
+
+          {question(PARTY, "travelers", "Who is going, and what's the budget?", <>
+            <div className="field">
+              <label id="travelerCount-label" htmlFor="travelerCount">How many travelers?<span className="req" aria-hidden="true">*</span></label>
+              <ChoiceGroup
+                labelledBy="travelerCount-label"
+                className="request-choices"
+                value={QUICK_TRAVELERS.some(count => values.travelerCount === String(count)) ? values.travelerCount : ""}
+                onChange={count => setControl("travelerCount", count)}
+                focusFirst
+                options={QUICK_TRAVELERS.map(count => ({ value: String(count), label: count === 1 ? "traveler" : "travelers" }))}
+              />
+              <input id="travelerCount" name="travelerCount" type="number" min="1" max={MAX_TRAVELERS} step="1" defaultValue={initialData?.values.travelerCount ?? ""} placeholder="Other number" required {...described("travelerCount", null, "request-tile-input")} />
+              <StepError name="travelerCount" error={errors.travelerCount} />
+            </div>
+            <div className="simple-budget request-budget">
+              <label htmlFor="budgetAmount">What is your budget?<span className="req" aria-hidden="true">*</span></label>
+              <input id="budgetAmount" name="budgetAmount" type="text" inputMode="numeric" defaultValue={initialData?.values.budgetAmount ?? ""} placeholder="e.g. 5,000,000" onBlur={event => { const shown = formatBudgetInput(event.currentTarget.value); if (shown !== event.currentTarget.value) setControl("budgetAmount", shown); }} required data-step-focus {...described("budgetAmount", null, "request-tile-input")} />
+              <StepError name="budgetAmount" error={errors.budgetAmount} />
+              <input id="budgetSlider" type="range" min={MIN_BUDGET_VND} max={budgetSliderMax} step="1000" value={budgetSliderValue} onChange={slideBudget} onPointerUp={slideBudget} onKeyUp={event => { if (["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key)) slideBudget(event); }} aria-label="Budget slider (VND)" aria-valuetext={budgetIsSet ? `${formatBudgetInput(budgetSliderValue)} VND` : "Budget not set"} aria-describedby={errors.budgetAmount ? "budgetAmount-error" : undefined} />
+              <div className="budget-range-labels" aria-hidden="true"><span>{formatBudgetInput(MIN_BUDGET_VND)} VND</span><span>{formatBudgetInput(budgetSliderMax)} VND</span></div>
+              {showPerPerson && (
+                <button type="button" className="request-scope-toggle" aria-pressed={perPerson} aria-label={perPerson ? "Per person budget" : "Budget for the group"} data-error-for="budgetScope" onClick={() => setControl("budgetScope", perPerson ? "group" : "perPerson")}>
+                  <span className="request-scope-knob" aria-hidden="true" />
+                  Per person
+                </button>
+              )}
+              <input type="hidden" name="budgetScope" value={isSoloTravelerCount(values.travelerCount) || perPerson ? "perPerson" : "group"} readOnly />
+              {showPerPerson && <StepError name="budgetScope" error={errors.budgetScope} />}
+            </div>
+          </>)}
+
+          {question(STYLE, "style", "What kind of trip should we prioritize?", <>
+            <div className="request-choices request-choices-style" role="group" aria-labelledby={`request-step-${STYLE}-title`}>
+              {INTERESTS.map(([type, label], index) => (
+                <label key={type} className="request-choice-check">
+                  <input type="checkbox" name="interest" value={type} defaultChecked={Boolean(initialData?.values.interests?.includes(type))} data-step-focus={index === 0 ? true : undefined} />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </>, "Choose any that fit. We'll treat them equally.", true)}
+
+          {question(DESCRIBE, "describe", <label htmlFor="tripDescription">Is there anything else you’d like to describe?</label>, <>
+            <textarea id="tripDescription" name="additionalRequirements" className="request-describe" rows="7" maxLength={ADDITIONAL_REQUIREMENTS_MAX} value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus {...described("additionalRequirements", `request-step-${DESCRIBE}-hint request-describe-count`, "request-describe")} />
+            <p className="request-char-count" id="request-describe-count">{descriptionDraft.length}/{ADDITIONAL_REQUIREMENTS_MAX}</p>
+            <StepError name="additionalRequirements" error={errors.additionalRequirements} />
+          </>, "Food, transport, interests, your group or travel limits.", true)}
+
+          <section id={`request-step-${REVIEW}`} data-step={REVIEW} className="request-step request-question" hidden={step !== REVIEW} aria-labelledby={`request-step-${REVIEW}-title`}>
+            <StepArt name="review" />
+            <h2 id={`request-step-${REVIEW}-title`} className="request-question-title" tabIndex={-1} data-step-focus>Your trip, ready to review.</h2>
+            <div className="request-question-body">
+              <dl className="request-review">
+                {review.map(([label, value, target, key]) => (
+                  <div key={key} className={value ? undefined : "missing"}>
+                    <dt>{label}</dt>
+                    <dd>{value || "Not set yet"}</dd>
+                    <button type="button" className="request-edit" aria-label={`Edit ${key}`} onClick={() => goToStep(target, { edit: true, returnTo: REVIEW })}>Edit</button>
+                  </div>
+                ))}
+                <div className="request-review-draft">
+                  <dt>Extra description</dt>
+                  <dd>{hasDraft ? descriptionDraft.trim() : "Nothing added"}</dd>
+                  <button type="button" className="request-edit" aria-label="Edit description" onClick={() => goToStep(DESCRIBE, { edit: true, returnTo: REVIEW })}>Edit</button>
+                </div>
+              </dl>
+            </div>
+          </section>
         </div>
-      </section>
+
+        <aside className="wizard-summary-panel" aria-label="Trip summary">
+          <ol id="request-thread-list" className="request-thread wizard-thread">
+            {summaryItems.map(item => {
+              const isCurrent = item.step === step;
+              const isAnswered = reached.has(item.step) && item.step < step;
+              return (
+                <li key={item.step} className="request-thread-pair">
+                  {isAnswered ? (
+                    <button
+                      type="button"
+                      className="request-thread-item"
+                      onClick={() => goToStep(item.step, { edit: true, returnTo: step })}
+                      aria-label={`Edit answer: ${item.question}`}
+                    >
+                      <span className="request-thread-q">{item.question}</span>
+                      <span className="request-thread-a">
+                        <span className="request-thread-a-text">{item.answer}</span>
+                        <span className="request-thread-edit" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" width="12" height="12" focusable="false">
+                            <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                          </svg>
+                        </span>
+                      </span>
+                    </button>
+                  ) : (
+                    <div
+                      className={`wizard-thread-bubble ${isCurrent ? "is-active" : "is-upcoming"}`}
+                      aria-current={isCurrent ? "step" : undefined}
+                    >
+                      {item.question}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+          <p className="wizard-summary-note">Your answers appear here so you can review and edit them.</p>
+        </aside>
+      </div>
 
       <div className="actions request-actions">
         {errors.form && <p className="error" role="alert" id="request-form-error" tabIndex={-1}>{errors.form}</p>}
-        <button className="primary request-next" type="submit" disabled={sending}>{step === REVIEW ? (sending ? "Creating plans…" : "Create itinerary") : nextLabel}</button>
         <BusIllustration progress={progress} />
         <div className="request-footer">
           <button className="request-link" type="button" onClick={clearForm}>Clear form</button>
-          <p className="completion-label" aria-live="polite">{progress}% complete</p>
+          <div className="request-footer-right">
+            <p className="completion-label" aria-live="polite">{progress}% complete</p>
+            <button className="primary request-next" type="submit" disabled={sending}>
+              {step === REVIEW ? (sending ? "Creating plans…" : "Create itinerary") : (
+                <>
+                  {nextLabel}
+                  <Icon name="arrowRight" size={15} className="request-next-arrow" />
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </form>

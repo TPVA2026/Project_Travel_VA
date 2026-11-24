@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getSelectedPlan, getSelectedPlanId } from '../services/planSelection.js'
 
 const TRIP_STEPS = [
   {
@@ -19,14 +20,57 @@ const TRIP_STEPS = [
   },
 ]
 
-export function TripProgress({ currentStep }) {
+function hasSavedTripRequest() {
+  try {
+    return typeof window !== 'undefined' && Boolean(window.sessionStorage?.getItem('tpva-travel-request'))
+  } catch {
+    return false
+  }
+}
+
+function hasSelectedPlan() {
+  try {
+    return Boolean(getSelectedPlan() || getSelectedPlanId())
+  } catch {
+    return false
+  }
+}
+
+export function TripProgress({ currentStep, variant = 'bar' }) {
   const slotRef = useRef(null)
   const [floating, setFloating] = useState(false)
   const [box, setBox] = useState({ left: 0, width: 0, height: 0 })
+  const [unlocks, setUnlocks] = useState(() => ({
+    step2: hasSavedTripRequest(),
+    step3: hasSelectedPlan(),
+  }))
+  const isSidebar = variant === 'sidebar'
   const progressPercentage = (currentStep / TRIP_STEPS.length) * 100
   const currentStepData = TRIP_STEPS[currentStep - 1]
 
+  useEffect(() => {
+    const syncUnlocks = () => {
+      setUnlocks({ step2: hasSavedTripRequest(), step3: hasSelectedPlan() })
+    }
+    syncUnlocks()
+    window.addEventListener('tpva-trip-saved', syncUnlocks)
+    window.addEventListener('tpva-plan-selected', syncUnlocks)
+    window.addEventListener('storage', syncUnlocks)
+    return () => {
+      window.removeEventListener('tpva-trip-saved', syncUnlocks)
+      window.removeEventListener('tpva-plan-selected', syncUnlocks)
+      window.removeEventListener('storage', syncUnlocks)
+    }
+  }, [currentStep])
+
+  const isStepLocked = (stepNumber) => {
+    if (stepNumber === 2) return currentStep < 2 && !unlocks.step2
+    if (stepNumber === 3) return currentStep < 3 && !unlocks.step3
+    return false
+  }
+
   useLayoutEffect(() => {
+    if (isSidebar) return
     const slot = slotRef.current
     if (!slot) return
 
@@ -50,9 +94,10 @@ export function TripProgress({ currentStep }) {
       observer?.disconnect()
       window.removeEventListener('resize', measure)
     }
-  }, [])
+  }, [isSidebar])
 
   useEffect(() => {
+    if (isSidebar) return
     const slot = slotRef.current
     if (!slot) return
 
@@ -76,7 +121,62 @@ export function TripProgress({ currentStep }) {
       window.removeEventListener('resize', onScroll)
       if (frame) cancelAnimationFrame(frame)
     }
-  }, [])
+  }, [isSidebar])
+
+  if (isSidebar) {
+    return (
+      <section className="trip-progress trip-progress--sidebar" aria-label="Trip planning progress">
+        <div className="trip-progress-sidebar-head">
+          <strong>Step {currentStep} of {TRIP_STEPS.length}</strong>
+          <span>{currentStepData.title}</span>
+        </div>
+        <ol className="progress-steps progress-steps--vertical">
+          {TRIP_STEPS.map((step, index) => {
+            const stepNumber = index + 1
+            const isCurrent = stepNumber === currentStep
+            const isComplete = stepNumber < currentStep
+            const isLocked = isStepLocked(stepNumber)
+            const lockHint = stepNumber === 2 ? 'Complete trip details first' : 'Choose an itinerary first'
+
+            return (
+              <li
+                key={step.title}
+                className={[isComplete ? 'complete' : '', isCurrent ? 'current' : '', isLocked ? 'locked' : '']
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                {isLocked ? (
+                  <span
+                    className="progress-step is-disabled"
+                    aria-disabled="true"
+                    title={lockHint}
+                  >
+                    <span className="progress-step-num">{stepNumber}</span>
+                    <div>
+                      <strong>{step.title}</strong>
+                      <small>{step.description}</small>
+                    </div>
+                  </span>
+                ) : (
+                  <Link
+                    to={step.to}
+                    className="progress-step"
+                    aria-current={isCurrent ? 'step' : undefined}
+                  >
+                    <span className="progress-step-num">{stepNumber}</span>
+                    <div>
+                      <strong>{step.title}</strong>
+                      <small>{step.description}</small>
+                    </div>
+                  </Link>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+      </section>
+    )
+  }
 
   return (
     <div
@@ -119,6 +219,8 @@ export function TripProgress({ currentStep }) {
           const stepNumber = index + 1
           const isCurrent = stepNumber === currentStep
           const isComplete = stepNumber < currentStep
+          const isLocked = isStepLocked(stepNumber)
+          const lockHint = stepNumber === 2 ? 'Complete trip details first' : 'Choose an itinerary first'
 
           let status = 'Up next'
 
@@ -133,23 +235,38 @@ export function TripProgress({ currentStep }) {
           return (
             <li
               key={step.title}
-              className={[isComplete ? 'complete' : '', isCurrent ? 'current' : '']
+              className={[isComplete ? 'complete' : '', isCurrent ? 'current' : '', isLocked ? 'locked' : '']
                 .filter(Boolean)
                 .join(' ')}
             >
-              <Link
-                to={step.to}
-                className="progress-step"
-                title={step.description}
-                aria-current={isCurrent ? 'step' : undefined}
-              >
-                <span>{stepNumber}</span>
+              {isLocked ? (
+                <span
+                  className="progress-step is-disabled"
+                  title={lockHint}
+                  aria-disabled="true"
+                >
+                  <span>{stepNumber}</span>
 
-                <div>
-                  <small>{status}</small>
-                  <strong>{step.title}</strong>
-                </div>
-              </Link>
+                  <div>
+                    <small>{status}</small>
+                    <strong>{step.title}</strong>
+                  </div>
+                </span>
+              ) : (
+                <Link
+                  to={step.to}
+                  className="progress-step"
+                  title={step.description}
+                  aria-current={isCurrent ? 'step' : undefined}
+                >
+                  <span>{stepNumber}</span>
+
+                  <div>
+                    <small>{status}</small>
+                    <strong>{step.title}</strong>
+                  </div>
+                </Link>
+              )}
             </li>
           )
         })}
