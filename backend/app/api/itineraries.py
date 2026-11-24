@@ -253,16 +253,14 @@ def pipeline_stream(body: PipelineBody):
             return json.dumps({'type': kind, **fields}, ensure_ascii=False) + '\n'
 
         from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
-        import time
         from app.services.ai.itinerary_generator import _unique_plan_id
 
         plans, candidates, warnings, seen = [], [], [], set()
         seen_ids = set()
         attempts = 0
-        max_attempts = body.count * 3
+        max_attempts = body.count + 1
         concurrency = min(2, body.count)
-        rate_limit_hits = 0
-        cooldown_until = 0.0
+        stop_generation = False
         pool = ThreadPoolExecutor(max_workers=concurrency)
         pending = set()
 
@@ -272,26 +270,21 @@ def pipeline_stream(body: PipelineBody):
                 len(pending) < concurrency
                 and len(pending) + len(candidates) < body.count
                 and attempts < max_attempts
-                and time.monotonic() >= cooldown_until
+                and not stop_generation
             ):
                 pending.add(pool.submit(generate_candidate, request, dataset,
-                                        previous_plans=plans.copy()))
+                                        previous_plans=plans.copy(), max_retries=0))
                 attempts += 1
 
         try:
             refill()
             yield emit('progress', candidateIndex=1, requestedCount=body.count)
             while pending or (
-                len(candidates) < body.count
+                not stop_generation
+                and len(candidates) < body.count
                 and attempts < max_attempts
             ):
                 refill()
-
-                if not pending:
-                    delay = cooldown_until - time.monotonic()
-                    if delay > 0:
-                        time.sleep(delay)
-                    refill()
 
                 if not pending:
                     break
@@ -320,37 +313,31 @@ def pipeline_stream(body: PipelineBody):
                     candidate = {'planId': plan['planId'], 'plan': plan, 'status': status, 'evaluation': evaluation}
                     candidates.append(candidate)
                     yield emit('candidate', candidateIndex=len(candidates), requestedCount=body.count, candidate=candidate)
-                    if len(candidates) < body.count and pending:
+                    if len(candidates) < body.count and (pending or (not stop_generation and attempts < max_attempts)):
                         yield emit('progress', candidateIndex=len(candidates) + 1, requestedCount=body.count)
                 except GeminiError as exc:
-                    message = str(exc.message)
-                    rate_limited = (
-                        '429' in message
-                        or 'RESOURCE_EXHAUSTED' in message.upper()
-                        or exc.code in {'RATE_LIMIT', 'RATE_LIMITED', 'RESOURCE_EXHAUSTED'}
-                    )
-
-                    if rate_limited:
-                        rate_limit_hits += 1
-                        concurrency = 1
-                        delay = min(30, 5 * (2 ** (rate_limit_hits - 1)))
-                        cooldown_until = time.monotonic() + delay
-
-                        if attempts >= max_attempts:
-                            warnings.append({
-                                'code': 'PARTIAL_GENERATION',
-                                'message': message
-                            })
-                    else:
+                    if exc.code not in {
+                        'MALFORMED', 'INVALID_PLAN', 'EMPTY'
+                    }:
+                        stop_generation = True
                         warnings.append({
                             'code': 'PARTIAL_GENERATION',
-                            'message': message
+                            'message': str(exc.message)
                         })
-                    # Do not cancel other in-flight requests on a provider error.
+
                 except PlanningError as exc:
-                    warnings.append({'code': exc.code, 'message': exc.message})
+                    stop_generation = True
+                    warnings.append({
+                        'code': exc.code,
+                        'message': exc.message
+                    })
+
                 except Exception:
-                    warnings.append({'code': 'INTERNAL', 'message': 'Unexpected generation error'})
+                    stop_generation = True
+                    warnings.append({
+                        'code': 'INTERNAL',
+                        'message': 'Unexpected generation error'
+                    })
         finally:
             pool.shutdown(wait=False, cancel_futures=True)
 
