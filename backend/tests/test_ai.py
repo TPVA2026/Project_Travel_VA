@@ -132,7 +132,8 @@ def test_error_handling():
     assert code_of(api_key="k", max_retries=0, client=transport(netdown)).code == "NETWORK"
 
 
-def test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up():
+def test_retries_transient_503_then_succeeds_no_retry_on_400_gives_up(monkeypatch):
+    monkeypatch.setenv("GEMINI_MAX_RETRIES", "3")
     n = {"v": 0}
 
     def flaky(req):
