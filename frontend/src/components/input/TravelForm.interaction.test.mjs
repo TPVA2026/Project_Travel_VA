@@ -355,7 +355,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Editing an earlier thread answer returns to the question we left, not to review or the next step.
     const threadItem = [...doc.querySelectorAll(".request-thread-item")].find(node => node.textContent.includes("Where are you traveling"));
     assert.ok(threadItem);
-    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Who is going")), true, "Every earlier answer stays in the thread");
+    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Who is going")), false, "Later answers stay out of the thread");
     await actOn(() => threadItem.click());
     assertStep(0);
     assert.equal(button("Back to review"), undefined);

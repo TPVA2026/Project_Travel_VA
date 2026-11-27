@@ -196,10 +196,6 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
           <small>{currentStepData.title}</small>
         </div>
 
-        <small>
-          Current step: <b>{currentStepData.title}</b>
-        </small>
-
       <div
         className="progress-track"
         role="progressbar"
