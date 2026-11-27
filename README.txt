@@ -1,0 +1,1 @@
+Copy frontend/ into project root after checking for local changes. This patch changes only ResultsPage loading copy, CandidateComparison heading/description/count, and the matching test expectation. It does not alter streaming logic.
