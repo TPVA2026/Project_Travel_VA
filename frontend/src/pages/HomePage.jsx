@@ -72,53 +72,55 @@ export default function HomePage() {
           Share your dates, budget, and travel style. Compare verified itineraries, then keep
           the one that fits.
         </p>
-        <ul className="plan-facts">
-          <li>
-            <Icon name="check" size={15} />
-            No account needed
-          </li>
-          <li>
-            <Icon name="check" size={15} />
-            Saved in this browser
-          </li>
-          <li>
-            <Icon name="check" size={15} />
-            Unverified costs excluded
-          </li>
-        </ul>
       </header>
 
       <div className="plan-layout">
-        <div className="plan-left">
-          <TripProgress currentStep={1} orientation="vertical" />
+        <aside className="plan-aside" aria-label="Planning help">
+          <TripProgress currentStep={1} variant="sidebar" />
 
-          <aside className="plan-aside" aria-label="Planning help">
-            <section className="plan-prep" aria-labelledby="plan-prep-title">
-              <div className="plan-prep-body">
-                <p className="preview-kicker">Before you start</p>
-                <h2 id="plan-prep-title">Three things make the first draft easier.</h2>
-                <ul className="plan-prep-list">
-                  <li>
-                    <Icon name="calendar" size={16} />
-                    <span><strong>Pick a start date and length</strong> Trips can last 1 to 3 days.</span>
-                  </li>
-                  <li>
-                    <Icon name="wallet" size={16} />
-                    <span><strong>Set a comfortable budget</strong> We flag missing prices instead of guessing.</span>
-                  </li>
-                  <li>
-                    <Icon name="clock" size={16} />
-                    <span><strong>Choose your pace</strong> Slow mornings or full days; change it later.</span>
-                  </li>
-                </ul>
-              </div>
-            </section>
-          </aside>
-        </div>
+          <section className="plan-prep" aria-labelledby="plan-prep-title">
+            <div className="plan-prep-body">
+              <p className="preview-kicker">Before you start</p>
+              <h2 id="plan-prep-title">Three quick basics</h2>
+              <ul className="plan-prep-list">
+                <li>
+                  <Icon name="calendar" size={16} />
+                  <span>Pick dates (1 to 3 days)</span>
+                </li>
+                <li>
+                  <Icon name="wallet" size={16} />
+                  <span>Set a budget in VND</span>
+                </li>
+                <li>
+                  <Icon name="clock" size={16} />
+                  <span>Adjust your pace anytime</span>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section className="plan-outcomes">
+            <h2>What you get</h2>
+            <ul>
+              <li>
+                <Icon name="calendar" size={16} />
+                <span>Day-by-day route &amp; timings</span>
+              </li>
+              <li>
+                <Icon name="wallet" size={16} />
+                <span>Verified costs, no guessing</span>
+              </li>
+              <li>
+                <Icon name="route" size={16} />
+                <span>Save, print, or copy</span>
+              </li>
+            </ul>
+          </section>
+        </aside>
 
         <div className="plan-workspace">
           <div id="trip-form-panel" className="input-panel plan-panel" ref={formPanelRef}>
-            <TravelForm chatAside={whatYouGet} />
+            <TravelForm />
           </div>
         </div>
       </div>

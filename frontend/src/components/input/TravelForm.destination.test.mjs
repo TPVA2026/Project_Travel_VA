@@ -97,8 +97,8 @@ test("M1 destination: plain input, skipped destination goes straight to results,
     // Plain destination input on the places step: example placeholder, no supported-city dropdown, no city fetch.
     await mount();
     assert.deepEqual(visible(), [0]);
-    assert.equal(doc.querySelector('label[for="destination"]').textContent, "Going to");
-    assert.equal(field("destination").placeholder, "e.g. Da Nang, Da Lat");
+    assert.equal(doc.querySelector('label[for="destination"]').textContent, "Destination");
+    assert.equal(field("destination").placeholder, "e.g. Huế");
     assert.equal(field("destination").getAttribute("role"), "combobox", "Province suggestions, not a required pick");
     assert.equal(field("destination").hasAttribute("required"), false);
     assert.equal(doc.getElementById("destination-hint").textContent, "Skip it and we'll suggest destinations based on your trip.");

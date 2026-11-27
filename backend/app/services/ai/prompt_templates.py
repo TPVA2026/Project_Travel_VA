@@ -38,7 +38,13 @@ def _prompt_dataset(dataset: dict) -> dict:
         "destinations": [_keep(item, _PROMPT_DEST_KEYS) for item in dataset.get("destinations") or []],
         "attractions": [_place_for_prompt(item, dining=False) for item in dataset.get("attractions") or []],
         "dining": [_place_for_prompt(item, dining=True) for item in dataset.get("dining") or []],
-        "travelMatrix": [_keep(item, _PROMPT_LEG_KEYS) for item in legs],
+        "travelMatrix": [
+            _keep(item, _PROMPT_LEG_KEYS)
+            for item in legs
+            if not isinstance(item, dict)
+            or item.get("durationMin") is not None
+            or item.get("distanceKm") is not None
+        ],
         **({"hotels": [
             _keep(item, _PROMPT_HOTEL_KEYS)
             for item in dataset["hotels"]

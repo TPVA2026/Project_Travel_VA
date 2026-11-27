@@ -76,12 +76,18 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     const form = doc.querySelector("form");
     // The surrounding page is unchanged. Start planning lands on the first form question; no chooser.
     assert.ok(doc.querySelector(".plan-intro"));
+    assert.equal(doc.querySelector(".plan-facts"), null, "Three-tick facts list is removed");
     assert.ok(doc.querySelector(".plan-layout .plan-aside"));
-    assert.equal(doc.querySelector("#plan-prep-title").textContent, "Three things make the first draft easier.");
-    assert.match(doc.querySelector(".plan-prep-list").textContent, /Trips can last 1 to 3 days/);
+    assert.equal(doc.querySelector("#plan-prep-title").textContent, "Three quick basics");
+    assert.match(doc.querySelector(".plan-prep-list").textContent, /1 to 3 days/);
     assert.doesNotMatch(doc.querySelector(".plan-prep-list").textContent, /week or month/);
     assert.equal(doc.querySelector(".page-eyebrow")?.textContent, "Plan a trip");
     assert.equal(doc.querySelector(".plan-outcomes h2").textContent, "What you get");
+    const stepItems = [...doc.querySelectorAll(".trip-progress--sidebar .progress-steps > li")];
+    assert.equal(stepItems[1].querySelector("a"), null, "Step 2 is locked before submitting the form");
+    assert.equal(stepItems[1].querySelector(".progress-step")?.getAttribute("aria-disabled"), "true");
+    assert.equal(stepItems[2].querySelector("a"), null, "Step 3 is locked before choosing an itinerary");
+    assert.equal(stepItems[2].querySelector(".progress-step")?.getAttribute("aria-disabled"), "true");
     assert.equal(doc.querySelector(".entry-choice"), null, "Chooser is not rendered");
     assert.equal(doc.querySelector("#trip-describe-panel"), null, "Describe-the-trip panel is not rendered");
     assert.equal(button("Fill in the form"), undefined);
@@ -105,7 +111,10 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(doc.getElementById("departureLocation-error").textContent, "This field is required.");
     assert.equal(doc.querySelector("#travelerCount-error"), null, "Later steps are not validated yet");
     await fill("departureLocation", "Hue");
-    assert.equal(field("destination").placeholder, "e.g. Da Nang, Da Lat");
+    assert.equal(field("departureLocation").placeholder, "e.g. Hồ Chí Minh");
+    assert.equal(doc.querySelector('label[for="departureLocation"]').textContent, "Departing from");
+    assert.equal(field("destination").placeholder, "e.g. Huế");
+    assert.equal(doc.querySelector('label[for="destination"]').textContent, "Destination");
     assert.equal(field("destination").hasAttribute("list"), false, "No supported-city dropdown on the destination input");
     assert.equal(doc.querySelector("datalist"), null);
     assert.equal(doc.getElementById("destination-hint").textContent, "Skip it and we'll suggest destinations based on your trip.");
@@ -113,7 +122,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(button("Not sure yet"), undefined);
     await fill("destination", "Somewhere");
     await fill("destination", "");
-    assert.ok(doc.querySelector(".request-route-plane svg[aria-hidden='true']"), "Places has a decorative plane from departure to destination");
+    assert.equal(doc.querySelectorAll(".request-route .field").length, 2);
     await enter("departureLocation");
     assertStep(1, "Blank destination is allowed");
     assert.equal(field("destination").value, "");
@@ -266,17 +275,18 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Optional describe step: message icon, white textarea with example placeholder, sent when non-empty.
     assertStep(4);
     assert.equal(doc.querySelector("#request-step-4 h2").textContent, "Is there anything else you’d like to describe?");
-    // Every earlier answer stays visible in the chat thread; no collapse control.
+    // Summary panel shows all 5 questions with answered steps editable and current step active.
+    assert.equal(doc.querySelectorAll("#request-thread-list .request-thread-pair").length, 5);
+    assert.equal(doc.querySelector(".wizard-thread-bubble.is-active")?.textContent, "Is there anything else you’d like to describe?");
+    assert.equal(doc.querySelector(".wizard-summary-note")?.textContent, "Your answers appear here so you can review and edit them.");
     const threadItems = [...doc.querySelectorAll(".request-thread-item")];
     assert.equal(threadItems.length, 4);
-    assert.equal(doc.querySelector(".request-thread-toggle"), null, "The chat thread has no hide control");
-    assert.ok(threadItems.some(node => node.textContent.includes("Where are you traveling")));
     const placesItem = threadItems.find(node => node.textContent.includes("Where are you traveling"));
+    assert.ok(placesItem);
     await actOn(() => placesItem.click());
-    assertStep(0, "A thread item still opens that answer for editing");
+    assertStep(0, "Clicking an answered summary item opens that question for editing");
     await click("Next");
     assertStep(4, "Thread edit from the describe step returns to describe");
-    assert.equal(doc.querySelectorAll(".request-thread-item").length, 4, "All answers remain visible after editing");
     assert.equal(doc.querySelector("#request-step-4 .request-optional").textContent, "Optional");
     assert.equal(doc.getElementById("request-step-4-hint").textContent, "Food, transport, interests, your group or travel limits.");
     assert.equal(button("Skip for now"), undefined);
@@ -316,7 +326,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       "Travel style": "Culture, Nature",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
     });
-    assert.equal(doc.querySelector(".request-thread, .request-thread-wrap"), null, "The chat thread is hidden on review");
+    assert.equal(doc.querySelectorAll(".wizard-summary-panel .request-thread-item").length, 5, "All five answered items stay editable in the summary panel on review");
     assert.equal(doc.querySelector(".request-draft-note, #request-review-draft-note"), null, "Draft-only note is removed");
     assert.equal(form.querySelector("details"), null, "Advanced options drawer is removed");
     for (const name of ["characteristics", "maxDistanceKm", "maxTravelTimeMinutes", "appliesTo", "transportation", "diningPreferred"]) assert.equal(field(name), null, name);
@@ -440,9 +450,27 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.deepEqual(JSON.parse(sessionStorage.getItem("tpva-travel-request")), payload);
     assert.equal(JSON.parse(sessionStorage.getItem("tpva-travel-request")).additionalRequirements, "We love seafood and prefer taxis.");
 
-    // Clear resets to the first question with empty values.
+    // Returning to Step 1 after completing the form unlocks Step 2 and hydrates saved answers.
+    await actOn(() => root.unmount());
+    root = createRoot(doc.querySelector("#root"));
+    await actOn(() => root.render(React.createElement(MemoryRouter, null, React.createElement(HomePage))));
+    assertStep(5, "Returning after submit opens the review screen with saved answers");
+    const hydratedRows = Object.fromEntries([...doc.querySelectorAll(".request-review > div")].map(row => [row.querySelector("dt").textContent, row.querySelector("dd").textContent]));
+    assert.equal(hydratedRows["Leaving from"], "Hue");
+    assert.equal(hydratedRows.Travelers, "7 travelers");
+    assert.equal(hydratedRows.Budget, "7,654,000 VND · for the group");
+    assert.equal(hydratedRows["Travel style"], "Culture, Nature");
+    assert.equal(hydratedRows["Extra description"], "We love seafood and prefer taxis.");
+    const unlockedSteps = [...doc.querySelectorAll(".trip-progress--sidebar .progress-steps > li")];
+    assert.equal(unlockedSteps[1].querySelector("a")?.getAttribute("href"), "/results", "Step 2 unlocks after submitting");
+    assert.equal(unlockedSteps[2].querySelector("a"), null, "Step 3 stays locked until a plan is selected");
+    const hydratedForm = doc.querySelector("form");
+
+    // Clear resets to the first question with empty values and re-locks Step 2.
     await click("Clear form");
-    assert.equal(form.isConnected, false);
+    assert.equal(hydratedForm.isConnected, false);
+    assert.equal(sessionStorage.getItem("tpva-travel-request"), null);
+    assert.equal(doc.querySelectorAll(".trip-progress--sidebar .progress-steps > li")[1].querySelector("a"), null, "Step 2 re-locks on Clear form");
     const clean = doc.querySelector("form");
     assertStep(0);
     assert.equal(active(), "departureLocation");

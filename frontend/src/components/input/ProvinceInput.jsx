@@ -8,7 +8,7 @@ import { allProvincesSorted, foldText, matchProvinces, POPULAR_PROVINCES, provin
 // picks an option; Enter without a highlighted option keeps its normal meaning
 // (go to the next question).
 export default function ProvinceInput({ id, onPick, className, popularHeading = "Popular destinations", "aria-describedby": describedBy, ...inputProps }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => String(inputProps.defaultValue ?? ""));
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const listId = `${id}-suggestions`;
