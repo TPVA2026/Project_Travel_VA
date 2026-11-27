@@ -72,7 +72,7 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
   useLayoutEffect(() => {
     if (isSidebar) return
     const slot = slotRef.current
-    if (!slot || vertical) return
+    if (!slot) return
 
     const measure = () => {
       const bar = slot.firstElementChild
@@ -99,7 +99,7 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
   useEffect(() => {
     if (isSidebar) return
     const slot = slotRef.current
-    if (!slot || vertical) return
+    if (!slot) return
 
     let frame = 0
     const update = () => {
