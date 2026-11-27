@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from app.auth import AuthenticatedUser, get_optional_user
+from app.services.ai.trip_history import get_trip_history
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
@@ -231,7 +233,10 @@ def revise(body: ReviseBody):
 
 
 @router.post('/pipeline-stream')
-def pipeline_stream(body: PipelineBody):
+def pipeline_stream(
+    body: PipelineBody,
+    user: AuthenticatedUser | None = Depends(get_optional_user),
+):
     """Stream each COMPLETE candidate after evaluation, without splitting days."""
     import json
     from fastapi.responses import StreamingResponse
@@ -248,6 +253,24 @@ def pipeline_stream(body: PipelineBody):
     except PlanningError as exc:
         return JSONResponse({'error': exc.code, 'message': exc.message}, status_code=exc.status_code)
 
+    from app.services.destination_resolution import (
+        request_destination,
+        resolve_destination_id,
+    )
+
+    history = []
+
+    if isinstance(user, AuthenticatedUser):
+        destination = resolve_destination_id(
+            request_destination(request),
+            dataset.get("destinations", []),
+        )
+
+        if destination:
+            history = get_trip_history(user.id, destination)
+
+        print("[TRIP HISTORY] Matched trips:", len(history), flush=True)
+
     def events():
         def emit(kind, **fields):
             return json.dumps({'type': kind, **fields}, ensure_ascii=False) + '\n'
@@ -258,7 +281,7 @@ def pipeline_stream(body: PipelineBody):
         plans, candidates, warnings, seen = [], [], [], set()
         seen_ids = set()
         attempts = 0
-        max_attempts = body.count + 1
+        max_attempts = body.count * 2
         concurrency = min(2, body.count)
         stop_generation = False
         pool = ThreadPoolExecutor(max_workers=concurrency)
@@ -273,7 +296,10 @@ def pipeline_stream(body: PipelineBody):
                 and not stop_generation
             ):
                 pending.add(pool.submit(generate_candidate, request, dataset,
-                                        previous_plans=plans.copy(), max_retries=0))
+                                        previous_plans=plans.copy(),
+                                        repair_invalid=True,
+                                        **({"trip_history": history} if history else {}),
+                                        max_retries=0))
                 attempts += 1
 
         try:

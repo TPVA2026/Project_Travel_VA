@@ -12,7 +12,7 @@ def test_streams_complete_candidates_before_final(monkeypatch):
     calls = []
     lock = Lock()
     barrier = Barrier(2, timeout=5)
-    def generate(req, ds, previous_plans=None, max_retries=None):
+    def generate(req, ds, previous_plans=None, max_retries=None, repair_invalid=False):
         assert max_retries == 0
         with lock:
             calls.append(len(previous_plans or []))
@@ -42,7 +42,7 @@ def test_stream_keeps_first_candidate_on_gemini_error(monkeypatch):
     monkeypatch.setattr('app.services.planning_service._load_planning_dataset', lambda req: {})
     calls = []
     lock = Lock()
-    def generate(req, ds, previous_plans=None, max_retries=None):
+    def generate(req, ds, previous_plans=None, max_retries=None, repair_invalid=False):
         assert max_retries == 0
         with lock:
             calls.append(1)
@@ -79,7 +79,7 @@ def test_stream_limits_duplicate_attempts(monkeypatch):
     calls = []
     lock = Lock()
 
-    def generate(req, ds, previous_plans=None, max_retries=None):
+    def generate(req, ds, previous_plans=None, max_retries=None, repair_invalid=False):
         assert max_retries == 0
         with lock:
             calls.append(1)
@@ -124,7 +124,7 @@ def test_stream_limits_duplicate_attempts(monkeypatch):
         for line in response.text.splitlines()
     ]
 
-    assert len(calls) == 4
+    assert len(calls) == 6
     assert len([
         e for e in events if e['type'] == 'candidate'
     ]) == 1
@@ -153,7 +153,7 @@ def test_stream_provider_error_stops_new_calls(monkeypatch):
     lock = Lock()
 
     def generate(req, ds, previous_plans=None,
-                 max_retries=None):
+                 max_retries=None, repair_invalid=False):
         assert max_retries == 0
 
         with lock:
@@ -211,7 +211,7 @@ def test_first_candidate_emitted_while_second_generates(
     )
 
     def generate(req, ds, previous_plans=None,
-                 max_retries=None):
+                 max_retries=None, repair_invalid=False):
         assert max_retries == 0
 
         with lock:
@@ -288,7 +288,7 @@ def test_first_candidate_emitted_while_second_generates(
     asyncio.run(check_stream())
 
 
-def test_stream_provider_error_stops_new_calls(monkeypatch):
+def test_stream_provider_error_stops_new_calls_additional_2(monkeypatch):
     from app.services.ai.gemini_client import GeminiError
 
     request = {"durationDays": 3}
@@ -310,7 +310,7 @@ def test_stream_provider_error_stops_new_calls(monkeypatch):
     lock = Lock()
 
     def generate(req, ds, previous_plans=None,
-                 max_retries=None):
+                 max_retries=None, repair_invalid=False):
         assert max_retries == 0
 
         with lock:
@@ -342,7 +342,7 @@ def test_stream_provider_error_stops_new_calls(monkeypatch):
     )
 
 
-def test_first_candidate_emitted_while_second_generates(
+def test_first_candidate_emitted_while_second_generates_additional_2(
     monkeypatch
 ):
     import asyncio
@@ -368,7 +368,7 @@ def test_first_candidate_emitted_while_second_generates(
     )
 
     def generate(req, ds, previous_plans=None,
-                 max_retries=None):
+                 max_retries=None, repair_invalid=False):
         assert max_retries == 0
 
         with lock:

@@ -136,12 +136,39 @@ def _check_travel_legs(day: dict, places: dict, matrix: dict) -> list[str]:
     return errs
 
 
+
+MIN_DAILY_PLACES = 4
+
+
+def check_daily_places(plan: dict) -> list[str]:
+    errors = []
+
+    for day in plan["days"]:
+        places = {
+            activity["placeId"]
+            for activity in day["activities"]
+            if activity["type"] == "sightseeing"
+        }
+
+        if len(places) < MIN_DAILY_PLACES:
+            errors.append(
+                f"Day {day['dayNumber']} requires at least "
+                f"{MIN_DAILY_PLACES} distinct sightseeing places, "
+                f"but received {len(places)}."
+            )
+
+    return errors
+
+
 def generate_candidate(
         request: dict,
         dataset: dict | None = None,
         *,
         previous_plans: list[dict] | None = None,
-        check_hours: bool = True, **client_kwargs,
+        check_hours: bool = True,
+        repair_invalid: bool = False,
+        trip_history: list[dict] | None = None,
+        **client_kwargs,
     ) -> dict:
     """Return a schema-valid, dataset-grounded candidate plan (still UNVERIFIED).
 
@@ -156,8 +183,35 @@ def generate_candidate(
         )
     if not supported_place_ids(context):  # never ask the LLM to plan without real places: it would invent them
         raise GeminiError("NO_DATA", "No supported places in the curated dataset for this request", 422)
+    if trip_history:
+        allowed_ids = supported_place_ids(context)
+        filtered_history = []
+
+        for trip in trip_history:
+            days = []
+
+            for day in trip.get("days", []):
+                places = [
+                    place_id
+                    for place_id in day.get("placeIds", [])
+                    if place_id in allowed_ids
+                ]
+
+                if places:
+                    days.append({"placeIds": places})
+
+            if days:
+                filtered_history.append({"days": days})
+
+        trip_history = filtered_history
+
     text = request_text(
-        build_prompt(request, context, previous_plans=previous_plans),
+        build_prompt(
+            request,
+            context,
+            previous_plans=previous_plans,
+            **({"trip_history": trip_history} if trip_history else {}),
+        ),
         CANDIDATE_PLAN_SCHEMA,
         **client_kwargs,
     )
@@ -168,13 +222,57 @@ def generate_candidate(
         raise GeminiError("MALFORMED", "Model output is not valid JSON") from None
 
     try:
-        plan = CandidatePlan.model_validate(raw).model_dump()  # Pydantic gate: only contract fields survive
-    except ValidationError as e:
-        raise GeminiError("INVALID_PLAN", "Plan failed schema/grounding checks", 422, _format_errors(e)) from None
+        plan = CandidatePlan.model_validate(raw).model_dump()
+    except ValidationError as exc:
+        plan = None
+        errors = _format_errors(exc)
+    else:
+        errors = check_grounding(
+            plan, context, check_hours=check_hours
+        )
+        errors.extend(check_daily_places(plan))
 
-    errors = check_grounding(plan, context, check_hours=check_hours)  # M4 checks opening hours
     if errors:
-        raise GeminiError("INVALID_PLAN", "Plan failed schema/grounding checks", 422, errors)
+        if repair_invalid and isinstance(raw, dict):
+            feedback = [
+                {
+                    "status": "INFEASIBLE",
+                    "code": "INVALID_PLAN",
+                    "message": str(error)
+                }
+                for error in errors
+            ]
+
+            repaired = generate_repaired_candidate(
+                request,
+                previous_plan=raw,
+                feedback=feedback,
+                dataset=dataset,
+                **client_kwargs,
+            )
+
+            remaining = check_grounding(
+                repaired, context, check_hours=check_hours
+            )
+            remaining.extend(check_daily_places(repaired))
+
+            if remaining:
+                raise GeminiError(
+                    "INVALID_PLAN",
+                    "Repair failed validation",
+                    422,
+                    remaining
+                )
+
+            return repaired
+
+        raise GeminiError(
+            "INVALID_PLAN",
+            "Plan failed schema/grounding checks",
+            422,
+            errors
+        )
+
     return plan
 
 

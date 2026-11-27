@@ -1,3 +1,4 @@
+import { resetPipelineSession } from '../services/pipelineSession.js'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { clearSelectedPlan } from '../services/planSelection.js'
 import {
@@ -54,6 +55,9 @@ export function AuthProvider({ children }) {
     const current = getTokenUser()
     if (current?.email) window.google?.accounts?.id?.disableAutoSelect?.()
     clearAuthToken()
+    resetPipelineSession()
+    sessionStorage.removeItem('tpva-ai-plan')
+    sessionStorage.removeItem('tpva-generation-id')
     clearSelectedPlan()
     setUser(null)
     window.dispatchEvent(new CustomEvent('tpva-auth-changed'))
@@ -77,7 +81,10 @@ export function AuthProvider({ children }) {
               return
             }
             setAuthToken(credential)
-            clearSelectedPlan()
+    resetPipelineSession()
+    sessionStorage.removeItem('tpva-ai-plan')
+    sessionStorage.removeItem('tpva-generation-id')
+    clearSelectedPlan()
             setUser(getTokenUser(credential))
             setAuthError(null)
             window.dispatchEvent(new CustomEvent('tpva-auth-changed'))

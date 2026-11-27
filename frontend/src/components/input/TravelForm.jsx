@@ -422,6 +422,7 @@ export default function TravelForm() {
     try {
       window.sessionStorage?.removeItem("tpva-travel-request");
       window.sessionStorage?.removeItem("tpva-ai-plan");
+      window.sessionStorage?.removeItem("tpva-generation-id");
     } catch {}
     if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
       window.dispatchEvent(new window.CustomEvent("tpva-trip-saved"));

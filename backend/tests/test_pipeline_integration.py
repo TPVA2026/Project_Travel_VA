@@ -17,6 +17,47 @@ client = TestClient(app)
 @pytest.fixture
 def pipeline(m4_case, monkeypatch):
     request, plan, dataset, _ = m4_case
+    # Extend the generation fixture without changing shared M4 data.
+    day = plan["days"][0]
+
+    for i in range(2, 5):
+        place_id = f"s{i}"
+        previous = day["activities"][-1]["placeId"]
+
+        dataset["attractions"].append({
+            "id": place_id,
+            "destinationId": "HUE",
+            "priceVnd": 0,
+            "priceScope": "perPerson",
+            "opening_hours": "07:00 - 17:30",
+            "durationMin": 30,
+        })
+
+        day["activities"].append({
+            "activityId": f"extra-{i}",
+            "placeId": place_id,
+            "type": "sightseeing",
+            "startTime": f"{10 + i}:00",
+            "endTime": f"{10 + i}:30",
+            "estimatedCostVnd": 0,
+            "costStatus": "KNOWN",
+            "reason": "Additional test attraction",
+        })
+
+        dataset["travel_matrix"].append({
+            "from": previous,
+            "to": place_id,
+            "durationMin": 10,
+            "distanceKm": 1,
+        })
+
+        day["travelLegs"].append({
+            "fromPlaceId": previous,
+            "toPlaceId": place_id,
+            "durationMin": 10,
+            "distanceKm": 1,
+        })
+
     request["departureLocation"] = " Hue "
     request["budget"]["currency"] = " vnd "
     request["preferences"] = {"destination": "HUE"}
@@ -40,7 +81,8 @@ def test_generate_evaluate_rank_pipeline(pipeline, case):
         request["budget"]["amount"] = 1
     elif case == "missing_matrix":
         dataset["travel_matrix"] = []
-        plan["days"][0]["travelLegs"][0].update(durationMin=None, distanceKm=None)
+        for leg in plan["days"][0]["travelLegs"]:
+            leg.update(durationMin=None, distanceKm=None)
     before = deepcopy((request, plan, dataset))
     generated = client.post("/itineraries/generate", json=request)
     assert generated.status_code == 200

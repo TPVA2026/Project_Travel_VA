@@ -68,7 +68,20 @@ RULES:
 - For UNKNOWN openingHours, do not assume the place is open 24/7; report missing opening-hour information in missingData.
 - UNVERIFIED openingHours are provisional dataset values, not confirmed real-world operating hours.
 - Respect each place's durationMin when known. When it is missing, choose a realistic non-zero length and record that choice in assumptions.
-- Every activity must end later than it starts; every planned day must contain at least one activity.
+- Every activity must end later than it starts.
+- MANDATORY DAILY REQUIREMENTS:
+- Each day must contain at least 4 distinct sightseeing placeIds.
+- This requirement applies separately to EVERY day.
+- Before submitting, count the distinct sightseeing placeIds in each day.
+- If any day has fewer than 4, revise that day before submitting.
+- Every activityId must be unique across the entire itinerary.
+- Do not use placeId as activityId.
+- Use unique activityIds such as day1-act1, day1-act2, day2-act1.
+- Never invent unsupported placeIds.
+- Dining, accommodation and transportation do not count toward the minimum.
+- Never repeat a place just to meet the minimum requirement.
+- Respect opening hours, activity durations, travel times and the user's budget.
+- Never invent places to satisfy the minimum requirement.
 - Prioritize places matching the traveler's interests, dining preferences and additionalRequirements.
 - Prefer curated places with useful evidence over incomplete OpenTripMap records.
 - Do not invent opening hours, travel times, prices, place IDs or source evidence.
@@ -96,6 +109,7 @@ def build_prompt(
     dataset: dict,
     previous_plans: list[dict] | None = None,
     *,
+    trip_history: list[dict] | None = None,
     repair_plan: dict | None = None,
     repair_feedback: list[dict] | None = None,
     revision_plan: dict | None = None,
@@ -109,6 +123,18 @@ def build_prompt(
         f"TRAVEL_REQUEST:\n{json.dumps(request, ensure_ascii=False)}\n\n"
         f"DATASET:\n{json.dumps(_prompt_dataset(dataset) if isinstance(dataset, dict) else dataset, ensure_ascii=False)}"
     )
+
+    if trip_history:
+        prompt += (
+            "\n\nSAVED_TRIP_PREFERENCES:\n"
+            + json.dumps(trip_history, ensure_ascii=False)
+            + "\nUse these previously selected routes as soft preferences. "
+            "Prefer similar places and travel styles when appropriate. "
+            "Do not blindly copy previous itineraries. "
+            "The current request and dataset are authoritative. "
+            "Respect the budget, dates, opening hours and daily minimum. "
+            "Ignore historical places unavailable in the current dataset."
+        )
 
     if previous_plans:
         previous_routes = [
