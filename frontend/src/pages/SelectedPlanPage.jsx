@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   fetchPlanById,
   fetchSavedTrip,
@@ -53,7 +53,8 @@ function orderScheduleDays(days) {
 }
 
 export default function SelectedPlanPage() {
-  const { user, requestSignIn } = useAuth()
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [params] = useSearchParams()
   const queryId = params.get('id')
   const savedTripId = params.get('trip')
@@ -142,9 +143,8 @@ export default function SelectedPlanPage() {
     setError(null)
     try {
       if (savedTripId && !user) {
-        requestSignIn()
+        navigate('/signin', { state: { from: `/selected?trip=${encodeURIComponent(savedTripId)}` } })
         setPlan(null)
-        setError('Sign in to open this saved trip.')
         return
       }
       const response = savedTripId
@@ -160,7 +160,7 @@ export default function SelectedPlanPage() {
     } finally {
       setLoading(false)
     }
-  }, [activePlanId, requestSignIn, savedTripId, user])
+  }, [activePlanId, navigate, savedTripId, user])
 
   useEffect(() => {
     loadPlan()
@@ -188,7 +188,7 @@ export default function SelectedPlanPage() {
   const handleToggleChoose = async () => {
     if (!plan) return
     if (!user) {
-      requestSignIn()
+      navigate('/signin', { state: { from: `/selected?id=${encodeURIComponent(plan?.planId || plan?.id || '')}` } })
       return
     }
     setActionMessage('')

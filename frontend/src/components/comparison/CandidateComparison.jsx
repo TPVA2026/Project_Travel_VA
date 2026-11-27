@@ -6,7 +6,6 @@ import {
   getCandidateRanking,
   getCandidateWarnings,
   getRoutingEvidence,
-  groupEvaluationReasons,
   normalizeCandidateStatus,
   resolveDestinationName,
 } from '../../services/api.js'
@@ -133,22 +132,12 @@ function RankingLine({ ranking }) {
 
 function CostLine({ cost }) {
   return (
-    <>
-      <div className="card-cost-row">
-        <span className="cost-label">
-          {cost.complete ? 'Total cost' : 'Known costs · partial'}
-        </span>
-        <strong className="card-cost">{money(cost.knownTotal)}</strong>
-      </div>
-      {cost.missing.length > 0 && (
-        <p className="unverified-line" role="status">
-          <Icon name="alert" size={15} />
-          <span>
-            Unverified {countLabel(cost.missing.length, 'cost item')}
-          </span>
-        </p>
-      )}
-    </>
+    <div className="card-cost-row">
+      <span className="cost-label">
+        {cost.complete ? 'Total cost' : 'Known costs · partial'}
+      </span>
+      <strong className="card-cost">{money(cost.knownTotal)}</strong>
+    </div>
   )
 }
 
@@ -166,32 +155,43 @@ function RoutingLine({ evidence }) {
   )
 }
 
-function CardRoutePreview({ entry }) {
-  if (entry.routes.length === 0) return null
+
+
+function BackRoutePanel({ routes, uniqueNames }) {
+  const days = Array.isArray(routes) ? routes.slice(0, 2) : []
   return (
-    <details className="card-route">
-      <summary className="card-route-summary">
-        <Icon name="route" size={15} />
-        <span>Route preview</span>
-        <Icon name="chevronDown" size={15} className="card-route-chevron" />
-      </summary>
-      <div className="card-route-body">
-        {entry.routes.map((day) => (
-          <div className="card-route-day" key={day.dayNumber}>
-            <span className="card-route-day-label">Day {day.dayNumber}</span>
-            <ol className="card-route-stops">
-              {day.stops.map((stop) => (
-                <li key={`${day.dayNumber}-${stop.activityId}`}>
-                  <span className="card-route-time">{stop.startTime}</span>
-                  <span className="card-route-name">{stop.name}</span>
-                  {stop.unique && <span className="card-route-unique">Only here</span>}
-                </li>
-              ))}
-            </ol>
-          </div>
-        ))}
+    <div className="plan-back-route" data-plan-no-flip>
+      <div className="plan-back-route-head">
+        <span className="plan-back-route-label">Route at a glance</span>
+        {uniqueNames.length > 0 && (
+          <span className="plan-back-route-count">
+            {uniqueNames.length} only here
+          </span>
+        )}
       </div>
-    </details>
+      {days.length > 0 ? (
+        <div className="plan-back-route-days">
+          {days.map((day) => (
+            <div className="plan-back-day" key={day.dayNumber}>
+              <span className="plan-back-day-label">Day {day.dayNumber}</span>
+              <ol>
+                {day.stops.slice(0, 3).map((stop) => (
+                  <li key={stop.activityId} className={stop.unique ? 'is-unique' : ''}>
+                    <span className="plan-back-stop-time">{stop.startTime}</span>
+                    <span className="plan-back-stop-name">{stop.name}</span>
+                    {stop.unique && <small>Only here</small>}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="plan-back-route-empty">
+          Full stop-by-stop timing is in the plan details.
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -205,8 +205,11 @@ function CandidateCard({
   showDifference,
   active,
   focused,
+  flipped,
+  canFlip,
   onHover,
   onToggleFocus,
+  onToggleFlip,
 }) {
   const status = normalizeCandidateStatus(candidate.status)
   const plan = candidate.plan || {}
@@ -214,10 +217,6 @@ function CandidateCard({
   const routing = getRoutingEvidence(candidate)
   const warnings = getCandidateWarnings(candidate, ranking)
   const rank = getCandidateRanking(ranking, candidate.planId || plan.planId)
-  const groups = groupEvaluationReasons(candidate.evaluation, ranking, candidate.planId || plan.planId)
-  const unresolved = groups
-    .filter((group) => group.key !== 'cost' && group.key !== 'routing')
-    .reduce((count, group) => count + group.reasons.length, 0)
   const resolvedDestination = resolveDestinationName(plan.destinationId, placesById)
   const destination =
     getDestinationLabel(plan.destinationId, resolvedDestination, plan.title) ||
@@ -231,14 +230,38 @@ function CandidateCard({
   const activityCount =
     plan.days?.reduce((count, day) => count + (day.activities?.length || 0), 0) || 0
   const detailUrl = `/selected?id=${encodeURIComponent(candidate.planId || plan.planId)}`
+  const uniqueNames = entry.uniqueNames || []
+  const flipLabel = flipped ? 'Show plan details' : 'Show what is different'
+  const frontTabIndex = flipped ? -1 : undefined
+  const backTabIndex = flipped ? undefined : -1
+  const handleCardClick = (event) => {
+    if (!canFlip) return
+    if (event.target.closest('button, a, summary, input, select, textarea, [data-plan-no-flip]')) {
+      return
+    }
+    onToggleFlip?.()
+  }
+  const handleCardKeyDown = (event) => {
+    if (!canFlip || event.target !== event.currentTarget) return
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onToggleFlip?.()
+    }
+  }
 
   return (
     <article
-      className={`card plan-card ${selected ? 'plan-card--selected' : ''} ${
+      className={`card plan-card plan-flip-card ${selected ? 'plan-card--selected' : ''} ${
         active ? 'plan-card--active' : ''
-      } ${active === false ? 'plan-card--dim' : ''}`}
+      } ${active === false ? 'plan-card--dim' : ''} ${flipped ? 'is-flipped' : ''}`}
+      style={{ '--plan-flip-index': entry.index }}
       id={`compare-card-${entry.index + 1}`}
       data-testid={`plan-card-${entry.index + 1}`}
+      role={canFlip ? 'group' : undefined}
+      tabIndex={canFlip ? 0 : undefined}
+      aria-label={canFlip ? `${destination || plan.destinationId}, option ${entry.index + 1}. ${flipLabel}.` : undefined}
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
       onMouseEnter={() => onHover?.(entry.index)}
       onMouseLeave={() => onHover?.(null)}
       onFocusCapture={() => onHover?.(entry.index)}
@@ -246,127 +269,208 @@ function CandidateCard({
         if (!event.currentTarget.contains(event.relatedTarget)) onHover?.(null)
       }}
     >
-      <div className="img-wrap candidate-img-wrap">
-        {image && (
-          <img
-            src={image}
-            alt={`${destination} landscape`}
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none'
-            }}
-          />
-        )}
-        <div className="card-badges">
-          <span className={statusClass(status)} data-testid={`candidate-status-${candidate.planId}`}>
-            {candidateStatusLabel(status)}
-          </span>
-          {isRecommended && (
-            <span className="badge badge-suggested" data-testid={`candidate-recommended-${candidate.planId}`}>
-              <Icon name="sparkle" size={13} />
-              Suggested
-            </span>
+      <div className="plan-flip-scene">
+        <div className={`plan-flip-inner ${flipped ? 'is-flipped' : ''}`}>
+          <div className="plan-face plan-face-front" aria-hidden={flipped} inert={flipped ? '' : undefined}>
+            <div className="img-wrap candidate-img-wrap">
+              {image && (
+                <img
+                  src={image}
+                  alt={`${destination} landscape`}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                  }}
+                />
+              )}
+              <div className="card-badges">
+                <span className={statusClass(status)} data-testid={`candidate-status-${candidate.planId}`}>
+                  {candidateStatusLabel(status)}
+                </span>
+                {isRecommended && (
+                  <span className="badge badge-suggested" data-testid={`candidate-recommended-${candidate.planId}`}>
+                    <Icon name="sparkle" size={13} />
+                    Suggested
+                  </span>
+                )}
+              </div>
+              {selected && (
+                <div className="card-selected-ribbon">
+                  <Icon name="check" size={14} />
+                  Selected
+                </div>
+              )}
+            </div>
+
+            <div className="card-body">
+              <div className="card-index-row">
+                <span className="card-index-label">Option {entry.index + 1}</span>
+                <button
+                  type="button"
+                  className={`card-focus-button ${focused ? 'is-focused' : ''}`}
+                  data-testid={`card-focus-${entry.index + 1}`}
+                  aria-pressed={focused}
+                  tabIndex={frontTabIndex}
+                  onClick={() => onToggleFocus?.(entry.index)}
+                >
+                  <Icon name={focused ? 'check' : 'compass'} size={12} />
+                  {focused ? 'Focused' : 'Focus'}
+                </button>
+              </div>
+              <h3 className="card-destination">{destination || plan.destinationId}</h3>
+              {plan.title && <p className="card-title">{plan.title}</p>}
+
+              {showDifference && (
+                <p className={`card-difference card-difference--${entry.differenceType}`}>
+                  <Icon name={entry.differenceType === 'unique' ? 'sparkle' : 'route'} size={14} />
+                  <span>{entry.difference}</span>
+                </p>
+              )}
+
+              <div className="card-meta" aria-label="Trip summary">
+                <span>
+                  <Icon name="calendar" size={16} />
+                  {plan.days?.length || 0} {plan.days?.length === 1 ? 'day' : 'days'}
+                </span>
+                <span>
+                  <Icon name="landmark" size={16} />
+                  {activityCount} {activityCount === 1 ? 'activity' : 'activities'}
+                </span>
+                <span>
+                  <Icon name="utensils" size={16} />
+                  {entry.mix.meals} {entry.mix.meals === 1 ? 'meal' : 'meals'}
+                </span>
+              </div>
+
+              <div className="card-details">
+                <RankingLine ranking={rank} />
+                <CostLine cost={cost} />
+                <RoutingLine evidence={routing} />
+
+                {isInfeasible && warnings.length > 0 && (
+                  <p className="plan-note plan-note--danger">
+                    <Icon name="alert" size={15} />
+                    <span>Breaks trip constraints</span>
+                  </p>
+                )}
+              </div>
+
+              {canFlip && (
+                <button
+                  type="button"
+                  className="plan-flip-trigger"
+                  data-testid={`card-flip-${entry.index + 1}`}
+                  aria-pressed={flipped}
+                  aria-label={`Show what is different for option ${entry.index + 1}`}
+                  tabIndex={frontTabIndex}
+                  onClick={onToggleFlip}
+                >
+                  <span className="plan-flip-trigger-icon" aria-hidden="true">
+                    <Icon name="swap" size={16} />
+                  </span>
+                  <span className="plan-flip-trigger-text">
+                    <strong>What&apos;s different</strong>
+                    <small>Compare this plan</small>
+                  </span>
+                  <Icon name="arrowRight" size={15} className="plan-flip-trigger-arrow" aria-hidden="true" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {canFlip && (
+            <div className="plan-face plan-face-back" aria-hidden={!flipped} inert={flipped ? undefined : ''}>
+              <div className="plan-back-media">
+                {image && (
+                  <img
+                    src={image}
+                    alt={`${destination} landscape`}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                )}
+                <div className="plan-back-media-copy">
+                  <span className="card-index-label">Option {entry.index + 1} · compared</span>
+                  <strong>{destination || plan.destinationId}</strong>
+                  <span className={statusClass(status)}>{candidateStatusLabel(status)}</span>
+                </div>
+              </div>
+
+              <div className="plan-back-body">
+                <div className="plan-back-intro">
+                  <span className="plan-back-kicker">What’s different</span>
+                  <p>{entry.difference}</p>
+                </div>
+
+                <div className="plan-diff-grid">
+                  <div>
+                    <span>Only here</span>
+                    <strong>{uniqueNames.length}</strong>
+                    <small>extra stops</small>
+                  </div>
+                  <div>
+                    <span>Pace</span>
+                    <strong>{plan.days?.length || 0}</strong>
+                    <small>{countLabel(activityCount, 'activity', 'activities')}</small>
+                  </div>
+                  <div>
+                    <span>Known cost</span>
+                    <strong>{money(cost.knownTotal)}</strong>
+                    <small>{cost.complete ? 'verified total' : 'partial total'}</small>
+                  </div>
+                </div>
+
+                <BackRoutePanel routes={entry.routes} uniqueNames={uniqueNames} />
+
+                <button
+                  type="button"
+                  className="plan-flip-back"
+                  data-testid={`card-flip-back-${entry.index + 1}`}
+                  aria-label={`Back to full details for option ${entry.index + 1}`}
+                  tabIndex={backTabIndex}
+                  onClick={onToggleFlip}
+                >
+                  <Icon name="arrowLeft" size={15} />
+                  <span>Back to full details</span>
+                </button>
+              </div>
+            </div>
           )}
         </div>
-        {selected && (
-          <div className="card-selected-ribbon">
-            <Icon name="check" size={14} />
-            Selected
-          </div>
-        )}
       </div>
 
-      <div className="card-body">
-        <div className="card-index-row">
-          <span className="card-index-label">Option {entry.index + 1}</span>
+      <div className="card-footer-action">
+        <div className="card-action-buttons">
           <button
             type="button"
-            className={`card-focus-button ${focused ? 'is-focused' : ''}`}
-            data-testid={`card-focus-${entry.index + 1}`}
-            aria-pressed={focused}
-            onClick={() => onToggleFocus?.(entry.index)}
+            className={`btn btn-sm ${
+              selected ? 'btn-selected-active' : isInfeasible ? 'btn-disabled' : 'btn-outline'
+            }`}
+            disabled={isInfeasible}
+            title={
+              isInfeasible
+                ? 'Cannot choose an infeasible plan. Adjust your request first.'
+                : selected
+                  ? 'This plan is selected for your trip'
+                  : 'Choose this plan for your trip'
+            }
+            onClick={() => onSelect?.(candidate)}
           >
-            <Icon name={focused ? 'check' : 'eye'} size={12} />
-            {focused ? 'Focused' : 'Focus'}
+            {selected ? (
+              <>
+                <Icon name="check" size={15} />
+                Selected
+              </>
+            ) : (
+              'Choose this plan'
+            )}
           </button>
-        </div>
-        <h3 className="card-destination">{destination || plan.destinationId}</h3>
-        {plan.title && <p className="card-title">{plan.title}</p>}
-
-        {showDifference && (
-          <p className={`card-difference card-difference--${entry.differenceType}`}>
-            <Icon name={entry.differenceType === 'unique' ? 'sparkle' : 'route'} size={14} />
-            <span>{entry.difference}</span>
-          </p>
-        )}
-
-        <div className="card-meta" aria-label="Trip summary">
-          <span>
-            <Icon name="calendar" size={16} />
-            {plan.days?.length || 0} {plan.days?.length === 1 ? 'day' : 'days'}
-          </span>
-          <span>
-            <Icon name="landmark" size={16} />
-            {activityCount} {activityCount === 1 ? 'activity' : 'activities'}
-          </span>
-          <span>
-            <Icon name="utensils" size={16} />
-            {entry.mix.meals} {entry.mix.meals === 1 ? 'meal' : 'meals'}
-          </span>
-        </div>
-
-        <div className="card-details">
-          <RankingLine ranking={rank} />
-          <CostLine cost={cost} />
-          <RoutingLine evidence={routing} />
-
-          {isInfeasible && warnings.length > 0 && (
-            <p className="plan-note plan-note--danger">
-              <Icon name="alert" size={15} />
-              <span>Breaks trip constraints</span>
-            </p>
-          )}
-          {!isInfeasible && unresolved > 0 && (
-            <p className="unverified-line" role="status">
-              <Icon name="alert" size={15} />
-              <span>{unresolved} unverified {unresolved === 1 ? 'item' : 'items'}</span>
-            </p>
-          )}
-        </div>
-
-        <CardRoutePreview entry={entry} />
-
-        <div className="card-footer-action">
-          <div className="card-action-buttons">
-            <button
-              type="button"
-              className={`btn btn-sm ${
-                selected ? 'btn-selected-active' : isInfeasible ? 'btn-disabled' : 'btn-outline'
-              }`}
-              disabled={isInfeasible}
-              title={
-                isInfeasible
-                  ? 'Cannot choose an infeasible plan. Adjust your request first.'
-                  : selected
-                    ? 'This plan is selected for your trip'
-                    : 'Choose this plan for your trip'
-              }
-              onClick={() => onSelect?.(candidate)}
-            >
-              {selected ? (
-                <>
-                  <Icon name="check" size={15} />
-                  Selected
-                </>
-              ) : (
-                'Choose this plan'
-              )}
-            </button>
-            <Link className="btn btn-sm btn-primary" to={detailUrl}>
-              {selected ? 'Open details' : 'View details'}
-              <Icon name="arrowRight" size={15} />
-            </Link>
-          </div>
+          <Link className="btn btn-sm btn-primary" to={detailUrl}>
+            {selected ? 'Open details' : 'View details'}
+            <Icon name="arrowRight" size={15} />
+          </Link>
         </div>
       </div>
     </article>
@@ -707,15 +811,32 @@ export default function CandidateComparison({
   )
   const [hoveredIndex, setHoveredIndex] = useState(null)
   const [focusedIndex, setFocusedIndex] = useState(null)
+  const [flippedIndexes, setFlippedIndexes] = useState(() => new Set())
 
   useEffect(() => {
     setHoveredIndex(null)
     setFocusedIndex(null)
+    setFlippedIndexes(new Set())
   }, [candidates])
 
   const safeFocusedIndex =
     focusedIndex != null && entries[focusedIndex] ? focusedIndex : null
   const activeIndex = hoveredIndex ?? safeFocusedIndex
+  const canFlip = entries.length > 1
+  const allFlipped = canFlip && entries.every((_, index) => flippedIndexes.has(index))
+  const toggleCardFlip = (index) => {
+    if (!canFlip) return
+    setFlippedIndexes((previous) => {
+      const next = new Set(previous)
+      if (next.has(index)) next.delete(index)
+      else next.add(index)
+      return next
+    })
+  }
+  const toggleAllFlips = () => {
+    if (!canFlip) return
+    setFlippedIndexes(allFlipped ? new Set() : new Set(entries.map((_, index) => index)))
+  }
   const toggleFocus = (index) => {
     setFocusedIndex((previous) => (previous === index ? null : index))
     setHoveredIndex(null)
@@ -749,11 +870,30 @@ export default function CandidateComparison({
             Compare recommended destinations, stops, and daily pace to find your best fit.
           </p>
         </div>
-        <span className="count-pill">
-          <Icon name="route" size={15} />
-          {entries.length} {entries.length === 1 ? 'plan' : 'plans'}
-          {sameDestinationPlans ? ` · ${destinationName}` : ''}
-        </span>
+        <div className="plan-compare-actions">
+          <span className="count-pill">
+            <Icon name="route" size={15} />
+            {entries.length} {entries.length === 1 ? 'plan' : 'plans'}
+            {sameDestinationPlans ? ` · ${destinationName}` : ''}
+          </span>
+          {canFlip && (
+            <button
+              type="button"
+              className="plan-flip-all"
+              data-testid="compare-flip-all"
+              aria-pressed={allFlipped}
+              onClick={toggleAllFlips}
+            >
+              <span className="plan-flip-all-icon" aria-hidden="true">
+                <Icon name="swap" size={18} />
+              </span>
+              <span className="plan-flip-all-text">
+                <strong>{allFlipped ? 'Show plan details' : 'Show differences'}</strong>
+                <small>{allFlipped ? 'Return to front of all cards' : 'Tap to flip and compare plans'}</small>
+              </span>
+            </button>
+          )}
+        </div>
       </div>
 
       {sameDestinationPlans && (
@@ -790,8 +930,11 @@ export default function CandidateComparison({
             showDifference={entries.length > 1}
             active={activeIndex == null ? null : activeIndex === entry.index}
             focused={safeFocusedIndex === entry.index}
+            flipped={flippedIndexes.has(entry.index)}
+            canFlip={canFlip}
             onHover={setHoveredIndex}
             onToggleFocus={toggleFocus}
+            onToggleFlip={() => toggleCardFlip(entry.index)}
           />
         ))}
       </div>

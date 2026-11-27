@@ -659,7 +659,7 @@ export default function TravelForm() {
           <ol id="request-thread-list" className="request-thread wizard-thread">
             {summaryItems.map(item => {
               const isCurrent = item.step === step;
-              const isAnswered = reached.has(item.step) && item.step < step;
+              const isAnswered = reached.has(item.step) && item.step !== step;
               return (
                 <li key={item.step} className="request-thread-pair">
                   {isAnswered ? (

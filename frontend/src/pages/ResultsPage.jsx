@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   collectPlaceIds,
   fetchPlaceCatalog,
@@ -245,7 +245,8 @@ function migrateCachedPipeline(saved) {
 }
 
 export default function ResultsPage() {
-  const { user, requestSignIn } = useAuth()
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [selectedPlanId, setSelectedPlanId] = useState(() => getSelectedPlanId())
   const [savedTripIds, setSavedTripIds] = useState(() => {
     const selected = getSelectedPlan()
@@ -259,9 +260,16 @@ export default function ResultsPage() {
   const [streamProgress, setStreamProgress] = useState(null)
   const [placesById, setPlacesById] = useState(() => new Map())
   const [placeCatalogError, setPlaceCatalogError] = useState(null)
-  const [saveError, setSaveError] = useState(null)
   const [celebrate, setCelebrate] = useState(false)
+  const [saveError, setSaveError] = useState(null)
+  const [actionNotice, setActionNotice] = useState(null)
   const startedRequestRef = useRef(null)
+
+  useEffect(() => {
+    if (!actionNotice || actionNotice.kind === 'warning') return undefined
+    const timer = window.setTimeout(() => setActionNotice(null), 3500)
+    return () => window.clearTimeout(timer)
+  }, [actionNotice])
 
   const loadAiPlan = useCallback(async () => {
     if (!pendingRequest) return
@@ -366,10 +374,15 @@ export default function ResultsPage() {
     if (selectedPlanId === id) {
       clearSelectedPlan()
       setSelectedPlanId(null)
+      setActionNotice({ kind: 'info', message: 'Removed this plan from your trip.' })
       return
     }
     if (!user) {
-      requestSignIn()
+      setSaveError(null)
+      setActionNotice({ kind: 'warning', message: 'You need to sign in to save this plan to My Trips.' })
+      window.setTimeout(() => {
+        navigate('/signin', { state: { from: '/results' } })
+      }, 3000)
       return
     }
     const plan = candidate.plan || {}
@@ -402,6 +415,7 @@ export default function ResultsPage() {
       setSavedTripIds((current) => ({ ...current, [id]: result.trip.id }))
       setSelectedPlanId(id)
       setCelebrate(true)
+      setActionNotice({ kind: 'success', message: 'Added to My Trips successfully.' })
     } catch (err) {
       setSaveError(err?.message || 'Could not save this trip.')
     }
@@ -428,6 +442,22 @@ export default function ResultsPage() {
         </div>
       </header>
 
+      {actionNotice && (
+        <div className="results-toast" role="status" aria-live="polite">
+          <div className={`results-toast-card results-toast-card--${actionNotice.kind}`}>
+            <Icon name={actionNotice.kind === 'success' ? 'check' : 'info'} size={18} />
+            <span className="results-toast-message">{actionNotice.message}</span>
+            <button
+              type="button"
+              className="results-toast-close"
+              aria-label="Dismiss notification"
+              onClick={() => setActionNotice(null)}
+            >
+              <Icon name="close" size={14} />
+            </button>
+          </div>
+        </div>
+      )}
       {saveError && <p className="plan-alert-box alert-infeasible" role="alert">{saveError}</p>}
 
       <TripProgress currentStep={2} />

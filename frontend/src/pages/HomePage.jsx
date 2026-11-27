@@ -42,6 +42,26 @@ export default function HomePage() {
     setShowIntro(false)
   }, [])
 
+  const whatYouGet = (
+    <section className="plan-outcomes" aria-labelledby="plan-outcomes-title">
+      <h2 id="plan-outcomes-title">What you get</h2>
+      <ul>
+        <li>
+          <Icon name="calendar" size={17} />
+          <span><strong>Day-by-day schedule</strong> with travel times between stops.</span>
+        </li>
+        <li>
+          <Icon name="wallet" size={17} />
+          <span><strong>Known costs</strong>, with missing prices flagged, not counted as zero.</span>
+        </li>
+        <li>
+          <Icon name="route" size={17} />
+          <span><strong>A plan you can save</strong>, print, or copy.</span>
+        </li>
+      </ul>
+    </section>
+  )
+
   return (
     <div className="plan-page">
       {showIntro && <FlightIntro onDone={finishIntro} />}

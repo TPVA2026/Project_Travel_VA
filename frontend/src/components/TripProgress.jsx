@@ -189,19 +189,16 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
         style={floating ? { left: `${box.left}px`, width: `${box.width}px` } : undefined}
         aria-label="Trip planning progress"
       >
-      <div className="progress-summary">
-        <div>
-          <span>YOUR PROGRESS</span>
-
+        <div className="progress-summary">
           <strong>
             Step {currentStep} of {TRIP_STEPS.length}
           </strong>
+          <small>{currentStepData.title}</small>
         </div>
 
         <small>
           Current step: <b>{currentStepData.title}</b>
         </small>
-      </div>
 
       <div
         className="progress-track"

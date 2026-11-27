@@ -4,18 +4,22 @@ import { resetCurrentTrip } from '../../services/api.js'
 import Icon from './Icon.jsx'
 import { useAuth } from '../../auth/AuthContext.jsx'
 
+const NAV_LINKS = [
+  { to: '/', label: 'Plan a trip', icon: 'sparkle' },
+  { to: '/results', label: 'Compare plans', icon: 'route' },
+  { to: '/selected', label: 'Your itinerary', icon: 'check' },
+  { to: '/my-trips', label: 'My Trips', icon: 'bookmark' },
+]
+
 export default function Navbar() {
-  const { user, requestSignIn, signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [open, setOpen] = useState(false)
   const headerRef = useRef(null)
   const toggleRef = useRef(null)
   const firstLinkRef = useRef(null)
-  const isHome = location.pathname === '/'
   const isWelcome = location.pathname === '/welcome'
-  const isWide = isWelcome
-  const showCta = !isHome && !isWelcome
 
   useEffect(() => {
     setOpen(false)
@@ -35,7 +39,7 @@ export default function Navbar() {
         setOpen(false)
       }
     }
-    const desktop = window.matchMedia('(min-width: 861px)')
+    const desktop = window.matchMedia('(min-width: 961px)')
     const onDesktop = (event) => {
       if (event.matches) setOpen(false)
     }
@@ -67,6 +71,8 @@ export default function Navbar() {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
+  const navClass = ({ isActive }) => `header-nav-link${isActive ? ' is-active' : ''}`
+
   return (
     <>
       <a className="skip-link" href="#main-content">
@@ -74,39 +80,40 @@ export default function Navbar() {
       </a>
 
       <header className="site-header no-print" ref={headerRef}>
-        <div className={`site-header-inner${isWide ? ' is-wide' : ''}`}>
-          <NavLink to="/welcome" className="site-brand">
+        <div className={`site-header-inner${isWelcome ? ' is-wide' : ''}`}>
+          <NavLink to="/welcome" className="site-brand" aria-label="Travel Assistant home">
             <span className="brand-mark" aria-hidden="true">
               <Icon name="compass" size={20} />
             </span>
             <span className="brand-copy">
               <strong>Travel Assistant</strong>
-              <span>Personal trip planner</span>
+              <span>Plan, compare, save</span>
             </span>
           </NavLink>
 
-          <div className="header-account">
-            <NavLink to="/my-trips" className="header-account-link">My Trips</NavLink>
+          <nav className="header-nav" aria-label="Primary">
+            {NAV_LINKS.map((link) => (
+              <NavLink key={link.to} to={link.to} className={navClass}>
+                <Icon name={link.icon} size={16} />
+                <span>{link.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="header-actions">
             {user ? (
-              <button type="button" className="header-account-button" onClick={signOut}>Sign out</button>
+              <button type="button" className="header-account-button" onClick={signOut}>
+                Sign out
+              </button>
             ) : (
-              <button type="button" className="header-account-button" onClick={requestSignIn}>Sign in</button>
+              <NavLink to="/signin" className="header-account-button header-account-button--signin">
+                Sign in
+              </NavLink>
             )}
-          </div>
-
-          {showCta && (
-            <button
-              type="button"
-              className="header-cta"
-              onClick={startNewTrip}
-              title="Clear this trip and open a fresh planning form"
-            >
+            <button type="button" className="header-cta" onClick={startNewTrip} title="Start planning a new trip">
               <Icon name="refresh" size={16} />
-              Start a new trip
+              New trip
             </button>
-          )}
-
-          {showCta && (
             <button
               type="button"
               ref={toggleRef}
@@ -118,30 +125,44 @@ export default function Navbar() {
             >
               <Icon name={open ? 'close' : 'menu'} size={22} />
             </button>
-          )}
+          </div>
         </div>
 
-        {showCta && (
-          <div id="mobile-menu" className={`mobile-menu${open ? ' is-open' : ''}`}>
-            <div className="mobile-account">
-              <NavLink to="/my-trips" onClick={() => setOpen(false)}>My Trips</NavLink>
-              {user ? (
-                <button type="button" onClick={() => { signOut(); setOpen(false) }}>Sign out</button>
-              ) : (
-                <button type="button" onClick={() => { requestSignIn(); setOpen(false) }}>Sign in</button>
-              )}
-            </div>
-            <button
-              type="button"
-              ref={firstLinkRef}
-              className="mobile-cta"
-              onClick={startNewTrip}
-            >
+        <div id="mobile-menu" className={`mobile-menu${open ? ' is-open' : ''}`}>
+          <nav className="mobile-nav" aria-label="Mobile">
+            {NAV_LINKS.map((link, index) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                ref={index === 0 ? firstLinkRef : undefined}
+                className={({ isActive }) => `mobile-nav-link${isActive ? ' is-active' : ''}`}
+                onClick={() => setOpen(false)}
+              >
+                <Icon name={link.icon} size={18} />
+                <span className="mobile-nav-copy">
+                  <strong>{link.label}</strong>
+                </span>
+                <Icon name="arrowRight" size={16} />
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="mobile-account">
+            {user ? (
+              <button type="button" className="mobile-auth-btn" onClick={() => { signOut(); setOpen(false) }}>
+                Sign out
+              </button>
+            ) : (
+              <NavLink to="/signin" className="mobile-auth-btn mobile-auth-btn--primary" onClick={() => setOpen(false)}>
+                Sign in
+              </NavLink>
+            )}
+            <button type="button" className="mobile-cta" onClick={startNewTrip}>
               <Icon name="refresh" size={17} />
               Start a new trip
             </button>
           </div>
-        )}
+        </div>
       </header>
     </>
   )
