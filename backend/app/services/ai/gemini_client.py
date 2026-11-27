@@ -65,7 +65,7 @@ def request_text(
 
     `client` is an SDK-like object (`client.models.generate_content(...)`); tests inject a fake.
     """
-    provider = os.getenv("AI_PROVIDER", "gemini").strip().casefold()
+    provider = os.getenv("AI_PROVIDER", "freemodel").strip().casefold()
     if provider in ("freemodel", "codex"):
         from app.services.ai.freemodel_client import request_text as freemodel_request
         codex = provider == "codex"

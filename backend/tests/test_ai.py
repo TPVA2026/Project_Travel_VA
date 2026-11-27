@@ -33,6 +33,11 @@ plan = load(FIX / "sample_response.json")["plan"]
 NOSLEEP = lambda _s: None
 
 
+@pytest.fixture(autouse=True)
+def use_mocked_gemini_provider(monkeypatch):
+    monkeypatch.setenv("AI_PROVIDER", "gemini")
+
+
 def test_sample_plan_matches_schema_and_is_grounded():
     assert validate_schema(plan) == []
     assert check_grounding(plan, dataset) == []

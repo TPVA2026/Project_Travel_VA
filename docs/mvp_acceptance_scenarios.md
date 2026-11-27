@@ -85,4 +85,4 @@ python -m scripts.run_acceptance_scenarios --base-url http://localhost:3001 \
 cd ../frontend && node scripts/acceptance-client.mjs http://localhost:3001 ../docs/evidence/tpva-54/frontend_client.json
 ```
 
-With `GEMINI_API_KEY` set, S02 and S16 call Gemini and become PASS/FAIL instead of BLOCKED.
+To replay S02 with the current backend, configure `FREEMODEL_API_KEY` in `backend/.env`.

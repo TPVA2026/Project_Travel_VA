@@ -1,7 +1,6 @@
 # FreeModel provider integration (M3)
 
-FreeModel can replace the direct Google Gemini transport without changing the
-itinerary API, CandidatePlan contract, dataset, prompt context, or M4 algorithms.
+FreeModel is the default provider for itinerary generation.
 The existing `request_text` function still returns JSON text and raises the same
 `GeminiError` codes consumed by the routes and planning services.
 
@@ -23,8 +22,7 @@ key to the frontend. Existing process variables take precedence over `.env`.
 An explicit `model`/`api_key` argument overrides the corresponding provider
 variable. Missing model configuration falls back to `gemini-3.7-flash`.
 
-When `AI_PROVIDER` is unset, the legacy `gemini` path remains the default for
-backward compatibility. Set `AI_PROVIDER=gemini` to use the existing Google SDK
+When `AI_PROVIDER` is unset, the backend uses FreeModel. Set `AI_PROVIDER=gemini` to use the existing Google SDK
 and its `GEMINI_*` settings. Set `AI_PROVIDER=codex` to use the same chat
 completions client against the CCPro gateway:
 
