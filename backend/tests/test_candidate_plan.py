@@ -112,7 +112,8 @@ def test_pydantic_rejects_impossible_date_and_duplicate_activity_ids():
     assert any("duplicate activityId" in e for e in validate_schema(dup))
 
 
-def test_ai_extra_fields_never_reach_the_caller():
+def test_ai_extra_fields_never_reach_the_caller(monkeypatch):
+    monkeypatch.setenv("AI_PROVIDER", "gemini")
     smuggled = copy.deepcopy(sample)
     smuggled["feasible"] = True
     dataset = load("sample_dataset.json")
@@ -159,7 +160,8 @@ def test_grounding_rejects_unknown_destination():
     assert any("unknown destinationId ZZ" in e for e in check_grounding(bad, PRICED))
 
 
-def test_generate_rejects_fabricated_cost_end_to_end():
+def test_generate_rejects_fabricated_cost_end_to_end(monkeypatch):
+    monkeypatch.setenv("AI_PROVIDER", "gemini")
     bad = copy.deepcopy(GOOD)
     bad["days"][0]["activities"][0]["estimatedCostVnd"] = 1
     with pytest.raises(GeminiError) as e:
@@ -167,7 +169,8 @@ def test_generate_rejects_fabricated_cost_end_to_end():
     assert e.value.code == "INVALID_PLAN" and any("dataset price" in x for x in e.value.details)
 
 
-def test_generate_returns_valid_grounded_plan_unchanged():
+def test_generate_returns_valid_grounded_plan_unchanged(monkeypatch):
+    monkeypatch.setenv("AI_PROVIDER", "gemini")
     assert generate_candidate(request, PRICED, api_key="k", client=ok(GOOD)) == GOOD
 
 

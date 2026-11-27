@@ -75,7 +75,7 @@
       },
       "owner": "M3",
       "requires": [
-        "GEMINI_API_KEY"
+        "FREEMODEL_API_KEY"
       ],
       "rule": "Generation returns a CandidatePlan with status UNVERIFIED; never FEASIBLE."
     },

@@ -17,7 +17,7 @@ from scripts.run_acceptance_scenarios import judge, load_scenarios
 client = TestClient(app)
 
 LIVE_ONLY = {
-    "S02_valid_3day_generate": "needs GEMINI_API_KEY and network; run scripts/run_acceptance_scenarios.py",
+    "S02_valid_3day_generate": "needs FREEMODEL_API_KEY and network; run scripts/run_acceptance_scenarios.py",
     "S18_osrm_timeout": "needs a separately configured OSRM server profile; see docs/evidence/tpva-54",
 }
 KNOWN_GAPS = {
@@ -31,7 +31,7 @@ KNOWN_GAPS = {
 def test_acceptance_scenario(scenario, monkeypatch):
     if scenario["id"] in LIVE_ONLY:
         pytest.skip(LIVE_ONLY[scenario["id"]])
-    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("FREEMODEL_API_KEY", raising=False)
     monkeypatch.setenv("OSRM_ROUTING_ENABLED", "false")
     if "raw" in scenario:
         resp = client.post(scenario["endpoint"], content=scenario["raw"], headers={"Content-Type": "application/json"})

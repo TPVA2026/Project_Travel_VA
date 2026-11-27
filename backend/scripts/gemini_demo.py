@@ -1,6 +1,6 @@
 """Manual smoke test against the real Gemini API (needs GEMINI_API_KEY in backend/.env).
 
-    cd backend && python -m scripts.gemini_demo > tests/fixtures/live_demo_output.json
+    cd backend && AI_PROVIDER=gemini python -m scripts.gemini_demo > tests/fixtures/live_demo_output.json
 """
 import json
 import sys

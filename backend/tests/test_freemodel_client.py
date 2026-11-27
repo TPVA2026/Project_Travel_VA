@@ -96,7 +96,10 @@ def test_model_precedence(monkeypatch, explicit, configured, expected):
         assert json.loads(request_text("prompt", {}, api_key=SECRET, model=explicit, client=client)) == {}
 
 
-def test_server_environment_and_provider_dispatch(monkeypatch):
+@pytest.mark.parametrize("provider", [None, "freemodel"])
+def test_server_environment_and_provider_dispatch(monkeypatch, provider):
+    if provider is None:
+        monkeypatch.delenv("AI_PROVIDER")
     monkeypatch.setenv("FREEMODEL_API_KEY", SECRET)
     monkeypatch.setenv("FREEMODEL_BASE_URL", "https://example.test/v1/")
     def handler(request):

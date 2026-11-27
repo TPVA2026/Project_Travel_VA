@@ -117,7 +117,7 @@ itineraries for selected areas of Vietnam with an LLM, then verifies cost/time/d
 | `backend/app/schemas/`                                            | Pydantic schemas + CandidatePlan JSON schema          | Khánh           |
 | `backend/app/services/input_service.py`                           | Request validation/normalization                      | Khánh           |
 | `backend/app/services/data_service.py`, `backend/app/data/`     | Curated dataset + repository                          | Thư Anh         |
-| `backend/app/services/ai/`                                        | Gemini client, context, prompts, candidate generation | Thiện           |
+| `backend/app/services/ai/`                                        | FreeModel client, context, prompts, candidate generation | Thiện           |
 | `backend/app/algorithms/`                                         | Feasibility, costs, schedule/travel checks, ranking   | Sand             |
 | `backend/tests/`                                                  | Each member tests their own module                    | all              |
 | `docs/`                                                           | Design and test documentation                         | all              |
@@ -144,7 +144,7 @@ python -m pytest
 python -m uvicorn app.main:app --reload --port 3001
 ```
 
-Then fill `CODEX_API_KEY` in `backend/.env` (server only, never commit). The base URL is already `https://api.ccpro.cn/v1`. Health check: http://localhost:3001/health, API docs: http://localhost:3001/docs
+Set `FREEMODEL_API_KEY` in `backend/.env` and restart the backend. The example config uses `https://freemodel.in/v1`. Health check: http://localhost:3001/health, API docs: http://localhost:3001/docs
 
 ```bash
 # frontend (new terminal)
@@ -174,9 +174,9 @@ not logged or stored in the trips database.
 ## Rules
 
 - Branch per task: `feat/<member>-<topic>`; merge through a reviewed pull request; one GitHub issue per task.
-- Never commit `.env` or any API key. The Gemini key lives only in `backend/.env`; the frontend never sees it.
+- Never commit `.env` or any API key. The FreeModel key lives only in `backend/.env`; the frontend never sees it.
 - LLM output is a *candidate*: only the deterministic checks in `algorithms/` can mark a plan FEASIBLE.
 - Unknown prices/hours/travel times stay `null` ("No data available"); never treat them as 0.
 
-For the optional FreeModel provider, configuration and verification limits, see
+For FreeModel configuration and verification, see
 [FreeModel integration (M3)](docs/m3-freemodel.md).

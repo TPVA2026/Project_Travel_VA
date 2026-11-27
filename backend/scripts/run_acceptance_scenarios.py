@@ -32,8 +32,8 @@ def judge(scenario, http, body):
     """Return (verdict, notes). Verdict is PASS, FAIL or BLOCKED."""
     exp = scenario["expected"]
     notes = []
-    if isinstance(body, dict) and body.get("error") == "CONFIG" and "GEMINI_API_KEY" in scenario.get("requires", []):
-        return "BLOCKED", ["GEMINI_API_KEY is not configured on this server; Gemini was not called."]
+    if isinstance(body, dict) and body.get("error") == "CONFIG" and "FREEMODEL_API_KEY" in scenario.get("requires", []):
+        return "BLOCKED", ["FREEMODEL_API_KEY is not configured on this server; FreeModel was not called."]
     allowed = [int(x) for x in str(exp["http"]).split("|")]
     if http not in allowed:
         notes.append(f"HTTP {http}, expected {exp['http']}")
@@ -115,7 +115,7 @@ def run(base_urls, out_dir):
     summary = {
         "ranAt": datetime.now(timezone.utc).isoformat(),
         "baseUrls": base_urls,
-        "geminiKeyConfigured": bool(os.getenv("GEMINI_API_KEY")),
+        "freemodelKeyConfigured": bool(os.getenv("FREEMODEL_API_KEY")),
         "counts": {v: sum(r["verdict"] == v for r in results) for v in ("PASS", "FAIL", "BLOCKED")},
         "results": [{k: r.get(k) for k in ("id", "endpoint", "httpStatus", "actualStatus", "actualError",
                                            "checkCodes", "verdict", "notes", "owner")} for r in results],
