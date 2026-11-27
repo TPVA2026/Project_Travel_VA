@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "ticket": "TPVA-75",
+  "dataset": "backend/app/data/DaNang",
+  "destination": {
+    "id": "VN_48",
+    "city": "Đà Nẵng"
+  },
+  "request": {
+    "travelPeriod": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-01"
+    },
+    "durationDays": 1,
+    "departureLocation": "Hà Nội",
+    "travelers": {
+      "count": 1
+    },
+    "budget": {
+      "amount": 5000000,
+      "currency": "VND",
+      "scope": "group"
+    },
+    "preferences": {
+      "destination": "Đà Nẵng",
+      "interests": [
+        {
+          "type": "sightseeing",
+          "priority": 1
+        }
+      ]
+    }
+  },
+  "focusedPlaceIds": [
+    "OTM_VN_48_N4944327526",
+    "OTM_VN_48_W302872188"
+  ],
+  "scenarios": [
+    {
+      "id": "DN01_structurally_valid_baseline",
+      "title": "Structurally valid one-stop plan exposes missing evidence",
+      "endpoint": "/itineraries/evaluate",
+      "plan": {
+        "planId": "tpva-75-dn-baseline",
+        "title": "Đà Nẵng baseline",
+        "destinationId": "VN_48",
+        "hotelId": null,
+        "days": [
+          {
+            "dayNumber": 1,
+            "date": "2026-12-01",
+            "activities": [
+              {
+                "activityId": "dn-base-a1",
+                "placeId": "OTM_VN_48_N4944327526",
+                "type": "sightseeing",
+                "startTime": "09:00",
+                "endTime": "10:00",
+                "estimatedCostVnd": null,
+                "costStatus": "NO_DATA",
+                "reason": "TPVA-75 dataset-grounded fixture"
+              }
+            ],
+            "travelLegs": []
+          }
+        ],
+        "missingData": [
+          "verified attraction price",
+          "opening hours",
+          "transport and dining costs"
+        ],
+        "assumptions": []
+      },
+      "expected": {
+        "http": 200,
+        "status": "UNVERIFIED",
+        "requiredReasons": [
+          {
+            "code": "BUDGET",
+            "path": "costs"
+          },
+          {
+            "code": "OPENING_HOURS",
+            "path": "days.0.activities.0"
+          }
+        ],
+        "forbiddenStatuses": [
+          "INFEASIBLE"
+        ]
+      }
+    },
+    {
+      "id": "DN02_missing_route_evidence",
+      "title": "Two valid stops remain unverified when the directed route is absent",
+      "endpoint": "/itineraries/evaluate",
+      "plan": {
+        "planId": "tpva-75-dn-missing-route",
+        "title": "Đà Nẵng missing route evidence",
+        "destinationId": "VN_48",
+        "hotelId": null,
+        "days": [
+          {
+            "dayNumber": 1,
+            "date": "2026-12-01",
+            "activities": [
+              {
+                "activityId": "dn-route-a1",
+                "placeId": "OTM_VN_48_N4944327526",
+                "type": "sightseeing",
+                "startTime": "09:00",
+                "endTime": "10:00",
+                "estimatedCostVnd": null,
+                "costStatus": "NO_DATA",
+                "reason": "TPVA-75 dataset-grounded fixture"
+              },
+              {
+                "activityId": "dn-route-a2",
+                "placeId": "OTM_VN_48_W302872188",
+                "type": "sightseeing",
+                "startTime": "10:30",
+                "endTime": "11:30",
+                "estimatedCostVnd": null,
+                "costStatus": "NO_DATA",
+                "reason": "TPVA-75 dataset-grounded fixture"
+              }
+            ],
+            "travelLegs": []
+          }
+        ],
+        "missingData": [
+          "directed route duration and distance",
+          "verified attraction prices",
+          "opening hours",
+          "transport and dining costs"
+        ],
+        "assumptions": []
+      },
+      "expected": {
+        "http": 200,
+        "status": "UNVERIFIED",
+        "requiredReasons": [
+          {
+            "code": "MISSING_LEG",
+            "path": "days.0.travelLegs"
+          },
+          {
+            "code": "UNSUPPORTED_LEG",
+            "path": "days.0.travelLegs"
+          },
+          {
+            "code": "TRAVEL_DATA",
+            "path": "days.0.travelLegs"
+          },
+          {
+            "code": "TRANSFER_GAP",
+            "path": "days.0"
+          }
+        ],
+        "forbiddenStatuses": [
+          "INFEASIBLE"
+        ]
+      }
+    },
+    {
+      "id": "DN03_proven_day_count_violation",
+      "title": "A proven day-count violation remains infeasible despite missing evidence",
+      "endpoint": "/itineraries/evaluate",
+      "plan": {
+        "planId": "tpva-75-dn-day-count",
+        "title": "Đà Nẵng proven day-count violation",
+        "destinationId": "VN_48",
+        "hotelId": null,
+        "days": [
+          {
+            "dayNumber": 1,
+            "date": "2026-12-01",
+            "activities": [
+              {
+                "activityId": "dn-day-count-a1",
+                "placeId": "OTM_VN_48_N4944327526",
+                "type": "sightseeing",
+                "startTime": "09:00",
+                "endTime": "10:00",
+                "estimatedCostVnd": null,
+                "costStatus": "NO_DATA",
+                "reason": "TPVA-75 dataset-grounded fixture"
+              }
+            ],
+            "travelLegs": []
+          },
+          {
+            "dayNumber": 2,
+            "date": "2026-12-02",
+            "activities": [
+              {
+                "activityId": "dn-day-count-a2",
+                "placeId": "OTM_VN_48_W302872188",
+                "type": "sightseeing",
+                "startTime": "09:00",
+                "endTime": "10:00",
+                "estimatedCostVnd": null,
+                "costStatus": "NO_DATA",
+                "reason": "TPVA-75 dataset-grounded fixture"
+              }
+            ],
+            "travelLegs": []
+          }
+        ],
+        "missingData": [
+          "directed route duration and distance",
+          "verified attraction prices",
+          "opening hours",
+          "transport and dining costs"
+        ],
+        "assumptions": []
+      },
+      "expected": {
+        "http": 200,
+        "status": "INFEASIBLE",
+        "requiredReasons": [
+          {
+            "status": "INFEASIBLE",
+            "code": "DAY_COUNT",
+            "path": "days"
+          }
+        ]
+      }
+    }
+  ]
+}
