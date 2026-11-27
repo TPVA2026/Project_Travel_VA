@@ -190,7 +190,7 @@ function ChoiceGroup({ labelledBy, label, describedBy, className, value, options
   );
 }
 
-export default function TravelForm() {
+export default function TravelForm({ chatAside = null }) {
   const navigate = useNavigate();
   const formRef = useRef(null);
   const [step, setStep] = useState(0);
@@ -209,7 +209,6 @@ export default function TravelForm() {
   const [returnStep, setReturnStep] = useState(null);
   const [formErrorFocus, setFormErrorFocus] = useState(0);
   const [focusRequest, setFocusRequest] = useState(null);
-  const [threadOpen, setThreadOpen] = useState(false);
 
   // Runs after the alert renders, so a request-level error is announced and focusable.
   useEffect(() => {
@@ -229,9 +228,16 @@ export default function TravelForm() {
     if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
   }, [formKey]);
 
-  // Keep the current question on screen: collapse older answers when the step changes.
   useEffect(() => {
-    setThreadOpen(false);
+    const active = formRef.current?.querySelector(".request-step:not([hidden])");
+    if (!active?.animate || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+    active.animate(
+      [
+        { opacity: 0, transform: "translateX(14px)" },
+        { opacity: 1, transform: "none" },
+      ],
+      { duration: 360, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+    );
   }, [step]);
 
   // One traveler is always per person, with no switch. Two or more default to a group total.
@@ -384,7 +390,6 @@ export default function TravelForm() {
     setDescriptionDraft("");
     setReached(new Set());
     setReturnStep(null);
-    setThreadOpen(false);
   }
 
   async function onSubmit(event) {
@@ -462,16 +467,12 @@ export default function TravelForm() {
   const departure = values.departureLocation?.trim() || "";
   const destination = values.destination?.trim() || NO_DESTINATION;
   const thread = [
-    { step: PLACES, question: "Where are you traveling?", answer: <RouteText from={departure} to={destination} />, summary: `${departure} to ${destination}` },
+    { step: PLACES, question: "Where are you traveling?", answer: <RouteText from={departure} to={destination} /> },
     { step: DATES, question: "When are you going?", answer: when },
     { step: PARTY, question: "Who is going, and what's the budget?", answer: [travelers, budget].filter(Boolean).join(" · ") },
     { step: STYLE, question: "What kind of trip should we prioritize?", answer: styleText },
     { step: DESCRIBE, question: "Is there anything else you’d like to describe?", answer: hasDraft ? descriptionDraft.trim() : "Nothing added" },
-  ].filter(item => reached.has(item.step) && item.step < step);
-  const canCollapseThread = thread.length > 1;
-  const hiddenThread = canCollapseThread && !threadOpen ? thread.slice(0, -1) : [];
-  const visibleThread = canCollapseThread && !threadOpen ? thread.slice(-1) : thread;
-  const threadSummary = hiddenThread.map(item => item.summary ?? item.answer).filter(Boolean).join(" · ");
+  ].filter(item => reached.has(item.step));
 
   const question = (index, art, title, children, hint, optional = false) => (
     <section id={`request-step-${index}`} data-step={index} className="request-step request-question" hidden={step !== index} aria-labelledby={`request-step-${index}-title`}>
@@ -491,39 +492,28 @@ export default function TravelForm() {
           : <span />}
       </div>
 
-      {thread.length > 0 && step !== REVIEW && (
+      {step !== REVIEW && (
         <div className="request-thread-wrap">
-          {canCollapseThread && (
-            <div className="request-thread-toolbar">
-              <button
-                type="button"
-                className="request-thread-toggle"
-                aria-expanded={threadOpen}
-                aria-controls="request-thread-list"
-                onClick={() => setThreadOpen(open => !open)}
-              >
-                {threadOpen ? "Hide" : "Show all answers"}
-              </button>
-              {!threadOpen && threadSummary ? <p className="request-thread-summary">{threadSummary}</p> : null}
-            </div>
-          )}
-          <ol id="request-thread-list" className="request-thread">
-            {visibleThread.map(item => (
-              <li key={item.step} className="request-thread-pair">
-                <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })} aria-label={`Edit answer: ${item.question}`}>
-                  <span className="request-thread-q">{item.question}</span>
-                  <span className="request-thread-a">
-                    <span className="request-thread-a-text">{item.answer}</span>
-                    <span className="request-thread-edit" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" width="12" height="12" focusable="false">
-                        <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                      </svg>
+          {thread.length > 0 && (
+            <ol id="request-thread-list" className="request-thread">
+              {thread.map(item => (
+                <li key={item.step} className="request-thread-pair">
+                  <button type="button" className="request-thread-item" onClick={() => goToStep(item.step, { edit: true, returnTo: step })} aria-label={`Edit answer: ${item.question}`}>
+                    <span className="request-thread-q">{item.question}</span>
+                    <span className="request-thread-a">
+                      <span className="request-thread-a-text">{item.answer}</span>
+                      <span className="request-thread-edit" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="12" height="12" focusable="false">
+                          <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                        </svg>
+                      </span>
                     </span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          )}
+          {chatAside}
         </div>
       )}
 

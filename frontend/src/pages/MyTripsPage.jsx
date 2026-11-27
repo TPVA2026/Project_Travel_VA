@@ -49,7 +49,7 @@ export default function MyTripsPage() {
         <p className="page-eyebrow">My Trips</p>
         <h1>Your saved itineraries</h1>
         <p className="muted">Sign in to see trips saved to your account.</p>
-        <button type="button" className="btn btn-primary" onClick={requestSignIn}>Sign in with Google</button>
+        <Link className="btn btn-primary" to="/signin">Sign in with Google</Link>
       </section>
     )
   }

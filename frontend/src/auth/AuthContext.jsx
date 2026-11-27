@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { clearSelectedPlan } from '../services/planSelection.js'
 import {
   clearAuthToken,
-  getAuthToken,
   getTokenUser,
   setAuthToken,
 } from '../services/authSession.js'
@@ -11,6 +10,9 @@ const anonymousAuth = {
   user: null,
   requestSignIn: () => window.dispatchEvent(new window.CustomEvent('tpva-auth-required')),
   signOut: () => {},
+  authError: null,
+  clearAuthError: () => {},
+  renderGoogleButton: () => {},
 }
 const AuthContext = createContext(anonymousAuth)
 const GOOGLE_SCRIPT_ID = 'google-identity-services'
@@ -37,15 +39,16 @@ function loadGoogleIdentity() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => getTokenUser())
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [authError, setAuthError] = useState(null)
-  const buttonRef = useRef(null)
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+  const googleReadyRef = useRef(false)
 
   const requestSignIn = useCallback(() => {
     setAuthError(null)
-    setDialogOpen(true)
+    window.dispatchEvent(new CustomEvent('tpva-auth-required'))
   }, [])
+
+  const clearAuthError = useCallback(() => setAuthError(null), [])
 
   const signOut = useCallback(() => {
     const current = getTokenUser()
@@ -56,60 +59,50 @@ export function AuthProvider({ children }) {
     window.dispatchEvent(new CustomEvent('tpva-auth-changed'))
   }, [])
 
-  useEffect(() => {
-    const open = () => requestSignIn()
-    window.addEventListener('tpva-auth-required', open)
-    return () => window.removeEventListener('tpva-auth-required', open)
-  }, [requestSignIn])
-
-  useEffect(() => {
-    if (!dialogOpen || !buttonRef.current) return
+  const renderGoogleButton = useCallback((container, options = {}) => {
+    if (!container) return () => {}
     if (!clientId) {
       setAuthError('Google Sign-In is not configured. Set VITE_GOOGLE_CLIENT_ID.')
-      return
+      return () => {}
     }
     let cancelled = false
     loadGoogleIdentity().then(() => {
-      if (cancelled || !buttonRef.current) return
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: ({ credential }) => {
-          if (!credential) {
-            setAuthError('Google did not return a sign-in credential.')
-            return
-          }
-          setAuthToken(credential)
-          clearSelectedPlan()
-          setUser(getTokenUser(credential))
-          setDialogOpen(false)
-          window.dispatchEvent(new CustomEvent('tpva-auth-changed'))
-        },
+      if (cancelled || !container) return
+      if (!googleReadyRef.current) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: ({ credential }) => {
+            if (!credential) {
+              setAuthError('Google did not return a sign-in credential.')
+              return
+            }
+            setAuthToken(credential)
+            clearSelectedPlan()
+            setUser(getTokenUser(credential))
+            setAuthError(null)
+            window.dispatchEvent(new CustomEvent('tpva-auth-changed'))
+          },
+        })
+        googleReadyRef.current = true
+      }
+      container.replaceChildren()
+      window.google.accounts.id.renderButton(container, {
+        theme: options.theme || 'outline',
+        size: options.size || 'large',
+        width: options.width || 320,
+        shape: options.shape || 'pill',
+        text: options.text || 'continue_with',
+        logo_alignment: options.logo_alignment || 'left',
       })
-      buttonRef.current.replaceChildren()
-      window.google.accounts.id.renderButton(buttonRef.current, {
-        theme: 'outline',
-        size: 'large',
-        width: 280,
-      })
-    }).catch(() => setAuthError('Could not load Google Sign-In. Check your connection.'))
+    }).catch(() => {
+      if (!cancelled) setAuthError('Could not load Google Sign-In. Check your connection.')
+    })
     return () => { cancelled = true }
-  }, [clientId, dialogOpen])
+  }, [clientId])
 
   return (
-    <AuthContext.Provider value={{ user, requestSignIn, signOut }}>
+    <AuthContext.Provider value={{ user, requestSignIn, signOut, authError, clearAuthError, renderGoogleButton }}>
       {children}
-      {dialogOpen && (
-        <div className="auth-dialog-backdrop" role="presentation" onMouseDown={() => setDialogOpen(false)}>
-          <section className="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title" onMouseDown={(event) => event.stopPropagation()}>
-            <button className="auth-dialog-close" type="button" onClick={() => setDialogOpen(false)} aria-label="Close">×</button>
-            <p className="page-eyebrow">Travel VA account</p>
-            <h2 id="auth-title">Sign in to save your trips</h2>
-            <p className="muted">Your current itinerary will stay open. Sign in, then choose it again to save it to My Trips.</p>
-            <div ref={buttonRef} className="google-signin-button" />
-            {authError && <p className="field-error-text" role="alert">{authError}</p>}
-          </section>
-        </div>
-      )}
     </AuthContext.Provider>
   )
 }

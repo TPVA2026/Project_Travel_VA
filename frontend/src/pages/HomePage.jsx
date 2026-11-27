@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Icon from '../components/common/Icon.jsx'
-import { TravelSkyIllustration } from '../components/common/Illustrations.jsx'
 import FlightIntro from '../components/intro/FlightIntro.jsx'
 import { INTRO_STORAGE_KEY } from '../components/intro/introAssets.js'
 import TravelForm from '../components/input/TravelForm.jsx'
@@ -43,6 +42,26 @@ export default function HomePage() {
     setShowIntro(false)
   }, [])
 
+  const whatYouGet = (
+    <section className="plan-outcomes" aria-labelledby="plan-outcomes-title">
+      <h2 id="plan-outcomes-title">What you get</h2>
+      <ul>
+        <li>
+          <Icon name="calendar" size={17} />
+          <span><strong>Day-by-day schedule</strong> with travel times between stops.</span>
+        </li>
+        <li>
+          <Icon name="wallet" size={17} />
+          <span><strong>Known costs</strong>, with missing prices flagged, not counted as zero.</span>
+        </li>
+        <li>
+          <Icon name="route" size={17} />
+          <span><strong>A plan you can save</strong>, print, or copy.</span>
+        </li>
+      </ul>
+    </section>
+  )
+
   return (
     <div className="plan-page">
       {showIntro && <FlightIntro onDone={finishIntro} />}
@@ -69,58 +88,39 @@ export default function HomePage() {
         </ul>
       </header>
 
-      <TripProgress currentStep={1} />
-
       <div className="plan-layout">
-        <div className="plan-workspace">
-          <div id="trip-form-panel" className="input-panel plan-panel" ref={formPanelRef}>
-            <TravelForm />
-          </div>
+        <div className="plan-left">
+          <TripProgress currentStep={1} orientation="vertical" />
+
+          <aside className="plan-aside" aria-label="Planning help">
+            <section className="plan-prep" aria-labelledby="plan-prep-title">
+              <div className="plan-prep-body">
+                <p className="preview-kicker">Before you start</p>
+                <h2 id="plan-prep-title">Three things make the first draft easier.</h2>
+                <ul className="plan-prep-list">
+                  <li>
+                    <Icon name="calendar" size={16} />
+                    <span><strong>Pick a start date and length</strong> Trips can last 1 to 3 days.</span>
+                  </li>
+                  <li>
+                    <Icon name="wallet" size={16} />
+                    <span><strong>Set a comfortable budget</strong> We flag missing prices instead of guessing.</span>
+                  </li>
+                  <li>
+                    <Icon name="clock" size={16} />
+                    <span><strong>Choose your pace</strong> Slow mornings or full days; change it later.</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </aside>
         </div>
 
-        <aside className="plan-aside" aria-label="Planning help">
-          <section className="plan-prep" aria-labelledby="plan-prep-title">
-            <div className="plan-prep-sky">
-              <TravelSkyIllustration />
-            </div>
-            <div className="plan-prep-body">
-              <p className="preview-kicker">Before you start</p>
-              <h2 id="plan-prep-title">Three things make the first draft easier.</h2>
-              <ul className="plan-prep-list">
-                <li>
-                  <Icon name="calendar" size={16} />
-                  <span><strong>Pick a start date and length</strong> Trips can last 1 to 3 days.</span>
-                </li>
-                <li>
-                  <Icon name="wallet" size={16} />
-                  <span><strong>Set a comfortable budget</strong> We flag missing prices instead of guessing.</span>
-                </li>
-                <li>
-                  <Icon name="clock" size={16} />
-                  <span><strong>Choose your pace</strong> Slow mornings or full days; change it later.</span>
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          <section className="plan-outcomes">
-            <h2>What you get</h2>
-            <ul>
-              <li>
-                <Icon name="calendar" size={17} />
-                <span><strong>Day-by-day schedule</strong> with travel times between stops.</span>
-              </li>
-              <li>
-                <Icon name="wallet" size={17} />
-                <span><strong>Known costs</strong>, with missing prices flagged, not counted as zero.</span>
-              </li>
-              <li>
-                <Icon name="route" size={17} />
-                <span><strong>A plan you can save</strong>, print, or copy.</span>
-              </li>
-            </ul>
-          </section>
-        </aside>
+        <div className="plan-workspace">
+          <div id="trip-form-panel" className="input-panel plan-panel" ref={formPanelRef}>
+            <TravelForm chatAside={whatYouGet} />
+          </div>
+        </div>
       </div>
     </div>
   )

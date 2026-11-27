@@ -19,7 +19,8 @@ const TRIP_STEPS = [
   },
 ]
 
-export function TripProgress({ currentStep }) {
+export function TripProgress({ currentStep, orientation = 'horizontal' }) {
+  const vertical = orientation === 'vertical'
   const slotRef = useRef(null)
   const [floating, setFloating] = useState(false)
   const [box, setBox] = useState({ left: 0, width: 0, height: 0 })
@@ -28,7 +29,7 @@ export function TripProgress({ currentStep }) {
 
   useLayoutEffect(() => {
     const slot = slotRef.current
-    if (!slot) return
+    if (!slot || vertical) return
 
     const measure = () => {
       const bar = slot.firstElementChild
@@ -50,11 +51,11 @@ export function TripProgress({ currentStep }) {
       observer?.disconnect()
       window.removeEventListener('resize', measure)
     }
-  }, [])
+  }, [vertical])
 
   useEffect(() => {
     const slot = slotRef.current
-    if (!slot) return
+    if (!slot || vertical) return
 
     let frame = 0
     const update = () => {
@@ -76,7 +77,46 @@ export function TripProgress({ currentStep }) {
       window.removeEventListener('resize', onScroll)
       if (frame) cancelAnimationFrame(frame)
     }
-  }, [])
+  }, [vertical])
+
+  if (vertical) {
+    return (
+      <div className="trip-progress-rail">
+        <nav className="trip-progress-vertical" aria-label="Trip planning progress">
+          <div className="vertical-progress-head">
+            <strong>
+              Step {currentStep} of {TRIP_STEPS.length}
+            </strong>
+            <small>{currentStepData.title}</small>
+          </div>
+          <ol className="vertical-progress-steps">
+            {TRIP_STEPS.map((step, index) => {
+              const stepNumber = index + 1
+              const isCurrent = stepNumber === currentStep
+              const isComplete = stepNumber < currentStep
+
+              return (
+                <li
+                  key={step.title}
+                  className={[isComplete ? 'complete' : '', isCurrent ? 'current' : '']
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  <Link to={step.to} aria-current={isCurrent ? 'step' : undefined}>
+                    <span>{isComplete ? '✓' : stepNumber}</span>
+                    <div>
+                      <strong>{step.title}</strong>
+                      <small>{step.description}</small>
+                    </div>
+                  </Link>
+                </li>
+              )
+            })}
+          </ol>
+        </nav>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -89,71 +129,50 @@ export function TripProgress({ currentStep }) {
         style={floating ? { left: `${box.left}px`, width: `${box.width}px` } : undefined}
         aria-label="Trip planning progress"
       >
-      <div className="progress-summary">
-        <div>
-          <span>YOUR PROGRESS</span>
-
+        <div className="progress-summary">
           <strong>
             Step {currentStep} of {TRIP_STEPS.length}
           </strong>
+          <small>{currentStepData.title}</small>
         </div>
 
-        <small>
-          Current step: <b>{currentStepData.title}</b>
-        </small>
-      </div>
+        <ol className="progress-steps">
+          {TRIP_STEPS.map((step, index) => {
+            const stepNumber = index + 1
+            const isCurrent = stepNumber === currentStep
+            const isComplete = stepNumber < currentStep
 
-      <div
-        className="progress-track"
-        role="progressbar"
-        aria-label={`Step ${currentStep} of ${TRIP_STEPS.length}: ${currentStepData.title}`}
-        aria-valuemin={1}
-        aria-valuemax={TRIP_STEPS.length}
-        aria-valuenow={currentStep}
-      >
-        <span className="progress-fill" style={{ width: `${progressPercentage}%` }} />
-      </div>
-
-      <ol className="progress-steps">
-        {TRIP_STEPS.map((step, index) => {
-          const stepNumber = index + 1
-          const isCurrent = stepNumber === currentStep
-          const isComplete = stepNumber < currentStep
-
-          let status = 'Up next'
-
-          if (isComplete) {
-            status = 'Completed'
-          }
-
-          if (isCurrent) {
-            status = 'Current step'
-          }
-
-          return (
-            <li
-              key={step.title}
-              className={[isComplete ? 'complete' : '', isCurrent ? 'current' : '']
-                .filter(Boolean)
-                .join(' ')}
-            >
-              <Link
-                to={step.to}
-                className="progress-step"
-                title={step.description}
-                aria-current={isCurrent ? 'step' : undefined}
+            return (
+              <li
+                key={step.title}
+                className={[isComplete ? 'complete' : '', isCurrent ? 'current' : '']
+                  .filter(Boolean)
+                  .join(' ')}
               >
-                <span>{stepNumber}</span>
-
-                <div>
-                  <small>{status}</small>
+                <Link
+                  to={step.to}
+                  className="progress-step"
+                  title={step.description}
+                  aria-current={isCurrent ? 'step' : undefined}
+                >
+                  <span>{isComplete ? '✓' : stepNumber}</span>
                   <strong>{step.title}</strong>
-                </div>
-              </Link>
-            </li>
-          )
-        })}
-      </ol>
+                </Link>
+              </li>
+            )
+          })}
+        </ol>
+
+        <div
+          className="progress-track"
+          role="progressbar"
+          aria-label={`Step ${currentStep} of ${TRIP_STEPS.length}: ${currentStepData.title}`}
+          aria-valuemin={1}
+          aria-valuemax={TRIP_STEPS.length}
+          aria-valuenow={currentStep}
+        >
+          <span className="progress-fill" style={{ width: `${progressPercentage}%` }} />
+        </div>
       </section>
     </div>
   )

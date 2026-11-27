@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Navbar from './components/common/Navbar.jsx'
 import Footer from './components/common/Footer.jsx'
 import HomePage from './pages/HomePage.jsx'
@@ -7,6 +7,7 @@ import ResultsPage from './pages/ResultsPage.jsx'
 import SelectedPlanPage from './pages/SelectedPlanPage.jsx'
 import WelcomePage from './pages/WelcomePage.jsx'
 import MyTripsPage from './pages/MyTripsPage.jsx'
+import SignInPage from './pages/SignInPage.jsx'
 
 function ScrollToTop() {
   const { pathname, search } = useLocation()
@@ -18,10 +19,28 @@ function ScrollToTop() {
   return null
 }
 
+function AuthRequiredRedirect() {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  useEffect(() => {
+    const onRequired = () => {
+      if (location.pathname !== '/signin') {
+        navigate('/signin', { state: { from: location.pathname + location.search } })
+      }
+    }
+    window.addEventListener('tpva-auth-required', onRequired)
+    return () => window.removeEventListener('tpva-auth-required', onRequired)
+  }, [location.pathname, location.search, navigate])
+
+  return null
+}
+
 function Shell() {
   return (
     <div className="shell">
       <ScrollToTop />
+      <AuthRequiredRedirect />
       <Navbar />
       <main className="main" id="main-content" tabIndex={-1}>
         <Outlet />
@@ -41,6 +60,7 @@ export default function App() {
         <Route path="/result" element={<Navigate to="/results" replace />} />
         <Route path="/selected" element={<SelectedPlanPage />} />
         <Route path="/my-trips" element={<MyTripsPage />} />
+        <Route path="/signin" element={<SignInPage />} />
         <Route path="/describe" element={<Navigate to="/" replace />} />
         <Route path="/describe/*" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

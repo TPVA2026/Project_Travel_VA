@@ -266,29 +266,17 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Optional describe step: message icon, white textarea with example placeholder, sent when non-empty.
     assertStep(4);
     assert.equal(doc.querySelector("#request-step-4 h2").textContent, "Is there anything else you’d like to describe?");
-    // Older answers collapse so the current question stays on screen.
-    const threadToggle = doc.querySelector(".request-thread-toggle");
-    assert.ok(threadToggle);
-    assert.equal(threadToggle.getAttribute("aria-expanded"), "false");
-    assert.equal(threadToggle.getAttribute("aria-controls"), "request-thread-list");
-    assert.equal(threadToggle.textContent.trim(), "Show all answers");
-    assert.match(doc.querySelector(".request-thread-summary").textContent, /Hue/);
-    assert.equal(doc.querySelectorAll(".request-thread-item").length, 1, "Only the latest answer stays visible");
-    assert.match(doc.querySelector(".request-thread-item").textContent, /What kind of trip should we prioritize/);
-    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Where are you traveling")), false);
-    await click("Show all answers");
-    assert.equal(threadToggle.getAttribute("aria-expanded"), "true");
-    assert.equal(threadToggle.textContent.trim(), "Hide");
-    assert.equal(doc.querySelector(".request-thread-summary"), null);
-    const expandedItems = [...doc.querySelectorAll(".request-thread-item")];
-    assert.equal(expandedItems.length, 4);
-    assert.ok(expandedItems.some(node => node.textContent.includes("Where are you traveling")));
-    const placesItem = expandedItems.find(node => node.textContent.includes("Where are you traveling"));
+    // Every earlier answer stays visible in the chat thread; no collapse control.
+    const threadItems = [...doc.querySelectorAll(".request-thread-item")];
+    assert.equal(threadItems.length, 4);
+    assert.equal(doc.querySelector(".request-thread-toggle"), null, "The chat thread has no hide control");
+    assert.ok(threadItems.some(node => node.textContent.includes("Where are you traveling")));
+    const placesItem = threadItems.find(node => node.textContent.includes("Where are you traveling"));
     await actOn(() => placesItem.click());
-    assertStep(0, "An expanded thread item still opens that answer for editing");
+    assertStep(0, "A thread item still opens that answer for editing");
     await click("Next");
     assertStep(4, "Thread edit from the describe step returns to describe");
-    assert.equal(doc.querySelector(".request-thread-toggle").getAttribute("aria-expanded"), "false", "The thread collapses again on the returned step");
+    assert.equal(doc.querySelectorAll(".request-thread-item").length, 4, "All answers remain visible after editing");
     assert.equal(doc.querySelector("#request-step-4 .request-optional").textContent, "Optional");
     assert.equal(doc.getElementById("request-step-4-hint").textContent, "Food, transport, interests, your group or travel limits.");
     assert.equal(button("Skip for now"), undefined);
@@ -357,7 +345,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     // Editing an earlier thread answer returns to the question we left, not to review or the next step.
     const threadItem = [...doc.querySelectorAll(".request-thread-item")].find(node => node.textContent.includes("Where are you traveling"));
     assert.ok(threadItem);
-    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Who is going")), false, "Later answers stay out of the thread");
+    assert.equal([...doc.querySelectorAll(".request-thread-item")].some(node => node.textContent.includes("Who is going")), true, "Every earlier answer stays in the thread");
     await actOn(() => threadItem.click());
     assertStep(0);
     assert.equal(button("Back to review"), undefined);
