@@ -50,3 +50,12 @@ def get_current_user(
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(status_code=401, detail="Authentication required")
     return verify_google_token(credentials.credentials)
+
+
+def get_optional_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
+) -> AuthenticatedUser | None:
+    if credentials is None:
+        return None
+
+    return get_current_user(credentials)

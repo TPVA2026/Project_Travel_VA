@@ -25,10 +25,10 @@ def provider_environment(monkeypatch):
 
 @pytest.fixture
 def sample():
-    dataset = json.loads((FIXTURES / "sample_dataset.json").read_text())
+    dataset = json.loads((FIXTURES / "generation_dataset.json").read_text())
     for place in dataset["attractions"] + dataset["dining"]:
         place["destinationId"] = "DN"
-    plan = json.loads((FIXTURES / "sample_response.json").read_text())["plan"]
+    plan = json.loads((FIXTURES / "generation_response.json").read_text())["plan"]
     request = {
         "travelPeriod": {"startDate": plan["days"][0]["date"]},
         "durationDays": len(plan["days"]), "departureLocation": "Ho Chi Minh City",

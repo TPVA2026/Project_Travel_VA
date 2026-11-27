@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { getPipelineIdentity } from '../services/pipelineSession.js'
+import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   collectPlaceIds,
@@ -7,7 +8,6 @@ import {
   getSelectedPlanId,
   indexPlaces,
   resolveDestinationName,
-  streamItineraryPipeline,
   selectPlan,
   clearSelectedPlan,
   candidateStatusLabel,
@@ -24,6 +24,12 @@ import ErrorMessage from '../components/common/ErrorMessage.jsx'
 import Fireworks from '../components/common/Fireworks.jsx'
 import Icon from '../components/common/Icon.jsx'
 import { useAuth } from '../auth/AuthContext.jsx'
+
+import {
+  getPipelineSession,
+  startPipelineSession,
+  subscribePipelineSession,
+} from '../services/pipelineSession.js'
 
 const REQUEST_KEY = 'tpva-travel-request'
 const PLAN_KEY = 'tpva-ai-plan'
@@ -263,7 +269,6 @@ export default function ResultsPage() {
   const [celebrate, setCelebrate] = useState(false)
   const [saveError, setSaveError] = useState(null)
   const [actionNotice, setActionNotice] = useState(null)
-  const startedRequestRef = useRef(null)
 
   useEffect(() => {
     if (!actionNotice || actionNotice.kind === 'warning') return undefined
@@ -271,42 +276,11 @@ export default function ResultsPage() {
     return () => window.clearTimeout(timer)
   }, [actionNotice])
 
-  const loadAiPlan = useCallback(async () => {
-    if (!pendingRequest) return
-    const requestKey = JSON.stringify(pendingRequest)
-    setAiLoading(true)
-    setAiError(null)
-    setStreamProgress(null)
-    try {
-      const body = await streamItineraryPipeline(pendingRequest, {
-        count: PIPELINE_MAX_CANDIDATES,
-        onEvent: (event) => {
-          if (event.type === 'progress') setStreamProgress({
-            candidateIndex: event.candidateIndex,
-            requestedCount: event.requestedCount,
-          })
-          if (event.type === 'candidate') {
-            setPipeline((current) => ({
-              pipelineStatus: 'GENERATING',
-              generator: 'ai',
-              request: pendingRequest,
-              candidates: [...(current?.candidates || []), event.candidate],
-              ranking: { ranked: [], unscored: [], excluded: [] },
-              warnings: [],
-            }))
-          }
-        },
-      })
-      sessionStorage.setItem(PLAN_KEY, JSON.stringify({ requestKey, pipeline: body }))
-      setPipeline(body)
-    } catch (err) {
-      setAiError(err)
-      // Preserve already generated candidates if a later request fails.
-    } finally {
-      setAiLoading(false)
-      setStreamProgress(null)
-    }
-  }, [pendingRequest])
+  const [generationAttempt, setGenerationAttempt] = useState(0)
+
+  const loadAiPlan = useCallback(() => {
+    setGenerationAttempt(value => value + 1)
+  }, [])
 
   const aiCandidates = pipeline?.candidates || []
 
@@ -341,24 +315,43 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (!pendingRequest) return
+
     const requestKey = JSON.stringify(pendingRequest)
-    // React StrictMode re-runs effects in development; without this guard the
-    // assistant would generate a whole extra batch of candidates.
-    if (startedRequestRef.current === requestKey) return
-    startedRequestRef.current = requestKey
-    try {
-      const saved = JSON.parse(sessionStorage.getItem(PLAN_KEY) || 'null')
-      const cached = saved?.requestKey === requestKey ? migrateCachedPipeline(saved) : null
-      if (cached) {
-        setPipeline(cached)
-        setAiLoading(false)
-        return
+
+    let session = getPipelineSession(pendingRequest)
+
+    if (generationAttempt === 0 && !session) {
+      try {
+        const saved = JSON.parse(
+          sessionStorage.getItem(PLAN_KEY) || 'null'
+        )
+
+        const cached = saved?.requestKey === requestKey &&
+          saved?.identity === getPipelineIdentity(pendingRequest)
+          ? migrateCachedPipeline(saved)
+          : null
+
+        if (cached && cached.pipelineStatus !== 'GENERATING') {
+          setPipeline(cached)
+          setAiLoading(false)
+          return
+        }
+      } catch {
+        // Ignore invalid cache.
       }
-    } catch {
-      // A bad cache just means we ask again.
     }
-    loadAiPlan()
-  }, [pendingRequest, loadAiPlan])
+
+    if (!session || (generationAttempt > 0 && !session.loading)) {
+      session = startPipelineSession(pendingRequest)
+    }
+
+    return subscribePipelineSession(session, current => {
+      setPipeline(current.pipeline)
+      setAiLoading(current.loading)
+      setAiError(current.error)
+      setStreamProgress(current.progress)
+    })
+  }, [pendingRequest, generationAttempt, user?.id])
 
   // Sync selection state if modified elsewhere
   useEffect(() => {

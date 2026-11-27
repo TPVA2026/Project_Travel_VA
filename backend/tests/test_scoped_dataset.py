@@ -76,6 +76,43 @@ def test_destination_list_and_validation_open_manifest_only(monkeypatch):
 def test_generate_evaluate_rank_pipeline_and_place_names_never_read_other_folders(monkeypatch):
     fixture = json.loads((Path(__file__).parent / "fixtures/acceptance/hue_scenarios.json").read_text(encoding="utf-8"))
     body = next(s["body"] for s in fixture["scenarios"] if s["id"] == "S03_valid_3day_evaluate")
+
+    # Four distinct sightseeing places per day.
+    routes = [
+        [3, 5, 8, 9],
+        [1, 2, 4, 10],
+        [6, 7, 8, 9],
+    ]
+
+    prices = {1: 150000, 2: 50000, 3: 200000}
+
+    for day, route in zip(body["plan"]["days"], routes):
+        day["activities"] = []
+        day["travelLegs"] = []
+
+        for i, number in enumerate(route):
+            place_id = f"ATTR_H_{number:02d}"
+            hour = 13 + i
+
+            day["activities"].append({
+                "activityId": f"d{day['dayNumber']}-a{i+1}",
+                "placeId": place_id,
+                "type": "sightseeing",
+                "startTime": f"{hour:02d}:00",
+                "endTime": f"{hour:02d}:30",
+                "estimatedCostVnd": prices.get(number, 0),
+                "costStatus": "UNVERIFIED",
+                "reason": "Acceptance fixture",
+            })
+
+            if i > 0:
+                day["travelLegs"].append({
+                    "fromPlaceId": f"ATTR_H_{route[i-1]:02d}",
+                    "toPlaceId": place_id,
+                    "durationMin": None,
+                    "distanceKm": None,
+                })
+
     monkeypatch.setattr(itinerary_generator, "request_text", Mock(return_value=json.dumps(body["plan"])))
     monkeypatch.setenv("OSRM_ROUTING_ENABLED", "false")
     opened = watch_hue_files(monkeypatch)

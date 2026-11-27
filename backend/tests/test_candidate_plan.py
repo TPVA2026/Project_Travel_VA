@@ -44,6 +44,34 @@ GOOD = priced_plan(act("A1", "DN-ATT-001", "sightseeing", "09:00", "10:00", 1000
                    act("A2", "DN-DIN-001", "dining", "11:00", "12:00", 50000, "KNOWN"))
 
 
+
+# Additional sightseeing places for the daily minimum.
+for i in range(2, 5):
+    place_id = f"DN-ATT-{i:03d}"
+
+    PRICED["attractions"].append({
+        "id": place_id,
+        "destinationId": "DN",
+        "name": f"Test attraction {i}",
+        "durationMin": 60,
+        "priceVnd": 0,
+        "openHours": None,
+        "source": "M2-VERIFIED",
+    })
+
+    GOOD["days"][0]["activities"].append(
+        act(
+            f"A{i + 1}",
+            place_id,
+            "sightseeing",
+            f"{12 + i}:00",
+            f"{13 + i}:00",
+            0,
+            "KNOWN",
+        )
+    )
+
+
 # ---- Pydantic is the gate ----
 @pytest.mark.parametrize("p", [sample, live])
 def test_pydantic_accepts_contract_plans_and_roundtrips_unchanged(p):

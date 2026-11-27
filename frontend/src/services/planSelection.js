@@ -81,6 +81,7 @@ export function resetCurrentTrip() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       window.sessionStorage.removeItem('tpva-travel-request')
       window.sessionStorage.removeItem('tpva-ai-plan')
+      window.sessionStorage.removeItem('tpva-generation-id')
     }
     if (typeof window !== 'undefined' && window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('tpva-trip-saved'))

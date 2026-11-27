@@ -23,13 +23,13 @@ ROOT = Path(__file__).resolve().parents[2]
 FIX = Path(__file__).parent / "fixtures"
 load = lambda p: json.loads(p.read_text(encoding="utf-8"))
 
-dataset = load(FIX / "sample_dataset.json")
+dataset = load(FIX / "generation_dataset.json")
 # Explicit relationships for this single-destination TEST fixture only.
 # Production data is never assigned mappings by the integration layer.
 for fixture_place in [*dataset["attractions"], *dataset["dining"]]:
     fixture_place["destinationId"] = "DN"
 request = load(FIX / "travel_request.json")
-plan = load(FIX / "sample_response.json")["plan"]
+plan = load(FIX / "generation_response.json")["plan"]
 NOSLEEP = lambda _s: None
 
 

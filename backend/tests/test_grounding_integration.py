@@ -18,7 +18,7 @@ FIX = Path(__file__).parent / "fixtures"
 
 @pytest.fixture
 def data():
-    ds = json.loads((FIX / "sample_dataset.json").read_text())
+    ds = json.loads((FIX / "generation_dataset.json").read_text())
     # Explicit test-only relationships; production records are never assigned mappings.
     for place in ds["attractions"] + ds["dining"]:
         place["destinationId"] = "DN"
@@ -27,7 +27,7 @@ def data():
 
 @pytest.fixture
 def plan():
-    return json.loads((FIX / "sample_response.json").read_text())["plan"]
+    return json.loads((FIX / "generation_response.json").read_text())["plan"]
 
 
 @pytest.mark.parametrize("field", ["id", "name", "city", "city_name"])

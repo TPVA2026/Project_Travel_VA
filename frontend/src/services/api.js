@@ -1,3 +1,4 @@
+import { getTokenUser as getPipelineUser } from './authSession.js';
 // TODO(M6): API client for the backend. The browser must never hold third-party API credentials.
 export const API_BASE = import.meta.env?.VITE_API_BASE ?? "/api";
 
@@ -123,6 +124,20 @@ function readCachedPipeline() {
     const raw = window.sessionStorage.getItem(PIPELINE_CACHE_KEY);
     if (!raw) return null;
     const saved = JSON.parse(raw);
+    if (saved?.identity) {
+      const request = JSON.parse(
+        sessionStorage.getItem("tpva-travel-request") || "null"
+      );
+
+      const identity = JSON.stringify([
+        request,
+        sessionStorage.getItem("tpva-generation-id"),
+        getPipelineUser()?.id || null,
+      ]);
+
+      if (saved.identity !== identity) return null;
+    }
+
     if (saved?.pipeline) return saved.pipeline;
     if (saved?.plan) {
       return {
@@ -207,6 +222,11 @@ export async function fetchPlanById(id) {
 export function saveTripForResults(payload) {
   sessionStorage.setItem("tpva-travel-request", JSON.stringify(payload));
   sessionStorage.removeItem("tpva-ai-plan");
+  sessionStorage.setItem(
+    "tpva-generation-id",
+    globalThis.crypto?.randomUUID?.() ||
+      `${Date.now()}-${Math.random()}`
+  );
   clearSelectedPlan();
   if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
     window.dispatchEvent(new window.CustomEvent("tpva-trip-saved"));
@@ -979,9 +999,13 @@ export async function validateTravelRequest(payload) {
 
 /** Stream fully generated and evaluated candidates, one at a time. */
 export async function streamItineraryPipeline(payload, opts = {}) {
+  const token = getAuthToken()
   const response = await fetch(apiUrl('/itineraries/pipeline-stream'), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({ request: payload, count: clampCandidateCount(opts.count) }),
     signal: opts.signal,
   })
