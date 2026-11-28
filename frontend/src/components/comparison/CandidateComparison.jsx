@@ -278,6 +278,7 @@ function CandidateCard({
                   src={image}
                   alt={`${destination} landscape`}
                   loading="lazy"
+                  decoding="async"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none'
                   }}
@@ -386,6 +387,7 @@ function CandidateCard({
                     src={image}
                     alt={`${destination} landscape`}
                     loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none'
                     }}

@@ -27,12 +27,30 @@ const TRIP_EXAMPLES = [
   },
 ]
 
+function resolveGuestReturnPath(fromState) {
+  if (
+    typeof fromState === 'string' &&
+    fromState.startsWith('/') &&
+    !fromState.startsWith('/signin') &&
+    !fromState.startsWith('/my-trips')
+  ) {
+    return fromState
+  }
+  try {
+    if (window.sessionStorage?.getItem('tpva-ai-plan')) return '/results'
+  } catch {
+    // Ignore storage errors and fall back to planner home.
+  }
+  return '/'
+}
+
 export default function SignInPage() {
-  const { user, authError, clearAuthError, renderGoogleButton } = useAuth()
+  const { user, isGoogleConfigured, authError, clearAuthError, renderGoogleButton } = useAuth()
   const googleBtnRef = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
   const redirectTo = location.state?.from || '/my-trips'
+  const guestReturnTo = resolveGuestReturnPath(location.state?.from)
 
   useEffect(() => {
     if (user) navigate(redirectTo, { replace: true })
@@ -40,6 +58,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     clearAuthError()
+    if (!isGoogleConfigured) return undefined
     const frameWidth = googleBtnRef.current?.parentElement?.clientWidth || 360
     const buttonWidth = Math.max(280, Math.min(400, frameWidth))
     const cleanup = renderGoogleButton(googleBtnRef.current, {
@@ -50,7 +69,7 @@ export default function SignInPage() {
       text: 'continue_with',
     })
     return cleanup
-  }, [clearAuthError, renderGoogleButton])
+  }, [clearAuthError, isGoogleConfigured, renderGoogleButton])
 
   return (
     <section className="signin-page" aria-labelledby="signin-title">
@@ -102,18 +121,39 @@ export default function SignInPage() {
             <p className="signin-error" role="alert">{authError}</p>
           )}
 
+          {!isGoogleConfigured && (
+            <p className="signin-info-note" role="status">
+              Google Sign-In is currently unavailable in this preview. You can keep planning and
+              comparing itineraries — your chosen trip stays saved in this browser.
+            </p>
+          )}
+
           <div className="signin-action">
             <div className="signin-google-frame">
-              <div ref={googleBtnRef} className="signin-google-btn" aria-label="Continue with Google" />
+              {isGoogleConfigured ? (
+                <div ref={googleBtnRef} className="signin-google-btn" aria-label="Continue with Google" />
+              ) : (
+                <button type="button" className="signin-google-unavailable" disabled>
+                  Continue with Google (Unavailable)
+                </button>
+              )}
             </div>
-            <p className="signin-note">A secure Google window will open. We never see your password.</p>
+            <p className="signin-note">
+              {isGoogleConfigured
+                ? 'A secure Google window will open. We never see your password.'
+                : 'Account sync requires Google Sign-In when enabled.'}
+            </p>
           </div>
 
           <div className="signin-divider" role="separator"><span>or</span></div>
 
           <div className="signin-action">
-            <Link to="/" className="signin-guest-btn">Continue planning without an account</Link>
-            <p className="signin-note">You can still compare plans. Sign in when you want to save to My Trips.</p>
+            <Link to={guestReturnTo} className="signin-guest-btn">Continue planning without an account</Link>
+            <p className="signin-note">
+              {guestReturnTo === '/results' || guestReturnTo.startsWith('/selected')
+                ? 'Return to your generated itineraries. Selected plans stay saved in this browser.'
+                : 'You can still compare plans. Sign in when you want to sync to My Trips.'}
+            </p>
           </div>
 
           <p className="signin-legal">

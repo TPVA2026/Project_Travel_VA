@@ -4,7 +4,7 @@ import Icon from './Icon.jsx'
 const TRIP_LINKS = [
   { to: '/', label: 'Plan a trip' },
   { to: '/results', label: 'Compare plans' },
-  { to: '/selected', label: 'Review your trip' },
+  { to: '/selected', label: 'Your itinerary' },
   { to: '/my-trips', label: 'My Trips' },
 ]
 

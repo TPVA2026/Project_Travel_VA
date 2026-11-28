@@ -9,6 +9,7 @@ import {
 
 const anonymousAuth = {
   user: null,
+  isGoogleConfigured: false,
   requestSignIn: () => window.dispatchEvent(new window.CustomEvent('tpva-auth-required')),
   signOut: () => {},
   authError: null,
@@ -66,7 +67,9 @@ export function AuthProvider({ children }) {
   const renderGoogleButton = useCallback((container, options = {}) => {
     if (!container) return () => {}
     if (!clientId) {
-      setAuthError('Google Sign-In is not configured. Set VITE_GOOGLE_CLIENT_ID.')
+      if (import.meta.env.DEV) {
+        console.warn('Google Sign-In is disabled: VITE_GOOGLE_CLIENT_ID is not set.')
+      }
       return () => {}
     }
     let cancelled = false
@@ -108,7 +111,17 @@ export function AuthProvider({ children }) {
   }, [clientId])
 
   return (
-    <AuthContext.Provider value={{ user, requestSignIn, signOut, authError, clearAuthError, renderGoogleButton }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isGoogleConfigured: Boolean(clientId),
+        requestSignIn,
+        signOut,
+        authError,
+        clearAuthError,
+        renderGoogleButton,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

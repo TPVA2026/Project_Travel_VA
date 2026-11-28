@@ -83,14 +83,24 @@ function days(count) {
   return `${count} ${count === 1 ? "day" : "days"}`;
 }
 
-function Field({ label, name, error, bad, required, className, children }) {
+function Field({ label, name, error, bad, required, optional, className, children }) {
   const wrong = Boolean(bad?.[name]);
   return (
     <div className={["field", className].filter(Boolean).join(" ")}>
-      <label htmlFor={name}>
-        {label}
-        {required && <span className="req" aria-hidden="true">*</span>}
-      </label>
+      {optional ? (
+        <div className="field-label-row">
+          <label htmlFor={name}>
+            {label}
+            {required && <span className="req" aria-hidden="true">*</span>}
+          </label>
+          <span className="field-optional">Optional</span>
+        </div>
+      ) : (
+        <label htmlFor={name}>
+          {label}
+          {required && <span className="req" aria-hidden="true">*</span>}
+        </label>
+      )}
       {children}
       {error && (
         <span className={wrong ? "error" : undefined} id={`${name}-error`}>{error}</span>
@@ -265,8 +275,9 @@ export default function TravelForm() {
     const section = formRef.current?.querySelector(`[data-step="${focusRequest.step}"]`);
     const wanted = focusRequest.name ? CONTROL_NAME[focusRequest.name] ?? focusRequest.name : null;
     const control = wanted && [...(section?.querySelectorAll(`[data-error-for="${wanted}"], [name="${wanted}"]`) ?? [])].find(node => node.type !== "hidden" && !node.disabled);
-    (control || section?.querySelector("[data-step-focus]:not([disabled])"))?.focus();
-    if (typeof section?.scrollIntoView === "function") section.scrollIntoView({ block: "nearest" });
+    (control || section?.querySelector("[data-step-focus]:not([disabled])"))?.focus({ preventScroll: true });
+    const scrollTarget = formRef.current?.querySelector(".request-topbar") || formRef.current || section;
+    if (typeof scrollTarget?.scrollIntoView === "function") scrollTarget.scrollIntoView({ block: "nearest" });
   }, [focusRequest]);
 
   useEffect(() => {
@@ -550,7 +561,7 @@ export default function TravelForm() {
               <Field label="Departing from" name="departureLocation" error={errors.departureLocation} bad={bad}>
                 <ProvinceInput id="departureLocation" name="departureLocation" maxLength={200} defaultValue={initialData?.values.departureLocation ?? ""} placeholder="e.g. Hồ Chí Minh" required data-step-focus popularHeading="Popular cities" onPick={value => setControl("departureLocation", value)} {...described("departureLocation", null, "request-tile-input")} />
               </Field>
-              <Field label="Destination" name="destination" error={errors.destination} bad={bad}>
+              <Field label="Destination" name="destination" error={errors.destination} bad={bad} optional>
                 <ProvinceInput id="destination" name="destination" defaultValue={initialData?.values.destination ?? ""} placeholder="e.g. Huế" maxLength={200} onPick={value => setControl("destination", value)} {...described("destination", "destination-hint", "request-tile-input")} />
                 <p className="visually-hidden" id="destination-hint">{DESTINATION_HINT}</p>
               </Field>

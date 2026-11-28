@@ -40,7 +40,7 @@ export default function WelcomePage() {
           </p>
           <h1 className="welcome-title">
             A trip that fits your{' '}
-            <span className="welcome-highlight">dates, budget, and pace.</span>
+            <span className="welcome-highlight">dates, budget, and style.</span>
           </h1>
           <p className="welcome-lead">
             Tell us the rough shape of your trip. We turn it into a day-by-day plan with known
@@ -77,7 +77,7 @@ export default function WelcomePage() {
               <li>
                 <span className="welcome-flow-index">01</span>
                 <strong>Tell us the trip</strong>
-                <small>Dates, budget, pace</small>
+                <small>Dates, budget, style</small>
               </li>
               <li>
                 <span className="welcome-flow-index">02</span>
@@ -96,7 +96,7 @@ export default function WelcomePage() {
         <div className="welcome-stage">
           <Link to="/" className="welcome-plan-card" onClick={handleStartPlanning}>
             <div className="welcome-plan-media">
-              <img src={previewImage} alt="Huế landscape" />
+              <img src={previewImage} alt="Huế landscape" decoding="async" />
               <span className="welcome-plan-badge">
                 <Icon name="check" size={13} />
                 Backend checked
@@ -129,7 +129,7 @@ export default function WelcomePage() {
                 <li>
                   <span className="welcome-plan-day">Day 1</span>
                   <span className="welcome-plan-activity">Arrival and neighbourhood walk</span>
-                  <span className="welcome-plan-time">Your pace</span>
+                  <span className="welcome-plan-time">Your style</span>
                 </li>
                 <li>
                   <span className="welcome-plan-day">Day 2</span>

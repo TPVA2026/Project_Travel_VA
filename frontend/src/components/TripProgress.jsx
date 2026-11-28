@@ -104,6 +104,10 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
     let frame = 0
     const update = () => {
       frame = 0
+      if (window.matchMedia?.('(max-width: 1040px)')?.matches) {
+        setFloating(false)
+        return
+      }
       const bar = slot.firstElementChild
       const offset = bar ? parseFloat(window.getComputedStyle(bar).top) || 0 : 0
       setFloating(slot.getBoundingClientRect().top <= offset)

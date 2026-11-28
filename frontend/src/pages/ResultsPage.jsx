@@ -9,6 +9,7 @@ import {
   indexPlaces,
   resolveDestinationName,
   selectPlan,
+  setSelectedPlan,
   clearSelectedPlan,
   candidateStatusLabel,
   PIPELINE_MAX_CANDIDATES,
@@ -126,6 +127,9 @@ function RequestSummary({ request }) {
   const chips = []
   if (request.departureLocation) {
     chips.push({ icon: 'mapPin', label: `From ${request.departureLocation}` })
+  }
+  if (request.preferences?.destination) {
+    chips.push({ icon: 'compass', label: `To ${request.preferences.destination}` })
   }
   const period = periodLabel(request.travelPeriod)
   if (period) chips.push({ icon: 'calendar', label: period })
@@ -251,7 +255,7 @@ function migrateCachedPipeline(saved) {
 }
 
 export default function ResultsPage() {
-  const { user } = useAuth()
+  const { user, isGoogleConfigured } = useAuth()
   const navigate = useNavigate()
   const [selectedPlanId, setSelectedPlanId] = useState(() => getSelectedPlanId())
   const [savedTripIds, setSavedTripIds] = useState(() => {
@@ -370,14 +374,6 @@ export default function ResultsPage() {
       setActionNotice({ kind: 'info', message: 'Removed this plan from your trip.' })
       return
     }
-    if (!user) {
-      setSaveError(null)
-      setActionNotice({ kind: 'warning', message: 'You need to sign in to save this plan to My Trips.' })
-      window.setTimeout(() => {
-        navigate('/signin', { state: { from: '/results' } })
-      }, 3000)
-      return
-    }
     const plan = candidate.plan || {}
     const resolvedDestination = resolveDestinationName(plan.destinationId, placesById)
     const destination =
@@ -403,6 +399,19 @@ export default function ResultsPage() {
       savedTripId: savedTripIds[id],
     }
     setSaveError(null)
+    if (!user) {
+      setSelectedPlan(savedPlan)
+      setSelectedPlanId(id)
+      setCelebrate(true)
+      setActionNotice({
+        kind: 'success',
+        message: isGoogleConfigured
+          ? 'Selected for this browser session. Sign in anytime to sync to My Trips.'
+          : 'Selected and saved in this browser.',
+        showSignInLink: isGoogleConfigured,
+      })
+      return
+    }
     try {
       const result = await selectPlan(savedPlan)
       setSavedTripIds((current) => ({ ...current, [id]: result.trip.id }))
@@ -430,7 +439,7 @@ export default function ResultsPage() {
           <h1 className="results-title">Choose the itinerary that fits your trip</h1>
           <p className="results-subtitle muted">
             Explore recommended destinations and itineraries. Compare the details and choose the
-            plan that fits your pace.
+            plan that fits your trip.
           </p>
         </div>
       </header>
@@ -440,6 +449,11 @@ export default function ResultsPage() {
           <div className={`results-toast-card results-toast-card--${actionNotice.kind}`}>
             <Icon name={actionNotice.kind === 'success' ? 'check' : 'info'} size={18} />
             <span className="results-toast-message">{actionNotice.message}</span>
+            {actionNotice.showSignInLink && (
+              <Link to="/signin" state={{ from: '/results' }} className="results-toast-link">
+                Sign in
+              </Link>
+            )}
             <button
               type="button"
               className="results-toast-close"

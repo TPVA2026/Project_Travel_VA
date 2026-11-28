@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { INTRO_AIRPLANE, INTRO_CLOUD, INTRO_TOTAL_MS } from './introAssets.js'
 
 function preload(src) {
@@ -25,11 +25,18 @@ export default function FlightIntro({ onDone }) {
     onDoneRef.current = onDone
   }, [onDone])
 
+  const finish = useCallback(() => {
+    if (doneRef.current) return
+    doneRef.current = true
+    document.body.classList.remove('intro-flying')
+    document.body.classList.remove('intro-playing')
+    onDoneRef.current?.()
+  }, [])
+
   useEffect(() => {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
     if (reduce) {
-      doneRef.current = true
-      onDoneRef.current?.()
+      finish()
       return undefined
     }
 
@@ -42,34 +49,45 @@ export default function FlightIntro({ onDone }) {
       started = true
       setIsFlying(true)
       document.body.classList.add('intro-flying')
-      timer = window.setTimeout(() => {
-        if (doneRef.current) return
-        doneRef.current = true
-        document.body.classList.remove('intro-flying')
-        onDoneRef.current?.()
-      }, INTRO_TOTAL_MS)
+      timer = window.setTimeout(finish, INTRO_TOTAL_MS)
     }
 
-    const fallback = window.setTimeout(start, 1600)
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        finish()
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    const fallback = window.setTimeout(start, 700)
     Promise.all([preload(INTRO_AIRPLANE), preload(INTRO_CLOUD)]).then(start)
 
     return () => {
       cancelled = true
+      window.removeEventListener('keydown', onKeyDown)
       window.clearTimeout(fallback)
       if (timer) window.clearTimeout(timer)
       document.body.classList.remove('intro-flying')
     }
-  }, [])
+  }, [finish])
 
   return (
-    <div className={`flight-intro${isFlying ? ' is-flying' : ''}`} aria-hidden="true">
-      <div className="flight-intro-sky" />
-      <div className="flight-intro-cloud">
+    <div className={`flight-intro${isFlying ? ' is-flying' : ''}`}>
+      <div className="flight-intro-sky" aria-hidden="true" />
+      <div className="flight-intro-cloud" aria-hidden="true">
         <img src={INTRO_CLOUD} alt="" draggable="false" />
       </div>
-      <div className="flight-intro-plane">
+      <div className="flight-intro-plane" aria-hidden="true">
         <img src={INTRO_AIRPLANE} alt="" draggable="false" />
       </div>
+      <button
+        type="button"
+        className="flight-intro-skip"
+        onClick={finish}
+        aria-label="Skip intro animation"
+      >
+        Skip intro
+      </button>
     </div>
   )
 }
