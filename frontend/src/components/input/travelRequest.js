@@ -5,6 +5,43 @@ export const INTERESTS = [
   ["relaxation", "Relaxation"],
 ];
 
+export const DEFAULT_TRIP_PACE = "balanced";
+
+export const TRIP_PACES = [
+  { value: "relaxed", label: "Relaxed", description: "Fewer stops, slower mornings" },
+  { value: "balanced", label: "Balanced", description: "Steady mix of sights & rest" },
+  { value: "packed", label: "Packed", description: "Fit more sights per day" },
+];
+
+const PACE_NOTE_PREFIX = /^Trip pace:\s*(Relaxed|Balanced|Packed)(?:\s*\([^)]*\))?\.?\s*/i;
+
+export function normalizeTripPace(value) {
+  const raw = String(value ?? "").trim().toLowerCase();
+  return TRIP_PACES.some((item) => item.value === raw) ? raw : DEFAULT_TRIP_PACE;
+}
+
+export function paceLabel(value) {
+  const normalized = normalizeTripPace(value);
+  return TRIP_PACES.find((item) => item.value === normalized)?.label || "Balanced";
+}
+
+export function formatPaceNote(value) {
+  const normalized = normalizeTripPace(value);
+  if (normalized === "relaxed") return "Trip pace: Relaxed (fewer stops, slower mornings).";
+  if (normalized === "packed") return "Trip pace: Packed (fit more sights per day).";
+  return "";
+}
+
+export function extractPaceFromRequirements(text) {
+  const raw = String(text ?? "");
+  const match = raw.match(PACE_NOTE_PREFIX);
+  if (!match) return { pace: DEFAULT_TRIP_PACE, cleanedText: raw };
+  return {
+    pace: normalizeTripPace(match[1]),
+    cleanedText: raw.replace(PACE_NOTE_PREFIX, "").trim(),
+  };
+}
+
 export const ADDITIONAL_REQUIREMENTS_MAX = 500;
 
 // Inclusive trip length the form allows. Backend schema only requires durationDays >= 1;
@@ -328,7 +365,13 @@ export function buildPayload(data, now = new Date()) {
     }
   }
 
-  const additionalRequirements = String(data.get("additionalRequirements") ?? "").trim();
+  const rawAdditional = String(data.get("additionalRequirements") ?? "").trim();
+  const paceNote = formatPaceNote(data.get("tripPace"));
+  let additionalRequirements = rawAdditional;
+  if (paceNote) {
+    const combined = rawAdditional ? `${paceNote}\n${rawAdditional}` : paceNote;
+    additionalRequirements = combined.slice(0, ADDITIONAL_REQUIREMENTS_MAX).trim();
+  }
   if (additionalRequirements) payload.additionalRequirements = additionalRequirements;
   return payload;
 }

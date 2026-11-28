@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, MAX_TRAVELERS, REVIEW_STEP, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors, localTodayIso, localYearMonth, addDaysIso, addYearsIso, addMonthsYm, startDateBounds, tripLimitHint, isValidTripDays, endDateFromLength, formatReturnLabel, resolveTripPeriod } from "./travelRequest.js";
+import { ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, MAX_TRAVELERS, REVIEW_STEP, TRIP_PACES, DEFAULT_TRIP_PACE, extractPaceFromRequirements, buildPayload, clientErrors, valueErrors, progressOf, normalizeBudgetInput, formatBudgetInput, inclusiveDays, isSoloTravelerCount, serverFieldErrors, localTodayIso, localYearMonth, addDaysIso, addYearsIso, addMonthsYm, startDateBounds, tripLimitHint, isValidTripDays, endDateFromLength, formatReturnLabel, resolveTripPeriod } from "./travelRequest.js";
 
 function form(entries) {
   const data = new FormData();
@@ -312,4 +312,20 @@ assert.equal(isSoloTravelerCount("1.5"), false);
   assert.equal(kept.budget.scope, "perPerson");
   const group = buildPayload(form({ ...valid, travelerCount: "2", budgetScope: "group" }));
   assert.equal(group.budget.scope, "group");
+}
+
+// Trip pace maps cleanly into additionalRequirements without adding unknown schema keys.
+{
+  assert.deepEqual(TRIP_PACES.map((item) => item.value), ["relaxed", "balanced", "packed"]);
+  assert.equal(DEFAULT_TRIP_PACE, "balanced");
+  const balanced = buildPayload(form({ ...valid, tripPace: "balanced" }));
+  assert.equal("additionalRequirements" in balanced, false);
+  const relaxed = buildPayload(form({ ...valid, tripPace: "relaxed" }));
+  assert.match(relaxed.additionalRequirements, /^Trip pace: Relaxed/);
+  const packed = buildPayload(form({ ...valid, tripPace: "packed", additionalRequirements: "Prefer morning museums." }));
+  assert.equal(packed.additionalRequirements, "Trip pace: Packed (fit more sights per day).\nPrefer morning museums.");
+  assert.deepEqual(extractPaceFromRequirements(packed.additionalRequirements), {
+    pace: "packed",
+    cleanedText: "Prefer morning museums.",
+  });
 }

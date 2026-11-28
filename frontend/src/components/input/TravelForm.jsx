@@ -4,7 +4,7 @@ import Icon from "../common/Icon.jsx";
 import { BusIllustration } from "../common/Illustrations.jsx";
 import ProvinceInput from "./ProvinceInput.jsx";
 import { saveTripForResults, validateTravelRequest } from "../../services/api";
-import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, MAX_TRAVELERS, tripLimitHint, startDateBounds, isValidTripDays, endDateFromLength, formatReturnLabel, formatBangkokDate, isIsoDate, MIN_BUDGET_VND, INTERESTS } from "./travelRequest";
+import { buildPayload, clientErrors, serverFieldErrors, valueErrors, progressOf, formatBudgetInput, normalizeBudgetInput, inclusiveDays, isSoloTravelerCount, ADDITIONAL_REQUIREMENTS_MAX, MAX_TRIP_DAYS, MAX_TRAVELERS, tripLimitHint, startDateBounds, isValidTripDays, endDateFromLength, formatReturnLabel, formatBangkokDate, isIsoDate, MIN_BUDGET_VND, INTERESTS, TRIP_PACES, DEFAULT_TRIP_PACE, paceLabel, extractPaceFromRequirements, localTodayIso, addDaysIso } from "./travelRequest";
 
 // The slider's standard range is 2,000,000..80,000,000 VND. It is not a limit on valid budget
 // input: a larger exact amount typed by hand widens the range so the slider can show it.
@@ -32,8 +32,37 @@ const FIELD_STEP = {
   travelerCount: PARTY,
   budgetAmount: PARTY, budgetScope: PARTY,
   interests: STYLE,
+  tripPace: STYLE,
   additionalRequirements: DESCRIBE,
 };
+const QUICK_EXAMPLES = [
+  {
+    id: "danang-2d",
+    label: "Try sample: Đà Nẵng · 2 days · 5M VND",
+    departureLocation: "Hồ Chí Minh",
+    destination: "Đà Nẵng",
+    offsetDays: 7,
+    durationDays: "2",
+    travelerCount: "2",
+    budgetAmount: 5_000_000,
+    budgetScope: "group",
+    interests: ["sightseeing", "relaxation"],
+    tripPace: "balanced",
+  },
+  {
+    id: "hue-3d",
+    label: "Huế · 3 days · 6M VND",
+    departureLocation: "Hồ Chí Minh",
+    destination: "Huế",
+    offsetDays: 10,
+    durationDays: "3",
+    travelerCount: "2",
+    budgetAmount: 6_000_000,
+    budgetScope: "group",
+    interests: ["culture", "sightseeing"],
+    tripPace: "relaxed",
+  },
+];
 // Shown on review when the destination is skipped; destinations are suggested downstream.
 export const NO_DESTINATION = "Not chosen. We'll suggest destinations based on your trip.";
 export const DESTINATION_HINT = "Skip it and we'll suggest destinations based on your trip.";
@@ -223,6 +252,7 @@ function hydrateFromSaved(saved) {
   const validAmount = Number.isSafeInteger(Number(rawAmount)) && Number(rawAmount) > 0;
   const amountNum = validAmount ? Number(rawAmount) : 0;
   const snapped = validAmount ? Math.max(MIN_BUDGET_VND, Math.floor(amountNum / 1000) * 1000) : MIN_BUDGET_VND;
+  const { pace, cleanedText } = extractPaceFromRequirements(saved.additionalRequirements);
   return {
     values: {
       departureLocation: String(saved.departureLocation ?? ""),
@@ -236,11 +266,12 @@ function hydrateFromSaved(saved) {
       interests: Array.isArray(saved.preferences?.interests)
         ? saved.preferences.interests.map(item => item?.type).filter(Boolean)
         : [],
+      tripPace: pace,
     },
     budgetSliderValue: snapped,
     budgetSliderMax: Math.max(BUDGET_SLIDER_MAX, amountNum),
     budgetIsSet: validAmount,
-    descriptionDraft: String(saved.additionalRequirements ?? ""),
+    descriptionDraft: cleanedText,
   };
 }
 
@@ -277,12 +308,21 @@ export default function TravelForm() {
     const control = wanted && [...(section?.querySelectorAll(`[data-error-for="${wanted}"], [name="${wanted}"]`) ?? [])].find(node => node.type !== "hidden" && !node.disabled);
     (control || section?.querySelector("[data-step-focus]:not([disabled])"))?.focus({ preventScroll: true });
     const scrollTarget = formRef.current?.querySelector(".request-topbar") || formRef.current || section;
-    if (typeof scrollTarget?.scrollIntoView === "function") scrollTarget.scrollIntoView({ block: "nearest" });
+    if (typeof scrollTarget?.scrollIntoView === "function") {
+      const clearance = typeof window !== "undefined" && window.matchMedia?.("(max-width: 1040px)")?.matches ? 80 : 88;
+      const rect = scrollTarget.getBoundingClientRect?.();
+      if (rect && rect.top < clearance) {
+        const reduced = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+        scrollTarget.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
+      } else {
+        scrollTarget.scrollIntoView({ block: "nearest" });
+      }
+    }
   }, [focusRequest]);
 
   useEffect(() => {
-    if (formKey > 0) formRef.current?.querySelector("#departureLocation")?.focus();
-  }, [formKey]);
+    if (formKey > 0 && step === PLACES) formRef.current?.querySelector("#departureLocation")?.focus();
+  }, [formKey, step]);
 
   useEffect(() => {
     const form = formRef.current;
@@ -316,7 +356,7 @@ export default function TravelForm() {
     setBad(wrong);
     setErrors(wrong);
     setValues({
-      ...Object.fromEntries(["departureLocation", "destination", "startDate", "endDate", "durationDays", "travelerCount", "budgetAmount", "budgetScope"].map(name => [name, String(data.get(name) ?? "")])),
+      ...Object.fromEntries(["departureLocation", "destination", "startDate", "endDate", "durationDays", "travelerCount", "budgetAmount", "budgetScope", "tripPace"].map(name => [name, String(data.get(name) ?? "")])),
       interests: data.getAll("interest"),
     });
     const amount = normalizeBudgetInput(data.get("budgetAmount"));
@@ -429,6 +469,45 @@ export default function TravelForm() {
     refresh(form, target.name === "budgetAmount");
   }
 
+  function applyExample(example) {
+    const startDate = addDaysIso(localTodayIso(), example.offsetDays);
+    const endDate = endDateFromLength(startDate, example.durationDays);
+    const formattedBudget = formatBudgetInput(String(example.budgetAmount));
+    const nextValues = {
+      departureLocation: example.departureLocation,
+      destination: example.destination,
+      startDate,
+      endDate,
+      durationDays: example.durationDays,
+      travelerCount: example.travelerCount,
+      budgetAmount: formattedBudget,
+      budgetScope: example.budgetScope,
+      interests: example.interests,
+      tripPace: example.tripPace || DEFAULT_TRIP_PACE,
+    };
+    setInitialData({
+      values: nextValues,
+      budgetSliderValue: example.budgetAmount,
+      budgetSliderMax: Math.max(BUDGET_SLIDER_MAX, example.budgetAmount),
+      budgetIsSet: true,
+      descriptionDraft: "",
+    });
+    setValues(nextValues);
+    setBudgetSliderValue(example.budgetAmount);
+    setBudgetSliderMax(Math.max(BUDGET_SLIDER_MAX, example.budgetAmount));
+    setBudgetIsSet(true);
+    setDescriptionDraft("");
+    setErrors({});
+    setBad({});
+    setSubmitted(false);
+    setEditing(false);
+    setReturnStep(null);
+    setReached(new Set([PLACES, DATES, PARTY, STYLE, DESCRIBE]));
+    setStep(REVIEW);
+    setFormKey((key) => key + 1);
+    focusStep(REVIEW);
+  }
+
   function clearForm() {
     try {
       window.sessionStorage?.removeItem("tpva-travel-request");
@@ -516,6 +595,11 @@ export default function TravelForm() {
   const travelers = values.travelerCount ? `${values.travelerCount} ${values.travelerCount === "1" ? "traveler" : "travelers"}` : "";
   const styleNames = INTERESTS.filter(([type]) => (values.interests ?? []).includes(type)).map(([, label]) => label);
   const styleText = styleNames.length ? styleNames.join(", ") : "Nothing selected";
+  const currentPace = values.tripPace || DEFAULT_TRIP_PACE;
+  const currentPaceLabel = paceLabel(currentPace);
+  const styleSummaryText = styleNames.length
+    ? `${styleText} · ${currentPaceLabel} pace`
+    : `${currentPaceLabel} pace`;
   const review = [
     ["Leaving from", values.departureLocation?.trim(), PLACES, "departure"],
     ["Going to", values.destination?.trim() || NO_DESTINATION, PLACES, "destination"],
@@ -523,6 +607,7 @@ export default function TravelForm() {
     ["Travelers", travelers, PARTY, "travelers"],
     ["Budget", budget, PARTY, "budget"],
     ["Travel style", styleText, STYLE, "style"],
+    ["Trip pace", currentPaceLabel, STYLE, "pace"],
   ];
   const hasDraft = descriptionDraft.trim() !== "";
   const nextLabel = returnStep === REVIEW ? "Back to review" : "Next";
@@ -532,7 +617,7 @@ export default function TravelForm() {
     { step: PLACES, question: "Where are you traveling?", answer: <RouteText from={departure} to={destination} />, summary: `${departure} to ${destination}` },
     { step: DATES, question: "When are you going?", answer: when },
     { step: PARTY, question: "Who is going, and what's the budget?", answer: [travelers, budget].filter(Boolean).join(" · ") },
-    { step: STYLE, question: "What kind of trip should we prioritize?", answer: styleText },
+    { step: STYLE, question: "What kind of trip should we prioritize?", answer: styleSummaryText },
     { step: DESCRIBE, question: "Is there anything else you’d like to describe?", answer: hasDraft ? descriptionDraft.trim() : "Nothing added" },
   ];
 
@@ -565,6 +650,22 @@ export default function TravelForm() {
                 <ProvinceInput id="destination" name="destination" defaultValue={initialData?.values.destination ?? ""} placeholder="e.g. Huế" maxLength={200} onPick={value => setControl("destination", value)} {...described("destination", "destination-hint", "request-tile-input")} />
                 <p className="visually-hidden" id="destination-hint">{DESTINATION_HINT}</p>
               </Field>
+            </div>
+            <div className="request-examples" aria-label="Quick trip examples">
+              <span className="request-examples-label">Quick fill:</span>
+              <div className="request-example-pills">
+                {QUICK_EXAMPLES.map((example) => (
+                  <button
+                    key={example.id}
+                    type="button"
+                    className="request-example-pill"
+                    data-testid={`quick-example-${example.id}`}
+                    onClick={() => applyExample(example)}
+                  >
+                    {example.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </>, "Tell us where you're starting from and where you'd like to go.")}
 
@@ -637,7 +738,49 @@ export default function TravelForm() {
                 </label>
               ))}
             </div>
-          </>, "Choose any that fit. We'll treat them equally.", true)}
+            <div className="request-pace-section">
+              <span id="tripPace-label" className="request-pace-label">Trip pace</span>
+              <div
+                className="request-pace-grid"
+                role="radiogroup"
+                aria-labelledby="tripPace-label"
+                onKeyDown={(event) => {
+                  const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+                  let nextIndex;
+                  if (event.key === "Home") nextIndex = 0;
+                  else if (event.key === "End") nextIndex = TRIP_PACES.length - 1;
+                  else if (keys[event.key] != null) {
+                    const current = TRIP_PACES.findIndex((item) => item.value === currentPace);
+                    const from = current < 0 ? 0 : current;
+                    nextIndex = (from + keys[event.key] + TRIP_PACES.length) % TRIP_PACES.length;
+                  } else return;
+                  event.preventDefault();
+                  setControl("tripPace", TRIP_PACES[nextIndex].value);
+                  event.currentTarget.querySelectorAll('[role="radio"]')[nextIndex]?.focus();
+                }}
+              >
+                {TRIP_PACES.map((option) => {
+                  const checked = currentPace === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="radio"
+                      className="request-pace-card"
+                      data-testid={`trip-pace-${option.value}`}
+                      aria-checked={checked}
+                      tabIndex={checked ? 0 : -1}
+                      onClick={() => setControl("tripPace", option.value)}
+                    >
+                      <strong>{option.label}</strong>
+                      <small>{option.description}</small>
+                    </button>
+                  );
+                })}
+              </div>
+              <input id="tripPace" name="tripPace" type="hidden" value={currentPace} readOnly />
+            </div>
+          </>, "Choose any interests that fit and set your preferred daily pace.", true)}
 
           {question(DESCRIBE, "describe", <label htmlFor="tripDescription">Is there anything else you’d like to describe?</label>, <>
             <textarea id="tripDescription" name="additionalRequirements" className="request-describe" rows="7" maxLength={ADDITIONAL_REQUIREMENTS_MAX} value={descriptionDraft} onChange={event => setDescriptionDraft(event.target.value)} placeholder={DESCRIPTION_PLACEHOLDER} data-step-focus {...described("additionalRequirements", `request-step-${DESCRIBE}-hint request-describe-count`, "request-describe")} />

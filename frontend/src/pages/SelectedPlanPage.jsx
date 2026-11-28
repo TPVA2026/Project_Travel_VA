@@ -711,7 +711,7 @@ export default function SelectedPlanPage() {
                     {isChosen && (
                       <p className="chosen-notice">
                         <Icon name="check" size={15} />
-                        Saved as your trip. Find it again under Selected.
+                        Saved as your trip. Find it again under Your itinerary.
                       </p>
                     )}
 
@@ -838,6 +838,7 @@ export default function SelectedPlanPage() {
                     }
                     placesById={placesById}
                     activitySources={activitySources}
+                    destinationLabel={destinationLabel}
                     editMode={editMode}
                     onEditStop={handleEditStop}
                   />

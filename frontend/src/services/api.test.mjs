@@ -677,6 +677,10 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
     assert.equal(activitySource.getAttribute('href'), 'https://example.com/place')
     assert.equal(activitySource.getAttribute('target'), '_blank')
     assert.match(activitySource.getAttribute('rel'), /noopener/)
+    const mapsLinks = dom.window.document.querySelectorAll('.activity-card .activity-maps-link')
+    assert.equal(mapsLinks.length, 2)
+    assert.match(mapsLinks[0].getAttribute('href'), /^https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=/)
+    assert.equal(mapsLinks[0].getAttribute('target'), '_blank')
     assert.equal(dom.window.document.querySelector('.activity-name-row .source-link'), null)
     assert.equal(dom.window.document.querySelector('.cost-row .source-link'), null)
     assert.doesNotMatch(body, /Request a change/)
@@ -713,7 +717,7 @@ test('SelectedPlanPage shows projections and verification details for a plan', a
     assert.match(removeButton.textContent, /Remove from your trip/)
     assert.match(
       dom.window.document.querySelector('.chosen-notice').textContent,
-      /Saved as your trip\. Find it again under Selected\./
+      /Saved as your trip\. Find it again under Your itinerary\./
     )
     await act(async () => {
       removeButton.click()

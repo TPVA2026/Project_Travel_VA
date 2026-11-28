@@ -324,6 +324,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
       Travelers: "7 travelers",
       Budget: "7,654,000 VND · for the group",
       "Travel style": "Culture, Nature",
+      "Trip pace": "Balanced",
       "Extra description": "We love seafood.\nOne of us is an older adult.",
     });
     assert.equal(doc.querySelectorAll(".wizard-summary-panel .request-thread-item").length, 5, "All five answered items stay editable in the summary panel on review");
@@ -460,6 +461,7 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.equal(hydratedRows.Travelers, "7 travelers");
     assert.equal(hydratedRows.Budget, "7,654,000 VND · for the group");
     assert.equal(hydratedRows["Travel style"], "Culture, Nature");
+    assert.equal(hydratedRows["Trip pace"], "Balanced");
     assert.equal(hydratedRows["Extra description"], "We love seafood and prefer taxis.");
     const unlockedSteps = [...doc.querySelectorAll(".trip-progress--sidebar .progress-steps > li")];
     assert.equal(unlockedSteps[1].querySelector("a")?.getAttribute("href"), "/results", "Step 2 unlocks after submitting");
@@ -501,6 +503,25 @@ test("M1 one-question request flow: steps, validation, budget, dates, review and
     assert.deepEqual(custom, { travelPeriod: { startDate: startCross, endDate: endCross }, durationDays: MAX_TRIP_DAYS, departureLocation: "Ha Noi", travelers: { count: 6 }, budget: { amount: 70123000, currency: "VND", scope: "perPerson" } });
     assert.equal(custom.preferences?.destination, undefined, "Skipped destination is omitted, never filled in");
     assert.equal(field("budgetSlider").value, "70123000");
+
+    // Quick example fills valid defaults and jumps straight to Review; pace selector updates payload cleanly.
+    await click("Clear form");
+    assertStep(0);
+    await actOn(() => doc.querySelector('[data-testid="quick-example-danang-2d"]').click());
+    assertStep(5, "Quick example jumps to Review");
+    const exampleRows = Object.fromEntries([...doc.querySelectorAll(".request-review > div")].map(row => [row.querySelector("dt").textContent, row.querySelector("dd").textContent]));
+    assert.equal(exampleRows["Leaving from"], "Hồ Chí Minh");
+    assert.equal(exampleRows["Going to"], "Đà Nẵng");
+    assert.equal(exampleRows["Trip pace"], "Balanced");
+    await click("Edit pace");
+    assertStep(3);
+    await actOn(() => doc.querySelector('[data-testid="trip-pace-relaxed"]').click());
+    await click("Back to review");
+    assertStep(5);
+    const relaxedPayload = buildPayload(new FormData(doc.querySelector("form")));
+    assert.equal(relaxedPayload.preferences.destination, "Đà Nẵng");
+    assert.match(relaxedPayload.additionalRequirements, /^Trip pace: Relaxed/);
+    assert.equal(Object.hasOwn(relaxedPayload, "tripPace"), false);
     assert.deepEqual(runtimeErrors, [], "Uncaught DOM runtime errors must fail this test");
   } finally {
     if (root) await act(async () => root.unmount());

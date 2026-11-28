@@ -472,7 +472,7 @@ export default function ResultsPage() {
       <RequestSummary request={pendingRequest} />
 
       {pendingRequest && aiLoading && (
-        <div className="generating-panel">
+        <div className="generating-panel" aria-busy="true">
           <Loading message={streamProgress
                 ? `Generating itinerary ${streamProgress.candidateIndex} of ${streamProgress.requestedCount}…`
                 : 'Building your plans'} />
@@ -480,6 +480,32 @@ export default function ResultsPage() {
             This usually takes 30–90 seconds. Each option is checked against your budget,
             opening hours, and travel times before it appears.
           </p>
+          {(() => {
+            const skeletonCount = aiCandidates.length === 0
+              ? PIPELINE_MAX_CANDIDATES
+              : Math.max(0, PIPELINE_MAX_CANDIDATES - aiCandidates.length)
+            if (skeletonCount <= 0) return null
+            return (
+              <div className="cards plan-comparison-grid skeleton-grid" aria-hidden="true">
+                {Array.from({ length: skeletonCount }, (_, idx) => (
+                  <div className="card plan-card plan-card--skeleton" key={`skeleton-${idx}`}>
+                    <div className="skeleton-block skeleton-media" />
+                    <div className="card-body">
+                      <div className="skeleton-block skeleton-line skeleton-line--sm" />
+                      <div className="skeleton-block skeleton-line skeleton-line--lg" />
+                      <div className="skeleton-block skeleton-line skeleton-line--md" />
+                    </div>
+                    <div className="card-footer-action">
+                      <div className="card-action-buttons">
+                        <div className="skeleton-block skeleton-btn" />
+                        <div className="skeleton-block skeleton-btn" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          })()}
         </div>
       )}
 
