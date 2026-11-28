@@ -1,0 +1,40 @@
+frontend/package.json
+  h_a910a13e260132 10
+frontend/src/components/TripProgress.jsx
+  h_a910a13e260132 39-44,72,144-148,224-228,232-234
+frontend/src/components/TripProgress.test.mjs
+  h_a910a13e260132 1-154
+frontend/src/components/input/TravelForm.interaction.test.mjs
+  h_a910a13e260132 327,464,506-524
+frontend/src/components/input/TravelForm.jsx
+  h_a910a13e260132 7,35,38-65,255,269,274,311-320,324-325,359,472-510,597-601,609,619,653-668,740-782
+frontend/src/components/input/travelRequest.js
+  h_a910a13e260132 8-44,368-374
+frontend/src/components/input/travelRequest.test.mjs
+  h_a910a13e260132 2,316-331
+frontend/src/components/itinerary/ActivityCard.jsx
+  h_a910a13e260132 24-37,40-65,110-111,123-131,207-215
+frontend/src/components/itinerary/ItineraryTimeline.jsx
+  h_a910a13e260132 15-22,112-113
+frontend/src/index.css
+  h_a910a13e260132 26,4693-4708,4718,7201,7205,7209,7213,7217,7221,7225,7229,7234-7235,7869-7904,8075-8077,8082,8087-8161,10726-10727,10729,10732-10734,10737-10739,10741,12492-12623
+frontend/src/pages/ResultsPage.jsx
+  h_a910a13e260132 482,490-515
+frontend/src/pages/SelectedPlanPage.jsx
+  h_a910a13e260132 714,841
+frontend/src/pages/WelcomePage.jsx
+  h_a910a13e260132 43,80,132
+frontend/src/services/api.test.mjs
+  h_a910a13e260132 680-683,720
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "67bf600df3529c696b2c63457cce163cd05e1553",
+  "prompts": {},
+  "humans": {
+    "h_a910a13e260132": {
+      "author": "DrakyNeUwU <vipprovip201@gmail.com>"
+    }
+  }
+}
