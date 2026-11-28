@@ -5,6 +5,7 @@ import {
   fetchSavedTrip,
   getSelectedPlanId,
   selectPlan,
+  setSelectedPlan,
   clearSelectedPlan,
   fmtMoney,
   collectPlaceIds,
@@ -53,7 +54,7 @@ function orderScheduleDays(days) {
 }
 
 export default function SelectedPlanPage() {
-  const { user } = useAuth()
+  const { user, isGoogleConfigured } = useAuth()
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const queryId = params.get('id')
@@ -187,11 +188,14 @@ export default function SelectedPlanPage() {
 
   const handleToggleChoose = async () => {
     if (!plan) return
+    setActionMessage('')
     if (!user) {
-      navigate('/signin', { state: { from: `/selected?id=${encodeURIComponent(plan?.planId || plan?.id || '')}` } })
+      setSelectedPlan(plan)
+      setIsChosen(true)
+      setCelebrate(true)
+      setBanner({ kind: 'saved', localOnly: true })
       return
     }
-    setActionMessage('')
     try {
       const selection = await selectPlan(plan)
       setPlan((current) => ({ ...current, savedTripId: selection.trip.id }))
@@ -340,9 +344,13 @@ export default function SelectedPlanPage() {
         return next
       })
       if (isChosen) {
-        selectPlan(updatedPlan).catch((err) => {
-          setActionMessage(err?.message || 'The edit was applied but could not be saved.')
-        })
+        if (user) {
+          selectPlan(updatedPlan).catch((err) => {
+            setActionMessage(err?.message || 'The edit was applied but could not be saved.')
+          })
+        } else {
+          setSelectedPlan(updatedPlan)
+        }
       }
       setEditTarget(null)
       setEditStatus('idle')
@@ -352,6 +360,12 @@ export default function SelectedPlanPage() {
   }
 
   if (!activePlanId && !loading) {
+    let hasCachedResults = false
+    try {
+      hasCachedResults = Boolean(window.sessionStorage?.getItem('tpva-ai-plan'))
+    } catch {
+      hasCachedResults = false
+    }
     return (
       <div className="selected-page-container">
         <TripProgress currentStep={3} />
@@ -362,16 +376,27 @@ export default function SelectedPlanPage() {
           <p className="page-eyebrow">Step 3 of 3 · Review</p>
           <h1>Your next trip starts here</h1>
           <p className="muted">
-            Choose an itinerary to see its day-by-day schedule, review the estimated costs, and make it your own.
+            {hasCachedResults
+              ? 'Choose an itinerary from your results to see its day-by-day schedule, review the estimated costs, and make it your own.'
+              : 'Plan your dates, budget, and travel style to generate itineraries you can review, edit, and save.'}
           </p>
           <div className="empty-actions">
-            <Link to="/results" className="btn btn-primary">
-              Explore recommended plans
-              <Icon name="arrowRight" size={16} />
-            </Link>
-            <Link to="/" className="btn btn-outline">
-              Create a new trip
-            </Link>
+            {hasCachedResults ? (
+              <>
+                <Link to="/results" className="btn btn-primary">
+                  Compare your plans
+                  <Icon name="arrowRight" size={16} />
+                </Link>
+                <Link to="/" className="btn btn-outline">
+                  Create a new trip
+                </Link>
+              </>
+            ) : (
+              <Link to="/" className="btn btn-primary">
+                Plan a new trip
+                <Icon name="arrowRight" size={16} />
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -533,14 +558,27 @@ export default function SelectedPlanPage() {
                     <p className="chosen-header-sub">
                       {banner.kind === 'removed'
                         ? 'You can add this plan again from the trip card.'
-                        : 'Saved to My Trips. Compare other plans whenever you like.'}
+                        : banner.localOnly
+                          ? 'Saved in this browser. Sign in when you want to sync to My Trips.'
+                          : 'Saved to My Trips. Compare other plans whenever you like.'}
                     </p>
                   </div>
                 </div>
-                <Link to="/results" className="btn btn-outline chosen-compare-link">
-                  <Icon name="swap" size={16} />
-                  Compare plans
-                </Link>
+                <div className="chosen-header-actions">
+                  {banner.localOnly && isGoogleConfigured && (
+                    <Link
+                      to="/signin"
+                      state={{ from: `/selected?id=${encodeURIComponent(plan?.planId || plan?.id || '')}` }}
+                      className="btn btn-primary"
+                    >
+                      Sign in
+                    </Link>
+                  )}
+                  <Link to="/results" className="btn btn-outline chosen-compare-link">
+                    <Icon name="swap" size={16} />
+                    Compare plans
+                  </Link>
+                </div>
               </div>
             </div>
           )}
@@ -578,6 +616,7 @@ export default function SelectedPlanPage() {
                     <img
                       src={planImage}
                       alt={`${destinationLabel} landscape`}
+                      decoding="async"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none'
                       }}
@@ -746,43 +785,45 @@ export default function SelectedPlanPage() {
                   </div>
 
                   {dayCount > 1 && (
-                    <div
-                      className="schedule-day-controls"
-                      role="group"
-                      aria-label="Filter schedule by day"
-                      style={{
-                        '--segment-count': segmentCount,
-                        '--segment-index': segmentIndex,
-                      }}
-                    >
-                      <span className="schedule-day-thumb" aria-hidden="true" />
-                      <button
-                        type="button"
-                        className="schedule-day-button"
-                        data-testid="schedule-day-all"
-                        aria-pressed={selectedScheduleDay === 'all'}
-                        onClick={() => setActiveScheduleDay('all')}
+                    <div className="schedule-day-sticky">
+                      <div
+                        className="schedule-day-controls"
+                        role="group"
+                        aria-label="Filter schedule by day"
+                        style={{
+                          '--segment-count': segmentCount,
+                          '--segment-index': segmentIndex,
+                        }}
                       >
-                        All days
-                      </button>
-                      {scheduleDays.map((day, index) => {
-                        const dayNumber = scheduleDayNumbers[index]
-                        const stopCount = day.activities?.length || 0
-                        return (
-                          <button
-                            type="button"
-                            className="schedule-day-button"
-                            key={dayNumber}
-                            data-testid={`schedule-day-${dayNumber}`}
-                            aria-label={`Show day ${dayNumber}, ${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`}
-                            aria-pressed={selectedScheduleDay === dayNumber}
-                            onClick={() => setActiveScheduleDay(dayNumber)}
-                          >
-                            Day {dayNumber}
-                            <span>{stopCount}</span>
-                          </button>
-                        )
-                      })}
+                        <span className="schedule-day-thumb" aria-hidden="true" />
+                        <button
+                          type="button"
+                          className="schedule-day-button"
+                          data-testid="schedule-day-all"
+                          aria-pressed={selectedScheduleDay === 'all'}
+                          onClick={() => setActiveScheduleDay('all')}
+                        >
+                          All days
+                        </button>
+                        {scheduleDays.map((day, index) => {
+                          const dayNumber = scheduleDayNumbers[index]
+                          const stopCount = day.activities?.length || 0
+                          return (
+                            <button
+                              type="button"
+                              className="schedule-day-button"
+                              key={dayNumber}
+                              data-testid={`schedule-day-${dayNumber}`}
+                              aria-label={`Show day ${dayNumber}, ${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`}
+                              aria-pressed={selectedScheduleDay === dayNumber}
+                              onClick={() => setActiveScheduleDay(dayNumber)}
+                            >
+                              Day {dayNumber}
+                              <span>{stopCount}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
                     </div>
                   )}
 

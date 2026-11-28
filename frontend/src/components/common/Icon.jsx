@@ -138,6 +138,7 @@ const PATHS = {
       <path d="M20 4v7h-7" />
     </>
   ),
+  bookmark: <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />,
 }
 
 export default function Icon({ name, size = 18, className = '', strokeWidth = 1.8, ...rest }) {

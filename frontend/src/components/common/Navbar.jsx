@@ -39,7 +39,7 @@ export default function Navbar() {
         setOpen(false)
       }
     }
-    const desktop = window.matchMedia('(min-width: 961px)')
+    const desktop = window.matchMedia('(min-width: 1041px)')
     const onDesktop = (event) => {
       if (event.matches) setOpen(false)
     }
@@ -79,7 +79,7 @@ export default function Navbar() {
         Skip to main content
       </a>
 
-      <header className="site-header no-print" ref={headerRef}>
+      <header className={`site-header no-print${open ? ' is-menu-open' : ''}`} ref={headerRef}>
         <div className={`site-header-inner${isWelcome ? ' is-wide' : ''}`}>
           <NavLink to="/welcome" className="site-brand" aria-label="Travel Assistant home">
             <span className="brand-mark" aria-hidden="true">
@@ -127,6 +127,14 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+
+        {open && (
+          <div
+            className="mobile-menu-backdrop"
+            aria-hidden="true"
+            onClick={() => setOpen(false)}
+          />
+        )}
 
         <div id="mobile-menu" className={`mobile-menu${open ? ' is-open' : ''}`}>
           <nav className="mobile-nav" aria-label="Mobile">

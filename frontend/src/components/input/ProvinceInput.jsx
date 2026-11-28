@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Icon from "../common/Icon.jsx";
 import { allProvincesSorted, foldText, matchProvinces, POPULAR_PROVINCES, provinceHint } from "./provinces";
 
@@ -8,21 +8,22 @@ import { allProvincesSorted, foldText, matchProvinces, POPULAR_PROVINCES, provin
 // picks an option; Enter without a highlighted option keeps its normal meaning
 // (go to the next question).
 export default function ProvinceInput({ id, onPick, className, popularHeading = "Popular destinations", "aria-describedby": describedBy, ...inputProps }) {
+  const inputRef = useRef(null);
   const [query, setQuery] = useState(() => String(inputProps.defaultValue ?? ""));
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const [placeAbove, setPlaceAbove] = useState(false);
   const listId = `${id}-suggestions`;
   const browsing = !foldText(query);
   const matches = browsing ? [] : matchProvinces(query);
-  const exact = !browsing && matches.length === 1 && foldText(matches[0]) === foldText(query);
   const options = browsing
     ? [
         ...POPULAR_PROVINCES.map(name => ({ name, group: "popular", hint: provinceHint(name) })),
         ...allProvincesSorted().map(name => ({ name, group: "all", hint: provinceHint(name) })),
       ]
     : matches.map(name => ({ name, group: "match", hint: provinceHint(name) }));
-  const noMatch = open && !browsing && !exact && options.length === 0;
-  const shown = (open && options.length > 0 && !exact) || noMatch;
+  const noMatch = open && !browsing && options.length === 0;
+  const shown = (open && options.length > 0) || noMatch;
 
   function pick(name) {
     onPick(name);
@@ -32,6 +33,13 @@ export default function ProvinceInput({ id, onPick, className, popularHeading = 
   }
 
   function openPanel() {
+    const rect = inputRef.current?.getBoundingClientRect?.();
+    if (rect && typeof window !== "undefined" && window.innerHeight > 0) {
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setPlaceAbove(spaceBelow < 260 && rect.top > 260);
+    } else {
+      setPlaceAbove(false);
+    }
     setOpen(true);
   }
 
@@ -39,11 +47,10 @@ export default function ProvinceInput({ id, onPick, className, popularHeading = 
     const arrowDown = event.key === "ArrowDown";
     const arrowUp = event.key === "ArrowUp";
     if (arrowDown || (arrowUp && shown)) {
-      if (exact) return;
       if (!browsing && !matches.length) return;
       event.preventDefault();
       const step = arrowDown ? 1 : -1;
-      setOpen(true);
+      openPanel();
       setActive(current => {
         if (!shown) return step > 0 ? 0 : options.length - 1;
         const next = current + step;
@@ -86,6 +93,7 @@ export default function ProvinceInput({ id, onPick, className, popularHeading = 
   return (
     <div className="request-combobox">
       <input
+        ref={inputRef}
         id={id}
         {...inputProps}
         className={className}
@@ -104,7 +112,7 @@ export default function ProvinceInput({ id, onPick, className, popularHeading = 
         onKeyDown={onKeyDown}
         onBlur={() => { setOpen(false); setActive(-1); }}
       />
-      <div id={listId} className="request-city-panel" role={noMatch ? undefined : "listbox"} aria-label="Province suggestions" hidden={!shown}>
+      <div id={listId} className={`request-city-panel${placeAbove ? " request-city-panel--above" : ""}`} role={noMatch ? undefined : "listbox"} aria-label="Province suggestions" hidden={!shown}>
         {noMatch ? (
           <p className="request-city-empty" role="status">No matching cities — you can keep what you typed.</p>
         ) : browsing && shown ? (

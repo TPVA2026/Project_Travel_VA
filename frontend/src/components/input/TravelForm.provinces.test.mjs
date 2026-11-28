@@ -194,6 +194,17 @@ test("M1 city picker: opens on click, typing or ArrowDown, not on autofocus; fre
     await actOn(() => doc.getElementById("destination-suggestions-0").click());
     assert.equal(destination.value, "Lâm Đồng");
 
+    // Accent-insensitive full names still keep suggestions open so users can click the accented name.
+    for (const [typed, expected] of [
+      ["Da Nang", "Đà Nẵng"],
+      ["Ha Noi", "Hà Nội"],
+      ["Hue", "Huế"],
+    ]) {
+      await fill("destination", typed);
+      assert.equal(listShown("destination"), true, `${typed} keeps suggestions open`);
+      assert.deepEqual(optionNames("destination"), [expected], `${typed} suggests ${expected}`);
+    }
+
     await fill("destination", "Da Lat town");
     assert.equal(listShown("destination"), true, "No match still shows a keep-what-you-typed message");
     assert.equal(doc.querySelector("#destination-suggestions .request-city-empty")?.textContent, "No matching cities — you can keep what you typed.");

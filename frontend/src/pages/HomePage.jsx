@@ -73,7 +73,7 @@ export default function HomePage() {
                 </li>
                 <li>
                   <Icon name="clock" size={16} />
-                  <span>Adjust your pace anytime</span>
+                  <span>Pick your travel style</span>
                 </li>
               </ul>
             </div>
