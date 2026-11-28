@@ -1,0 +1,48 @@
+frontend/src/auth/AuthContext.jsx
+  h_a910a13e260132 11,66-68,107-117
+frontend/src/components/TripProgress.jsx
+  h_a910a13e260132 107-110
+frontend/src/components/common/Footer.jsx
+  h_a910a13e260132 7
+frontend/src/components/common/Icon.jsx
+  h_a910a13e260132 141
+frontend/src/components/common/Navbar.jsx
+  h_a910a13e260132 42,82,131-138
+frontend/src/components/comparison/CandidateComparison.jsx
+  h_a910a13e260132 281,390
+frontend/src/components/input/ProvinceInput.jsx
+  h_a910a13e260132 1,11,15,25-26,36-42,53,96,115
+frontend/src/components/input/TravelForm.jsx
+  h_a910a13e260132 86,90-103,278-280,563
+frontend/src/components/input/TravelForm.provinces.test.mjs
+  h_a910a13e260132 197-207
+frontend/src/components/intro/FlightIntro.jsx
+  h_a910a13e260132 1,28-35,39,52-58,61-62,67,72,75-77,80,83-90
+frontend/src/components/intro/introAssets.js
+  h_a910a13e260132 5
+frontend/src/index.css
+  h_a910a13e260132 25-28,2146-2173,4250-4257,5273-5279,5351,5357-5358,5360,5363,5365,5405,5415,5440,5451,5497,5514-5523,5526-5527,5530,5536,7185,7189,7193,7197,7201,7205,7209,7213,7219,7258-7261,7336,7367-7368,7604-7605,7607,7609-7615,7626-7656,7916,7923,7931-7934,8508,8534,8560,8995,9007,9012-9013,9111,9996-10011,10531-10532,10536-10546,10599,10603-10606,10609,10612-10615,11253-11255,11260,11295-11296,11627-11630,12296-12299,12301,12308-12326
+frontend/src/pages/HomePage.jsx
+  h_a910a13e260132 76
+frontend/src/pages/ResultsPage.jsx
+  h_a910a13e260132 12,125-127,252,409-421,449,459-463
+frontend/src/pages/SelectedPlanPage.jsx
+  h_a910a13e260132 8,57,191,193-196,347-353,363-368,379-381,384-399,561-563,567-581,619,788-796,798-826
+frontend/src/pages/SignInPage.jsx
+  h_a910a13e260132 30-46,48,53,61,72,124-130,133-139,141-145,151-156
+frontend/src/pages/WelcomePage.jsx
+  h_a910a13e260132 43,80,99,132
+frontend/src/services/destinationImages.js
+  h_a910a13e260132 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "4eb0dd54be0ef2fcbb8892f63bf018370f33b1e1",
+  "prompts": {},
+  "humans": {
+    "h_a910a13e260132": {
+      "author": "DrakyNeUwU <vipprovip201@gmail.com>"
+    }
+  }
+}
