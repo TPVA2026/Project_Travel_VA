@@ -21,14 +21,48 @@ function costStatusClass(status) {
   return String(status || 'NO_DATA').toLowerCase().replace('_', '-')
 }
 
-function travelLegLabel(travelLeg) {
-  const duration =
-    travelLeg?.durationMin != null ? `${travelLeg.durationMin} min` : 'Time unknown'
-  const distance = travelLeg?.distanceKm != null ? `${travelLeg.distanceKm} km` : null
-  return [duration, distance].filter(Boolean).join(' · ')
+function formatConnectorMeta(travelLeg) {
+  if (!travelLeg || typeof travelLeg !== 'object') return null
+  const rawMinutes = travelLeg.durationMin ?? travelLeg.travel_minutes
+  const rawDistance = travelLeg.distanceKm ?? travelLeg.distance_km
+  const minutes = rawMinutes != null && Number.isFinite(Number(rawMinutes)) && Number(rawMinutes) >= 0
+    ? Math.round(Number(rawMinutes))
+    : null
+  const distance = rawDistance != null && Number.isFinite(Number(rawDistance)) && Number(rawDistance) >= 0
+    ? Number(rawDistance)
+    : null
+  const parts = []
+  if (minutes != null) parts.push(`${minutes} min`)
+  if (distance != null) parts.push(`${Number(distance.toFixed(1))} km`)
+  return parts.length > 0 ? parts.join(' · ') : null
 }
 
-export default function ActivityCard({ activity, place, travelLeg, source, editMode, onEditStop }) {
+function buildGoogleMapsUrl(name, place, activity, destinationLabel) {
+  const lat = place?.lat ?? place?.latitude ?? activity?.lat ?? activity?.latitude
+  const lng = place?.lng ?? place?.longitude ?? activity?.lng ?? activity?.longitude
+  if (
+    lat != null &&
+    lng != null &&
+    Number.isFinite(Number(lat)) &&
+    Number.isFinite(Number(lng))
+  ) {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`
+  }
+  const locationHint = place?.address || place?.city || destinationLabel || ''
+  const query = [name, locationHint].filter(Boolean).join(', ')
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || 'Vietnam')}`
+}
+
+export default function ActivityCard({
+  activity,
+  place,
+  travelLeg,
+  showConnector = Boolean(travelLeg),
+  destinationLabel,
+  source,
+  editMode,
+  onEditStop,
+}) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewAbove, setPreviewAbove] = useState(false)
   const nameAnchorRef = useRef(null)
@@ -73,6 +107,8 @@ export default function ActivityCard({ activity, place, travelLeg, source, editM
   const sourceLabel = source?.label || 'source'
   const openingHours = place?.openingHours || null
   const referencePrice = place?.priceDisplay || null
+  const connectorMeta = formatConnectorMeta(travelLeg)
+  const mapsUrl = buildGoogleMapsUrl(name, place, activity, destinationLabel)
   const formattedCost =
     rawCost == null
       ? referencePrice
@@ -84,10 +120,15 @@ export default function ActivityCard({ activity, place, travelLeg, source, editM
 
   return (
     <div className="activity-item">
-      {travelLeg && (
-        <div className="tl-leg">
-          <Icon name="bus" size={14} />
-          <span className="tl-leg-text">{travelLegLabel(travelLeg)}</span>
+      {showConnector && (
+        <div className="tl-connector" aria-hidden={connectorMeta ? undefined : 'true'}>
+          <span className="tl-connector-line" aria-hidden="true" />
+          {connectorMeta && (
+            <span className="tl-leg">
+              <Icon name="bus" size={14} />
+              <span className="tl-leg-text">{connectorMeta}</span>
+            </span>
+          )}
         </div>
       )}
 
@@ -163,6 +204,15 @@ export default function ActivityCard({ activity, place, travelLeg, source, editM
               {costStatusLabel}
             </span>
           </span>
+          <a
+            className="activity-maps-link"
+            href={mapsUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label={`Open ${name} in Google Maps`}
+          >
+            Maps <span aria-hidden="true">↗</span>
+          </a>
         </div>
 
         {canEdit && (

@@ -36,6 +36,12 @@ function hasSelectedPlan() {
   }
 }
 
+export function isProgressStepLocked(stepNumber, currentStep, unlocks) {
+  if (stepNumber === 2) return currentStep !== 2 && !unlocks.step2
+  if (stepNumber === 3) return currentStep !== 3 && (!unlocks.step2 || !unlocks.step3)
+  return false
+}
+
 export function TripProgress({ currentStep, variant = 'bar' }) {
   const slotRef = useRef(null)
   const [floating, setFloating] = useState(false)
@@ -63,11 +69,7 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
     }
   }, [currentStep])
 
-  const isStepLocked = (stepNumber) => {
-    if (stepNumber === 2) return currentStep < 2 && !unlocks.step2
-    if (stepNumber === 3) return currentStep < 3 && !unlocks.step3
-    return false
-  }
+  const isStepLocked = (stepNumber) => isProgressStepLocked(stepNumber, currentStep, unlocks)
 
   useLayoutEffect(() => {
     if (isSidebar) return
@@ -138,9 +140,12 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
           {TRIP_STEPS.map((step, index) => {
             const stepNumber = index + 1
             const isCurrent = stepNumber === currentStep
-            const isComplete = stepNumber < currentStep
             const isLocked = isStepLocked(stepNumber)
-            const lockHint = stepNumber === 2 ? 'Complete trip details first' : 'Choose an itinerary first'
+            const isComplete = stepNumber < currentStep && !isLocked
+            const lockHint =
+              stepNumber === 2 || !unlocks.step2
+                ? 'Complete trip details first'
+                : 'Choose an itinerary first'
 
             return (
               <li
@@ -215,13 +220,18 @@ export function TripProgress({ currentStep, variant = 'bar' }) {
         {TRIP_STEPS.map((step, index) => {
           const stepNumber = index + 1
           const isCurrent = stepNumber === currentStep
-          const isComplete = stepNumber < currentStep
           const isLocked = isStepLocked(stepNumber)
-          const lockHint = stepNumber === 2 ? 'Complete trip details first' : 'Choose an itinerary first'
+          const isComplete = stepNumber < currentStep && !isLocked
+          const lockHint =
+            stepNumber === 2 || !unlocks.step2
+              ? 'Complete trip details first'
+              : 'Choose an itinerary first'
 
           let status = 'Up next'
 
-          if (isComplete) {
+          if (isLocked) {
+            status = 'Locked'
+          } else if (isComplete) {
             status = 'Completed'
           }
 
